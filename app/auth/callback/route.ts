@@ -1,6 +1,5 @@
-import { NextResponse } from 'next/server'
+export const runtime = 'edge'
 
-export async function GET(request: Request) {
-  const requestUrl = new URL(request.url)
-  return NextResponse.redirect(new URL('/', requestUrl.origin))
+export async function GET() {
+  return Response.redirect('/', 302)
 }
