@@ -1,47 +1,28 @@
 import { supabase } from './supabase'
 
-export async function signInWithGoogle() {
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: 'http://localhost:3000',
-    },
-  })
-
-  if (error) {
-    console.error('Error al iniciar sesión con Google:', error)
-    throw error
-  }
-}
-
-export async function signOut() {
-  const { error } = await supabase.auth.signOut()
-
-  if (error) {
-    console.error('Error al cerrar sesión:', error)
-    throw error
-  }
-}
-
 export async function getCurrentUser() {
   const {
-    data: { user },
+    data: { session },
     error,
-  } = await supabase.auth.getUser()
+  } = await supabase.auth.getSession()
 
   if (error) {
-    console.error('Error obteniendo usuario actual:', error)
-    throw error
+    console.error('GET SESSION ERROR:', error)
+    return null
   }
 
-  return user
+  if (!session?.user) {
+    return null
+  }
+
+  return session.user
 }
 
-export async function signOutUser() {
+export async function signOutCurrentUser() {
   const { error } = await supabase.auth.signOut()
 
   if (error) {
-    console.error('Error al cerrar sesión:', error)
-    throw error
+    console.error('SIGN OUT ERROR:', error)
+    throw new Error('No se pudo cerrar sesión')
   }
 }

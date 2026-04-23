@@ -31,7 +31,6 @@ export default function AvailabilityView() {
   async function loadAll(currentUserId?: string) {
     try {
       setLoading(true)
-
       const user = currentUserId
         ? { id: currentUserId }
         : await getCurrentUser()
@@ -44,7 +43,6 @@ export default function AvailabilityView() {
       setBlocks(data || [])
     } catch (error) {
       console.error(error)
-      alert('No se pudo cargar la disponibilidad')
     } finally {
       setLoading(false)
     }
@@ -54,7 +52,7 @@ export default function AvailabilityView() {
     loadAll()
   }, [])
 
-  const groupedBlocks = useMemo(() => {
+  const grouped = useMemo(() => {
     const map = new Map<string, AvailabilityBlock[]>()
 
     for (const dayName of DAYS) {
@@ -71,13 +69,8 @@ export default function AvailabilityView() {
     return [...map.entries()]
   }, [blocks])
 
-  async function handleAddBlock() {
+  async function addBlock() {
     if (!userId) return
-
-    if (!start || !end) {
-      alert('Debes seleccionar una hora de inicio y una de término')
-      return
-    }
 
     if (start >= end) {
       alert('La hora de inicio debe ser menor que la de término')
@@ -99,7 +92,7 @@ export default function AvailabilityView() {
     }
   }
 
-  async function handleDeleteBlock(id: string) {
+  async function removeBlock(id: string) {
     try {
       await deleteAvailabilityBlock(id)
       await loadAll(userId)
@@ -112,10 +105,10 @@ export default function AvailabilityView() {
   return (
     <div style={container}>
       <div style={heroCard}>
-        <h2 style={title}>Disponibilidad</h2>
+        <h2 style={title}>Disponibilidad real</h2>
         <p style={subtitle}>
-          Crea distintos bloques por día. Por ejemplo, el lunes puedes tener un
-          horario en la mañana y otro distinto en la tarde.
+          Puedes crear distintos bloques por día, por ejemplo un horario en la mañana
+          y otro completamente distinto en la tarde.
         </p>
       </div>
 
@@ -128,7 +121,7 @@ export default function AvailabilityView() {
             <select
               value={day}
               onChange={(e) => setDay(e.target.value)}
-              style={input}
+              style={select}
             >
               {DAYS.map((item) => (
                 <option key={item} value={item}>
@@ -160,42 +153,40 @@ export default function AvailabilityView() {
         </div>
 
         <div style={actions}>
-          <button onClick={handleAddBlock} style={button}>
+          <button onClick={addBlock} style={button}>
             Agregar bloque
           </button>
         </div>
       </div>
 
       <div style={card}>
-        <h3 style={sectionTitle}>Bloques semanales</h3>
+        <h3 style={sectionTitle}>Tus bloques semanales</h3>
 
         {loading ? (
           <div style={emptyText}>Cargando...</div>
         ) : (
-          <div style={daysGrid}>
-            {groupedBlocks.map(([dayName, dayBlocks]) => (
+          <div style={dayGrid}>
+            {grouped.map(([dayName, dayBlocks]) => (
               <div key={dayName} style={dayCard}>
                 <div style={dayTitle}>{dayName}</div>
 
                 {dayBlocks.length === 0 ? (
                   <div style={emptyText}>Sin bloques</div>
                 ) : (
-                  <div style={blockList}>
-                    {dayBlocks.map((block) => (
-                      <div key={block.id} style={blockCard}>
-                        <div style={blockTime}>
-                          {block.start_time} - {block.end_time}
-                        </div>
-
-                        <button
-                          onClick={() => handleDeleteBlock(block.id)}
-                          style={deleteButton}
-                        >
-                          Eliminar
-                        </button>
+                  dayBlocks.map((block) => (
+                    <div key={block.id} style={blockItem}>
+                      <div>
+                        {block.start_time} - {block.end_time}
                       </div>
-                    ))}
-                  </div>
+
+                      <button
+                        onClick={() => removeBlock(block.id)}
+                        style={deleteButton}
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  ))
                 )}
               </div>
             ))}
@@ -227,7 +218,6 @@ const title: React.CSSProperties = {
 const subtitle: React.CSSProperties = {
   marginTop: '8px',
   opacity: 0.75,
-  lineHeight: 1.45,
 }
 
 const card: React.CSSProperties = {
@@ -256,6 +246,14 @@ const label: React.CSSProperties = {
   fontWeight: 700,
 }
 
+const select: React.CSSProperties = {
+  padding: '10px',
+  borderRadius: '10px',
+  border: '1px solid rgba(255,255,255,0.10)',
+  background: 'rgba(255,255,255,0.06)',
+  color: 'white',
+}
+
 const input: React.CSSProperties = {
   padding: '10px',
   borderRadius: '10px',
@@ -267,7 +265,7 @@ const input: React.CSSProperties = {
 const actions: React.CSSProperties = {
   display: 'flex',
   justifyContent: 'flex-end',
-  marginTop: '14px',
+  marginTop: '12px',
 }
 
 const button: React.CSSProperties = {
@@ -277,43 +275,34 @@ const button: React.CSSProperties = {
   background: '#2563eb',
   color: 'white',
   cursor: 'pointer',
-  fontWeight: 700,
 }
 
-const daysGrid: React.CSSProperties = {
+const dayGrid: React.CSSProperties = {
   display: 'grid',
   gridTemplateColumns: 'repeat(2, minmax(0,1fr))',
   gap: '12px',
 }
 
 const dayCard: React.CSSProperties = {
-  padding: '14px',
-  borderRadius: '14px',
+  padding: '12px',
+  borderRadius: '12px',
   background: 'rgba(255,255,255,0.04)',
 }
 
 const dayTitle: React.CSSProperties = {
   fontWeight: 800,
-  marginBottom: '12px',
+  marginBottom: '10px',
 }
 
-const blockList: React.CSSProperties = {
-  display: 'grid',
-  gap: '8px',
-}
-
-const blockCard: React.CSSProperties = {
+const blockItem: React.CSSProperties = {
   display: 'flex',
   justifyContent: 'space-between',
-  alignItems: 'center',
   gap: '10px',
+  alignItems: 'center',
   padding: '10px',
   borderRadius: '10px',
   background: 'rgba(255,255,255,0.04)',
-}
-
-const blockTime: React.CSSProperties = {
-  fontWeight: 700,
+  marginBottom: '8px',
 }
 
 const deleteButton: React.CSSProperties = {

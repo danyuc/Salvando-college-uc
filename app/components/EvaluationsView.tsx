@@ -1,64 +1,109 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { getUserEvaluations, deleteEvaluation } from '../../lib/evaluations'
-import EvaluationForm from './EvaluationForm'
 import { getCurrentUser } from '../../lib/auth'
+import { getUserEvaluations, type Evaluation } from '../../lib/evaluations'
+import EvaluationForm from './EvaluationForm'
 
 export default function EvaluationsView() {
+  const [evaluations, setEvaluations] = useState<Evaluation[]>([])
+  const [editing, setEditing] = useState<Evaluation | null>(null)
   const [userId, setUserId] = useState('')
-  const [evaluations, setEvaluations] = useState([])
-  const [editing, setEditing] = useState<any>(null)
 
-  async function load() {
-    const user = await getCurrentUser()
+  async function loadAll(currentUserId?: string) {
+    const user = currentUserId ? { id: currentUserId } : await getCurrentUser()
     if (!user) return
 
     setUserId(user.id)
     const data = await getUserEvaluations(user.id)
-    setEvaluations(data)
+    setEvaluations(data || [])
   }
 
   useEffect(() => {
-    load()
+    loadAll()
   }, [])
 
   return (
-    <div style={{ display: 'grid', gap: '20px' }}>
+    <div style={container}>
+      <div style={card}>
+        <h2 style={title}>Evaluaciones</h2>
 
-      <EvaluationForm
-        userId={userId}
-        existing={editing}
-        onSaved={() => {
-          setEditing(null)
-          load()
-        }}
-      />
+        <EvaluationForm
+          userId={userId}
+          initialData={editing}
+          onSaved={async () => {
+            setEditing(null)
+            await loadAll(userId)
+          }}
+        />
+      </div>
 
-      {evaluations.map((e: any) => (
-        <div key={e.id} style={card}>
-          <h3>
-            {e.type} {e.number || ''} · {e.topic}
-          </h3>
+      <div style={card}>
+        <h3 style={sectionTitle}>Lista</h3>
 
-          <p>{e.subject}</p>
-          <p>{e.start_date} → {e.end_date}</p>
+        {evaluations.map((item) => (
+          <div key={item.id} style={itemCard}>
+            <div style={itemTitle}>
+              {item.subject} · {item.type} {item.number ?? ''}
+            </div>
+            <div style={itemMeta}>
+              {item.topic || 'Sin tema'} · {item.start_date}
+            </div>
 
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <button onClick={() => setEditing(e)}>Editar</button>
-            <button onClick={() => deleteEvaluation(e.id).then(load)}>
-              Eliminar
+            <button onClick={() => setEditing(item)} style={button}>
+              Editar
             </button>
           </div>
-        </div>
-      ))}
-
+        ))}
+      </div>
     </div>
   )
 }
 
-const card = {
-  padding: '15px',
-  background: '#1e293b',
-  borderRadius: '10px'
+const container: React.CSSProperties = {
+  display: 'grid',
+  gap: '18px',
+  padding: '20px',
+  color: 'white',
+}
+
+const card: React.CSSProperties = {
+  padding: '18px',
+  borderRadius: '18px',
+  background: 'rgba(255,255,255,0.05)',
+  border: '1px solid rgba(255,255,255,0.10)',
+}
+
+const title: React.CSSProperties = {
+  marginTop: 0,
+}
+
+const sectionTitle: React.CSSProperties = {
+  marginTop: 0,
+}
+
+const itemCard: React.CSSProperties = {
+  padding: '12px',
+  borderRadius: '12px',
+  background: 'rgba(255,255,255,0.04)',
+  marginBottom: '10px',
+}
+
+const itemTitle: React.CSSProperties = {
+  fontWeight: 800,
+}
+
+const itemMeta: React.CSSProperties = {
+  marginTop: '6px',
+  opacity: 0.78,
+}
+
+const button: React.CSSProperties = {
+  marginTop: '10px',
+  padding: '10px 12px',
+  borderRadius: '10px',
+  border: 'none',
+  background: '#2563eb',
+  color: 'white',
+  cursor: 'pointer',
 }

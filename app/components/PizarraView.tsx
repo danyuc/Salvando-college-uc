@@ -1,85 +1,241 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { getCurrentUser } from '../../lib/auth'
+import { SUBJECT_PRESETS } from '../../lib/subjects'
+import { getQuestionsFromBank } from '../../lib/question-bank'
+import { getDiagnosticBySubject, type SubjectDiagnostic } from '../../lib/diagnostics'
+
+type ExerciseSource = 'bank' | 'ai' | 'weakest' | 'random'
 
 type StepReview = {
   verdict: 'correcto' | 'revisar' | 'incorrecto'
   feedback: string
   likelyError: string
   correctedHint: string
+  problematicStepIndex?: number | null
 }
+
+type Point = { x: number; y: number; move: boolean }
 
 export default function PizarraView() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  const [drawing, setDrawing] = useState(false)
-  const [problem, setProblem] = useState('')
-  const [steps, setSteps] = useState<string[]>([''])
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+
+  const [userId, setUserId] = useState('')
+  const [selectedSubject, setSelectedSubject] = useState('Precálculo')
+  const [selectedTopic, setSelectedTopic] = useState('Módulo 1')
+  const [source, setSource] = useState<ExerciseSource>('random')
+
+  const [exercise, setExercise] = useState('')
+  const [summary, setSummary] = useState('')
   const [review, setReview] = useState<StepReview | null>(null)
-  const [loading, setLoading] = useState(false)
 
-  function getCtx() {
+  const [loadingExercise, setLoadingExercise] = useState(false)
+  const [loadingReview, setLoadingReview] = useState(false)
+
+  const [diagnostic, setDiagnostic] = useState<SubjectDiagnostic | null>(null)
+
+  const [isDrawing, setIsDrawing] = useState(false)
+  const [paths, setPaths] = useState<Point[]>([])
+
+  const subjectConfig = useMemo(
+    () => SUBJECT_PRESETS.find((s) => s.name === selectedSubject) || null,
+    [selectedSubject]
+  )
+
+  useEffect(() => {
+    async function load() {
+      const user = await getCurrentUser()
+      if (!user) return
+      setUserId(user.id)
+
+      const diag = await getDiagnosticBySubject(user.id, selectedSubject)
+      setDiagnostic(diag)
+    }
+
+    load()
+  }, [selectedSubject])
+
+  useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas) return null
-    return canvas.getContext('2d')
-  }
+    const wrapper = wrapperRef.current
+    if (!canvas || !wrapper) return
 
-  function startDrawing(e: React.MouseEvent<HTMLCanvasElement>) {
-    const ctx = getCtx()
-    if (!ctx) return
-    setDrawing(true)
-    ctx.beginPath()
-    ctx.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
-  }
+    const rect = wrapper.getBoundingClientRect()
+    const dpr = window.devicePixelRatio || 1
 
-  function draw(e: React.MouseEvent<HTMLCanvasElement>) {
-    if (!drawing) return
-    const ctx = getCtx()
+    canvas.width = rect.width * dpr
+    canvas.height = 700 * dpr
+    canvas.style.width = `${rect.width}px`
+    canvas.style.height = `700px`
+
+    const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    ctx.lineWidth = 2
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    redraw()
+  }, [paths])
+
+  function redraw() {
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = '#0f172a'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    ctx.strokeStyle = 'white'
+    ctx.lineWidth = 2.5
     ctx.lineCap = 'round'
-    ctx.strokeStyle = '#ffffff'
-    ctx.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
+    ctx.lineJoin = 'round'
+
+    ctx.beginPath()
+
+    for (let i = 0; i < paths.length; i++) {
+      const p = paths[i]
+      if (!p.move) {
+        ctx.moveTo(p.x, p.y)
+      } else {
+        ctx.lineTo(p.x, p.y)
+      }
+    }
+
     ctx.stroke()
   }
 
-  function stopDrawing() {
-    setDrawing(false)
+  function getCoords(e: React.PointerEvent<HTMLCanvasElement>) {
+    const canvas = canvasRef.current
+    if (!canvas) return { x: 0, y: 0 }
+
+    const rect = canvas.getBoundingClientRect()
+    return {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    }
+  }
+
+  function handlePointerDown(e: React.PointerEvent<HTMLCanvasElement>) {
+    e.preventDefault()
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    canvas.setPointerCapture(e.pointerId)
+    const { x, y } = getCoords(e)
+
+    setIsDrawing(true)
+    setPaths((prev) => [...prev, { x, y, move: false }])
+  }
+
+  function handlePointerMove(e: React.PointerEvent<HTMLCanvasElement>) {
+    if (!isDrawing) return
+    e.preventDefault()
+
+    const { x, y } = getCoords(e)
+    setPaths((prev) => [...prev, { x, y, move: true }])
+  }
+
+  function handlePointerUp(e: React.PointerEvent<HTMLCanvasElement>) {
+    e.preventDefault()
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    try {
+      canvas.releasePointerCapture(e.pointerId)
+    } catch {}
+
+    setIsDrawing(false)
   }
 
   function clearBoard() {
-    const canvas = canvasRef.current
-    const ctx = getCtx()
-    if (!canvas || !ctx) return
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    setPaths([])
+    setReview(null)
   }
 
-  function updateStep(index: number, value: string) {
-    setSteps((prev) => prev.map((step, i) => (i === index ? value : step)))
+  async function generateExercise() {
+    try {
+      setLoadingExercise(true)
+      setReview(null)
+
+      let effectiveTopic = selectedTopic
+
+      if (source === 'weakest' && diagnostic?.weak_topics?.length) {
+        effectiveTopic = diagnostic.weak_topics[0]
+        setSelectedTopic(effectiveTopic)
+      }
+
+      if (source === 'bank' || source === 'random' || source === 'weakest') {
+        const bank = await getQuestionsFromBank({
+          subject: selectedSubject,
+          topic: effectiveTopic,
+          limit: 10,
+        })
+
+        if (bank.length > 0) {
+          const picked = bank[Math.floor(Math.random() * bank.length)]
+          setExercise(picked.question)
+          return
+        }
+      }
+
+      const res = await fetch('/api/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          task: 'generate-practice-questions',
+          subject: selectedSubject,
+          topic: effectiveTopic,
+          difficulty: 'media',
+          count: 1,
+          format:
+            selectedSubject.toLowerCase().includes('cál') ||
+            selectedSubject.toLowerCase().includes('mate')
+              ? 'problem-solving'
+              : 'open',
+        }),
+      })
+
+      const data = await res.json()
+      const q = data?.questions?.[0]
+
+      if (q?.question) {
+        setExercise(q.question)
+      } else {
+        setExercise('No se pudo generar un ejercicio en este momento.')
+      }
+    } catch (error) {
+      console.error(error)
+      alert('No se pudo generar el ejercicio')
+    } finally {
+      setLoadingExercise(false)
+    }
   }
 
-  function addStep() {
-    setSteps((prev) => [...prev, ''])
-  }
-
-  function removeStep(index: number) {
-    setSteps((prev) => prev.filter((_, i) => i !== index))
-  }
-
-  async function reviewSteps() {
-    const cleaned = steps.map((s) => s.trim()).filter(Boolean)
-    if (!problem.trim() || cleaned.length === 0) return
+  async function analyzeBoard() {
+    if (!exercise.trim()) {
+      alert('Primero genera o escribe un ejercicio.')
+      return
+    }
 
     try {
-      setLoading(true)
+      setLoadingReview(true)
+      setReview(null)
 
       const res = await fetch('/api/ai', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           task: 'review-steps',
-          problem,
-          steps: cleaned,
+          problem: exercise,
+          steps: summary.trim()
+            ? summary
+                .split('\n')
+                .map((x: string) => x.trim())
+                .filter(Boolean)
+            : ['El usuario resolvió en pizarra y no escribió todos los pasos. Analiza según el resumen disponible.'],
         }),
       })
 
@@ -87,38 +243,75 @@ export default function PizarraView() {
       setReview(data?.review || null)
     } catch (error) {
       console.error(error)
+      alert('No se pudo analizar la resolución')
     } finally {
-      setLoading(false)
+      setLoadingReview(false)
     }
   }
 
   return (
     <div style={container}>
-      <div style={card}>
+      <div style={heroCard}>
         <h2 style={title}>Pizarra inteligente</h2>
         <p style={subtitle}>
-          Puedes escribir el ejercicio, desarrollar pasos y pedir revisión del punto donde te equivocaste.
+          Funciona con mouse, dedo y lápiz. Puedes generar ejercicios automáticos y luego pedir análisis de tu resolución.
         </p>
+      </div>
 
-        <input
-          value={problem}
-          onChange={(e) => setProblem(e.target.value)}
-          placeholder="Escribe el ejercicio o problema"
-          style={input}
-        />
+      <div style={topCard}>
+        <div style={grid}>
+          <div style={field}>
+            <label style={label}>Asignatura</label>
+            <select
+              value={selectedSubject}
+              onChange={(e) => {
+                setSelectedSubject(e.target.value)
+                setSelectedTopic('General')
+              }}
+              style={select}
+            >
+              {SUBJECT_PRESETS.map((item) => (
+                <option key={item.name} value={item.name}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <canvas
-          ref={canvasRef}
-          width={900}
-          height={480}
-          style={canvasStyle}
-          onMouseDown={startDrawing}
-          onMouseMove={draw}
-          onMouseUp={stopDrawing}
-          onMouseLeave={stopDrawing}
-        />
+          <div style={field}>
+            <label style={label}>Tema</label>
+            <select
+              value={selectedTopic}
+              onChange={(e) => setSelectedTopic(e.target.value)}
+              style={select}
+            >
+              {(subjectConfig?.topics || ['General']).map((topic) => (
+                <option key={topic} value={topic}>
+                  {topic}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div style={actions}>
+          <div style={field}>
+            <label style={label}>Fuente del ejercicio</label>
+            <select
+              value={source}
+              onChange={(e) => setSource(e.target.value as ExerciseSource)}
+              style={select}
+            >
+              <option value="random">Aleatorio recomendado</option>
+              <option value="bank">Banco</option>
+              <option value="ai">IA</option>
+              <option value="weakest">En lo que me va peor</option>
+            </select>
+          </div>
+        </div>
+
+        <div style={actionsRow}>
+          <button onClick={generateExercise} style={button} disabled={loadingExercise}>
+            {loadingExercise ? 'Generando...' : 'Generar ejercicio'}
+          </button>
           <button onClick={clearBoard} style={secondaryButton}>
             Limpiar pizarra
           </button>
@@ -126,80 +319,76 @@ export default function PizarraView() {
       </div>
 
       <div style={card}>
-        <div style={stepsHeader}>
-          <h3 style={sectionTitle}>Pasos escritos</h3>
-          <button onClick={addStep} style={button}>
-            + Agregar paso
-          </button>
+        <h3 style={sectionTitle}>Ejercicio</h3>
+        <textarea
+          value={exercise}
+          onChange={(e) => setExercise(e.target.value)}
+          placeholder="Aquí aparecerá el ejercicio automático o puedes escribir uno manualmente."
+          style={exerciseBox}
+        />
+      </div>
+
+      <div style={card}>
+        <h3 style={sectionTitle}>Pizarra</h3>
+        <div ref={wrapperRef} style={boardWrapper}>
+          <canvas
+            ref={canvasRef}
+            style={canvasStyle}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerLeave={handlePointerUp}
+          />
         </div>
+      </div>
 
-        {steps.map((step, index) => (
-          <div key={index} style={stepRow}>
-            <div style={stepIndex}>{index + 1}</div>
-            <input
-              value={step}
-              onChange={(e) => updateStep(index, e.target.value)}
-              placeholder={`Paso ${index + 1}`}
-              style={stepInput}
-            />
-            {steps.length > 1 && (
-              <button onClick={() => removeStep(index)} style={dangerButton}>
-                ✕
-              </button>
-            )}
-          </div>
-        ))}
+      <div style={card}>
+        <h3 style={sectionTitle}>Resumen opcional de lo que hiciste</h3>
+        <textarea
+          value={summary}
+          onChange={(e) => setSummary(e.target.value)}
+          placeholder="No es obligatorio poner todos los pasos. Basta con resumir lo que intentaste o dónde crees que te confundiste."
+          style={summaryBox}
+        />
 
-        <div style={actions}>
-          <button onClick={reviewSteps} style={button}>
-            {loading ? 'Revisando...' : 'Revisar desarrollo'}
+        <div style={actionsRow}>
+          <button onClick={analyzeBoard} style={button} disabled={loadingReview}>
+            {loadingReview ? 'Analizando...' : 'Analizar resolución'}
           </button>
         </div>
       </div>
 
-      {review && (
-        <div style={card}>
-          <h3 style={sectionTitle}>Revisión</h3>
+      <div style={card}>
+        <h3 style={sectionTitle}>Resultado del análisis</h3>
 
-          <div style={reviewBadge(review.verdict)}>{review.verdict}</div>
+        {!review ? (
+          <div style={emptyText}>Aquí aparecerá la devolución de la IA.</div>
+        ) : (
+          <div style={reviewGrid}>
+            <div style={reviewItem}>
+              <strong>Veredicto</strong>
+              <div>{review.verdict}</div>
+            </div>
 
-          <div style={reviewBlock}>
-            <strong>Feedback</strong>
-            <div style={reviewText}>{review.feedback}</div>
+            <div style={reviewItem}>
+              <strong>Feedback</strong>
+              <div>{review.feedback}</div>
+            </div>
+
+            <div style={reviewItem}>
+              <strong>Error probable</strong>
+              <div>{review.likelyError}</div>
+            </div>
+
+            <div style={reviewItem}>
+              <strong>Pista corregida</strong>
+              <div>{review.correctedHint}</div>
+            </div>
           </div>
-
-          <div style={reviewBlock}>
-            <strong>Error probable</strong>
-            <div style={reviewText}>{review.likelyError}</div>
-          </div>
-
-          <div style={reviewBlock}>
-            <strong>Pista corregida</strong>
-            <div style={reviewText}>{review.correctedHint}</div>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
-}
-
-function reviewBadge(verdict: string): React.CSSProperties {
-  const background =
-    verdict === 'correcto'
-      ? 'rgba(16,185,129,0.25)'
-      : verdict === 'revisar'
-      ? 'rgba(245,158,11,0.25)'
-      : 'rgba(239,68,68,0.25)'
-
-  return {
-    display: 'inline-block',
-    padding: '8px 12px',
-    borderRadius: '999px',
-    background,
-    fontWeight: 800,
-    marginBottom: '12px',
-    textTransform: 'capitalize',
-  }
 }
 
 const container: React.CSSProperties = {
@@ -209,111 +398,138 @@ const container: React.CSSProperties = {
   color: 'white',
 }
 
+const heroCard: React.CSSProperties = {
+  padding: '18px',
+  borderRadius: '18px',
+  background: 'rgba(255,255,255,0.05)',
+  border: '1px solid rgba(255,255,255,0.10)',
+}
+
+const title: React.CSSProperties = {
+  margin: 0,
+}
+
+const subtitle: React.CSSProperties = {
+  marginTop: '8px',
+  opacity: 0.75,
+}
+
+const topCard: React.CSSProperties = {
+  padding: '18px',
+  borderRadius: '16px',
+  background: 'rgba(255,255,255,0.05)',
+  border: '1px solid rgba(255,255,255,0.10)',
+}
+
 const card: React.CSSProperties = {
   padding: '18px',
   borderRadius: '16px',
   background: 'rgba(255,255,255,0.05)',
-  border: '1px solid rgba(255,255,255,0.1)',
+  border: '1px solid rgba(255,255,255,0.10)',
 }
 
-const title: React.CSSProperties = {
-  marginTop: 0,
+const grid: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(3, minmax(0,1fr))',
+  gap: '12px',
 }
 
-const subtitle: React.CSSProperties = {
-  opacity: 0.75,
+const field: React.CSSProperties = {
+  display: 'grid',
+  gap: '8px',
 }
 
-const input: React.CSSProperties = {
-  width: '100%',
-  padding: '12px',
-  borderRadius: '12px',
-  border: '1px solid rgba(255,255,255,0.12)',
+const label: React.CSSProperties = {
+  fontWeight: 700,
+}
+
+const select: React.CSSProperties = {
+  padding: '10px',
+  borderRadius: '10px',
+  border: '1px solid rgba(255,255,255,0.10)',
   background: 'rgba(255,255,255,0.06)',
   color: 'white',
 }
 
-const canvasStyle: React.CSSProperties = {
-  width: '100%',
-  borderRadius: '14px',
-  background: '#0f172a',
-  border: '1px solid rgba(255,255,255,0.10)',
+const actionsRow: React.CSSProperties = {
+  display: 'flex',
+  gap: '10px',
+  flexWrap: 'wrap',
   marginTop: '14px',
 }
 
-const actions: React.CSSProperties = {
-  display: 'flex',
-  gap: '10px',
-  marginTop: '12px',
-  flexWrap: 'wrap',
-}
-
 const button: React.CSSProperties = {
-  padding: '10px 12px',
-  borderRadius: '10px',
+  padding: '12px 14px',
+  borderRadius: '12px',
   border: 'none',
   background: '#2563eb',
   color: 'white',
   cursor: 'pointer',
+  fontWeight: 700,
 }
 
 const secondaryButton: React.CSSProperties = {
-  ...button,
-  background: '#64748b',
-}
-
-const dangerButton: React.CSSProperties = {
-  ...button,
-  background: '#ef4444',
+  padding: '12px 14px',
+  borderRadius: '12px',
+  border: '1px solid rgba(255,255,255,0.10)',
+  background: 'rgba(255,255,255,0.06)',
+  color: 'white',
+  cursor: 'pointer',
 }
 
 const sectionTitle: React.CSSProperties = {
   marginTop: 0,
 }
 
-const stepsHeader: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  gap: '12px',
-  alignItems: 'center',
-  flexWrap: 'wrap',
-}
-
-const stepRow: React.CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: '40px 1fr auto',
-  gap: '10px',
-  alignItems: 'center',
-  marginBottom: '10px',
-}
-
-const stepIndex: React.CSSProperties = {
-  width: '40px',
-  height: '40px',
-  borderRadius: '999px',
-  display: 'grid',
-  placeItems: 'center',
-  background: 'rgba(59,130,246,0.18)',
-  fontWeight: 800,
-}
-
-const stepInput: React.CSSProperties = {
+const exerciseBox: React.CSSProperties = {
+  width: '100%',
+  minHeight: '110px',
   padding: '12px',
   borderRadius: '12px',
-  border: '1px solid rgba(255,255,255,0.12)',
+  border: '1px solid rgba(255,255,255,0.10)',
   background: 'rgba(255,255,255,0.06)',
   color: 'white',
 }
 
-const reviewBlock: React.CSSProperties = {
-  marginTop: '12px',
+const boardWrapper: React.CSSProperties = {
+  width: '100%',
+  height: '700px',
+  overflow: 'auto',
+  borderRadius: '14px',
+  background: '#0f172a',
+  border: '1px solid rgba(255,255,255,0.10)',
+  touchAction: 'none',
+}
+
+const canvasStyle: React.CSSProperties = {
+  display: 'block',
+  width: '100%',
+  height: '700px',
+  touchAction: 'none',
+}
+
+const summaryBox: React.CSSProperties = {
+  width: '100%',
+  minHeight: '120px',
+  padding: '12px',
+  borderRadius: '12px',
+  border: '1px solid rgba(255,255,255,0.10)',
+  background: 'rgba(255,255,255,0.06)',
+  color: 'white',
+}
+
+const emptyText: React.CSSProperties = {
+  opacity: 0.75,
+}
+
+const reviewGrid: React.CSSProperties = {
+  display: 'grid',
+  gap: '10px',
+}
+
+const reviewItem: React.CSSProperties = {
   padding: '12px',
   borderRadius: '12px',
   background: 'rgba(255,255,255,0.04)',
-}
-
-const reviewText: React.CSSProperties = {
-  marginTop: '6px',
-  opacity: 0.9,
-  lineHeight: 1.5,
+  lineHeight: 1.45,
 }
