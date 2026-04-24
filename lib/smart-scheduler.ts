@@ -70,7 +70,27 @@ export function buildSmartStudyPlan(
       subject,
       hours,
       priority: score,
+      const predictedGrade =
+      (pred as any).predictedGrade ??
+      (pred as any).predicted_grade ??
+      (pred as any).finalGrade ??
+      (pred as any).final_grade ??
+      (pred as any).grade ??
+      5
+
+    const riskLevel =
+      predictedGrade < 4
+        ? 'alto'
+        : predictedGrade < 5
+        ? 'medio'
+        : 'bajo'
+
+    return {
+      subject,
+      hours,
+      priority: score,
       reason: `Riesgo: ${riskLevel} | Ajuste automático`,
+    }
     })
   }
 
