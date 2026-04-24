@@ -12,7 +12,7 @@ export function buildSmartStudyPlan(
   evaluations: Evaluation[],
   weeklyHours = 35
 ): StudyPlan[] {
-  const predictions = buildGradePredictions(evaluations)
+  const predictions = buildGradePredictions({ evaluations })
 
   const subjectMap = new Map<string, number>()
 
