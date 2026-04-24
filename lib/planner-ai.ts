@@ -1,15 +1,19 @@
 import type { Evaluation } from './evaluations'
 
-export type StudySessionPlan = PlannerBlock
-
 export type PlannerBlock = {
+  evaluationId: string
   day: string
   subject: string
   topic: string
   minutes: number
+  startTime: string
+  endTime: string
   reason: string
   priority: number
+  status?: 'pending' | 'done' | 'missed' | 'adapted'
 }
+
+export type StudySessionPlan = PlannerBlock
 
 function getRemainingStudyNeed(evaluation: Evaluation) {
   const estimated =
@@ -23,7 +27,6 @@ function getRemainingStudyNeed(evaluation: Evaluation) {
       : 0
 
   const remaining = Math.round(estimated * (1 - progress / 100))
-
   return Math.max(20, remaining)
 }
 
@@ -52,13 +55,23 @@ function buildReason(evaluation: Evaluation, urgency: number, weight: number) {
   if (weight >= 40) reasons.push('alto impacto')
   else if (weight >= 20) reasons.push('impacto medio')
 
-  if (!reasons.length) reasons.push('seguimiento general')
+  return reasons.join(' · ') || 'seguimiento general'
+}
 
-  return reasons.join(' · ')
+function minutesToEndTime(startTime: string, minutes: number) {
+  const [h, m] = startTime.split(':').map(Number)
+  const date = new Date()
+  date.setHours(h || 9, m || 0, 0, 0)
+  date.setMinutes(date.getMinutes() + minutes)
+
+  return `${String(date.getHours()).padStart(2, '0')}:${String(
+    date.getMinutes()
+  ).padStart(2, '0')}`
 }
 
 function distributeIntoWeek(
   items: Array<{
+    evaluationId: string
     subject: string
     topic: string
     minutes: number
@@ -67,21 +80,30 @@ function distributeIntoWeek(
   }>
 ): PlannerBlock[] {
   const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+  const startTimes = ['09:00', '11:00', '15:00', '17:00', '19:00']
 
-  return items.map((item, index) => ({
-    day: days[index % days.length],
-    subject: item.subject,
-    topic: item.topic,
-    minutes: item.minutes,
-    reason: item.reason,
-    priority: item.priority,
-  }))
+  return items.map((item, index) => {
+    const startTime = startTimes[index % startTimes.length]
+
+    return {
+      evaluationId: item.evaluationId,
+      day: days[index % days.length],
+      subject: item.subject,
+      topic: item.topic,
+      minutes: item.minutes,
+      startTime,
+      endTime: minutesToEndTime(startTime, item.minutes),
+      reason: item.reason,
+      priority: item.priority,
+      status: 'pending',
+    }
+  })
 }
 
 export function buildStudyPlan(evaluations: Evaluation[]): PlannerBlock[] {
   if (!Array.isArray(evaluations) || evaluations.length === 0) return []
 
-  const items = evaluations.map((evaluation) => {
+  const items = evaluations.map((evaluation, index) => {
     const urgency = getUrgencyScore(evaluation.start_date)
     const weight =
       typeof evaluation.weight_percent === 'number'
@@ -92,6 +114,7 @@ export function buildStudyPlan(evaluations: Evaluation[]): PlannerBlock[] {
     const priority = urgency * 2 + weight / 10
 
     return {
+      evaluationId: evaluation.id || `evaluation-${index}`,
       subject: evaluation.subject || 'General',
       topic: evaluation.topic || 'General',
       minutes,
