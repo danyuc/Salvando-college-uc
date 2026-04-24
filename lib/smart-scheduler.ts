@@ -23,10 +23,18 @@ export function buildSmartStudyPlan(
     let score = 0
 
     // 🔴 RIESGO (LO MÁS IMPORTANTE)
+    const predictedGrade =
+      (pred as any).predictedGrade ??
+      (pred as any).predicted_grade ??
+      (pred as any).finalGrade ??
+      (pred as any).final_grade ??
+      (pred as any).grade ??
+      5
+
     const riskLevel =
-      pred.predictedGrade < 4
+      predictedGrade < 4
         ? 'alto'
-        : pred.predictedGrade < 5
+        : predictedGrade < 5
         ? 'medio'
         : 'bajo'
 
