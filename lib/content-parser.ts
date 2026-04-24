@@ -4,6 +4,7 @@ export type ParsedStudyContent = {
   summary: string
   detectedTopics: string[]
   keyIdeas: string[]
+  keyConcepts: string[] // 👈 compatibilidad
   estimatedLevel: 'básico' | 'medio' | 'alto'
   wordCount: number
 }
@@ -26,10 +27,7 @@ function detectTopics(text: string) {
   const candidates = [
     'memoria',
     'aprendizaje',
-    'condicionamiento clásico',
-    'condicionamiento operante',
-    'refuerzo',
-    'castigo',
+    'condicionamiento',
     'atención',
     'percepción',
     'razonamiento',
@@ -38,24 +36,16 @@ function detectTopics(text: string) {
     'democracia',
     'guerra fría',
     'modernidad',
-    'eurocentrismo',
-    'colonialismo',
-    'nacionalismo',
-    'liberalismo',
-    'comunismo',
-    'contaminación atmosférica',
+    'contaminación',
     'pm2.5',
     'justicia ambiental',
     'desigualdad',
-    'pobreza energética',
-    'agies',
     'funciones',
     'trigonometría',
     'polinomios',
-    'inecuaciones',
   ]
 
-  return candidates.filter((topic) => lower.includes(topic)).slice(0, 12)
+  return candidates.filter((topic) => lower.includes(topic)).slice(0, 10)
 }
 
 function extractKeyIdeas(text: string) {
@@ -64,7 +54,7 @@ function extractKeyIdeas(text: string) {
     .map((item) => item.trim())
     .filter((item) => item.length > 40)
 
-  return sentences.slice(0, 10)
+  return sentences.slice(0, 8)
 }
 
 function estimateLevel(wordCount: number): 'básico' | 'medio' | 'alto' {
@@ -87,17 +77,35 @@ function buildSummary(clean: string, keyIdeas: string[]) {
     return keyIdeas.slice(0, 4).join('. ') + '.'
   }
 
-  if (clean.length > 0) {
-    return clean.slice(0, 600)
+  return clean.slice(0, 600) || 'Sin resumen generado.'
+}
+
+function extractConcepts(text: string) {
+  const words = text
+    .toLowerCase()
+    .replace(/[^\wáéíóúñ\s]/g, '')
+    .split(/\s+/)
+
+  const stopwords = ['el', 'la', 'los', 'las', 'de', 'y', 'en', 'un', 'una']
+  
+  const freq: Record<string, number> = {}
+
+  for (const w of words) {
+    if (w.length < 4 || stopwords.includes(w)) continue
+    freq[w] = (freq[w] || 0) + 1
   }
 
-  return 'Sin resumen generado.'
+  return Object.entries(freq)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10)
+    .map(([word]) => word)
 }
 
 export function parseStudyContent(rawText: string): ParsedStudyContent {
   const clean = cleanText(rawText || '')
   const wordCount = getWordCount(clean)
   const keyIdeas = extractKeyIdeas(clean)
+  const keyConcepts = extractConcepts(clean)
 
   return {
     title: inferTitle(clean),
@@ -105,6 +113,7 @@ export function parseStudyContent(rawText: string): ParsedStudyContent {
     summary: buildSummary(clean, keyIdeas),
     detectedTopics: detectTopics(clean),
     keyIdeas,
+    keyConcepts, // 👈 ahora sí existe
     estimatedLevel: estimateLevel(wordCount),
     wordCount,
   }
