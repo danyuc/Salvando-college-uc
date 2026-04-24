@@ -10,6 +10,7 @@ export type PlannerBlock = {
   endTime: string
   reason: string
   priority: number
+  priorityScore: number
   status?: 'pending' | 'done' | 'missed' | 'adapted'
 }
 
@@ -95,6 +96,7 @@ function distributeIntoWeek(
       endTime: minutesToEndTime(startTime, item.minutes),
       reason: item.reason,
       priority: item.priority,
+      priorityScore: item.priority,
       status: 'pending',
     }
   })
