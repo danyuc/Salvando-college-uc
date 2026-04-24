@@ -70,7 +70,7 @@ export function buildSmartStudyPlan(
       subject,
       hours,
       priority: score,
-      reason: `Riesgo: ${pred?.riskLevel} | Ajuste automático`,
+      reason: `Riesgo: ${riskLevel} | Ajuste automático`,
     })
   }
 
