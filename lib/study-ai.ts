@@ -59,7 +59,7 @@ export function getPriorityScore(evaluation: Evaluation, now = new Date()) {
   const toEnd = daysUntil(evaluation.end_date, now)
   const difficulty = ((evaluation as any).difficulty ?? 'media')
   const progress = Number((evaluation as any).study_progress ?? (evaluation as any).progress ?? 0)
-  const estimated = evaluation.estimated_minutes ?? 60
+  const estimated = Number((evaluation as any).estimated_minutes ?? (evaluation as any).estimatedMinutes ?? 60)
 
   let score = 0
 
