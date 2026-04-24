@@ -1,23 +1,9 @@
+import type { Evaluation } from './types'
 import { supabase } from './supabase'
 
 export type EvaluationDifficulty = 'baja' | 'media' | 'alta'
 
-export type Evaluation = {
-  id: string
-  user_id: string
-  subject: string
-  type: string
-  number: number | null
-  topic: string | null
-  title?: string | null
-  start_date: string
-  end_date: string
-  difficulty: EvaluationDifficulty
-  notes: string | null
-  weight_percent?: number | null
-  grade?: number | null
-  created_at?: string | null
-}
+
 
 export type EvaluationInput = {
   user_id: string
@@ -139,3 +125,4 @@ export async function deleteEvaluation(id: string): Promise<void> {
     throw new Error('No se pudo eliminar la evaluación')
   }
 }
+export type { Evaluation } from './types'
