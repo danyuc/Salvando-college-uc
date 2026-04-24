@@ -1,4 +1,5 @@
 import type { Evaluation } from './evaluations'
+import { safeDate } from '@/lib/utils/date'
 
 export type WeaknessSummary = {
   subject: string

@@ -3,6 +3,7 @@ import type { Evaluation } from './evaluations'
 import type { SubjectPreset } from './subjects'
 import type { WeaknessSummary } from './weakness-engine'
 import { rankRiskEvaluations } from './study-risk-engine'
+import { safeDate } from '@/lib/utils/date'
 
 export type CoachBlock = {
   day: string

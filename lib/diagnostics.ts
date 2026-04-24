@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { safeDate } from '@/lib/utils/date'
 
 export type DiagnosticStage = 'inicio' | 'medio' | 'final'
 

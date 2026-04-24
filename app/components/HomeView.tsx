@@ -9,6 +9,7 @@ import { getStudyCoachPlan } from '../../lib/study-coach-storage'
 import { getWeekKey } from '../../lib/study-coach'
 import { buildWeaknessesByTopic } from '../../lib/weakness-engine'
 import { getSubjectColor } from '../../lib/subjects'
+import { safeDate } from '@/lib/utils/date'
 
 type TodayFocusItem = {
   subject: string
