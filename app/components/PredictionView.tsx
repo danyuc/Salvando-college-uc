@@ -107,11 +107,15 @@ export default function PredictionView() {
       (item) => item.weaknessLevel === 'alta'
     ).length
 
+     import { safeDate } from '@/lib/utils/date'
+
     const upcomingEvaluations = evaluations.filter((evaluation) => {
-      const date = new Date(evaluation.start_date)
-      if (Number.isNaN(date.getTime())) return false
-      return date.getTime() >= Date.now()
-    }).length
+     const date = safeDate(evaluation.start_date)
+     if (!date) return false
+
+     return date.getTime() >= Date.now()
+  }).length
+
 
     return {
       totalEvaluations,
