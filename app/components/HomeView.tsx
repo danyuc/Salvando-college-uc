@@ -40,7 +40,13 @@ function buildTodayFocus(params: {
   attempts: PracticeAttempt[]
 }) {
   const { evaluations, attempts } = params
-  const weaknesses = buildWeaknessesByTopic(attempts)
+   const weaknesses = buildWeaknessesByTopic(
+  attempts.map((attempt) => ({
+    subject: attempt.subject || 'General',
+    topic: attempt.topic || 'General',
+    is_correct: attempt.is_correct,
+  }))
+ )
 
   const items: TodayFocusItem[] = evaluations.map((evaluation) => {
     const weakness = weaknesses.find(
