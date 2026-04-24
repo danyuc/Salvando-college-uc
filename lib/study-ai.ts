@@ -54,7 +54,7 @@ export function getPreparationLabel(
 }
 
 export function getPriorityScore(evaluation: Evaluation, now = new Date()) {
-  const status = getEvaluationStatus(evaluation, now)
+  const status = getEvaluationStatus(evaluation, now) as StudyPriority['status']
   const toStart = daysUntil(evaluation.start_date, now)
   const toEnd = daysUntil(evaluation.end_date, now)
   const difficulty = ((evaluation as any).difficulty ?? 'media')
@@ -75,7 +75,7 @@ export function getPriorityScore(evaluation: Evaluation, now = new Date()) {
 }
 
 export function getRecommendation(evaluation: Evaluation, now = new Date()) {
-  const status = getEvaluationStatus(evaluation, now)
+  const status = getEvaluationStatus(evaluation, now) as StudyPriority['status']
   const toEnd = daysUntil(evaluation.end_date, now)
   const progress = Number((evaluation as any).study_progress ?? (evaluation as any).progress ?? 0)
   const topic = evaluation.topic || evaluation.title || 'la materia'
@@ -102,7 +102,7 @@ export function rankEvaluations(
   return [...evaluations]
     .filter((evaluation) => getEvaluationStatus(evaluation, now) !== 'vencida')
     .map((evaluation) => {
-      const status = getEvaluationStatus(evaluation, now)
+      const status = getEvaluationStatus(evaluation, now) as StudyPriority['status']
       const daysToStart = daysUntil(evaluation.start_date, now)
       const daysToEnd = daysUntil(evaluation.end_date, now)
       const score = getPriorityScore(evaluation, now)
