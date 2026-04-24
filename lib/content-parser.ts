@@ -1,6 +1,7 @@
 export type ParsedStudyContent = {
   title: string
   cleanText: string
+  summary: string
   detectedTopics: string[]
   keyIdeas: string[]
   estimatedLevel: 'básico' | 'medio' | 'alto'
@@ -31,20 +32,30 @@ function detectTopics(text: string) {
     'castigo',
     'atención',
     'percepción',
+    'razonamiento',
+    'inteligencia',
+    'lenguaje',
     'democracia',
     'guerra fría',
     'modernidad',
     'eurocentrismo',
+    'colonialismo',
+    'nacionalismo',
+    'liberalismo',
+    'comunismo',
     'contaminación atmosférica',
     'pm2.5',
     'justicia ambiental',
     'desigualdad',
+    'pobreza energética',
+    'agies',
     'funciones',
     'trigonometría',
     'polinomios',
+    'inecuaciones',
   ]
 
-  return candidates.filter((topic) => lower.includes(topic)).slice(0, 10)
+  return candidates.filter((topic) => lower.includes(topic)).slice(0, 12)
 }
 
 function extractKeyIdeas(text: string) {
@@ -53,7 +64,7 @@ function extractKeyIdeas(text: string) {
     .map((item) => item.trim())
     .filter((item) => item.length > 40)
 
-  return sentences.slice(0, 8)
+  return sentences.slice(0, 10)
 }
 
 function estimateLevel(wordCount: number): 'básico' | 'medio' | 'alto' {
@@ -71,15 +82,29 @@ function inferTitle(text: string) {
   return firstLine || 'Material de estudio'
 }
 
+function buildSummary(clean: string, keyIdeas: string[]) {
+  if (keyIdeas.length > 0) {
+    return keyIdeas.slice(0, 4).join('. ') + '.'
+  }
+
+  if (clean.length > 0) {
+    return clean.slice(0, 600)
+  }
+
+  return 'Sin resumen generado.'
+}
+
 export function parseStudyContent(rawText: string): ParsedStudyContent {
   const clean = cleanText(rawText || '')
   const wordCount = getWordCount(clean)
+  const keyIdeas = extractKeyIdeas(clean)
 
   return {
     title: inferTitle(clean),
     cleanText: clean,
+    summary: buildSummary(clean, keyIdeas),
     detectedTopics: detectTopics(clean),
-    keyIdeas: extractKeyIdeas(clean),
+    keyIdeas,
     estimatedLevel: estimateLevel(wordCount),
     wordCount,
   }
