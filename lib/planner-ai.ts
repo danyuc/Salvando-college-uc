@@ -1,149 +1,104 @@
-import type { AvailabilityBlock } from './availability'
 import type { Evaluation } from './evaluations'
-import { getEvaluationStatus, getPriorityScore } from './study-ai'
 
-export type StudySessionPlan = {
-  evaluationId: string
+export type StudySessionPlan = PlannerBlock
+
+export type PlannerBlock = {
+  day: string
   subject: string
-  label: string
-  startTime: string
-  endTime: string
+  topic: string
   minutes: number
   reason: string
-  priorityScore: number
-}
-
-function dayToAppIndex(jsDay: number) {
-  return jsDay === 0 ? 6 : jsDay - 1
-}
-
-function parseTimeToMinutes(time: string) {
-  const [hours, minutes] = time.split(':').map(Number)
-  return hours * 60 + minutes
-}
-
-function minutesToTime(totalMinutes: number) {
-  const hours = Math.floor(totalMinutes / 60)
-  const minutes = totalMinutes % 60
-  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
-}
-
-function formatEvaluationLabel(evaluation: Evaluation) {
-  return `${evaluation.type} ${evaluation.number ?? ''} · ${
-    evaluation.topic || evaluation.title || 'Sin tema'
-  }`
-    .replace(/\s+/g, ' ')
-    .trim()
+  priority: number
 }
 
 function getRemainingStudyNeed(evaluation: Evaluation) {
-  const estimated = evaluation.estimated_minutes ?? 60
-  const progress = Math.min(100, Math.max(0, evaluation.study_progress ?? 0))
+  const estimated =
+    typeof (evaluation as any).estimated_minutes === 'number'
+      ? (evaluation as any).estimated_minutes
+      : 60
+
+  const progress =
+    typeof (evaluation as any).study_progress === 'number'
+      ? Math.min(100, Math.max(0, (evaluation as any).study_progress))
+      : 0
+
   const remaining = Math.round(estimated * (1 - progress / 100))
+
   return Math.max(20, remaining)
 }
 
-function getReason(evaluation: Evaluation) {
-  const status = getEvaluationStatus(evaluation)
-  const difficulty = evaluation.difficulty ?? 'media'
-  const progress = evaluation.study_progress ?? 0
+function getUrgencyScore(date?: string | null) {
+  if (!date) return 1
 
-  if (status === 'en-curso' && progress < 40) {
-    return 'Está en curso y llevas poco avance.'
-  }
+  const time = new Date(date).getTime()
+  if (Number.isNaN(time)) return 1
 
-  if (status === 'en-curso') {
-    return 'Está en curso y conviene cerrarla pronto.'
-  }
+  const diff = Math.ceil((time - Date.now()) / 86400000)
 
-  if (difficulty === 'alta') {
-    return 'Tiene mayor dificultad y conviene adelantarla.'
-  }
-
-  if (progress < 50) {
-    return 'Tienes avance bajo y necesita atención.'
-  }
-
-  return 'Es una de las prioridades de esta semana.'
+  if (diff <= 2) return 10
+  if (diff <= 5) return 7
+  if (diff <= 10) return 5
+  if (diff <= 20) return 3
+  return 1
 }
 
-export function buildTodayStudyPlan(
-  evaluations: Evaluation[],
-  availabilityBlocks: AvailabilityBlock[],
-  now = new Date()
-): StudySessionPlan[] {
-  const todayIndex = dayToAppIndex(now.getDay())
+function buildReason(evaluation: Evaluation, urgency: number, weight: number) {
+  const reasons: string[] = []
 
-  const todayBlocks = availabilityBlocks
-    .filter((block) => block.day_of_week === todayIndex)
-    .sort(
-      (a, b) =>
-        parseTimeToMinutes(a.start_time) - parseTimeToMinutes(b.start_time)
-    )
+  if (urgency >= 8) reasons.push('muy próxima')
+  else if (urgency >= 5) reasons.push('cercana')
+  else if (urgency >= 3) reasons.push('próxima')
 
-  if (todayBlocks.length === 0) return []
+  if (weight >= 40) reasons.push('alto impacto')
+  else if (weight >= 20) reasons.push('impacto medio')
 
-  const candidateEvaluations = evaluations
-    .filter((evaluation) => {
-      const status = getEvaluationStatus(evaluation, now)
-      return status === 'en-curso' || status === 'proxima'
-    })
-    .map((evaluation) => ({
-      evaluation,
-      score: getPriorityScore(evaluation, now),
-      need: getRemainingStudyNeed(evaluation),
-      reason: getReason(evaluation),
-    }))
-    .sort((a, b) => b.score - a.score)
+  if (!reasons.length) reasons.push('seguimiento general')
 
-  if (candidateEvaluations.length === 0) return []
+  return reasons.join(' · ')
+}
 
-  const plans: StudySessionPlan[] = []
+function distributeIntoWeek(
+  items: Array<{
+    subject: string
+    topic: string
+    minutes: number
+    reason: string
+    priority: number
+  }>
+): PlannerBlock[] {
+  const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
 
-  for (const block of todayBlocks) {
-    let cursor = parseTimeToMinutes(block.start_time)
-    const end = parseTimeToMinutes(block.end_time)
+  return items.map((item, index) => ({
+    day: days[index % days.length],
+    subject: item.subject,
+    topic: item.topic,
+    minutes: item.minutes,
+    reason: item.reason,
+    priority: item.priority,
+  }))
+}
 
-    while (cursor < end && candidateEvaluations.length > 0) {
-      candidateEvaluations.sort((a, b) => b.score - a.score)
-      const target = candidateEvaluations[0]
+export function buildStudyPlan(evaluations: Evaluation[]): PlannerBlock[] {
+  if (!Array.isArray(evaluations) || evaluations.length === 0) return []
 
-      const remainingBlock = end - cursor
-      if (remainingBlock < 20) break
+  const items = evaluations.map((evaluation) => {
+    const urgency = getUrgencyScore(evaluation.start_date)
+    const weight =
+      typeof evaluation.weight_percent === 'number'
+        ? evaluation.weight_percent
+        : 10
 
-      const sessionMinutes = Math.min(
-        remainingBlock,
-        Math.max(25, Math.min(60, target.need))
-      )
+    const minutes = getRemainingStudyNeed(evaluation)
+    const priority = urgency * 2 + weight / 10
 
-      const startTime = minutesToTime(cursor)
-      const endTime = minutesToTime(cursor + sessionMinutes)
-
-      plans.push({
-        evaluationId: target.evaluation.id,
-        subject: target.evaluation.subject,
-        label: formatEvaluationLabel(target.evaluation),
-        startTime,
-        endTime,
-        minutes: sessionMinutes,
-        reason: target.reason,
-        priorityScore: target.score,
-      })
-
-      cursor += sessionMinutes
-      target.need -= sessionMinutes
-
-      if (target.need <= 15) {
-        candidateEvaluations.shift()
-      } else {
-        target.score = Math.max(1, target.score - 8)
-      }
-
-      if (cursor + 10 <= end) {
-        cursor += 10
-      }
+    return {
+      subject: evaluation.subject || 'General',
+      topic: evaluation.topic || 'General',
+      minutes,
+      priority,
+      reason: buildReason(evaluation, urgency, weight),
     }
-  }
+  })
 
-  return plans
+  return distributeIntoWeek(items.sort((a, b) => b.priority - a.priority))
 }
