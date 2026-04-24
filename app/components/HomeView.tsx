@@ -19,7 +19,7 @@ type TodayFocusItem = {
 
 function safeDate(value?: string | null): number {
   if (!value) return 0
-  const time = new Date(value).getTime()
+  const time = safeDate(value).getTime()
   return Number.isNaN(time) ? 0 : time
 }
 
@@ -27,7 +27,7 @@ function formatDate(value?: string | null) {
   const time = safeDate(value)
   if (!time) return 'Sin fecha'
 
-  return new Date(time).toLocaleDateString('es-CL', {
+  return safeDate(time).toLocaleDateString('es-CL', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',

@@ -1,4 +1,5 @@
 import type { Evaluation } from './evaluations'
+import { safeDate } from '@/lib/utils/date'
 
 export type PlannerBlock = {
   evaluationId: string
@@ -16,6 +17,7 @@ export type PlannerBlock = {
 
 export type StudySessionPlan = PlannerBlock
 
+// 🧠 CUÁNTO TE FALTA ESTUDIAR
 function getRemainingStudyNeed(evaluation: Evaluation) {
   const estimated =
     typeof (evaluation as any).estimated_minutes === 'number'
@@ -31,11 +33,12 @@ function getRemainingStudyNeed(evaluation: Evaluation) {
   return Math.max(20, remaining)
 }
 
+// 🚨 URGENCIA (FIXED con safeDate)
 function getUrgencyScore(date?: string | null) {
-  if (!date) return 1
+  const d = safeDate(date)
+  const time = d.getTime()
 
-  const time = new Date(date).getTime()
-  if (Number.isNaN(time)) return 1
+  if (time === 0) return 1
 
   const diff = Math.ceil((time - Date.now()) / 86400000)
 
@@ -46,7 +49,8 @@ function getUrgencyScore(date?: string | null) {
   return 1
 }
 
-function buildReason(evaluation: Evaluation, urgency: number, weight: number) {
+// 🧠 RAZÓN INTELIGENTE
+function buildReason(urgency: number, weight: number) {
   const reasons: string[] = []
 
   if (urgency >= 8) reasons.push('muy próxima')
@@ -59,9 +63,11 @@ function buildReason(evaluation: Evaluation, urgency: number, weight: number) {
   return reasons.join(' · ') || 'seguimiento general'
 }
 
+// ⏱️ CALCULAR HORA FIN
 function minutesToEndTime(startTime: string, minutes: number) {
   const [h, m] = startTime.split(':').map(Number)
-  const date = new Date()
+
+  const date = safeDate()
   date.setHours(h || 9, m || 0, 0, 0)
   date.setMinutes(date.getMinutes() + minutes)
 
@@ -70,6 +76,7 @@ function minutesToEndTime(startTime: string, minutes: number) {
   ).padStart(2, '0')}`
 }
 
+// 📅 DISTRIBUCIÓN INTELIGENTE
 function distributeIntoWeek(
   items: Array<{
     evaluationId: string
@@ -102,18 +109,22 @@ function distributeIntoWeek(
   })
 }
 
+// 🧠 MAIN ENGINE
 export function buildStudyPlan(evaluations: Evaluation[]): PlannerBlock[] {
   if (!Array.isArray(evaluations) || evaluations.length === 0) return []
 
   const items = evaluations.map((evaluation, index) => {
     const urgency = getUrgencyScore(evaluation.start_date)
+
     const weight =
       typeof evaluation.weight_percent === 'number'
         ? evaluation.weight_percent
         : 10
 
     const minutes = getRemainingStudyNeed(evaluation)
-    const priority = urgency * 2 + weight / 10
+
+    // 🎯 NUEVA LÓGICA PRO
+    const priority = urgency * 2 + weight / 10 + minutes / 30
 
     return {
       evaluationId: evaluation.id || `evaluation-${index}`,
@@ -121,7 +132,7 @@ export function buildStudyPlan(evaluations: Evaluation[]): PlannerBlock[] {
       topic: evaluation.topic || 'General',
       minutes,
       priority,
-      reason: buildReason(evaluation, urgency, weight),
+      reason: buildReason(urgency, weight),
     }
   })
 

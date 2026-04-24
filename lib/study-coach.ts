@@ -58,9 +58,9 @@ function diffMinutes(start: string, end: string) {
   return Math.max(0, timeToMinutes(end) - timeToMinutes(start))
 }
 
-export function getWeekKey(date = new Date()) {
+export function getWeekKey(date = safeDate()) {
   const year = date.getFullYear()
-  const firstDay = new Date(year, 0, 1)
+  const firstDay = safeDate(year, 0, 1)
   const days = Math.floor((date.getTime() - firstDay.getTime()) / 86400000)
   const week = Math.ceil((days + firstDay.getDay() + 1) / 7)
 

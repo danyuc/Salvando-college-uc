@@ -63,7 +63,7 @@ export async function upsertDiagnostic(input: {
     weak_topics: input.weak_topics || [],
     strong_topics: input.strong_topics || [],
     diagnostic_result: input.diagnostic_result || null,
-    updated_at: new Date().toISOString(),
+    updated_at: safeDate().toISOString(),
   }
 
   const { data, error } = await supabase

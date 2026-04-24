@@ -22,8 +22,8 @@ function clamp(value: number, min: number, max: number) {
 }
 
 export function calculateDaysLeft(dateString: string) {
-  const now = new Date()
-  const target = new Date(dateString)
+  const now = safeDate()
+  const target = safeDate(dateString)
   const diff = target.getTime() - now.getTime()
   return Math.ceil(diff / 86400000)
 }

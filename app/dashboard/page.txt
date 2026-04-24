@@ -156,7 +156,7 @@ export default function OnboardingPage() {
     const updateTimer = () => {
       const diff = Math.max(
         0,
-        Math.floor((new Date(expiresAt).getTime() - Date.now()) / 1000)
+        Math.floor((safeDate(expiresAt).getTime() - Date.now()) / 1000)
       )
       setSecondsLeft(diff)
     }

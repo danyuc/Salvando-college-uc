@@ -17,20 +17,20 @@ function startOfDay(date: Date) {
   return d
 }
 
-export function isEvaluationActive(evaluation: Evaluation, now = safeDate()) {
+export function isEvaluationActive(evaluation: Evaluation, now = new Date()) {
   const today = startOfDay(now)
   const start = startOfDay(safeDate(evaluation.start_date))
   const end = startOfDay(safeDate(evaluation.end_date))
   return today >= start && today <= end
 }
 
-export function daysUntil(dateString: string, now = safeDate()) {
+export function daysUntil(dateString: string, now = new Date()) {
   const today = startOfDay(now)
   const target = startOfDay(safeDate(dateString))
   return Math.ceil((target.getTime() - today.getTime()) / 86400000)
 }
 
-export function getEvaluationStatus(evaluation: Evaluation, now = safeDate()) {
+export function getEvaluationStatus(evaluation: Evaluation, now = new Date()) {
   const toStart = daysUntil(evaluation.start_date, now)
   const toEnd = daysUntil(evaluation.end_date, now)
 
@@ -41,7 +41,7 @@ export function getEvaluationStatus(evaluation: Evaluation, now = safeDate()) {
 
 export function getPreparationLabel(
   evaluation: Evaluation,
-  now = safeDate()
+  now = new Date()
 ): 'critico' | 'bajo' | 'medio' | 'bien' {
   const progress = Number((evaluation as any).study_progress ?? (evaluation as any).progress ?? 0)
   const toEnd = daysUntil(evaluation.end_date, now)
@@ -54,7 +54,7 @@ export function getPreparationLabel(
   return 'medio'
 }
 
-export function getPriorityScore(evaluation: Evaluation, now = safeDate()) {
+export function getPriorityScore(evaluation: Evaluation, now = new Date()) {
   const status = getEvaluationStatus(evaluation, now) as StudyPriority['status']
   const toStart = daysUntil(evaluation.start_date, now)
   const toEnd = daysUntil(evaluation.end_date, now)
@@ -75,7 +75,7 @@ export function getPriorityScore(evaluation: Evaluation, now = safeDate()) {
   return Math.max(0, score)
 }
 
-export function getRecommendation(evaluation: Evaluation, now = safeDate()) {
+export function getRecommendation(evaluation: Evaluation, now = new Date()) {
   const status = getEvaluationStatus(evaluation, now) as StudyPriority['status']
   const toEnd = daysUntil(evaluation.end_date, now)
   const progress = Number((evaluation as any).study_progress ?? (evaluation as any).progress ?? 0)
@@ -98,7 +98,7 @@ export function getRecommendation(evaluation: Evaluation, now = safeDate()) {
 
 export function rankEvaluations(
   evaluations: Evaluation[],
-  now = safeDate()
+  now = new Date()
 ): StudyPriority[] {
   return [...evaluations]
     .filter((evaluation) => getEvaluationStatus(evaluation, now) !== 'vencida')
