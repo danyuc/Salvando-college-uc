@@ -23,8 +23,15 @@ export function buildSmartStudyPlan(
     let score = 0
 
     // 🔴 RIESGO (LO MÁS IMPORTANTE)
-    if (pred.riskLevel === 'alto') score += 5
-    else if (pred.riskLevel === 'medio') score += 3
+    const riskLevel =
+      pred.predictedGrade < 4
+        ? 'alto'
+        : pred.predictedGrade < 5
+        ? 'medio'
+        : 'bajo'
+
+    if (riskLevel === 'alto') score += 5
+    else if (riskLevel === 'medio') score += 3
     else score += 1
 
     // ⏰ CERCANÍA
