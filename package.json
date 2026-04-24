@@ -2,7 +2,6 @@
   "name": "salvando-college-uc",
   "version": "0.1.0",
   "private": true,
-
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -11,18 +10,27 @@
     "prepare": "husky install",
     "test": "echo \"no tests\""
   },
-
   "dependencies": {
     "@supabase/auth-helpers-nextjs": "^0.15.0",
+    "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.0.0",
+    "function-plot": "^1.25.3",
+    "jszip": "^3.10.1",
     "next": "16.2.4",
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "openai": "^6.34.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "resend": "^6.12.2"
   },
-
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.4",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.5.0",
     "eslint": "^8.0.0",
     "husky": "^8.0.0",
+    "postcss": "^8.5.10",
+    "tailwindcss": "^4.2.4",
     "typescript": "^5.3.0"
   }
 }

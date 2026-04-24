@@ -9,18 +9,41 @@ type CreateCodeRow = {
   message: string
 }
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResend() {
+  const key = process.env.RESEND_API_KEY
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  {
+  if (!key) {
+    throw new Error('RESEND_API_KEY no configurada')
+  }
+
+  return new Resend(key)
+}
+
+function getSupabaseAdmin() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!url || !key) {
+    throw new Error('Supabase no configurado correctamente')
+  }
+
+  return createClient(url, key, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
     },
+  })
+}
+
+function getFromEmail() {
+  const from = process.env.RESEND_FROM_EMAIL
+
+  if (!from) {
+    throw new Error('RESEND_FROM_EMAIL no configurado')
   }
-)
+
+  return from
+}
 
 function isValidUCEmail(email: string) {
   return /^[^\s@]+@(uc\.cl|estudiante\.uc\.cl|estudiantes\.uc\.cl)$/.test(
@@ -60,6 +83,8 @@ export async function POST(req: Request) {
       )
     }
 
+    const supabaseAdmin = getSupabaseAdmin()
+
     const { data: codeData, error: codeError } = await supabaseAdmin.rpc(
       'create_email_verification_code',
       {
@@ -70,10 +95,11 @@ export async function POST(req: Request) {
 
     if (codeError) {
       console.error('SEND RPC ERROR:', codeError)
+
       return NextResponse.json(
         {
           success: false,
-          message: codeError.message || 'No se pudo generar el código',
+          message: 'No se pudo generar el código',
         },
         { status: 500 }
       )
@@ -85,15 +111,18 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           success: false,
-          message: 'La generación del código falló',
+          message: row?.message || 'La generación del código falló',
         },
         { status: 500 }
       )
     }
 
+    const resend = getResend()
+    const from = getFromEmail()
+
     const { data, error } = await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL!,
-      to: ["email"], // prueba temporal
+      from,
+      to: [email],
       subject: 'Tu código de verificación UC',
       html: `
         <div style="font-family: Arial, sans-serif; background:#f8fafc; padding:24px;">
@@ -126,10 +155,11 @@ export async function POST(req: Request) {
 
     if (error) {
       console.error('RESEND ERROR:', error)
+
       return NextResponse.json(
         {
           success: false,
-          message: 'Resend no pudo enviar el correo',
+          message: 'No se pudo enviar el correo',
         },
         { status: 502 }
       )

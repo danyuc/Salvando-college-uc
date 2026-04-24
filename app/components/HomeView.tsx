@@ -18,11 +18,6 @@ type TodayFocusItem = {
   priority: number
 }
 
-function safeDate(value?: string | null): number {
-  if (!value) return 0
-  const time = safeDate(value).getTime()
-  return Number.isNaN(time) ? 0 : time
-}
 
 function formatDate(value?: string | null) {
   const time = safeDate(value)
@@ -38,7 +33,7 @@ function formatDate(value?: string | null) {
 function daysUntil(value?: string | null) {
   const time = safeDate(value)
   if (!time) return 999
-  return Math.ceil((time - Date.now()) / 86400000)
+  return Math.ceil((time.getTime() - Date.now()) / 86400000)
 }
 
 function orderEvaluations(evaluations: Evaluation[]) {
@@ -50,7 +45,7 @@ function orderEvaluations(evaluations: Evaluation[]) {
     if (!aTime) return 1
     if (!bTime) return -1
 
-    return aTime - bTime
+    return aTime.getTime() - bTime.getTime()
   })
 }
 
