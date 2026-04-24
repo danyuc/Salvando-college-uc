@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { parseStudyContent } from '../../lib/content-parser'
+import { parseStudyContent } from '@/lib/content-parser'
 import { getCurrentUser } from '../../lib/auth'
 import { createGeneratedTest, createTestAttempt } from '../../lib/tests'
 

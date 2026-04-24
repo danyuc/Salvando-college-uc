@@ -1,14 +1,36 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { getCurrentUser } from '../../lib/auth'
+import { getCurrentUser, signOutCurrentUser } from '../../lib/auth'
 import { getUserEvaluations, type Evaluation } from '../../lib/evaluations'
-import { getAvailability, type AvailabilityBlock } from '../../lib/availability'
+import {
+  getAvailabilityBlocks,
+  type AvailabilityBlock,
+} from '../../lib/availability'
 import { getStudyCoachPlan } from '../../lib/study-coach-storage'
 import { getWeekKey } from '../../lib/study-coach'
-import { getMyPracticeAttempts, type PracticeAttempt } from '../../lib/practice-attempts'
+import {
+  getMyPracticeAttempts,
+  type PracticeAttempt,
+} from '../../lib/practice-attempts'
 import { buildWeaknessesByTopic } from '../../lib/weakness-engine'
 import { getSubjectColor } from '../../lib/subjects'
+
+type HomeTab =
+  | 'calendar'
+  | 'assistant'
+  | 'notes'
+  | 'availability'
+  | 'practice'
+  | 'question-bank'
+  | 'text-study'
+  | 'summaries'
+  | 'coach'
+  | 'smart-plan'
+
+type Props = {
+  onNavigate?: (tab: HomeTab) => void
+}
 
 type TodayFocusItem = {
   subject: string
@@ -17,14 +39,36 @@ type TodayFocusItem = {
   priority: number
 }
 
+function normalizeAttempts(attempts: PracticeAttempt[]) {
+  return attempts.map((attempt) => ({
+    subject: attempt.subject || 'General',
+    topic: attempt.topic || 'General',
+    is_correct: Boolean(attempt.is_correct),
+  }))
+}
+
 function formatDate(dateString?: string | null) {
   if (!dateString) return 'Sin fecha'
+
   const date = new Date(dateString)
+
+  if (Number.isNaN(date.getTime())) return 'Sin fecha'
+
   return date.toLocaleDateString('es-CL', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
   })
+}
+
+function getDaysLeft(dateString?: string | null) {
+  if (!dateString) return 999
+
+  const date = new Date(dateString)
+
+  if (Number.isNaN(date.getTime())) return 999
+
+  return Math.ceil((date.getTime() - Date.now()) / 86400000)
 }
 
 function orderEvaluations(evaluations: Evaluation[]) {
@@ -40,24 +84,16 @@ function buildTodayFocus(params: {
   attempts: PracticeAttempt[]
 }) {
   const { evaluations, attempts } = params
-   const weaknesses = buildWeaknessesByTopic(
-  attempts.map((attempt) => ({
-    subject: attempt.subject || 'General',
-    topic: attempt.topic || 'General',
-    is_correct: attempt.is_correct,
-  }))
- )
+  const weaknesses = buildWeaknessesByTopic(normalizeAttempts(attempts))
 
   const items: TodayFocusItem[] = evaluations.map((evaluation) => {
+    const topic = evaluation.topic || 'General'
+
     const weakness = weaknesses.find(
-      (item) =>
-        item.subject === evaluation.subject &&
-        item.topic === (evaluation.topic || 'General')
+      (item) => item.subject === evaluation.subject && item.topic === topic
     )
 
-    const daysLeft = Math.ceil(
-      (new Date(evaluation.start_date).getTime() - Date.now()) / 86400000
-    )
+    const daysLeft = getDaysLeft(evaluation.start_date)
 
     let priority = 0
     const reasons: string[] = []
@@ -67,7 +103,10 @@ function buildTodayFocus(params: {
       reasons.push(`peso ${evaluation.weight_percent}%`)
     }
 
-    if (daysLeft <= 3) {
+    if (daysLeft <= 0) {
+      priority += 10
+      reasons.push('evaluación hoy o vencida')
+    } else if (daysLeft <= 3) {
       priority += 8
       reasons.push('evaluación muy cercana')
     } else if (daysLeft <= 7) {
@@ -88,7 +127,7 @@ function buildTodayFocus(params: {
 
     return {
       subject: evaluation.subject,
-      topic: evaluation.topic || 'General',
+      topic,
       reason: reasons.join(' · ') || 'seguimiento general',
       priority,
     }
@@ -104,13 +143,19 @@ function groupAvailabilityByDay(blocks: AvailabilityBlock[]) {
     if (!map.has(block.day_of_week)) {
       map.set(block.day_of_week, [])
     }
+
     map.get(block.day_of_week)!.push(block)
   }
 
   return [...map.entries()]
 }
 
-export default function HomeView() {
+function formatAccuracy(value: number) {
+  if (value <= 1) return `${Math.round(value * 100)}%`
+  return `${Math.round(value)}%`
+}
+
+export default function HomeView({ onNavigate }: Props) {
   const [userName, setUserName] = useState('usuario uc')
   const [evaluations, setEvaluations] = useState<Evaluation[]>([])
   const [availability, setAvailability] = useState<AvailabilityBlock[]>([])
@@ -119,13 +164,41 @@ export default function HomeView() {
   const [coachSummary, setCoachSummary] = useState('')
   const [loading, setLoading] = useState(true)
 
+  function goTo(tab: HomeTab) {
+    if (onNavigate) {
+      onNavigate(tab)
+      return
+    }
+
+    window.location.hash = tab
+  }
+
+  async function handleSignOut() {
+    try {
+      await signOutCurrentUser()
+      window.location.reload()
+    } catch (error) {
+      console.error(error)
+      alert('No se pudo cerrar sesión')
+    }
+  }
+
   useEffect(() => {
     async function loadAll() {
       try {
         setLoading(true)
 
         const user = await getCurrentUser()
-        if (!user) return
+
+        if (!user) {
+          setUserName('usuario uc')
+          setEvaluations([])
+          setAvailability([])
+          setAttempts([])
+          setCoachBlocks([])
+          setCoachSummary('')
+          return
+        }
 
         const email = user.email || ''
         const label = email.includes('@') ? email.split('@')[0] : 'usuario uc'
@@ -134,7 +207,7 @@ export default function HomeView() {
         const [evaluationsData, availabilityData, attemptsData, coachPlan] =
           await Promise.all([
             getUserEvaluations(user.id),
-            getAvailability(user.id),
+            getAvailabilityBlocks(user.id),
             getMyPracticeAttempts(user.id),
             getStudyCoachPlan(user.id, getWeekKey()),
           ])
@@ -145,7 +218,7 @@ export default function HomeView() {
         setCoachBlocks(coachPlan?.blocks || [])
         setCoachSummary(coachPlan?.coach_summary || '')
       } catch (error) {
-        console.error(error)
+        console.error('HOME LOAD ERROR:', error)
       } finally {
         setLoading(false)
       }
@@ -169,7 +242,7 @@ export default function HomeView() {
   )
 
   const weaknesses = useMemo(
-    () => buildWeaknessesByTopic(attempts).slice(0, 5),
+    () => buildWeaknessesByTopic(normalizeAttempts(attempts)).slice(0, 5),
     [attempts]
   )
 
@@ -183,9 +256,7 @@ export default function HomeView() {
       <div style={heroCard}>
         <div>
           <h2 style={title}>Hola, {userName}</h2>
-          <p style={subtitle}>
-            College Ciencias Sociales · 1° semestre
-          </p>
+          <p style={subtitle}>College Ciencias Sociales · 1° semestre</p>
         </div>
 
         <div style={heroMeta}>
@@ -201,6 +272,30 @@ export default function HomeView() {
         </div>
       </div>
 
+      <div style={quickActionsCard}>
+        <button onClick={() => goTo('practice')} style={primaryButton}>
+          Practicar ahora
+        </button>
+        <button onClick={() => goTo('question-bank')} style={secondaryButton}>
+          Banco de preguntas
+        </button>
+        <button onClick={() => goTo('availability')} style={secondaryButton}>
+          Disponibilidad
+        </button>
+        <button onClick={() => goTo('summaries')} style={secondaryButton}>
+          Resúmenes
+        </button>
+        <button onClick={() => goTo('text-study')} style={secondaryButton}>
+          Texto / PDF
+        </button>
+        <button onClick={() => goTo('coach')} style={secondaryButton}>
+          Coach semanal
+        </button>
+        <button onClick={handleSignOut} style={dangerButton}>
+          Cerrar sesión
+        </button>
+      </div>
+
       {loading ? (
         <div style={card}>Cargando panel...</div>
       ) : (
@@ -211,7 +306,8 @@ export default function HomeView() {
 
               {focusItems.length === 0 ? (
                 <div style={emptyText}>
-                  Aún no hay foco calculado. Agrega evaluaciones o realiza práctica.
+                  Aún no hay foco calculado. Agrega evaluaciones o realiza
+                  práctica.
                 </div>
               ) : (
                 <div style={list}>
@@ -245,19 +341,24 @@ export default function HomeView() {
                       key={evaluation.id}
                       style={{
                         ...listItem,
-                        borderLeft: `4px solid ${getSubjectColor(evaluation.subject)}`,
+                        borderLeft: `4px solid ${getSubjectColor(
+                          evaluation.subject
+                        )}`,
                       }}
                     >
                       <div style={listTitle}>
-                        {evaluation.subject} · {evaluation.type} {evaluation.number ?? ''}
+                        {evaluation.subject} · {evaluation.type}{' '}
+                        {evaluation.number ?? ''}
                       </div>
 
                       <div style={listMeta}>
-                        {evaluation.topic || 'Sin tema'} · {formatDate(evaluation.start_date)}
+                        {evaluation.topic || 'Sin tema'} ·{' '}
+                        {formatDate(evaluation.start_date)}
                       </div>
 
                       <div style={listMeta}>
-                        Peso: {evaluation.weight_percent ?? 0}%
+                        Peso: {evaluation.weight_percent ?? 0}% · Faltan:{' '}
+                        {getDaysLeft(evaluation.start_date)} días
                       </div>
                     </div>
                   ))}
@@ -277,7 +378,9 @@ export default function HomeView() {
                       key={`${block.day}-${block.subject}-${index}`}
                       style={{
                         ...listItem,
-                        borderLeft: `4px solid ${getSubjectColor(block.subject)}`,
+                        borderLeft: `4px solid ${getSubjectColor(
+                          block.subject
+                        )}`,
                       }}
                     >
                       <div style={listTitle}>
@@ -292,9 +395,7 @@ export default function HomeView() {
                 </div>
               )}
 
-              {coachSummary && (
-                <div style={summaryBox}>{coachSummary}</div>
-              )}
+              {coachSummary && <div style={summaryBox}>{coachSummary}</div>}
             </div>
           </div>
 
@@ -320,7 +421,8 @@ export default function HomeView() {
                         {item.subject} · {item.topic}
                       </div>
                       <div style={listMeta}>
-                        Precisión: {item.accuracy}% · Nivel: {item.weaknessLevel}
+                        Precisión: {formatAccuracy(item.accuracy)} · Nivel:{' '}
+                        {item.weaknessLevel}
                       </div>
                       <div style={listMeta}>{item.recommendation}</div>
                     </div>
@@ -333,22 +435,20 @@ export default function HomeView() {
               <h3 style={sectionTitle}>Disponibilidad semanal</h3>
 
               {groupedAvailability.length === 0 ? (
-                <div style={emptyText}>No hay bloques de disponibilidad guardados.</div>
+                <div style={emptyText}>
+                  No hay bloques de disponibilidad guardados.
+                </div>
               ) : (
                 <div style={availabilityList}>
                   {groupedAvailability.map(([day, blocks]) => (
                     <div key={day} style={availabilityDayCard}>
                       <div style={availabilityDayTitle}>{day}</div>
 
-                      {blocks.length === 0 ? (
-                        <div style={emptyText}>Sin bloques</div>
-                      ) : (
-                        blocks.map((block) => (
-                          <div key={block.id} style={availabilityBlock}>
-                            {block.start_time} - {block.end_time}
-                          </div>
-                        ))
-                      )}
+                      {blocks.map((block) => (
+                        <div key={block.id} style={availabilityBlock}>
+                          {block.start_time} - {block.end_time}
+                        </div>
+                      ))}
                     </div>
                   ))}
                 </div>
@@ -399,6 +499,37 @@ const heroMetaItem: React.CSSProperties = {
   padding: '10px 12px',
   borderRadius: '12px',
   background: 'rgba(255,255,255,0.06)',
+}
+
+const quickActionsCard: React.CSSProperties = {
+  padding: '14px',
+  borderRadius: '18px',
+  background: 'rgba(255,255,255,0.04)',
+  border: '1px solid rgba(255,255,255,0.10)',
+  display: 'flex',
+  gap: '10px',
+  flexWrap: 'wrap',
+}
+
+const primaryButton: React.CSSProperties = {
+  padding: '11px 14px',
+  borderRadius: '12px',
+  border: 'none',
+  background: '#2563eb',
+  color: 'white',
+  cursor: 'pointer',
+  fontWeight: 800,
+}
+
+const secondaryButton: React.CSSProperties = {
+  ...primaryButton,
+  background: 'rgba(255,255,255,0.08)',
+  border: '1px solid rgba(255,255,255,0.12)',
+}
+
+const dangerButton: React.CSSProperties = {
+  ...primaryButton,
+  background: '#dc2626',
 }
 
 const layout: React.CSSProperties = {
