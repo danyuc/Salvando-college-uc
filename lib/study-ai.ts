@@ -42,9 +42,9 @@ export function getPreparationLabel(
   evaluation: Evaluation,
   now = new Date()
 ): 'critico' | 'bajo' | 'medio' | 'bien' {
-  const progress = evaluation.study_progress ?? 0
+  const progress = Number((evaluation as any).study_progress ?? (evaluation as any).progress ?? 0)
   const toEnd = daysUntil(evaluation.end_date, now)
-  const difficulty = evaluation.difficulty ?? 'media'
+  const difficulty = ((evaluation as any).difficulty ?? 'media')
 
   if (toEnd <= 1 && progress < 40) return 'critico'
   if (toEnd <= 3 && progress < 50) return 'bajo'
@@ -57,8 +57,8 @@ export function getPriorityScore(evaluation: Evaluation, now = new Date()) {
   const status = getEvaluationStatus(evaluation, now)
   const toStart = daysUntil(evaluation.start_date, now)
   const toEnd = daysUntil(evaluation.end_date, now)
-  const difficulty = evaluation.difficulty ?? 'media'
-  const progress = evaluation.study_progress ?? 0
+  const difficulty = ((evaluation as any).difficulty ?? 'media')
+  const progress = Number((evaluation as any).study_progress ?? (evaluation as any).progress ?? 0)
   const estimated = evaluation.estimated_minutes ?? 60
 
   let score = 0
@@ -77,7 +77,7 @@ export function getPriorityScore(evaluation: Evaluation, now = new Date()) {
 export function getRecommendation(evaluation: Evaluation, now = new Date()) {
   const status = getEvaluationStatus(evaluation, now)
   const toEnd = daysUntil(evaluation.end_date, now)
-  const progress = evaluation.study_progress ?? 0
+  const progress = Number((evaluation as any).study_progress ?? (evaluation as any).progress ?? 0)
   const topic = evaluation.topic || evaluation.title || 'la materia'
 
   if (status === 'en-curso' && toEnd <= 1) {
