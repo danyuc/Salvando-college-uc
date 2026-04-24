@@ -1,5 +1,6 @@
 'use client'
 
+import { safeDate } from '@/lib/utils/date'
 import { useEffect, useMemo, useState } from 'react'
 import { getCurrentUser } from '../../lib/auth'
 import { getUserEvaluations, type Evaluation } from '../../lib/evaluations'
@@ -107,7 +108,6 @@ export default function PredictionView() {
       (item) => item.weaknessLevel === 'alta'
     ).length
 
-     import { safeDate } from '@/lib/utils/date'
 
     const upcomingEvaluations = evaluations.filter((evaluation) => {
      const date = safeDate(evaluation.start_date)
