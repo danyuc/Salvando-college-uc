@@ -1,4 +1,5 @@
 import type { Evaluation } from './evaluations'
+import { safeDate } from '@/lib/utils/date'
 
 export type StudyPriority = {
   evaluation: Evaluation
@@ -11,25 +12,25 @@ export type StudyPriority = {
 }
 
 function startOfDay(date: Date) {
-  const d = new Date(date)
+  const d = safeDate(date)
   d.setHours(0, 0, 0, 0)
   return d
 }
 
-export function isEvaluationActive(evaluation: Evaluation, now = new Date()) {
+export function isEvaluationActive(evaluation: Evaluation, now = safeDate()) {
   const today = startOfDay(now)
-  const start = startOfDay(new Date(evaluation.start_date))
-  const end = startOfDay(new Date(evaluation.end_date))
+  const start = startOfDay(safeDate(evaluation.start_date))
+  const end = startOfDay(safeDate(evaluation.end_date))
   return today >= start && today <= end
 }
 
-export function daysUntil(dateString: string, now = new Date()) {
+export function daysUntil(dateString: string, now = safeDate()) {
   const today = startOfDay(now)
-  const target = startOfDay(new Date(dateString))
+  const target = startOfDay(safeDate(dateString))
   return Math.ceil((target.getTime() - today.getTime()) / 86400000)
 }
 
-export function getEvaluationStatus(evaluation: Evaluation, now = new Date()) {
+export function getEvaluationStatus(evaluation: Evaluation, now = safeDate()) {
   const toStart = daysUntil(evaluation.start_date, now)
   const toEnd = daysUntil(evaluation.end_date, now)
 
@@ -40,7 +41,7 @@ export function getEvaluationStatus(evaluation: Evaluation, now = new Date()) {
 
 export function getPreparationLabel(
   evaluation: Evaluation,
-  now = new Date()
+  now = safeDate()
 ): 'critico' | 'bajo' | 'medio' | 'bien' {
   const progress = Number((evaluation as any).study_progress ?? (evaluation as any).progress ?? 0)
   const toEnd = daysUntil(evaluation.end_date, now)
@@ -53,7 +54,7 @@ export function getPreparationLabel(
   return 'medio'
 }
 
-export function getPriorityScore(evaluation: Evaluation, now = new Date()) {
+export function getPriorityScore(evaluation: Evaluation, now = safeDate()) {
   const status = getEvaluationStatus(evaluation, now) as StudyPriority['status']
   const toStart = daysUntil(evaluation.start_date, now)
   const toEnd = daysUntil(evaluation.end_date, now)
@@ -74,7 +75,7 @@ export function getPriorityScore(evaluation: Evaluation, now = new Date()) {
   return Math.max(0, score)
 }
 
-export function getRecommendation(evaluation: Evaluation, now = new Date()) {
+export function getRecommendation(evaluation: Evaluation, now = safeDate()) {
   const status = getEvaluationStatus(evaluation, now) as StudyPriority['status']
   const toEnd = daysUntil(evaluation.end_date, now)
   const progress = Number((evaluation as any).study_progress ?? (evaluation as any).progress ?? 0)
@@ -97,7 +98,7 @@ export function getRecommendation(evaluation: Evaluation, now = new Date()) {
 
 export function rankEvaluations(
   evaluations: Evaluation[],
-  now = new Date()
+  now = safeDate()
 ): StudyPriority[] {
   return [...evaluations]
     .filter((evaluation) => getEvaluationStatus(evaluation, now) !== 'vencida')

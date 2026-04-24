@@ -1,6 +1,11 @@
-export function safeDate(value?: string | null): Date | null {
-  if (!value) return null
+export function safeDate(value: string | number | Date | null | undefined): Date {
+  if (!value) return new Date(0)
 
   const date = new Date(value)
-  return Number.isNaN(date.getTime()) ? null : date
+
+  if (Number.isNaN(date.getTime())) {
+    return new Date(0)
+  }
+
+  return date
 }
