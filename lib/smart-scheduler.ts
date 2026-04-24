@@ -1,5 +1,4 @@
 import type { Evaluation } from './evaluations'
-import { buildGradePredictions } from './prediction-engine'
 
 export type StudyPlan = {
   subject: string
@@ -42,15 +41,16 @@ export function buildSmartSchedule(
   evaluations: Evaluation[] = [],
   weeklyHours = 35
 ): StudyPlan[] {
-  const predictions = buildGradePredictions({ evaluations }) as any[]
-
-  const source =
-    Array.isArray(predictions) && predictions.length > 0
-      ? predictions
-      : evaluations.map((evaluation) => ({
-          subject: evaluation.subject || 'General',
-          grade: 5,
-        }))
+  const source = evaluations.map((evaluation) => ({
+    subject: evaluation.subject || 'General',
+    grade: Number((evaluation as any).current_grade ?? (evaluation as any).grade ?? 5),
+    riskLevel:
+      Number((evaluation as any).current_grade ?? (evaluation as any).grade ?? 5) < 4
+        ? 'alto'
+        : Number((evaluation as any).current_grade ?? (evaluation as any).grade ?? 5) < 5
+        ? 'medio'
+        : 'bajo',
+  }))
 
   if (!source.length) return []
 
