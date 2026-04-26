@@ -6,31 +6,33 @@ import { supabase } from '@/lib/supabase'
 type Question = {
   id: string
   pregunta: string
-  opciona: string | null
-  opcionb: string | null
-  opcionc: string | null
-  opciond: string | null
-  correcta: string | null
+  opciones: string[] | null
+  respuesta_correcta: string | null
   explicacion: string | null
-  clase: string | null
+  asignatura: string | null
   tema: string | null
   subtema: string | null
-  tipopregunta: string | null
+  tipo: string | null
   dificultad: string | null
-  cognitive_level?: string | null
-  expected_answer?: string | null
-  evaluation_criteria?: string[] | null
+  nivel_cognitivo: string | null
+  respuesta_esperada?: string | null
+  criterios_evaluacion?: string[] | null
+  referencia_autor?: string | null
+  error_comun?: string | null
+  tags?: string[] | null
+  fuente?: string | null
 }
 
 export default function PracticeEngine() {
   const [questions, setQuestions] = useState<Question[]>([])
   const [selectedSubject, setSelectedSubject] = useState('Todas')
   const [selectedTopic, setSelectedTopic] = useState('Todos')
+  const [selectedMode, setSelectedMode] = useState<'todos' | 'practica' | 'diagnostico' | 'adaptativo'>('todos')
   const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState('')
-  const [developmentAnswer, setDevelopmentAnswer] = useState('')
   const [showResult, setShowResult] = useState(false)
   const [score, setScore] = useState(0)
+  const [errorsByTopic, setErrorsByTopic] = useState<Record<string, number>>({})
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -43,11 +45,11 @@ export default function PracticeEngine() {
     const { data, error } = await supabase
       .from('questions')
       .select('*')
-      .order('clase', { ascending: true })
+      .order('asignatura', { ascending: true })
       .order('tema', { ascending: true })
 
     if (error) {
-      console.error(error)
+      console.error('LOAD QUESTIONS ERROR:', error)
       setQuestions([])
     } else {
       setQuestions((data || []) as Question[])
@@ -57,32 +59,67 @@ export default function PracticeEngine() {
   }
 
   const subjects = useMemo(() => {
-    return ['Todas', ...Array.from(new Set(questions.map((q) => q.clase).filter(Boolean))) as string[]]
+    return [
+      'Todas',
+      ...Array.from(
+        new Set(questions.map((q) => q.asignatura || 'Sociología').filter(Boolean))
+      ),
+    ] as string[]
   }, [questions])
 
   const topics = useMemo(() => {
     const base =
       selectedSubject === 'Todas'
         ? questions
-        : questions.filter((q) => q.clase === selectedSubject)
+        : questions.filter((q) => (q.asignatura || 'Sociología') === selectedSubject)
 
-    return ['Todos', ...Array.from(new Set(base.map((q) => q.tema).filter(Boolean))) as string[]]
+    return [
+      'Todos',
+      ...Array.from(new Set(base.map((q) => q.tema).filter(Boolean))),
+    ] as string[]
   }, [questions, selectedSubject])
 
   const filteredQuestions = useMemo(() => {
-    return questions.filter((q) => {
-      const subjectOk = selectedSubject === 'Todas' || q.clase === selectedSubject
+    let base = questions.filter((q) => {
+      const subject = q.asignatura || 'Sociología'
+      const subjectOk = selectedSubject === 'Todas' || subject === selectedSubject
       const topicOk = selectedTopic === 'Todos' || q.tema === selectedTopic
-      return subjectOk && topicOk
+      const validOptions =
+        q.tipo === 'desarrollo' ||
+        (Array.isArray(q.opciones) && q.opciones.length >= 4)
+
+      return subjectOk && topicOk && validOptions
     })
-  }, [questions, selectedSubject, selectedTopic])
+
+    if (selectedMode === 'diagnostico') {
+      base = base.filter((q) => q.nivel_cognitivo === 'diagnostico')
+    }
+
+    if (selectedMode === 'practica') {
+      base = base.filter((q) => q.tipo === 'seleccion_multiple')
+    }
+
+    if (selectedMode === 'adaptativo') {
+      base = [...base].sort((a, b) => {
+        const aErrors = errorsByTopic[a.tema || ''] || 0
+        const bErrors = errorsByTopic[b.tema || ''] || 0
+        return bErrors - aErrors
+      })
+    }
+
+    return base
+  }, [questions, selectedSubject, selectedTopic, selectedMode, errorsByTopic])
 
   const currentQuestion = filteredQuestions[currentIndex]
+
+  const progress =
+    filteredQuestions.length > 0
+      ? Math.round(((currentIndex + 1) / filteredQuestions.length) * 100)
+      : 0
 
   function resetPractice() {
     setCurrentIndex(0)
     setSelectedAnswer('')
-    setDevelopmentAnswer('')
     setShowResult(false)
     setScore(0)
   }
@@ -98,33 +135,60 @@ export default function PracticeEngine() {
     resetPractice()
   }
 
+  function changeMode(value: 'todos' | 'practica' | 'diagnostico' | 'adaptativo') {
+    setSelectedMode(value)
+    resetPractice()
+  }
+
+  async function saveAttempt(letter: string, isCorrect: boolean) {
+    if (!currentQuestion) return
+
+    const { data } = await supabase.auth.getUser()
+    const userId = data.user?.id
+
+    if (!userId) return
+
+    await supabase.from('user_question_attempts').insert({
+      user_id: userId,
+      question_id: currentQuestion.id,
+      selected_answer: letter,
+      is_correct: isCorrect,
+      tema: currentQuestion.tema,
+      subtema: currentQuestion.subtema,
+      dificultad: currentQuestion.dificultad,
+      nivel_cognitivo: currentQuestion.nivel_cognitivo,
+    })
+  }
+
   function answerMultiple(letter: string) {
     if (!currentQuestion || showResult) return
+
+    const isCorrect = letter === currentQuestion.respuesta_correcta
 
     setSelectedAnswer(letter)
     setShowResult(true)
 
-    if (letter === currentQuestion.correcta) {
+    if (isCorrect) {
       setScore((prev) => prev + 1)
+    } else {
+      const topic = currentQuestion.tema || 'Sin tema'
+      setErrorsByTopic((prev) => ({
+        ...prev,
+        [topic]: (prev[topic] || 0) + 1,
+      }))
     }
-  }
 
-  function checkDevelopment() {
-    if (!developmentAnswer.trim()) return
-    setShowResult(true)
+    saveAttempt(letter, isCorrect)
   }
 
   function nextQuestion() {
     setSelectedAnswer('')
-    setDevelopmentAnswer('')
     setShowResult(false)
-    setCurrentIndex((prev) => prev + 1)
-  }
 
-  const progress =
-    filteredQuestions.length > 0
-      ? Math.round(((currentIndex + 1) / filteredQuestions.length) * 100)
-      : 0
+    if (currentIndex < filteredQuestions.length - 1) {
+      setCurrentIndex((prev) => prev + 1)
+    }
+  }
 
   if (loading) {
     return (
@@ -154,31 +218,29 @@ export default function PracticeEngine() {
         <div style={filters}>
           <div>
             <label style={label}>Asignatura</label>
-            <select
-              value={selectedSubject}
-              onChange={(e) => changeSubject(e.target.value)}
-              style={select}
-            >
+            <select value={selectedSubject} onChange={(e) => changeSubject(e.target.value)} style={select}>
               {subjects.map((subject) => (
-                <option key={subject} value={subject}>
-                  {subject}
-                </option>
+                <option key={subject} value={subject}>{subject}</option>
               ))}
             </select>
           </div>
 
           <div>
             <label style={label}>Tema</label>
-            <select
-              value={selectedTopic}
-              onChange={(e) => changeTopic(e.target.value)}
-              style={select}
-            >
+            <select value={selectedTopic} onChange={(e) => changeTopic(e.target.value)} style={select}>
               {topics.map((topic) => (
-                <option key={topic} value={topic}>
-                  {topic}
-                </option>
+                <option key={topic} value={topic}>{topic}</option>
               ))}
+            </select>
+          </div>
+
+          <div>
+            <label style={label}>Modo</label>
+            <select value={selectedMode} onChange={(e) => changeMode(e.target.value as any)} style={select}>
+              <option value="todos">Todos</option>
+              <option value="practica">Práctica</option>
+              <option value="diagnostico">Diagnóstico UC</option>
+              <option value="adaptativo">Adaptativo</option>
             </select>
           </div>
         </div>
@@ -194,15 +256,16 @@ export default function PracticeEngine() {
         <section style={card}>
           <h2>No hay preguntas para este filtro.</h2>
           <p style={muted}>
-            Revisa que en Supabase existan registros en `questions` con `clase`, `tema` y `tipopregunta`.
+            Revisa que existan registros con asignatura, tema, tipo, pregunta, opciones y respuesta_correcta.
           </p>
         </section>
       ) : (
         <section style={card}>
           <div style={questionTop}>
-            <span style={badge}>{currentQuestion.clase || 'Sin asignatura'}</span>
+            <span style={badge}>{currentQuestion.asignatura || 'Sociología'}</span>
             <span style={badge}>{currentQuestion.tema || 'Sin tema'}</span>
-            <span style={badge}>{currentQuestion.tipopregunta || 'tipo desconocido'}</span>
+            <span style={badge}>{currentQuestion.tipo || 'tipo desconocido'}</span>
+            <span style={badge}>{currentQuestion.dificultad || 'sin dificultad'}</span>
           </div>
 
           <h2 style={questionTitle}>
@@ -211,96 +274,51 @@ export default function PracticeEngine() {
 
           <p style={questionText}>{currentQuestion.pregunta}</p>
 
-          {currentQuestion.tipopregunta === 'desarrollo' ? (
-            <>
-              <textarea
-                value={developmentAnswer}
-                onChange={(e) => setDevelopmentAnswer(e.target.value)}
-                placeholder="Escribe tu respuesta de desarrollo..."
-                style={textarea}
-              />
+          <div style={optionsGrid}>
+            {(currentQuestion.opciones ?? []).map((option) => {
+              const letter = option.trim().slice(0, 1)
+              const isCorrect = letter === currentQuestion.respuesta_correcta
+              const isSelected = letter === selectedAnswer
 
-              {!showResult && (
-                <button onClick={checkDevelopment} style={primaryButton}>
-                  Revisar respuesta
+              let style = optionButton
+              if (showResult && isCorrect) style = correctButton
+              else if (showResult && isSelected && !isCorrect) style = wrongButton
+
+              return (
+                <button
+                  key={option}
+                  onClick={() => answerMultiple(letter)}
+                  style={style}
+                  disabled={showResult}
+                >
+                  {option}
                 </button>
-              )}
+              )
+            })}
+          </div>
 
-              {showResult && (
-                <div style={resultBox}>
-                  <strong>Respuesta esperada:</strong>
-                  <p>{currentQuestion.expected_answer || currentQuestion.explicacion || 'Sin pauta cargada.'}</p>
-
-                  {currentQuestion.evaluation_criteria && (
-                    <>
-                      <strong>Criterios:</strong>
-                      <ul>
-                        {currentQuestion.evaluation_criteria.map((c, i) => (
-                          <li key={i}>{c}</li>
-                        ))}
-                      </ul>
-                    </>
-                  )}
-                </div>
-              )}
-            </>
-          ) : (
-            <div style={optionsGrid}>
-              {[
-                ['A', currentQuestion.opciona],
-                ['B', currentQuestion.opcionb],
-                ['C', currentQuestion.opcionc],
-                ['D', currentQuestion.opciond],
-              ].map(([letter, text]) => {
-                if (!text) return null
-
-                const isCorrect = letter === currentQuestion.correcta
-                const isSelected = letter === selectedAnswer
-
-                let style = optionButton
-
-                if (showResult && isCorrect) style = correctButton
-                else if (showResult && isSelected && !isCorrect) style = wrongButton
-
-                return (
-                  <button
-                    key={letter}
-                    onClick={() => answerMultiple(letter)}
-                    style={style}
-                  >
-                    <strong>{letter})</strong> {text}
-                  </button>
-                )
-              })}
-            </div>
-          )}
-
-          {showResult && currentQuestion.tipopregunta !== 'desarrollo' && (
+          {showResult && (
             <div style={resultBox}>
               <strong>
-                {selectedAnswer === currentQuestion.correcta
+                {selectedAnswer === currentQuestion.respuesta_correcta
                   ? '✅ Correcta'
                   : '❌ Incorrecta'}
               </strong>
               <p>{currentQuestion.explicacion || 'Sin explicación cargada.'}</p>
-            </div>
-          )}
 
-          {showResult && currentIndex < filteredQuestions.length - 1 && (
-            <button onClick={nextQuestion} style={primaryButton}>
-              Siguiente →
-            </button>
-          )}
+              {currentQuestion.error_comun && (
+                <p><strong>Error común:</strong> {currentQuestion.error_comun}</p>
+              )}
 
-          {showResult && currentIndex >= filteredQuestions.length - 1 && (
-            <div style={resultBox}>
-              <strong>Práctica terminada</strong>
-              <p>
-                Puntaje final: {score} / {filteredQuestions.length}
-              </p>
-              <button onClick={resetPractice} style={primaryButton}>
-                Reiniciar práctica
-              </button>
+              {currentIndex < filteredQuestions.length - 1 ? (
+                <button onClick={nextQuestion} style={primaryButton}>
+                  Siguiente →
+                </button>
+              ) : (
+                <button onClick={resetPractice} style={primaryButton}>
+                  Reiniciar práctica
+                </button>
+              )}
             </div>
           )}
         </section>
@@ -328,21 +346,9 @@ const hero: CSSProperties = {
   flexWrap: 'wrap',
 }
 
-const pill: CSSProperties = {
-  margin: 0,
-  color: '#93c5fd',
-  fontWeight: 900,
-}
-
-const title: CSSProperties = {
-  margin: '8px 0',
-  fontSize: 36,
-}
-
-const muted: CSSProperties = {
-  color: '#cbd5e1',
-  lineHeight: 1.5,
-}
+const pill: CSSProperties = { margin: 0, color: '#93c5fd', fontWeight: 900 }
+const title: CSSProperties = { margin: '8px 0', fontSize: 36 }
+const muted: CSSProperties = { color: '#cbd5e1', lineHeight: 1.5 }
 
 const card: CSSProperties = {
   padding: 22,
@@ -354,15 +360,11 @@ const card: CSSProperties = {
 
 const filters: CSSProperties = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
   gap: 14,
 }
 
-const label: CSSProperties = {
-  display: 'block',
-  marginBottom: 8,
-  fontWeight: 900,
-}
+const label: CSSProperties = { display: 'block', marginBottom: 8, fontWeight: 900 }
 
 const select: CSSProperties = {
   width: '100%',
@@ -372,12 +374,7 @@ const select: CSSProperties = {
   fontSize: 16,
 }
 
-const stats: CSSProperties = {
-  display: 'flex',
-  gap: 12,
-  flexWrap: 'wrap',
-  marginBottom: 18,
-}
+const stats: CSSProperties = { display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 18 }
 
 const statBox: CSSProperties = {
   padding: '12px 14px',
@@ -386,12 +383,7 @@ const statBox: CSSProperties = {
   fontWeight: 900,
 }
 
-const questionTop: CSSProperties = {
-  display: 'flex',
-  gap: 8,
-  flexWrap: 'wrap',
-  marginBottom: 14,
-}
+const questionTop: CSSProperties = { display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }
 
 const badge: CSSProperties = {
   padding: '7px 10px',
@@ -402,19 +394,11 @@ const badge: CSSProperties = {
   fontSize: 13,
 }
 
-const questionTitle: CSSProperties = {
-  marginTop: 0,
-}
+const questionTitle: CSSProperties = { marginTop: 0 }
 
-const questionText: CSSProperties = {
-  fontSize: 20,
-  lineHeight: 1.5,
-}
+const questionText: CSSProperties = { fontSize: 20, lineHeight: 1.5 }
 
-const optionsGrid: CSSProperties = {
-  display: 'grid',
-  gap: 12,
-}
+const optionsGrid: CSSProperties = { display: 'grid', gap: 12 }
 
 const optionButton: CSSProperties = {
   padding: 16,
@@ -466,15 +450,4 @@ const secondaryButton: CSSProperties = {
   color: 'white',
   fontWeight: 900,
   cursor: 'pointer',
-}
-
-const textarea: CSSProperties = {
-  width: '100%',
-  minHeight: 160,
-  padding: 14,
-  borderRadius: 14,
-  background: '#020617',
-  color: 'white',
-  border: '1px solid rgba(255,255,255,.14)',
-  fontSize: 16,
 }
