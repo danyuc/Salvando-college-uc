@@ -216,26 +216,20 @@ export default function HomeView() {
         </button>
       </section>
 
-      <nav style={nav}>
-        <button onClick={() => go('/')} style={activeNav}>
-          🏠 Home
-        </button>
-        <button onClick={() => go('/ensayo')} style={navBtn}>
-          🧩 Práctica
-        </button>
-        <button onClick={() => go('/banco')} style={navBtn}>
-          📚 Banco
-        </button>
-        <button onClick={() => go('/riesgo')} style={navBtn}>
-          ⚠️ Riesgo
-        </button>
-        <button onClick={() => go('/coach-semanal')} style={navBtn}>
-          🧠 Coach
-        </button>
-        <button onClick={() => go('/ranking')} style={navBtn}>
-          🏆 Ranking
-        </button>
-      </nav>
+       <nav style={nav}>
+         <button onClick={() => go('/')} style={activeNav}>🏠 Home</button>
+         <button onClick={() => go('/calendario')} style={navBtn}>📅 Calendario</button>
+         <button onClick={() => go('/ia')} style={navBtn}>🧠 IA</button>
+         <button onClick={() => go('/notas')} style={navBtn}>📊 Notas</button>
+         <button onClick={() => go('/disponibilidad')} style={navBtn}>⏱️ Disponibilidad</button>
+         <button onClick={() => go('/ensayo')} style={navBtn}>🧩 Práctica</button>
+         <button onClick={() => go('/banco')} style={navBtn}>📚 Banco</button>
+         <button onClick={() => go('/pizarra')} style={navBtn}>✍️ Pizarra</button>
+         <button onClick={() => go('/ranking')} style={navBtn}>🏆 Ranking</button>
+         <button onClick={() => go('/debilidades')} style={navBtn}>🎯 Debilidades</button>
+         <button onClick={() => go('/coach-semanal')} style={navBtn}>🧠 Coach</button>
+         <button onClick={() => go('/texto-pdf')} style={navBtn}>📄 Texto / PDF</button>
+        </nav>
 
       <section style={summaryCard}>
         <div>
