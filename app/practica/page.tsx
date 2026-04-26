@@ -1,5 +1,5 @@
-import PracticeEngine from '../components/PracticeEngine'
+import PracticeView from '../components/PracticeView'
 
-export default function Page() {
-  return <PracticeEngine />
+export default function PracticePage() {
+  return <PracticeView />
 }

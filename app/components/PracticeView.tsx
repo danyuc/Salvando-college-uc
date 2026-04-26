@@ -1,238 +1,200 @@
 'use client'
-'use client'
 
-import { safeDate } from '@/lib/utils/date'  
 import { useEffect, useMemo, useState } from 'react'
-import { getCurrentUser } from '../../lib/auth'
-import { getUserEvaluations, type Evaluation } from '../../lib/evaluations'
-import { getSubjectColor } from '../../lib/subjects'
+import { supabase } from '../../lib/supabase'
 
-type RiskLevel = 'alto' | 'medio' | 'bajo'
+type PracticeMode = 'practica' | 'diagnostico'
+type AnswerState = 'idle' | 'correct' | 'incorrect'
 
-type PredictionItem = {
-  subject: string
-  total: number
-  upcoming: number
-  urgent: number
-  averageWeight: number
-  riskLevel: RiskLevel
-  score: number
-  recommendation: string
+type Question = {
+  id: string
+  asignatura: string | null
+  tema: string
+  subtema: string
+  tipo: 'seleccion_multiple' | 'desarrollo'
+  dificultad: 'facil' | 'media' | 'alta'
+  pregunta: string
+  opciones: string[] | null
+  respuesta_correcta: 'A' | 'B' | 'C' | 'D' | null
+  explicacion: string | null
+  respuesta_esperada: string | null
+  criterios_evaluacion: string[] | null
+  nivel_cognitivo: string | null
+  referencia_autor: string | null
+  error_comun: string | null
+  tags: string[] | null
+  fuente: string | null
 }
 
+export default function PracticeView() {
+  const [subjects, setSubjects] = useState<string[]>([])
+  const [topics, setTopics] = useState<string[]>([])
+  const [questions, setQuestions] = useState<Question[]>([])
 
-function daysUntil(value?: string | null) {
-  const date = safeDate(value)
-  if (!date) return 999
-  return Math.ceil((date.getTime() - Date.now()) / 86400000)
-}
+  const [selectedSubject, setSelectedSubject] = useState('')
+  const [selectedTopic, setSelectedTopic] = useState('')
+  const [selectedDifficulty, setSelectedDifficulty] = useState('alta')
+  const [mode, setMode] = useState<PracticeMode>('practica')
 
-function formatDate(value?: string | null) {
-  const date = safeDate(value)
-  if (!date) return 'Sin fecha'
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
+  const [answerState, setAnswerState] = useState<AnswerState>('idle')
+  const [loading, setLoading] = useState(false)
+  const [initialLoading, setInitialLoading] = useState(true)
 
-  return date.toLocaleDateString('es-CL', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  })
-}
+  const currentQuestion = questions[currentIndex]
 
-function getEvaluationDate(evaluation: Evaluation) {
-  return evaluation.start_date ?? evaluation.end_date ?? null
-}
+  const stats = useMemo(() => {
+    const answered = questions.filter((_, index) => index < currentIndex).length
+    const total = questions.length
+    const progress = total ? Math.round(((currentIndex + 1) / total) * 100) : 0
 
-function getRiskLevel(score: number): RiskLevel {
-  if (score >= 70) return 'alto'
-  if (score >= 35) return 'medio'
-  return 'bajo'
-}
-
-function getRecommendation(risk: RiskLevel) {
-  if (risk === 'alto') {
-    return 'Prioriza esta asignatura hoy. Tiene evaluaciones cercanas o de alto peso.'
-  }
-
-  if (risk === 'medio') {
-    return 'Mantén práctica constante y refuerza los temas con más peso.'
-  }
-
-  return 'Riesgo bajo. Conviene repasar de forma preventiva.'
-}
-
-function buildPredictions(evaluations: Evaluation[]): PredictionItem[] {
-  const map = new Map<string, Evaluation[]>()
-
-  for (const evaluation of evaluations) {
-    const subject = evaluation.subject || 'General'
-
-    if (!map.has(subject)) {
-      map.set(subject, [])
+    return {
+      answered,
+      total,
+      progress,
     }
+  }, [questions, currentIndex])
 
-    map.get(subject)!.push(evaluation)
-  }
+  async function loadInitialData() {
+    try {
+      setInitialLoading(true)
 
-  return [...map.entries()]
-    .map(([subject, items]) => {
-      const upcomingItems = items.filter((evaluation) => {
-        const date = safeDate(getEvaluationDate(evaluation))
-        return date ? date.getTime() >= Date.now() : false
-      })
+      const { data, error } = await supabase
+        .from('questions')
+        .select('asignatura')
+        .not('asignatura', 'is', null)
 
-      const urgent = upcomingItems.filter((evaluation) => {
-        const days = daysUntil(getEvaluationDate(evaluation))
-        return days <= 7
-      }).length
+      if (error) throw error
 
-      const totalWeight = items.reduce((sum, evaluation) => {
-        return sum + Number(evaluation.weight_percent ?? 0)
-      }, 0)
-
-      const averageWeight = items.length
-        ? Math.round(totalWeight / items.length)
-        : 0
-
-      const score = Math.round(
-        urgent * 30 +
-          upcomingItems.length * 12 +
-          averageWeight * 0.8 +
-          items.length * 3
+      const uniqueSubjects = Array.from(
+        new Set((data ?? []).map((item) => item.asignatura).filter(Boolean))
       )
 
-      const riskLevel = getRiskLevel(score)
+      setSubjects(uniqueSubjects)
 
-      return {
-        subject,
-        total: items.length,
-        upcoming: upcomingItems.length,
-        urgent,
-        averageWeight,
-        riskLevel,
-        score,
-        recommendation: getRecommendation(riskLevel),
+      if (uniqueSubjects[0]) {
+        setSelectedSubject(uniqueSubjects[0])
       }
-    })
-    .sort((a, b) => b.score - a.score)
-}
+    } catch (error) {
+      console.error('LOAD SUBJECTS ERROR:', error)
+      alert('No se pudieron cargar las asignaturas.')
+    } finally {
+      setInitialLoading(false)
+    }
+  }
 
-function orderEvaluations(evaluations: Evaluation[]) {
-  return [...evaluations].sort((a, b) => {
-    const aDate = safeDate(getEvaluationDate(a))
-    const bDate = safeDate(getEvaluationDate(b))
+  async function loadTopics(subject: string) {
+    if (!subject) return
 
-    if (!aDate && !bDate) return 0
-    if (!aDate) return 1
-    if (!bDate) return -1
+    try {
+      const { data, error } = await supabase
+        .from('questions')
+        .select('tema')
+        .eq('asignatura', subject)
+        .not('tema', 'is', null)
 
-    return aDate.getTime() - bDate.getTime()
-  })
-}
+      if (error) throw error
 
-export default function PredictionView() {
-  const [evaluations, setEvaluations] = useState<Evaluation[]>([])
-  const [loading, setLoading] = useState(true)
-  const [selectedSubject, setSelectedSubject] = useState('todas')
-  const [onlyUpcoming, setOnlyUpcoming] = useState(true)
-  const [copied, setCopied] = useState(false)
+      const uniqueTopics = Array.from(
+        new Set((data ?? []).map((item) => item.tema).filter(Boolean))
+      )
 
-  async function loadData() {
+      setTopics(uniqueTopics)
+    } catch (error) {
+      console.error('LOAD TOPICS ERROR:', error)
+      setTopics([])
+    }
+  }
+
+  async function loadQuestions() {
     try {
       setLoading(true)
+      setQuestions([])
+      setCurrentIndex(0)
+      setSelectedAnswer(null)
+      setAnswerState('idle')
 
-      const user = await getCurrentUser()
-      if (!user) {
-        setEvaluations([])
-        return
+      let query = supabase
+        .from('questions')
+        .select('*')
+        .eq('tipo', 'seleccion_multiple')
+        .limit(30)
+
+      if (selectedSubject) {
+        query = query.eq('asignatura', selectedSubject)
       }
 
-      const data = await getUserEvaluations(user.id)
-      setEvaluations(Array.isArray(data) ? data : [])
+      if (mode === 'diagnostico') {
+        query = query.eq('nivel_cognitivo', 'diagnostico')
+      } else {
+        if (selectedTopic) {
+          query = query.eq('tema', selectedTopic)
+        }
+
+        if (selectedDifficulty) {
+          query = query.eq('dificultad', selectedDifficulty)
+        }
+      }
+
+      const { data, error } = await query
+
+      if (error) throw error
+
+      const shuffled = [...((data ?? []) as Question[])].sort(
+        () => Math.random() - 0.5
+      )
+
+      setQuestions(shuffled)
     } catch (error) {
-      console.error('PREDICTION LOAD ERROR:', error)
-      alert('No se pudieron cargar las predicciones.')
+      console.error('LOAD QUESTIONS ERROR:', error)
+      alert('No se pudieron cargar las preguntas.')
     } finally {
       setLoading(false)
     }
   }
 
-  useEffect(() => {
-    loadData()
-  }, [])
+  function handleAnswer(letter: string) {
+    if (!currentQuestion || selectedAnswer) return
 
-  const subjects = useMemo(() => {
-    const unique = new Set(
-      evaluations.map((evaluation) => evaluation.subject || 'General')
-    )
+    setSelectedAnswer(letter)
 
-    return ['todas', ...Array.from(unique)]
-  }, [evaluations])
-
-  const filteredEvaluations = useMemo(() => {
-    return evaluations.filter((evaluation) => {
-      const subjectOk =
-        selectedSubject === 'todas' ||
-        (evaluation.subject || 'General') === selectedSubject
-
-      const date = safeDate(getEvaluationDate(evaluation))
-      const upcomingOk = !onlyUpcoming || (date ? date.getTime() >= Date.now() : false)
-
-      return subjectOk && upcomingOk
-    })
-  }, [evaluations, selectedSubject, onlyUpcoming])
-
-  const predictions = useMemo(
-    () => buildPredictions(filteredEvaluations),
-    [filteredEvaluations]
-  )
-
-  const orderedEvaluations = useMemo(
-    () => orderEvaluations(filteredEvaluations),
-    [filteredEvaluations]
-  )
-
-  const totalEvaluations = evaluations.length
-
-  const upcomingEvaluations = useMemo(() => {
-    return evaluations.filter((evaluation) => {
-      const date = safeDate(getEvaluationDate(evaluation))
-      return date ? date.getTime() >= Date.now() : false
-    }).length
-  }, [evaluations])
-
-  const urgentEvaluations = useMemo(() => {
-    return evaluations.filter((evaluation) => {
-      const days = daysUntil(getEvaluationDate(evaluation))
-      return days <= 7
-    }).length
-  }, [evaluations])
-
-  const highestRisk = predictions[0]
-
-  async function copySummary() {
-    const text = [
-      'Resumen de predicción académica',
-      '',
-      `Evaluaciones totales: ${totalEvaluations}`,
-      `Evaluaciones próximas: ${upcomingEvaluations}`,
-      `Evaluaciones urgentes: ${urgentEvaluations}`,
-      '',
-      ...predictions.map(
-        (item) =>
-          `${item.subject}: riesgo ${item.riskLevel}, score ${item.score}. ${item.recommendation}`
-      ),
-    ].join('\n')
-
-    await navigator.clipboard.writeText(text)
-    setCopied(true)
-
-    window.setTimeout(() => setCopied(false), 1800)
+    if (letter === currentQuestion.respuesta_correcta) {
+      setAnswerState('correct')
+    } else {
+      setAnswerState('incorrect')
+    }
   }
 
-  if (loading) {
+  function nextQuestion() {
+    setSelectedAnswer(null)
+    setAnswerState('idle')
+
+    if (currentIndex < questions.length - 1) {
+      setCurrentIndex((prev) => prev + 1)
+    }
+  }
+
+  function restartPractice() {
+    setCurrentIndex(0)
+    setSelectedAnswer(null)
+    setAnswerState('idle')
+  }
+
+  useEffect(() => {
+    loadInitialData()
+  }, [])
+
+  useEffect(() => {
+    if (selectedSubject) {
+      loadTopics(selectedSubject)
+    }
+  }, [selectedSubject])
+
+  if (initialLoading) {
     return (
       <div style={container}>
-        <div style={card}>Cargando predicciones...</div>
+        <div style={card}>Cargando banco de preguntas...</div>
       </div>
     )
   }
@@ -241,31 +203,31 @@ export default function PredictionView() {
     <div style={container}>
       <div style={heroCard}>
         <div>
-          <h2 style={title}>📊 Predicción académica</h2>
+          <h2 style={title}>🧠 Práctica inteligente</h2>
           <p style={subtitle}>
-            Analiza riesgo, urgencia y prioridad según tus evaluaciones guardadas.
+            Entrena con preguntas reales desde Supabase, modo práctica y
+            diagnóstico obligatorio.
           </p>
         </div>
 
         <div style={actions}>
-          <button onClick={loadData} style={secondaryButton}>
-            Actualizar
+          <button onClick={loadQuestions} disabled={loading} style={button}>
+            {loading ? 'Cargando...' : 'Comenzar'}
           </button>
 
-          <button onClick={copySummary} style={button}>
-            {copied ? 'Copiado' : 'Copiar resumen'}
-          </button>
+          {questions.length > 0 && (
+            <button onClick={restartPractice} style={secondaryButton}>
+              Reiniciar
+            </button>
+          )}
         </div>
       </div>
 
       <div style={statsGrid}>
-        <Stat label="Evaluaciones" value={totalEvaluations} />
-        <Stat label="Próximas" value={upcomingEvaluations} />
-        <Stat label="Urgentes" value={urgentEvaluations} />
-        <Stat
-          label="Mayor riesgo"
-          value={highestRisk ? highestRisk.subject : 'Sin datos'}
-        />
+        <Stat label="Asignaturas" value={subjects.length} />
+        <Stat label="Temas" value={topics.length} />
+        <Stat label="Preguntas cargadas" value={questions.length} />
+        <Stat label="Progreso" value={`${stats.progress}%`} />
       </div>
 
       <div style={card}>
@@ -274,140 +236,187 @@ export default function PredictionView() {
             <label style={label}>Asignatura</label>
             <select
               value={selectedSubject}
-              onChange={(e) => setSelectedSubject(e.target.value)}
+              onChange={(e) => {
+                setSelectedSubject(e.target.value)
+                setSelectedTopic('')
+              }}
               style={select}
             >
+              <option value="">Selecciona asignatura</option>
               {subjects.map((subject) => (
                 <option key={subject} value={subject}>
-                  {subject === 'todas' ? 'Todas las asignaturas' : subject}
+                  {subject}
                 </option>
               ))}
             </select>
           </div>
 
-          <label style={checkRow}>
-            <input
-              type="checkbox"
-              checked={onlyUpcoming}
-              onChange={(e) => setOnlyUpcoming(e.target.checked)}
+          <div style={field}>
+            <label style={label}>Modo</label>
+            <select
+              value={mode}
+              onChange={(e) => setMode(e.target.value as PracticeMode)}
+              style={select}
+            >
+              <option value="practica">Práctica</option>
+              <option value="diagnostico">Diagnóstico obligatorio</option>
+            </select>
+          </div>
+
+          <div style={field}>
+            <label style={label}>Tema</label>
+            <select
+              value={selectedTopic}
+              onChange={(e) => setSelectedTopic(e.target.value)}
+              disabled={mode === 'diagnostico'}
+              style={{
+                ...select,
+                opacity: mode === 'diagnostico' ? 0.55 : 1,
+              }}
+            >
+              <option value="">Todos los temas</option>
+              {topics.map((topic) => (
+                <option key={topic} value={topic}>
+                  {topic}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div style={field}>
+            <label style={label}>Dificultad</label>
+            <select
+              value={selectedDifficulty}
+              onChange={(e) => setSelectedDifficulty(e.target.value)}
+              disabled={mode === 'diagnostico'}
+              style={{
+                ...select,
+                opacity: mode === 'diagnostico' ? 0.55 : 1,
+              }}
+            >
+              <option value="facil">Fácil</option>
+              <option value="media">Media</option>
+              <option value="alta">Alta</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {questions.length === 0 && !loading && (
+        <div style={card}>
+          <h3 style={sectionTitle}>Banco conectado ✅</h3>
+          <p style={emptyText}>
+            Selecciona una asignatura y presiona “Comenzar”. Si usas diagnóstico,
+            se cargarán preguntas con nivel cognitivo diagnóstico.
+          </p>
+        </div>
+      )}
+
+      {currentQuestion && (
+        <div style={questionCard}>
+          <div style={questionHeader}>
+            <div style={chips}>
+              <span style={chip}>{currentQuestion.asignatura ?? 'General'}</span>
+              <span style={chip}>{currentQuestion.tema}</span>
+              <span style={chip}>{currentQuestion.subtema}</span>
+              <span style={chip}>
+                {currentIndex + 1}/{questions.length}
+              </span>
+            </div>
+
+            <div style={modeBadge}>
+              {mode === 'diagnostico' ? 'Diagnóstico' : 'Práctica'}
+            </div>
+          </div>
+
+          <div style={progressTrack}>
+            <div
+              style={{
+                ...progressFill,
+                width: `${stats.progress}%`,
+              }}
             />
-            Mostrar solo evaluaciones próximas
-          </label>
-        </div>
-      </div>
-
-      <div style={layout}>
-        <div style={mainColumn}>
-          <div style={card}>
-            <h3 style={sectionTitle}>🔥 Riesgo por asignatura</h3>
-
-            {predictions.length === 0 ? (
-              <div style={emptyText}>
-                No hay datos suficientes para generar predicciones.
-              </div>
-            ) : (
-              <div style={list}>
-                {predictions.map((item) => (
-                  <div
-                    key={item.subject}
-                    style={{
-                      ...listItem,
-                      borderLeft: `5px solid ${getSubjectColor(item.subject)}`,
-                    }}
-                  >
-                    <div style={rowBetween}>
-                      <div>
-                        <div style={listTitle}>{item.subject}</div>
-                        <div style={listMeta}>
-                          {item.total} evaluación(es) · {item.upcoming} próximas ·{' '}
-                          {item.urgent} urgentes
-                        </div>
-                      </div>
-
-                      <div style={riskBadge(item.riskLevel)}>
-                        Riesgo {item.riskLevel}
-                      </div>
-                    </div>
-
-                    <div style={progressTrack}>
-                      <div
-                        style={{
-                          ...progressFill,
-                          width: `${Math.min(100, item.score)}%`,
-                        }}
-                      />
-                    </div>
-
-                    <div style={listMeta}>
-                      Score: {item.score} · Peso promedio: {item.averageWeight}%
-                    </div>
-
-                    <div style={recommendationBox}>{item.recommendation}</div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div style={sideColumn}>
-          <div style={card}>
-            <h3 style={sectionTitle}>📅 Evaluaciones consideradas</h3>
-
-            {orderedEvaluations.length === 0 ? (
-              <div style={emptyText}>No hay evaluaciones en este filtro.</div>
-            ) : (
-              <div style={list}>
-                {orderedEvaluations.slice(0, 10).map((evaluation) => {
-                  const subject = evaluation.subject || 'General'
-                  const days = daysUntil(getEvaluationDate(evaluation))
-
-                  return (
-                    <div
-                      key={evaluation.id}
-                      style={{
-                        ...compactItem,
-                        borderLeft: `4px solid ${getSubjectColor(subject)}`,
-                      }}
-                    >
-                      <div style={listTitle}>
-                        {subject} · {evaluation.type || 'Evaluación'}
-                      </div>
-
-                      <div style={listMeta}>
-                        {evaluation.topic || 'Sin tema'} ·{' '}
-                        {formatDate(getEvaluationDate(evaluation))}
-                      </div>
-
-                      <div style={listMeta}>
-                        {days <= 0
-                          ? 'Hoy o vencida'
-                          : `Faltan ${days} día(s)`}{' '}
-                        · Peso: {evaluation.weight_percent ?? 0}%
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
           </div>
 
-          <div style={card}>
-            <h3 style={sectionTitle}>🧠 Lectura rápida</h3>
+          <h3 style={questionTitle}>{currentQuestion.pregunta}</h3>
 
-            {highestRisk ? (
-              <div style={emptyText}>
-                Tu mayor prioridad ahora es <strong>{highestRisk.subject}</strong>.
-                {' '}Conviene empezar por evaluaciones cercanas y de mayor peso.
-              </div>
-            ) : (
-              <div style={emptyText}>
-                Agrega evaluaciones para activar el análisis predictivo.
-              </div>
-            )}
+          <div style={optionsGrid}>
+            {(currentQuestion.opciones ?? []).map((option) => {
+              const letter = option.trim().slice(0, 1)
+              const isSelected = selectedAnswer === letter
+              const isCorrect = currentQuestion.respuesta_correcta === letter
+
+              let optionStyle: React.CSSProperties = optionButton
+
+              if (selectedAnswer && isCorrect) {
+                optionStyle = {
+                  ...optionButton,
+                  ...correctOption,
+                }
+              }
+
+              if (selectedAnswer && isSelected && !isCorrect) {
+                optionStyle = {
+                  ...optionButton,
+                  ...wrongOption,
+                }
+              }
+
+              return (
+                <button
+                  key={option}
+                  onClick={() => handleAnswer(letter)}
+                  disabled={Boolean(selectedAnswer)}
+                  style={optionStyle}
+                >
+                  {option}
+                </button>
+              )
+            })}
           </div>
+
+          {selectedAnswer && (
+            <div
+              style={{
+                ...feedbackBox,
+                ...(answerState === 'correct'
+                  ? feedbackCorrect
+                  : feedbackIncorrect),
+              }}
+            >
+              <div style={feedbackTitle}>
+                {answerState === 'correct'
+                  ? '✅ Correcta'
+                  : '❌ Incorrecta'}
+              </div>
+
+              <div style={feedbackText}>
+                Respuesta correcta: <strong>{currentQuestion.respuesta_correcta}</strong>
+              </div>
+
+              {currentQuestion.explicacion && (
+                <div style={feedbackText}>{currentQuestion.explicacion}</div>
+              )}
+
+              {currentQuestion.error_comun && (
+                <div style={warningBox}>
+                  Error común: {currentQuestion.error_comun}
+                </div>
+              )}
+
+              <button
+                onClick={nextQuestion}
+                disabled={currentIndex >= questions.length - 1}
+                style={button}
+              >
+                {currentIndex >= questions.length - 1
+                  ? 'Terminaste'
+                  : 'Siguiente'}
+              </button>
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   )
 }
@@ -421,41 +430,6 @@ function Stat({ label, value }: { label: string; value: string | number }) {
   )
 }
 
-function riskBadge(risk: RiskLevel): React.CSSProperties {
-  const base: React.CSSProperties = {
-    padding: '7px 10px',
-    borderRadius: '999px',
-    fontWeight: 800,
-    fontSize: '0.82rem',
-    whiteSpace: 'nowrap',
-  }
-
-  if (risk === 'alto') {
-    return {
-      ...base,
-      background: 'rgba(239,68,68,0.16)',
-      color: '#fecaca',
-      border: '1px solid rgba(239,68,68,0.30)',
-    }
-  }
-
-  if (risk === 'medio') {
-    return {
-      ...base,
-      background: 'rgba(245,158,11,0.16)',
-      color: '#fde68a',
-      border: '1px solid rgba(245,158,11,0.30)',
-    }
-  }
-
-  return {
-    ...base,
-    background: 'rgba(34,197,94,0.16)',
-    color: '#bbf7d0',
-    border: '1px solid rgba(34,197,94,0.30)',
-  }
-}
-
 const container: React.CSSProperties = {
   display: 'grid',
   gap: '18px',
@@ -465,9 +439,10 @@ const container: React.CSSProperties = {
 
 const heroCard: React.CSSProperties = {
   padding: '20px',
-  borderRadius: '20px',
-  background: 'rgba(255,255,255,0.05)',
-  border: '1px solid rgba(255,255,255,0.10)',
+  borderRadius: '22px',
+  background:
+    'linear-gradient(135deg, rgba(37,99,235,0.24), rgba(147,51,234,0.16))',
+  border: '1px solid rgba(255,255,255,0.12)',
   display: 'flex',
   justifyContent: 'space-between',
   gap: '16px',
@@ -477,12 +452,15 @@ const heroCard: React.CSSProperties = {
 
 const title: React.CSSProperties = {
   margin: 0,
+  fontSize: '1.7rem',
+  fontWeight: 950,
 }
 
 const subtitle: React.CSSProperties = {
   marginTop: '8px',
   opacity: 0.78,
   lineHeight: 1.5,
+  maxWidth: '680px',
 }
 
 const actions: React.CSSProperties = {
@@ -492,22 +470,22 @@ const actions: React.CSSProperties = {
 }
 
 const button: React.CSSProperties = {
-  padding: '11px 14px',
-  borderRadius: '12px',
+  padding: '11px 15px',
+  borderRadius: '13px',
   border: 'none',
   background: '#2563eb',
   color: 'white',
-  fontWeight: 800,
+  fontWeight: 900,
   cursor: 'pointer',
 }
 
 const secondaryButton: React.CSSProperties = {
-  padding: '11px 14px',
-  borderRadius: '12px',
-  border: '1px solid rgba(255,255,255,0.12)',
-  background: 'rgba(255,255,255,0.06)',
+  padding: '11px 15px',
+  borderRadius: '13px',
+  border: '1px solid rgba(255,255,255,0.14)',
+  background: 'rgba(255,255,255,0.07)',
   color: 'white',
-  fontWeight: 700,
+  fontWeight: 800,
   cursor: 'pointer',
 }
 
@@ -519,9 +497,9 @@ const statsGrid: React.CSSProperties = {
 
 const statCard: React.CSSProperties = {
   padding: '16px',
-  borderRadius: '16px',
-  background: 'rgba(255,255,255,0.05)',
-  border: '1px solid rgba(255,255,255,0.10)',
+  borderRadius: '18px',
+  background: 'rgba(255,255,255,0.055)',
+  border: '1px solid rgba(255,255,255,0.11)',
 }
 
 const statLabel: React.CSSProperties = {
@@ -531,22 +509,21 @@ const statLabel: React.CSSProperties = {
 
 const statValue: React.CSSProperties = {
   marginTop: '8px',
-  fontSize: '1.4rem',
-  fontWeight: 900,
+  fontSize: '1.45rem',
+  fontWeight: 950,
 }
 
 const card: React.CSSProperties = {
   padding: '18px',
-  borderRadius: '18px',
-  background: 'rgba(255,255,255,0.05)',
-  border: '1px solid rgba(255,255,255,0.10)',
+  borderRadius: '20px',
+  background: 'rgba(255,255,255,0.055)',
+  border: '1px solid rgba(255,255,255,0.11)',
 }
 
 const filterGrid: React.CSSProperties = {
   display: 'grid',
-  gridTemplateColumns: '1fr auto',
+  gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
   gap: '14px',
-  alignItems: 'end',
 }
 
 const field: React.CSSProperties = {
@@ -555,42 +532,23 @@ const field: React.CSSProperties = {
 }
 
 const label: React.CSSProperties = {
-  fontWeight: 800,
+  fontWeight: 850,
+  fontSize: '0.92rem',
 }
 
 const select: React.CSSProperties = {
-  padding: '11px',
-  borderRadius: '12px',
+  padding: '12px',
+  borderRadius: '13px',
   background: 'white',
   color: '#0f172a',
   border: 'none',
-}
-
-const checkRow: React.CSSProperties = {
-  display: 'flex',
-  gap: '8px',
-  alignItems: 'center',
-  opacity: 0.85,
-}
-
-const layout: React.CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: '1.2fr 0.8fr',
-  gap: '18px',
-}
-
-const mainColumn: React.CSSProperties = {
-  display: 'grid',
-  gap: '18px',
-}
-
-const sideColumn: React.CSSProperties = {
-  display: 'grid',
-  gap: '18px',
+  outline: 'none',
+  fontWeight: 700,
 }
 
 const sectionTitle: React.CSSProperties = {
   marginTop: 0,
+  fontWeight: 900,
 }
 
 const emptyText: React.CSSProperties = {
@@ -598,38 +556,45 @@ const emptyText: React.CSSProperties = {
   lineHeight: 1.55,
 }
 
-const list: React.CSSProperties = {
+const questionCard: React.CSSProperties = {
+  padding: '22px',
+  borderRadius: '24px',
+  background: 'rgba(255,255,255,0.06)',
+  border: '1px solid rgba(255,255,255,0.12)',
   display: 'grid',
-  gap: '12px',
+  gap: '18px',
 }
 
-const listItem: React.CSSProperties = {
-  padding: '14px',
-  borderRadius: '14px',
-  background: 'rgba(255,255,255,0.04)',
-}
-
-const compactItem: React.CSSProperties = {
-  padding: '12px',
-  borderRadius: '12px',
-  background: 'rgba(255,255,255,0.04)',
-}
-
-const rowBetween: React.CSSProperties = {
+const questionHeader: React.CSSProperties = {
   display: 'flex',
   justifyContent: 'space-between',
   gap: '12px',
-  alignItems: 'flex-start',
+  flexWrap: 'wrap',
 }
 
-const listTitle: React.CSSProperties = {
+const chips: React.CSSProperties = {
+  display: 'flex',
+  gap: '8px',
+  flexWrap: 'wrap',
+}
+
+const chip: React.CSSProperties = {
+  padding: '7px 10px',
+  borderRadius: '999px',
+  background: 'rgba(255,255,255,0.08)',
+  border: '1px solid rgba(255,255,255,0.10)',
+  fontSize: '0.82rem',
+  fontWeight: 800,
+}
+
+const modeBadge: React.CSSProperties = {
+  padding: '7px 11px',
+  borderRadius: '999px',
+  background: 'rgba(37,99,235,0.22)',
+  color: '#bfdbfe',
+  border: '1px solid rgba(37,99,235,0.30)',
   fontWeight: 900,
-}
-
-const listMeta: React.CSSProperties = {
-  marginTop: '6px',
-  opacity: 0.78,
-  lineHeight: 1.45,
+  fontSize: '0.82rem',
 }
 
 const progressTrack: React.CSSProperties = {
@@ -637,7 +602,6 @@ const progressTrack: React.CSSProperties = {
   borderRadius: '999px',
   background: 'rgba(255,255,255,0.08)',
   overflow: 'hidden',
-  marginTop: '12px',
 }
 
 const progressFill: React.CSSProperties = {
@@ -646,10 +610,72 @@ const progressFill: React.CSSProperties = {
   background: '#2563eb',
 }
 
-const recommendationBox: React.CSSProperties = {
-  marginTop: '12px',
+const questionTitle: React.CSSProperties = {
+  margin: 0,
+  fontSize: '1.35rem',
+  lineHeight: 1.45,
+  fontWeight: 950,
+}
+
+const optionsGrid: React.CSSProperties = {
+  display: 'grid',
+  gap: '12px',
+}
+
+const optionButton: React.CSSProperties = {
+  width: '100%',
+  padding: '15px',
+  borderRadius: '16px',
+  background: 'rgba(255,255,255,0.055)',
+  color: 'white',
+  border: '1px solid rgba(255,255,255,0.12)',
+  textAlign: 'left',
+  fontWeight: 750,
+  cursor: 'pointer',
+  lineHeight: 1.45,
+}
+
+const correctOption: React.CSSProperties = {
+  border: '1px solid rgba(34,197,94,0.75)',
+  background: 'rgba(34,197,94,0.16)',
+}
+
+const wrongOption: React.CSSProperties = {
+  border: '1px solid rgba(239,68,68,0.75)',
+  background: 'rgba(239,68,68,0.16)',
+}
+
+const feedbackBox: React.CSSProperties = {
+  display: 'grid',
+  gap: '10px',
+  padding: '16px',
+  borderRadius: '18px',
+  border: '1px solid rgba(255,255,255,0.12)',
+}
+
+const feedbackCorrect: React.CSSProperties = {
+  background: 'rgba(34,197,94,0.12)',
+}
+
+const feedbackIncorrect: React.CSSProperties = {
+  background: 'rgba(239,68,68,0.12)',
+}
+
+const feedbackTitle: React.CSSProperties = {
+  fontWeight: 950,
+  fontSize: '1.05rem',
+}
+
+const feedbackText: React.CSSProperties = {
+  opacity: 0.86,
+  lineHeight: 1.55,
+}
+
+const warningBox: React.CSSProperties = {
   padding: '10px',
   borderRadius: '12px',
-  background: 'rgba(59,130,246,0.10)',
+  background: 'rgba(245,158,11,0.14)',
+  border: '1px solid rgba(245,158,11,0.24)',
+  color: '#fde68a',
   lineHeight: 1.45,
 }
