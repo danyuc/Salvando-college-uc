@@ -60,6 +60,9 @@ export default function HomePage() {
         <button onClick={() => go('/banco')} style={btn}>📚 Banco</button>
         <button onClick={() => go('/pizarra')} style={btn}>✍️ Pizarra</button>
         <button onClick={() => go('/ranking')} style={btn}>🏆 Ranking</button>
+        <button onClick={() => go('/ensayo')} style={btn}>🧩 Práctica IA</button>
+        <button onClick={() => go('/riesgo')} style={btn}>⚠️ Riesgo</button>
+        <button onClick={() => go('/coach-semanal')} style={btn}>🧠 Coach semanal</button>
       </nav>
 
       <section style={panel}>
