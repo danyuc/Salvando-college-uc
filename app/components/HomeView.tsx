@@ -7,27 +7,46 @@ import { getMyProfile } from '@/lib/profile'
 
 type Evaluation = {
   id?: string
-  subject: string
-  title: string
-  type: string
-  date: string
-  weight: number
+  subject?: string | null
+  title?: string | null
+  type?: string | null
+  date?: string | null
+  weight?: number | null
   contents?: string | null
   start_time?: string | null
   end_time?: string | null
 }
 
-function daysUntil(date?: string | null) {
-  if (!date) return 999
-  const today = new Date()
+function getDaysLeft(date?: string | null) {
+  if (!date) return null
+
   const target = new Date(`${date}T00:00:00`)
+  if (Number.isNaN(target.getTime())) return null
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
   return Math.ceil((target.getTime() - today.getTime()) / 86400000)
 }
 
-function riskLevel(e: Evaluation) {
-  const days = daysUntil(e.date)
-  const weight = Number(e.weight || 0)
+function formatDate(date?: string | null) {
+  if (!date) return 'Sin fecha'
 
+  const parsed = new Date(`${date}T00:00:00`)
+  if (Number.isNaN(parsed.getTime())) return 'Sin fecha'
+
+  return parsed.toLocaleDateString('es-CL', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  })
+}
+
+function getRisk(evaluation: Evaluation) {
+  const days = getDaysLeft(evaluation.date)
+  const weight = Number(evaluation.weight || 0)
+
+  if (days === null) return 'sin datos'
   if (days < 0) return 'pasada'
   if (days <= 3 && weight >= 0.15) return 'alto'
   if (days <= 10 && weight >= 0.15) return 'medio'
@@ -35,27 +54,61 @@ function riskLevel(e: Evaluation) {
   return 'bajo'
 }
 
-function formatDate(date?: string | null) {
-  if (!date) return 'Sin fecha'
-  return new Date(`${date}T00:00:00`).toLocaleDateString('es-CL', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-  })
+function riskStyle(risk: string): CSSProperties {
+  const bg =
+    risk === 'alto'
+      ? 'rgba(239,68,68,.22)'
+      : risk === 'medio'
+        ? 'rgba(245,158,11,.22)'
+        : risk === 'bajo'
+          ? 'rgba(34,197,94,.18)'
+          : 'rgba(148,163,184,.16)'
+
+  const color =
+    risk === 'alto'
+      ? '#fecaca'
+      : risk === 'medio'
+        ? '#fde68a'
+        : risk === 'bajo'
+          ? '#bbf7d0'
+          : '#cbd5e1'
+
+  return {
+    padding: '7px 11px',
+    borderRadius: 999,
+    background: bg,
+    color,
+    fontWeight: 900,
+    fontSize: 13,
+    textTransform: 'uppercase',
+    whiteSpace: 'nowrap',
+  }
+}
+
+function subjectColor(subject?: string | null) {
+  const s = (subject || '').toUpperCase()
+
+  if (s.includes('MAT')) return '#22c55e'
+  if (s.includes('PSI')) return '#ec4899'
+  if (s.includes('SOL') || s.includes('SOC')) return '#6366f1'
+  if (s.includes('IHI') || s.includes('HIS')) return '#f59e0b'
+  if (s.includes('CLG') || s.includes('SEM')) return '#a855f7'
+
+  return '#3b82f6'
 }
 
 export default function HomeView() {
   const router = useRouter()
 
+  const [loading, setLoading] = useState(true)
   const [username, setUsername] = useState('Cargando...')
   const [email, setEmail] = useState('')
-  const [career, setCareer] = useState('College Ciencias Sociales')
+  const [career, setCareer] = useState('College UC')
   const [year, setYear] = useState('1')
   const [evaluations, setEvaluations] = useState<Evaluation[]>([])
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function load() {
+    async function loadDashboard() {
       try {
         const { data } = await supabase.auth.getUser()
 
@@ -82,32 +135,52 @@ export default function HomeView() {
         const { data: evals, error } = await supabase
           .from('evaluations')
           .select('*')
+          .not('date', 'is', null)
+          .not('title', 'is', null)
+          .not('subject', 'is', null)
           .order('date', { ascending: true })
 
-        if (error) console.error(error)
+        if (error) throw error
+
         setEvaluations((evals || []) as Evaluation[])
+      } catch (error) {
+        console.error('HOME ERROR:', error)
       } finally {
         setLoading(false)
       }
     }
 
-    load()
+    loadDashboard()
   }, [router])
 
-  const upcoming = useMemo(
-    () => evaluations.filter((e) => daysUntil(e.date) >= 0).slice(0, 6),
-    [evaluations]
-  )
+  const validEvaluations = useMemo(() => {
+    return evaluations
+      .filter((e) => e.title && e.subject && e.date)
+      .filter((e) => getDaysLeft(e.date) !== null)
+      .sort((a, b) => {
+        const da = getDaysLeft(a.date) ?? 9999
+        const db = getDaysLeft(b.date) ?? 9999
+        return da - db
+      })
+  }, [evaluations])
+
+  const upcoming = useMemo(() => {
+    return validEvaluations.filter((e) => (getDaysLeft(e.date) ?? -1) >= 0)
+  }, [validEvaluations])
 
   const focus = useMemo(() => {
     return [...upcoming].sort((a, b) => {
-      const scoreA = (Number(a.weight) || 0) * 100 - daysUntil(a.date)
-      const scoreB = (Number(b.weight) || 0) * 100 - daysUntil(b.date)
+      const daysA = Math.max(getDaysLeft(a.date) ?? 999, 0)
+      const daysB = Math.max(getDaysLeft(b.date) ?? 999, 0)
+
+      const scoreA = Number(a.weight || 0) * 120 - daysA
+      const scoreB = Number(b.weight || 0) * 120 - daysB
+
       return scoreB - scoreA
     })[0]
   }, [upcoming])
 
-  const urgentCount = upcoming.filter((e) => riskLevel(e) === 'alto').length
+  const urgentCount = upcoming.filter((e) => getRisk(e) === 'alto').length
 
   async function logout() {
     await supabase.auth.signOut()
@@ -119,88 +192,167 @@ export default function HomeView() {
   }
 
   if (loading) {
-    return <main style={main}>Cargando dashboard...</main>
+    return (
+      <main style={main}>
+        <section style={loadingCard}>Cargando dashboard académico...</section>
+      </main>
+    )
   }
 
   return (
     <main style={main}>
       <section style={hero}>
         <div>
-          <p style={pill}>Salvando College UC</p>
-          <h1 style={title}>Hola, {username}</h1>
-          <p style={subtitle}>{career} · {year}° semestre</p>
+          <div style={brand}>Salvando College UC</div>
+          <h1 style={heroTitle}>Hola, {username}</h1>
+          <p style={heroSubtitle}>
+            {career} · {year}° semestre
+          </p>
           {email && <p style={emailText}>{email}</p>}
         </div>
 
-        <button onClick={logout} style={logoutBtn}>Cerrar sesión</button>
+        <button onClick={logout} style={logoutButton}>
+          Cerrar sesión
+        </button>
       </section>
 
       <nav style={nav}>
-        <button style={activeBtn} onClick={() => go('/')}>🏠 Home</button>
-        <button style={btn} onClick={() => go('/ensayo')}>🧩 Práctica IA</button>
-        <button style={btn} onClick={() => go('/banco')}>📚 Banco</button>
-        <button style={btn} onClick={() => go('/riesgo')}>⚠️ Riesgo</button>
-        <button style={btn} onClick={() => go('/coach-semanal')}>🧠 Coach semanal</button>
-        <button style={btn} onClick={() => go('/ranking')}>🏆 Ranking</button>
+        <button onClick={() => go('/')} style={activeNav}>
+          🏠 Home
+        </button>
+        <button onClick={() => go('/ensayo')} style={navBtn}>
+          🧩 Práctica
+        </button>
+        <button onClick={() => go('/banco')} style={navBtn}>
+          📚 Banco
+        </button>
+        <button onClick={() => go('/riesgo')} style={navBtn}>
+          ⚠️ Riesgo
+        </button>
+        <button onClick={() => go('/coach-semanal')} style={navBtn}>
+          🧠 Coach
+        </button>
+        <button onClick={() => go('/ranking')} style={navBtn}>
+          🏆 Ranking
+        </button>
       </nav>
 
-      <section style={panel}>
+      <section style={summaryCard}>
         <div>
-          <h2 style={panelTitle}>Panel central de estudio UC</h2>
+          <h2 style={sectionTitle}>Panel académico inteligente</h2>
           <p style={muted}>
-            Evaluaciones reales, foco del día, práctica inteligente y riesgo académico.
+            Fechas reales, ponderaciones, temarios detallados y prioridad de estudio.
           </p>
         </div>
 
-        <div style={stats}>
-          <div style={stat}>Evaluaciones: {evaluations.length}</div>
-          <div style={stat}>Próximas: {upcoming.length}</div>
-          <div style={stat}>Urgentes: {urgentCount}</div>
+        <div style={statsGrid}>
+          <div style={statBox}>
+            <span>Evaluaciones</span>
+            <strong>{validEvaluations.length}</strong>
+          </div>
+          <div style={statBox}>
+            <span>Próximas</span>
+            <strong>{upcoming.length}</strong>
+          </div>
+          <div style={statBox}>
+            <span>Urgentes</span>
+            <strong>{urgentCount}</strong>
+          </div>
         </div>
       </section>
 
-      <section style={grid}>
-        <article style={card}>
-          <h3>🔥 Foco del día</h3>
+      <section style={contentGrid}>
+        <article style={focusCard}>
+          <div style={cardTop}>
+            <h3 style={cardTitle}>🔥 Foco del día</h3>
+            {focus && <span style={riskStyle(getRisk(focus))}>{getRisk(focus)}</span>}
+          </div>
+
           {focus ? (
             <>
-              <h2>{focus.subject} · {focus.title}</h2>
-              <p style={muted}>{formatDate(focus.date)} · faltan {daysUntil(focus.date)} día(s)</p>
-              <p style={muted}>Ponderación: {(Number(focus.weight) * 100).toFixed(1)}%</p>
-              <p style={muted}>{focus.contents}</p>
-              <button style={primaryBtn} onClick={() => go('/ensayo')}>
-                Practicar este foco
+              <h2 style={focusTitle}>
+                {focus.subject} · {focus.title}
+              </h2>
+
+              <p style={muted}>
+                📅 {formatDate(focus.date)} · faltan {getDaysLeft(focus.date)} día(s)
+              </p>
+
+              <p style={muted}>
+                📊 Ponderación: {(Number(focus.weight || 0) * 100).toFixed(1)}%
+              </p>
+
+              {focus.start_time && (
+                <p style={muted}>
+                  🕒 {focus.start_time}
+                  {focus.end_time ? ` a ${focus.end_time}` : ''}
+                </p>
+              )}
+
+              {focus.contents && <p style={contentsText}>{focus.contents}</p>}
+
+              <button onClick={() => go('/ensayo')} style={primaryButton}>
+                Practicar ahora
               </button>
             </>
           ) : (
-            <p style={muted}>No hay evaluaciones próximas registradas.</p>
+            <p style={muted}>No hay evaluaciones próximas con fecha válida.</p>
           )}
         </article>
 
         <article style={card}>
-          <h3>⚠️ Riesgo académico</h3>
-          {upcoming.slice(0, 4).map((e) => (
-            <div key={e.id || e.title} style={mini}>
-              <strong>{e.subject} · {e.title}</strong>
-              <p style={muted}>{formatDate(e.date)} · riesgo {riskLevel(e)}</p>
-            </div>
-          ))}
+          <h3 style={cardTitle}>⚠️ Riesgo académico</h3>
+
+          {upcoming.length === 0 ? (
+            <p style={muted}>Sin evaluaciones próximas.</p>
+          ) : (
+            upcoming.slice(0, 4).map((e) => (
+              <div
+                key={e.id || `${e.subject}-${e.title}`}
+                style={{
+                  ...miniCard,
+                  borderLeft: `4px solid ${subjectColor(e.subject)}`,
+                }}
+              >
+                <div style={miniHeader}>
+                  <strong>
+                    {e.subject} · {e.title}
+                  </strong>
+                  <span style={riskStyle(getRisk(e))}>{getRisk(e)}</span>
+                </div>
+                <p style={muted}>
+                  {formatDate(e.date)} · {(Number(e.weight || 0) * 100).toFixed(1)}%
+                </p>
+              </div>
+            ))
+          )}
         </article>
 
         <article style={wideCard}>
-          <h3>📅 Próximas evaluaciones</h3>
+          <h3 style={cardTitle}>📅 Próximas evaluaciones</h3>
+
           {upcoming.length === 0 ? (
-            <p style={muted}>No hay evaluaciones registradas.</p>
+            <p style={muted}>No hay evaluaciones próximas cargadas.</p>
           ) : (
-            upcoming.map((e) => (
-              <div key={e.id || `${e.subject}-${e.title}`} style={evalCard}>
+            upcoming.slice(0, 8).map((e) => (
+              <div
+                key={e.id || `${e.subject}-${e.title}`}
+                style={{
+                  ...evaluationRow,
+                  borderLeft: `5px solid ${subjectColor(e.subject)}`,
+                }}
+              >
                 <div>
-                  <strong>{e.subject} · {e.title}</strong>
-                  <p style={muted}>{e.contents}</p>
+                  <strong style={evaluationTitle}>
+                    {e.subject} · {e.title}
+                  </strong>
+                  <p style={muted}>{e.contents || 'Sin temario detallado.'}</p>
                 </div>
+
                 <div style={dateBox}>
                   <strong>{formatDate(e.date)}</strong>
-                  <span>{(Number(e.weight) * 100).toFixed(1)}%</span>
+                  <span>{getDaysLeft(e.date)} día(s)</span>
+                  <span>{(Number(e.weight || 0) * 100).toFixed(1)}%</span>
                 </div>
               </div>
             ))
@@ -208,18 +360,21 @@ export default function HomeView() {
         </article>
 
         <article style={card}>
-          <h3>🧠 Coach semanal</h3>
+          <h3 style={cardTitle}>🧠 Coach semanal</h3>
+
           {focus ? (
-            <p style={muted}>
-              Esta semana prioriza {focus.subject}: {focus.title}. Parte por leer el temario,
-              luego haz práctica y termina corrigiendo errores.
-            </p>
+            <>
+              <p style={muted}>
+                Esta semana prioriza <strong>{focus.subject}</strong>. Comienza con el
+                temario, luego práctica activa y termina revisando errores.
+              </p>
+              <button onClick={() => go('/coach-semanal')} style={primaryButton}>
+                Abrir coach
+              </button>
+            </>
           ) : (
             <p style={muted}>Sin foco semanal por ahora.</p>
           )}
-          <button style={primaryBtn} onClick={() => go('/coach-semanal')}>
-            Abrir coach
-          </button>
         </article>
       </section>
     </main>
@@ -228,91 +383,133 @@ export default function HomeView() {
 
 const main: CSSProperties = {
   minHeight: '100vh',
-  background: '#020617',
+  background:
+    'radial-gradient(circle at top left, rgba(37,99,235,.20), transparent 28%), linear-gradient(180deg,#020617,#070b18)',
   color: 'white',
   padding: 24,
   fontFamily: 'Arial, sans-serif',
 }
 
+const loadingCard: CSSProperties = {
+  padding: 24,
+  borderRadius: 24,
+  background: '#0f172a',
+  border: '1px solid rgba(255,255,255,.12)',
+}
+
 const hero: CSSProperties = {
   display: 'flex',
   justifyContent: 'space-between',
-  gap: 16,
+  alignItems: 'center',
+  gap: 20,
   flexWrap: 'wrap',
-  padding: 28,
-  borderRadius: 28,
-  background: 'linear-gradient(135deg,#0f172a,#111827)',
-  border: '1px solid rgba(255,255,255,.12)',
+  padding: 30,
+  borderRadius: 30,
+  background:
+    'linear-gradient(135deg, rgba(15,23,42,.96), rgba(30,41,59,.84))',
+  border: '1px solid rgba(255,255,255,.14)',
+  boxShadow: '0 24px 80px rgba(0,0,0,.35)',
   marginBottom: 20,
 }
 
-const pill: CSSProperties = {
+const brand: CSSProperties = {
   display: 'inline-block',
-  padding: '7px 12px',
+  padding: '8px 14px',
   borderRadius: 999,
   background: '#2563eb',
   fontWeight: 900,
+  marginBottom: 14,
 }
 
-const title: CSSProperties = { margin: '14px 0 0', fontSize: 34 }
-const subtitle: CSSProperties = { color: '#cbd5e1', fontSize: 18 }
-const emailText: CSSProperties = { color: '#94a3b8', fontSize: 14 }
-
-const nav: CSSProperties = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  gap: 12,
-  marginBottom: 24,
+const heroTitle: CSSProperties = {
+  margin: 0,
+  fontSize: 40,
+  letterSpacing: '-0.04em',
 }
 
-const btn: CSSProperties = {
-  padding: '13px 16px',
-  borderRadius: 14,
-  border: '1px solid rgba(255,255,255,.14)',
-  background: '#111827',
+const heroSubtitle: CSSProperties = {
+  margin: '10px 0 0',
+  color: '#cbd5e1',
+  fontSize: 18,
+}
+
+const emailText: CSSProperties = {
+  margin: '6px 0 0',
+  color: '#94a3b8',
+  fontSize: 14,
+}
+
+const logoutButton: CSSProperties = {
+  padding: '16px 20px',
+  borderRadius: 18,
+  border: 'none',
+  background: '#4c1d2f',
   color: 'white',
-  fontWeight: 800,
+  fontWeight: 900,
   cursor: 'pointer',
 }
 
-const activeBtn: CSSProperties = { ...btn, background: '#2563eb' }
-
-const logoutBtn: CSSProperties = {
-  ...btn,
-  background: '#4c1d2f',
-  border: 'none',
+const nav: CSSProperties = {
+  display: 'flex',
+  gap: 12,
+  flexWrap: 'wrap',
+  marginBottom: 24,
 }
 
-const panel: CSSProperties = {
+const navBtn: CSSProperties = {
+  padding: '14px 18px',
+  borderRadius: 16,
+  border: '1px solid rgba(255,255,255,.14)',
+  background: '#111827',
+  color: 'white',
+  fontWeight: 900,
+  cursor: 'pointer',
+}
+
+const activeNav: CSSProperties = {
+  ...navBtn,
+  background: '#2563eb',
+}
+
+const summaryCard: CSSProperties = {
   display: 'flex',
   justifyContent: 'space-between',
+  gap: 20,
   flexWrap: 'wrap',
-  gap: 16,
   padding: 24,
-  borderRadius: 24,
+  borderRadius: 26,
   background: '#0f172a',
   border: '1px solid rgba(255,255,255,.12)',
   marginBottom: 24,
 }
 
-const panelTitle: CSSProperties = { margin: 0 }
+const sectionTitle: CSSProperties = {
+  margin: 0,
+}
 
-const stats: CSSProperties = {
+const muted: CSSProperties = {
+  color: '#cbd5e1',
+  lineHeight: 1.55,
+}
+
+const statsGrid: CSSProperties = {
   display: 'flex',
   gap: 12,
   flexWrap: 'wrap',
 }
 
-const stat: CSSProperties = {
-  padding: '12px 14px',
-  borderRadius: 14,
+const statBox: CSSProperties = {
+  minWidth: 115,
+  padding: '14px 16px',
+  borderRadius: 18,
   background: '#1e293b',
-  fontWeight: 900,
+  display: 'grid',
+  gap: 4,
 }
 
-const grid: CSSProperties = {
+const contentGrid: CSSProperties = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
   gap: 18,
 }
 
@@ -323,48 +520,83 @@ const card: CSSProperties = {
   border: '1px solid rgba(255,255,255,.12)',
 }
 
+const focusCard: CSSProperties = {
+  ...card,
+  background:
+    'linear-gradient(145deg, rgba(15,23,42,.96), rgba(30,41,59,.88))',
+}
+
 const wideCard: CSSProperties = {
   ...card,
   gridColumn: '1 / -1',
 }
 
-const mini: CSSProperties = {
-  padding: 14,
-  borderRadius: 14,
-  background: '#111827',
-  marginTop: 10,
-}
-
-const evalCard: CSSProperties = {
+const cardTop: CSSProperties = {
   display: 'flex',
   justifyContent: 'space-between',
-  gap: 16,
+  gap: 12,
+  alignItems: 'center',
   flexWrap: 'wrap',
-  padding: 16,
+}
+
+const cardTitle: CSSProperties = {
+  margin: 0,
+}
+
+const focusTitle: CSSProperties = {
+  fontSize: 24,
+  marginBottom: 8,
+}
+
+const contentsText: CSSProperties = {
+  color: '#e2e8f0',
+  lineHeight: 1.6,
+  marginTop: 14,
+}
+
+const primaryButton: CSSProperties = {
+  marginTop: 14,
+  padding: '13px 16px',
   borderRadius: 16,
-  background: '#111827',
-  marginTop: 12,
-}
-
-const dateBox: CSSProperties = {
-  minWidth: 150,
-  display: 'grid',
-  gap: 6,
-  color: '#bfdbfe',
-}
-
-const muted: CSSProperties = {
-  color: '#cbd5e1',
-  lineHeight: 1.5,
-}
-
-const primaryBtn: CSSProperties = {
-  marginTop: 12,
-  padding: '12px 15px',
-  borderRadius: 14,
   border: 'none',
   background: '#2563eb',
   color: 'white',
   fontWeight: 900,
   cursor: 'pointer',
+}
+
+const miniCard: CSSProperties = {
+  marginTop: 12,
+  padding: 14,
+  borderRadius: 16,
+  background: '#111827',
+}
+
+const miniHeader: CSSProperties = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  gap: 10,
+  flexWrap: 'wrap',
+}
+
+const evaluationRow: CSSProperties = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  gap: 18,
+  flexWrap: 'wrap',
+  padding: 16,
+  borderRadius: 18,
+  background: '#111827',
+  marginTop: 12,
+}
+
+const evaluationTitle: CSSProperties = {
+  fontSize: 17,
+}
+
+const dateBox: CSSProperties = {
+  minWidth: 155,
+  display: 'grid',
+  gap: 6,
+  color: '#bfdbfe',
 }
