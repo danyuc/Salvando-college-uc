@@ -38,7 +38,7 @@ export default function EvaluationForm({
       setNumber(initialData.number ? String(initialData.number) : '')
       setTopic(initialData.topic || '')
       setStartDate(initialData.start_date || '')
-      setEndDate(initialData.end_date || '')
+      setEndDate(initialData.end_date || initialData.start_date || '')
       setDifficulty(initialData.difficulty || 'media')
       setNotes(initialData.notes || '')
       setGrade(
@@ -55,11 +55,25 @@ export default function EvaluationForm({
     }
   }, [initialData])
 
+  function handleStartDateChange(value: string) {
+    setStartDate(value)
+
+    // 🔥 AUTO COMPLETA FIN
+    if (!endDate) {
+      setEndDate(value)
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
-    if (!subject || !startDate || !endDate) {
+    if (!subject || !startDate) {
       alert('Completa los campos obligatorios')
+      return
+    }
+
+    if (endDate && endDate < startDate) {
+      alert('La fecha de fin no puede ser menor que la de inicio')
       return
     }
 
@@ -73,7 +87,7 @@ export default function EvaluationForm({
         number: number ? Number(number) : null,
         topic,
         start_date: startDate,
-        end_date: endDate,
+        end_date: endDate || startDate, // 🔥 SIEMPRE VALIDA
         difficulty,
         notes,
         grade: grade ? Number(grade) : null,
@@ -115,7 +129,7 @@ export default function EvaluationForm({
 
       <div style={grid}>
         <input
-          placeholder="Ramo (ej: Precálculo, Historia, Seminario)"
+          placeholder="Ramo (ej: Sociología)"
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
           style={input}
@@ -149,7 +163,7 @@ export default function EvaluationForm({
             <input
               type="date"
               value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
+              onChange={(e) => handleStartDateChange(e.target.value)}
               style={input}
             />
           </div>
@@ -220,7 +234,7 @@ export default function EvaluationForm({
   )
 }
 
-const form: React.CSSProperties = {
+const form = {
   display: 'grid',
   gap: '12px',
   padding: '18px',
@@ -228,12 +242,12 @@ const form: React.CSSProperties = {
   background: 'rgba(255,255,255,0.05)',
 }
 
-const grid: React.CSSProperties = {
+const grid = {
   display: 'grid',
   gap: '10px',
 }
 
-const input: React.CSSProperties = {
+const input = {
   padding: '10px',
   borderRadius: '10px',
   border: '1px solid rgba(255,255,255,0.1)',
@@ -241,28 +255,28 @@ const input: React.CSSProperties = {
   color: 'white',
 }
 
-const textarea: React.CSSProperties = {
+const textarea = {
   ...input,
   minHeight: '70px',
 }
 
-const dateRow: React.CSSProperties = {
+const dateRow = {
   display: 'flex',
   gap: '10px',
 }
 
-const dateCol: React.CSSProperties = {
+const dateCol = {
   flex: 1,
   display: 'grid',
   gap: '6px',
 }
 
-const label: React.CSSProperties = {
+const label = {
   fontSize: '0.8rem',
   opacity: 0.7,
 }
 
-const notesBlock: React.CSSProperties = {
+const notesBlock = {
   padding: '10px',
   borderRadius: '10px',
   background: 'rgba(59,130,246,0.1)',
@@ -270,12 +284,12 @@ const notesBlock: React.CSSProperties = {
   gap: '8px',
 }
 
-const actions: React.CSSProperties = {
+const actions = {
   display: 'flex',
   gap: '10px',
 }
 
-const button: React.CSSProperties = {
+const button = {
   padding: '10px 14px',
   borderRadius: '10px',
   border: 'none',
@@ -284,7 +298,7 @@ const button: React.CSSProperties = {
   cursor: 'pointer',
 }
 
-const secondary: React.CSSProperties = {
+const secondary = {
   ...button,
   background: '#64748b',
 }

@@ -50,19 +50,32 @@ function normalizeDay(day: string) {
   return day
 }
 
-function timeToMinutes(time: string) {
-  const [hours, minutes] = time.split(':').map(Number)
+function timeToMinutes(time?: string | null) {
+  if (!time || !time.includes(':')) return 0
+
+  const [hoursRaw, minutesRaw] = time.split(':')
+  const hours = Number(hoursRaw)
+  const minutes = Number(minutesRaw)
+
+  if (Number.isNaN(hours) || Number.isNaN(minutes)) return 0
+
   return hours * 60 + minutes
 }
 
-function diffMinutes(start: string, end: string) {
+function diffMinutes(start?: string | null, end?: string | null) {
   return Math.max(0, timeToMinutes(end) - timeToMinutes(start))
 }
 
-export function getWeekKey(date = safeDate()) {
+export function getWeekKey(dateInput?: string | Date | null) {
+  const date = safeDate(dateInput) ?? new Date()
+
   const year = date.getFullYear()
-  const firstDay = safeDate(year, 0, 1)
-  const days = Math.floor((date.getTime() - firstDay.getTime()) / 86400000)
+  const firstDay = new Date(year, 0, 1)
+
+  const days = Math.floor(
+    (date.getTime() - firstDay.getTime()) / 86400000
+  )
+
   const week = Math.ceil((days + firstDay.getDay() + 1) / 7)
 
   return `${year}-W${String(week).padStart(2, '0')}`
@@ -107,11 +120,11 @@ export function buildStudyCoachPlan(params: {
   const { evaluations, weaknesses, availability, subjects, weeklyHours } = params
 
   const ranked = rankRiskEvaluations(evaluations, weaknesses)
-  const totalWeeklyMinutes = weeklyHours * 60
+  const totalWeeklyMinutes = Math.max(0, weeklyHours * 60)
 
   const availableBlocks = availability
     .map((block) => ({
-      day: normalizeDay(block.day_of_week),
+      day: normalizeDay(block.day_of_week || ''),
       start: block.start_time,
       end: block.end_time,
       minutes: diffMinutes(block.start_time, block.end_time),
@@ -158,7 +171,7 @@ export function buildStudyCoachPlan(params: {
       reason: reasons.join(' · ') || 'repaso estratégico',
       priority: risk.riskScore,
       evaluationType: risk.type || 'Evaluación',
-      evaluationDate: risk.start_date,
+      evaluationDate: risk.start_date || '',
     })
 
     remainingMinutes -= minutes
