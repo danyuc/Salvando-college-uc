@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import { supabase } from '@/lib/supabase'
 import { getCurrentUser } from '../../lib/auth'
 import {
   bulkCreateEvaluations,
@@ -12,12 +13,65 @@ import { buildFullGradeAnalysis } from '../../lib/grade-engine'
 import { getStudyCoachPlan } from '../../lib/study-coach-storage'
 import { getWeekKey } from '../../lib/study-coach'
 import EvaluationForm from './EvaluationForm'
+import { safeDate } from '@/lib/utils/date'
 
 type ViewMode = 'list' | 'summary'
 
+function getEvaluationDate(evaluation: any) {
+  return evaluation.start_date ?? evaluation.end_date ?? evaluation.date ?? null
+}
+
+function getEvaluationEndDate(evaluation: any) {
+  return evaluation.end_date ?? evaluation.start_date ?? evaluation.date ?? null
+}
+
+function getEvaluationTitle(evaluation: any) {
+  return evaluation.topic ?? evaluation.title ?? evaluation.contents ?? 'Sin tema'
+}
+
+function getEvaluationWeight(evaluation: any) {
+  if (typeof evaluation.weight_percent === 'number') return evaluation.weight_percent
+  if (typeof evaluation.weight === 'number') return evaluation.weight * 100
+  return 0
+}
+
+function formatDate(value?: string | null) {
+  const date = safeDate(value)
+  if (!date) return 'Sin fecha'
+
+  return date.toLocaleDateString('es-CL', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  })
+}
+
+function daysUntil(value?: string | null) {
+  const date = safeDate(value)
+  if (!date) return null
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  return Math.ceil((date.getTime() - today.getTime()) / 86400000)
+}
+
+function orderEvaluations(evaluations: any[]) {
+  return [...evaluations].sort((a, b) => {
+    const aDate = safeDate(getEvaluationDate(a))
+    const bDate = safeDate(getEvaluationDate(b))
+
+    if (!aDate && !bDate) return 0
+    if (!aDate) return 1
+    if (!bDate) return -1
+
+    return aDate.getTime() - bDate.getTime()
+  })
+}
+
 export default function CalendarView() {
   const [userId, setUserId] = useState('')
-  const [evaluations, setEvaluations] = useState<Evaluation[]>([])
+  const [evaluations, setEvaluations] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [view, setView] = useState<ViewMode>('list')
   const [editingEvaluation, setEditingEvaluation] = useState<Evaluation | null>(null)
@@ -29,21 +83,35 @@ export default function CalendarView() {
   async function loadAll() {
     try {
       setLoading(true)
+
       const user = await getCurrentUser()
       if (!user) return
 
       setUserId(user.id)
 
-      const [evaluationsData, plan] = await Promise.all([
+      const [userEvaluations, plan] = await Promise.all([
         getUserEvaluations(user.id),
         getStudyCoachPlan(user.id, getWeekKey()),
       ])
 
-      setEvaluations(evaluationsData || [])
+      let finalEvaluations: any[] = userEvaluations || []
+
+      if (finalEvaluations.length === 0) {
+        const { data, error } = await supabase
+          .from('evaluations')
+          .select('*')
+          .order('date', { ascending: true })
+
+        if (!error && data) {
+          finalEvaluations = data
+        }
+      }
+
+      setEvaluations(finalEvaluations)
       setCoachBlocks(plan?.blocks || [])
       setCoachSummary(plan?.coach_summary || '')
     } catch (error) {
-      console.error(error)
+      console.error('CALENDAR LOAD ERROR:', error)
     } finally {
       setLoading(false)
     }
@@ -53,8 +121,20 @@ export default function CalendarView() {
     loadAll()
   }, [])
 
+  const orderedEvaluations = useMemo(
+    () => orderEvaluations(evaluations),
+    [evaluations]
+  )
+
+  const upcomingEvaluations = useMemo(() => {
+    return orderedEvaluations.filter((evaluation) => {
+      const days = daysUntil(getEvaluationDate(evaluation))
+      return days !== null && days >= 0
+    })
+  }, [orderedEvaluations])
+
   const gradeSummaries = useMemo(
-    () => buildFullGradeAnalysis(evaluations),
+    () => buildFullGradeAnalysis(evaluations as Evaluation[]),
     [evaluations]
   )
 
@@ -98,18 +178,7 @@ export default function CalendarView() {
             notes: null,
           }
         })
-        .filter(Boolean) as Array<{
-          user_id: string
-          subject: string
-          type: string
-          number: number | null
-          topic: string
-          start_date: string
-          end_date: string
-          weight_percent: number | null
-          difficulty: 'media'
-          notes: null
-        }>
+        .filter(Boolean) as any[]
 
       await bulkCreateEvaluations(items)
       setBulkText('')
@@ -128,7 +197,7 @@ export default function CalendarView() {
         <div>
           <h2 style={title}>Calendario y evaluaciones</h2>
           <p style={subtitle}>
-            Aquí puedes crear, editar, eliminar e importar evaluaciones.
+            Evaluaciones reales leídas desde Supabase, usando date/start_date/end_date.
           </p>
         </div>
 
@@ -146,6 +215,19 @@ export default function CalendarView() {
             Resumen
           </button>
         </div>
+      </div>
+
+      <div style={statsGrid}>
+        <Stat label="Total" value={orderedEvaluations.length} />
+        <Stat label="Próximas" value={upcomingEvaluations.length} />
+        <Stat
+          label="Más cercana"
+          value={
+            upcomingEvaluations[0]
+              ? formatDate(getEvaluationDate(upcomingEvaluations[0]))
+              : 'Sin datos'
+          }
+        />
       </div>
 
       <div style={layout}>
@@ -190,46 +272,67 @@ export default function CalendarView() {
 
             {loading ? (
               <div style={emptyText}>Cargando...</div>
-            ) : evaluations.length === 0 ? (
+            ) : orderedEvaluations.length === 0 ? (
               <div style={emptyText}>No hay evaluaciones todavía.</div>
             ) : (
               <div style={list}>
-                {evaluations.map((item) => (
-                  <div key={item.id} style={listItem}>
-                    <div style={listTop}>
-                      <div>
-                        <div style={listTitle}>
-                          {item.subject} · {item.type} {item.number ?? ''}
+                {orderedEvaluations.map((item) => {
+                  const start = getEvaluationDate(item)
+                  const end = getEvaluationEndDate(item)
+                  const days = daysUntil(start)
+
+                  return (
+                    <div key={item.id} style={listItem}>
+                      <div style={listTop}>
+                        <div>
+                          <div style={listTitle}>
+                            {item.subject || 'General'} · {item.type || 'Evaluación'}{' '}
+                            {item.number ?? ''}
+                          </div>
+
+                          <div style={listMeta}>
+                            {getEvaluationTitle(item)}
+                          </div>
+
+                          <div style={listMeta}>
+                            📅 {formatDate(start)}
+                            {end && end !== start ? ` → ${formatDate(end)}` : ''}
+                          </div>
+
+                          <div style={listMeta}>
+                            {days === null
+                              ? 'Sin fecha válida'
+                              : days < 0
+                              ? 'Ya pasó'
+                              : days === 0
+                              ? 'Es hoy'
+                              : `Faltan ${days} día(s)`}
+                          </div>
+
+                          <div style={listMeta}>
+                            Peso: {getEvaluationWeight(item).toFixed(1)}%
+                          </div>
                         </div>
 
-                        <div style={listMeta}>
-                          {item.topic || item.title || 'Sin tema'} · {item.start_date}
-                          {item.end_date !== item.start_date ? ` → ${item.end_date}` : ''}
+                        <div style={rowActions}>
+                          <button
+                            onClick={() => setEditingEvaluation(item)}
+                            style={editButton}
+                          >
+                            Editar
+                          </button>
+
+                          <button
+                            onClick={() => removeEvaluation(item.id)}
+                            style={deleteButton}
+                          >
+                            Eliminar
+                          </button>
                         </div>
-
-                        <div style={listMeta}>
-                          Peso: {item.weight_percent ?? 0}%
-                        </div>
-                      </div>
-
-                      <div style={rowActions}>
-                        <button
-                          onClick={() => setEditingEvaluation(item)}
-                          style={editButton}
-                        >
-                          Editar
-                        </button>
-
-                        <button
-                          onClick={() => removeEvaluation(item.id)}
-                          style={deleteButton}
-                        >
-                          Eliminar
-                        </button>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             )}
           </div>
@@ -306,6 +409,15 @@ export default function CalendarView() {
   )
 }
 
+function Stat({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div style={statCard}>
+      <div style={statLabel}>{label}</div>
+      <div style={statValue}>{value}</div>
+    </div>
+  )
+}
+
 const container: React.CSSProperties = {
   display: 'grid',
   gap: '18px',
@@ -327,6 +439,7 @@ const title: React.CSSProperties = {
 
 const subtitle: React.CSSProperties = {
   opacity: 0.75,
+  lineHeight: 1.5,
 }
 
 const controls: React.CSSProperties = {
@@ -346,6 +459,30 @@ const toggleButton: React.CSSProperties = {
 const activeToggleButton: React.CSSProperties = {
   ...toggleButton,
   background: '#2563eb',
+}
+
+const statsGrid: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+  gap: '12px',
+}
+
+const statCard: React.CSSProperties = {
+  padding: '16px',
+  borderRadius: '16px',
+  background: 'rgba(255,255,255,0.05)',
+  border: '1px solid rgba(255,255,255,0.10)',
+}
+
+const statLabel: React.CSSProperties = {
+  opacity: 0.72,
+  fontSize: '0.9rem',
+}
+
+const statValue: React.CSSProperties = {
+  marginTop: '8px',
+  fontSize: '1.3rem',
+  fontWeight: 900,
 }
 
 const layout: React.CSSProperties = {
@@ -430,6 +567,7 @@ const listTitle: React.CSSProperties = {
 const listMeta: React.CSSProperties = {
   marginTop: '6px',
   opacity: 0.78,
+  lineHeight: 1.45,
 }
 
 const rowActions: React.CSSProperties = {
