@@ -3,13 +3,18 @@ export function safeDate(
   month?: number,
   day?: number
 ): Date | null {
-  // Caso: safeDate(2024, 0, 1)
+  // Caso tipo: safeDate(2024, 0, 1)
   if (typeof value === 'number' && typeof month === 'number') {
-    const d = new Date(value, month, day ?? 1)
-    return Number.isNaN(d.getTime()) ? null : d
+    return new Date(value, month, day ?? 1)
   }
 
   if (!value) return null
+
+  // 🔥 FIX CRÍTICO: forzar hora local
+  if (typeof value === 'string' && value.length === 10) {
+    // formato YYYY-MM-DD
+    return new Date(value + 'T12:00:00')
+  }
 
   const date = new Date(value)
 

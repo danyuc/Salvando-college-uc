@@ -4,112 +4,163 @@ import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { getMyProfile } from '@/lib/profile'
+import { getUserEvaluations } from '@/lib/evaluations'
+import {
+  getUpcomingEvaluations,
+  getFocusEvaluation,
+  formatEvaluationDate,
+  getEvaluationDate,
+  getEvaluationTitle,
+  getEvaluationWeight,
+  getEvaluationRisk,
+} from '@/lib/academic/evaluation-utils'
 
 type Evaluation = {
   id?: string
   subject?: string | null
   title?: string | null
+  topic?: string | null
   type?: string | null
   date?: string | null
+  start_date?: string | null
+  end_date?: string | null
   weight?: number | null
+  weight_percent?: number | null
   contents?: string | null
-  start_time?: string | null
-  end_time?: string | null
+  notes?: string | null
+  days_left?: number | null
+  normalized_weight?: number
+  normalized_title?: string
+  risk_level?: string
 }
 
-function getDaysLeft(date?: string | null) {
-  if (!date) return null
-
-  const target = new Date(`${date}T00:00:00`)
-  if (Number.isNaN(target.getTime())) return null
-
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-
-  return Math.ceil((target.getTime() - today.getTime()) / 86400000)
-}
-
-function formatDate(date?: string | null) {
-  if (!date) return 'Sin fecha'
-
-  const parsed = new Date(`${date}T00:00:00`)
-  if (Number.isNaN(parsed.getTime())) return 'Sin fecha'
-
-  return parsed.toLocaleDateString('es-CL', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-  })
-}
-
-function getRisk(evaluation: Evaluation) {
-  const days = getDaysLeft(evaluation.date)
-  const weight = Number(evaluation.weight || 0)
-
-  if (days === null) return 'sin datos'
-  if (days < 0) return 'pasada'
-  if (days <= 3 && weight >= 0.15) return 'alto'
-  if (days <= 10 && weight >= 0.15) return 'medio'
-  if (days <= 14) return 'medio'
-  return 'bajo'
-}
-
-function riskStyle(risk: string): CSSProperties {
-  const bg =
-    risk === 'alto'
-      ? 'rgba(239,68,68,.22)'
-      : risk === 'medio'
-        ? 'rgba(245,158,11,.22)'
-        : risk === 'bajo'
-          ? 'rgba(34,197,94,.18)'
-          : 'rgba(148,163,184,.16)'
-
-  const color =
-    risk === 'alto'
-      ? '#fecaca'
-      : risk === 'medio'
-        ? '#fde68a'
-        : risk === 'bajo'
-          ? '#bbf7d0'
-          : '#cbd5e1'
-
-  return {
-    padding: '7px 11px',
-    borderRadius: 999,
-    background: bg,
-    color,
-    fontWeight: 900,
-    fontSize: 13,
-    textTransform: 'uppercase',
-    whiteSpace: 'nowrap',
-  }
+type Profile = {
+  username?: string | null
+  institutional_email?: string | null
+  career?: string | null
+  year?: number | string | null
 }
 
 function subjectColor(subject?: string | null) {
-  const s = (subject || '').toUpperCase()
+  const s = (subject || '').toLowerCase()
 
-  if (s.includes('MAT')) return '#22c55e'
-  if (s.includes('PSI')) return '#ec4899'
-  if (s.includes('SOL') || s.includes('SOC')) return '#6366f1'
-  if (s.includes('IHI') || s.includes('HIS')) return '#f59e0b'
-  if (s.includes('CLG') || s.includes('SEM')) return '#a855f7'
+  if (s.includes('socio')) return '#6366f1'
+  if (s.includes('pre') || s.includes('mat')) return '#22c55e'
+  if (s.includes('psico')) return '#ec4899'
+  if (s.includes('hist')) return '#f59e0b'
+  if (s.includes('seminario')) return '#a855f7'
 
   return '#3b82f6'
+}
+
+function riskLabel(risk?: string | null) {
+  if (risk === 'alto') return 'Alto'
+  if (risk === 'medio') return 'Medio'
+  if (risk === 'bajo') return 'Bajo'
+  if (risk === 'pasada') return 'Pasada'
+  return 'Sin datos'
+}
+
+function riskBadgeStyle(risk?: string | null): CSSProperties {
+  const base: CSSProperties = {
+    padding: '7px 11px',
+    borderRadius: 999,
+    fontSize: 12,
+    fontWeight: 900,
+    textTransform: 'uppercase',
+    whiteSpace: 'nowrap',
+  }
+
+  if (risk === 'alto') {
+    return {
+      ...base,
+      background: 'rgba(239,68,68,.18)',
+      color: '#fecaca',
+      border: '1px solid rgba(239,68,68,.35)',
+    }
+  }
+
+  if (risk === 'medio') {
+    return {
+      ...base,
+      background: 'rgba(245,158,11,.18)',
+      color: '#fde68a',
+      border: '1px solid rgba(245,158,11,.35)',
+    }
+  }
+
+  if (risk === 'bajo') {
+    return {
+      ...base,
+      background: 'rgba(34,197,94,.16)',
+      color: '#bbf7d0',
+      border: '1px solid rgba(34,197,94,.30)',
+    }
+  }
+
+  return {
+    ...base,
+    background: 'rgba(148,163,184,.14)',
+    color: '#cbd5e1',
+    border: '1px solid rgba(148,163,184,.25)',
+  }
+}
+
+function daysText(days?: number | null) {
+  if (days === null || days === undefined) return 'Sin fecha'
+  if (days < 0) return 'Ya pasó'
+  if (days === 0) return 'Hoy'
+  if (days === 1) return 'Mañana'
+  return `Faltan ${days} días`
+}
+
+function buildSubjectSummary(evaluations: any[]) {
+  const map = new Map<string, any[]>()
+
+  for (const ev of evaluations) {
+    const subject = ev.subject || 'General'
+    if (!map.has(subject)) map.set(subject, [])
+    map.get(subject)!.push(ev)
+  }
+
+  return [...map.entries()]
+    .map(([subject, items]) => {
+      const urgent = items.filter((e) => e.risk_level === 'alto').length
+      const totalWeight = items.reduce(
+        (sum, e) => sum + Number(e.normalized_weight || getEvaluationWeight(e) || 0),
+        0
+      )
+
+      return {
+        subject,
+        total: items.length,
+        urgent,
+        next: items[0],
+        totalWeight,
+        color: subjectColor(subject),
+      }
+    })
+    .sort((a, b) => {
+      if (b.urgent !== a.urgent) return b.urgent - a.urgent
+      return b.totalWeight - a.totalWeight
+    })
 }
 
 export default function HomeView() {
   const router = useRouter()
 
   const [loading, setLoading] = useState(true)
-  const [username, setUsername] = useState('Cargando...')
+  const [profile, setProfile] = useState<Profile | null>(null)
   const [email, setEmail] = useState('')
-  const [career, setCareer] = useState('College UC')
-  const [year, setYear] = useState('1')
   const [evaluations, setEvaluations] = useState<Evaluation[]>([])
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    async function loadDashboard() {
+    async function loadHome() {
       try {
+        setLoading(true)
+        setError('')
+
         const { data } = await supabase.auth.getUser()
 
         if (!data.user) {
@@ -117,70 +168,56 @@ export default function HomeView() {
           return
         }
 
-        const userEmail = data.user.email || ''
-        setEmail(userEmail)
+        setEmail(data.user.email || '')
 
-        const profile = await getMyProfile(data.user.id)
+        const [profileData, evaluationData] = await Promise.all([
+          getMyProfile(data.user.id),
+          getUserEvaluations(data.user.id),
+        ])
 
-        setUsername(
-          profile?.username ||
-            profile?.institutional_email?.split('@')[0] ||
-            userEmail.split('@')[0] ||
-            'Usuario UC'
-        )
-
-        if (profile?.career) setCareer(profile.career)
-        if (profile?.year) setYear(String(profile.year))
-
-        const { data: evals, error } = await supabase
-          .from('evaluations')
-          .select('*')
-          .not('date', 'is', null)
-          .not('title', 'is', null)
-          .not('subject', 'is', null)
-          .order('date', { ascending: true })
-
-        if (error) throw error
-
-        setEvaluations((evals || []) as Evaluation[])
-      } catch (error) {
-        console.error('HOME ERROR:', error)
+        setProfile(profileData || null)
+        setEvaluations((evaluationData || []) as Evaluation[])
+      } catch (err) {
+        console.error('HOME LOAD ERROR:', err)
+        setError('No se pudo cargar el panel académico.')
       } finally {
         setLoading(false)
       }
     }
 
-    loadDashboard()
+    loadHome()
   }, [router])
 
-  const validEvaluations = useMemo(() => {
-    return evaluations
-      .filter((e) => e.title && e.subject && e.date)
-      .filter((e) => getDaysLeft(e.date) !== null)
-      .sort((a, b) => {
-        const da = getDaysLeft(a.date) ?? 9999
-        const db = getDaysLeft(b.date) ?? 9999
-        return da - db
-      })
-  }, [evaluations])
+  const username =
+    profile?.username ||
+    profile?.institutional_email?.split('@')[0] ||
+    email.split('@')[0] ||
+    'Usuario UC'
 
-  const upcoming = useMemo(() => {
-    return validEvaluations.filter((e) => (getDaysLeft(e.date) ?? -1) >= 0)
-  }, [validEvaluations])
+  const career = profile?.career || 'College UC'
+  const year = profile?.year ? `${profile.year}° semestre` : 'Semestre activo'
 
-  const focus = useMemo(() => {
-    return [...upcoming].sort((a, b) => {
-      const daysA = Math.max(getDaysLeft(a.date) ?? 999, 0)
-      const daysB = Math.max(getDaysLeft(b.date) ?? 999, 0)
+  const upcoming = useMemo(
+    () => getUpcomingEvaluations(evaluations),
+    [evaluations]
+  )
 
-      const scoreA = Number(a.weight || 0) * 120 - daysA
-      const scoreB = Number(b.weight || 0) * 120 - daysB
+  const focus = useMemo(
+    () => getFocusEvaluation(evaluations),
+    [evaluations]
+  )
 
-      return scoreB - scoreA
-    })[0]
-  }, [upcoming])
+  const urgentCount = upcoming.filter((e: any) => getEvaluationRisk(e) === 'alto').length
+  const mediumCount = upcoming.filter((e: any) => getEvaluationRisk(e) === 'medio').length
+  const totalWeight = upcoming.reduce(
+    (sum: number, e: any) => sum + getEvaluationWeight(e),
+    0
+  )
 
-  const urgentCount = upcoming.filter((e) => getRisk(e) === 'alto').length
+  const subjectSummary = useMemo(
+    () => buildSubjectSummary(upcoming),
+    [upcoming]
+  )
 
   async function logout() {
     await supabase.auth.signOut()
@@ -194,7 +231,7 @@ export default function HomeView() {
   if (loading) {
     return (
       <main style={main}>
-        <section style={loadingCard}>Cargando dashboard académico...</section>
+        <section style={loadingCard}>Cargando panel UC...</section>
       </main>
     )
   }
@@ -202,13 +239,40 @@ export default function HomeView() {
   return (
     <main style={main}>
       <section style={hero}>
-        <div>
-          <div style={brand}>Salvando College UC</div>
+        <div style={heroContent}>
+          <div style={premiumPill}>Salvando College UC</div>
+
           <h1 style={heroTitle}>Hola, {username}</h1>
+
           <p style={heroSubtitle}>
-            {career} · {year}° semestre
+            {career} · {year}
           </p>
+
           {email && <p style={emailText}>{email}</p>}
+
+          <div style={heroActions}>
+            <button onClick={() => go('/ensayo')} style={primaryButton}>
+              Iniciar práctica
+            </button>
+
+            <button onClick={() => go('/calendario')} style={secondaryButton}>
+              Ver calendario
+            </button>
+          </div>
+        </div>
+
+        <div style={heroPanel}>
+          <div style={heroPanelLabel}>Estado académico</div>
+          <div style={heroPanelValue}>
+            {urgentCount > 0 ? 'Prioridad alta' : upcoming.length > 0 ? 'En seguimiento' : 'Sin fechas'}
+          </div>
+          <div style={heroPanelHint}>
+            {urgentCount > 0
+              ? 'Tienes evaluaciones urgentes que requieren acción hoy.'
+              : upcoming.length > 0
+              ? 'Hay evaluaciones próximas cargadas y listas para planificar.'
+              : 'Agrega evaluaciones para activar predicción, coach y foco diario.'}
+          </div>
         </div>
 
         <button onClick={logout} style={logoutButton}>
@@ -216,171 +280,249 @@ export default function HomeView() {
         </button>
       </section>
 
-       <nav style={nav}>
-         <button onClick={() => go('/')} style={activeNav}>🏠 Home</button>
-         <button onClick={() => go('/calendario')} style={navBtn}>📅 Calendario</button>
-         <button onClick={() => go('/ia')} style={navBtn}>🧠 IA</button>
-         <button onClick={() => go('/notas')} style={navBtn}>📊 Notas</button>
-         <button onClick={() => go('/disponibilidad')} style={navBtn}>⏱️ Disponibilidad</button>
-         <button onClick={() => go('/ensayo')} style={navBtn}>🧩 Práctica</button>
-         <button onClick={() => go('/banco')} style={navBtn}>📚 Banco</button>
-         <button onClick={() => go('/pizarra')} style={navBtn}>✍️ Pizarra</button>
-         <button onClick={() => go('/ranking')} style={navBtn}>🏆 Ranking</button>
-         <button onClick={() => go('/debilidades')} style={navBtn}>🎯 Debilidades</button>
-         <button onClick={() => go('/coach-semanal')} style={navBtn}>🧠 Coach</button>
-         <button onClick={() => go('/texto-pdf')} style={navBtn}>📄 Texto / PDF</button>
-        </nav>
+      {error && <section style={errorBox}>{error}</section>}
 
-      <section style={summaryCard}>
-        <div>
-          <h2 style={sectionTitle}>Panel académico inteligente</h2>
-          <p style={muted}>
-            Fechas reales, ponderaciones, temarios detallados y prioridad de estudio.
-          </p>
-        </div>
-
-        <div style={statsGrid}>
-          <div style={statBox}>
-            <span>Evaluaciones</span>
-            <strong>{validEvaluations.length}</strong>
-          </div>
-          <div style={statBox}>
-            <span>Próximas</span>
-            <strong>{upcoming.length}</strong>
-          </div>
-          <div style={statBox}>
-            <span>Urgentes</span>
-            <strong>{urgentCount}</strong>
-          </div>
-        </div>
+      <section style={statsGrid}>
+        <StatCard label="Evaluaciones próximas" value={upcoming.length} detail="con fecha válida" />
+        <StatCard label="Urgentes" value={urgentCount} detail="riesgo alto" />
+        <StatCard label="Riesgo medio" value={mediumCount} detail="requieren seguimiento" />
+        <StatCard label="Peso total próximo" value={`${totalWeight.toFixed(1)}%`} detail="ponderación acumulada" />
       </section>
 
       <section style={contentGrid}>
         <article style={focusCard}>
-          <div style={cardTop}>
-            <h3 style={cardTitle}>🔥 Foco del día</h3>
-            {focus && <span style={riskStyle(getRisk(focus))}>{getRisk(focus)}</span>}
+          <div style={cardHeader}>
+            <div>
+              <h2 style={cardTitle}>🔥 Foco del día</h2>
+              <p style={muted}>Prioridad calculada por fecha, peso y cercanía.</p>
+            </div>
+
+            {focus && (
+              <span style={riskBadgeStyle(getEvaluationRisk(focus))}>
+                {riskLabel(getEvaluationRisk(focus))}
+              </span>
+            )}
           </div>
 
           {focus ? (
-            <>
-              <h2 style={focusTitle}>
-                {focus.subject} · {focus.title}
-              </h2>
+            <div style={focusBody}>
+              <div
+                style={{
+                  ...subjectStripe,
+                  background: subjectColor(focus.subject),
+                }}
+              />
 
-              <p style={muted}>
-                📅 {formatDate(focus.date)} · faltan {getDaysLeft(focus.date)} día(s)
-              </p>
+              <div>
+                <h3 style={focusTitle}>
+                  {focus.subject} · {getEvaluationTitle(focus)}
+                </h3>
 
-              <p style={muted}>
-                📊 Ponderación: {(Number(focus.weight || 0) * 100).toFixed(1)}%
-              </p>
-
-              {focus.start_time && (
                 <p style={muted}>
-                  🕒 {focus.start_time}
-                  {focus.end_time ? ` a ${focus.end_time}` : ''}
+                  📅 {formatEvaluationDate(getEvaluationDate(focus))} ·{' '}
+                  {daysText((focus as any).days_left)}
                 </p>
-              )}
 
-              {focus.contents && <p style={contentsText}>{focus.contents}</p>}
+                <p style={muted}>
+                  📊 Ponderación: {getEvaluationWeight(focus).toFixed(1)}%
+                </p>
 
-              <button onClick={() => go('/ensayo')} style={primaryButton}>
-                Practicar ahora
-              </button>
-            </>
+                {(focus.contents || focus.notes) && (
+                  <p style={contentsText}>{focus.contents || focus.notes}</p>
+                )}
+
+                <div style={buttonRow}>
+                  <button onClick={() => go('/ensayo')} style={primaryButton}>
+                    Practicar este foco
+                  </button>
+
+                  <button onClick={() => go('/coach-semanal')} style={ghostButton}>
+                    Crear plan
+                  </button>
+                </div>
+              </div>
+            </div>
           ) : (
-            <p style={muted}>No hay evaluaciones próximas con fecha válida.</p>
+            <EmptyState
+              title="Sin foco por ahora"
+              text="Agrega una evaluación futura en Calendario para activar el foco del día."
+              action="Agregar evaluación"
+              onClick={() => go('/calendario')}
+            />
           )}
         </article>
 
         <article style={card}>
-          <h3 style={cardTitle}>⚠️ Riesgo académico</h3>
+          <div style={cardHeader}>
+            <h2 style={cardTitle}>⚠️ Riesgo por ramo</h2>
+          </div>
 
-          {upcoming.length === 0 ? (
-            <p style={muted}>Sin evaluaciones próximas.</p>
+          {subjectSummary.length === 0 ? (
+            <p style={muted}>Sin ramos próximos para analizar.</p>
           ) : (
-            upcoming.slice(0, 4).map((e) => (
-              <div
-                key={e.id || `${e.subject}-${e.title}`}
-                style={{
-                  ...miniCard,
-                  borderLeft: `4px solid ${subjectColor(e.subject)}`,
-                }}
-              >
-                <div style={miniHeader}>
-                  <strong>
-                    {e.subject} · {e.title}
-                  </strong>
-                  <span style={riskStyle(getRisk(e))}>{getRisk(e)}</span>
+            <div style={list}>
+              {subjectSummary.slice(0, 5).map((item) => (
+                <div key={item.subject} style={subjectItem}>
+                  <div style={{ ...subjectDot, background: item.color }} />
+                  <div style={{ flex: 1 }}>
+                    <strong>{item.subject}</strong>
+                    <p style={smallMuted}>
+                      {item.total} evaluación(es) · {item.urgent} urgente(s)
+                    </p>
+                  </div>
+                  <span style={riskBadgeStyle(item.urgent > 0 ? 'alto' : 'medio')}>
+                    {item.urgent > 0 ? 'Alto' : 'Medio'}
+                  </span>
                 </div>
-                <p style={muted}>
-                  {formatDate(e.date)} · {(Number(e.weight || 0) * 100).toFixed(1)}%
-                </p>
-              </div>
-            ))
+              ))}
+            </div>
           )}
         </article>
 
         <article style={wideCard}>
-          <h3 style={cardTitle}>📅 Próximas evaluaciones</h3>
+          <div style={cardHeader}>
+            <div>
+              <h2 style={cardTitle}>📅 Próximas evaluaciones</h2>
+              <p style={muted}>Calendario académico ordenado por cercanía.</p>
+            </div>
+
+            <button onClick={() => go('/calendario')} style={secondaryButton}>
+              Gestionar
+            </button>
+          </div>
 
           {upcoming.length === 0 ? (
-            <p style={muted}>No hay evaluaciones próximas cargadas.</p>
+            <EmptyState
+              title="No hay evaluaciones próximas"
+              text="Cuando agregues fechas, aparecerán aquí, en riesgo, coach y calendario."
+              action="Abrir calendario"
+              onClick={() => go('/calendario')}
+            />
           ) : (
-            upcoming.slice(0, 8).map((e) => (
-              <div
-                key={e.id || `${e.subject}-${e.title}`}
-                style={{
-                  ...evaluationRow,
-                  borderLeft: `5px solid ${subjectColor(e.subject)}`,
-                }}
-              >
-                <div>
-                  <strong style={evaluationTitle}>
-                    {e.subject} · {e.title}
-                  </strong>
-                  <p style={muted}>{e.contents || 'Sin temario detallado.'}</p>
-                </div>
+            <div style={evaluationList}>
+              {upcoming.slice(0, 8).map((e: any) => (
+                <div
+                  key={e.id || `${e.subject}-${getEvaluationTitle(e)}`}
+                  style={{
+                    ...evaluationCard,
+                    borderLeft: `5px solid ${subjectColor(e.subject)}`,
+                  }}
+                >
+                  <div>
+                    <div style={evaluationTop}>
+                      <strong style={evaluationTitle}>
+                        {e.subject} · {getEvaluationTitle(e)}
+                      </strong>
 
-                <div style={dateBox}>
-                  <strong>{formatDate(e.date)}</strong>
-                  <span>{getDaysLeft(e.date)} día(s)</span>
-                  <span>{(Number(e.weight || 0) * 100).toFixed(1)}%</span>
+                      <span style={riskBadgeStyle(getEvaluationRisk(e))}>
+                        {riskLabel(getEvaluationRisk(e))}
+                      </span>
+                    </div>
+
+                    <p style={muted}>
+                      {e.type || 'Evaluación'} · {formatEvaluationDate(getEvaluationDate(e))}
+                    </p>
+
+                    {(e.contents || e.notes) && (
+                      <p style={smallMuted}>{e.contents || e.notes}</p>
+                    )}
+                  </div>
+
+                  <div style={dateBox}>
+                    <strong>{daysText(e.days_left)}</strong>
+                    <span>{getEvaluationWeight(e).toFixed(1)}%</span>
+                  </div>
                 </div>
-              </div>
-            ))
+              ))}
+            </div>
           )}
         </article>
 
         <article style={card}>
-          <h3 style={cardTitle}>🧠 Coach semanal</h3>
+          <h2 style={cardTitle}>🧠 Coach semanal</h2>
+          <p style={muted}>
+            El coach usará tus fechas, disponibilidad, debilidades y ponderaciones
+            para sugerir bloques de estudio.
+          </p>
 
-          {focus ? (
-            <>
-              <p style={muted}>
-                Esta semana prioriza <strong>{focus.subject}</strong>. Comienza con el
-                temario, luego práctica activa y termina revisando errores.
-              </p>
-              <button onClick={() => go('/coach-semanal')} style={primaryButton}>
-                Abrir coach
-              </button>
-            </>
-          ) : (
-            <p style={muted}>Sin foco semanal por ahora.</p>
-          )}
+          <button onClick={() => go('/coach-semanal')} style={primaryButton}>
+            Abrir coach
+          </button>
+        </article>
+
+        <article style={card}>
+          <h2 style={cardTitle}>🎯 Diagnóstico inteligente</h2>
+          <p style={muted}>
+            Próximamente: detección automática de debilidades por tema, subtema y
+            nivel cognitivo.
+          </p>
+
+          <button onClick={() => go('/debilidades')} style={secondaryButton}>
+            Ver debilidades
+          </button>
+        </article>
+
+        <article style={card}>
+          <h2 style={cardTitle}>📚 Banco UC</h2>
+          <p style={muted}>
+            Banco de preguntas conectado a práctica, diagnóstico y ranking.
+          </p>
+
+          <button onClick={() => go('/banco')} style={secondaryButton}>
+            Abrir banco
+          </button>
         </article>
       </section>
     </main>
   )
 }
 
+function StatCard({
+  label,
+  value,
+  detail,
+}: {
+  label: string
+  value: string | number
+  detail: string
+}) {
+  return (
+    <div style={statCard}>
+      <span style={statLabel}>{label}</span>
+      <strong style={statValue}>{value}</strong>
+      <span style={statDetail}>{detail}</span>
+    </div>
+  )
+}
+
+function EmptyState({
+  title,
+  text,
+  action,
+  onClick,
+}: {
+  title: string
+  text: string
+  action: string
+  onClick: () => void
+}) {
+  return (
+    <div style={emptyState}>
+      <strong>{title}</strong>
+      <p style={muted}>{text}</p>
+      <button onClick={onClick} style={secondaryButton}>
+        {action}
+      </button>
+    </div>
+  )
+}
+
 const main: CSSProperties = {
   minHeight: '100vh',
-  background:
-    'radial-gradient(circle at top left, rgba(37,99,235,.20), transparent 28%), linear-gradient(180deg,#020617,#070b18)',
-  color: 'white',
   padding: 24,
+  color: 'white',
+  background:
+    'radial-gradient(circle at top left, rgba(37,99,235,.20), transparent 28%), radial-gradient(circle at top right, rgba(168,85,247,.12), transparent 30%), linear-gradient(180deg,#020617,#070b18)',
   fontFamily: 'Arial, sans-serif',
 }
 
@@ -392,50 +534,88 @@ const loadingCard: CSSProperties = {
 }
 
 const hero: CSSProperties = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
+  position: 'relative',
+  display: 'grid',
+  gridTemplateColumns: '1.4fr .8fr auto',
   gap: 20,
-  flexWrap: 'wrap',
+  alignItems: 'center',
   padding: 30,
   borderRadius: 30,
   background:
-    'linear-gradient(135deg, rgba(15,23,42,.96), rgba(30,41,59,.84))',
+    'linear-gradient(135deg, rgba(15,23,42,.98), rgba(30,41,59,.88))',
   border: '1px solid rgba(255,255,255,.14)',
   boxShadow: '0 24px 80px rgba(0,0,0,.35)',
   marginBottom: 20,
 }
 
-const brand: CSSProperties = {
-  display: 'inline-block',
+const heroContent: CSSProperties = {
+  display: 'grid',
+  gap: 8,
+}
+
+const premiumPill: CSSProperties = {
+  width: 'fit-content',
   padding: '8px 14px',
   borderRadius: 999,
-  background: '#2563eb',
+  background: 'linear-gradient(135deg,#2563eb,#7c3aed)',
   fontWeight: 900,
-  marginBottom: 14,
+  marginBottom: 8,
 }
 
 const heroTitle: CSSProperties = {
   margin: 0,
-  fontSize: 40,
+  fontSize: 42,
   letterSpacing: '-0.04em',
 }
 
 const heroSubtitle: CSSProperties = {
-  margin: '10px 0 0',
+  margin: 0,
   color: '#cbd5e1',
   fontSize: 18,
 }
 
 const emailText: CSSProperties = {
-  margin: '6px 0 0',
+  margin: 0,
   color: '#94a3b8',
   fontSize: 14,
 }
 
+const heroActions: CSSProperties = {
+  display: 'flex',
+  gap: 10,
+  flexWrap: 'wrap',
+  marginTop: 14,
+}
+
+const heroPanel: CSSProperties = {
+  padding: 18,
+  borderRadius: 22,
+  background: 'rgba(255,255,255,.06)',
+  border: '1px solid rgba(255,255,255,.10)',
+}
+
+const heroPanelLabel: CSSProperties = {
+  color: '#93c5fd',
+  fontSize: 13,
+  fontWeight: 900,
+  marginBottom: 8,
+}
+
+const heroPanelValue: CSSProperties = {
+  fontSize: 26,
+  fontWeight: 900,
+  marginBottom: 8,
+}
+
+const heroPanelHint: CSSProperties = {
+  color: '#cbd5e1',
+  lineHeight: 1.45,
+  fontSize: 14,
+}
+
 const logoutButton: CSSProperties = {
-  padding: '16px 20px',
-  borderRadius: 18,
+  padding: '14px 16px',
+  borderRadius: 16,
   border: 'none',
   background: '#4c1d2f',
   color: 'white',
@@ -443,41 +623,72 @@ const logoutButton: CSSProperties = {
   cursor: 'pointer',
 }
 
-const nav: CSSProperties = {
-  display: 'flex',
-  gap: 12,
-  flexWrap: 'wrap',
-  marginBottom: 24,
+const statsGrid: CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))',
+  gap: 14,
+  marginBottom: 20,
 }
 
-const navBtn: CSSProperties = {
-  padding: '14px 18px',
-  borderRadius: 16,
-  border: '1px solid rgba(255,255,255,.14)',
-  background: '#111827',
-  color: 'white',
-  fontWeight: 900,
-  cursor: 'pointer',
+const statCard: CSSProperties = {
+  padding: 18,
+  borderRadius: 20,
+  background: 'rgba(15,23,42,.92)',
+  border: '1px solid rgba(255,255,255,.12)',
 }
 
-const activeNav: CSSProperties = {
-  ...navBtn,
-  background: '#2563eb',
+const statLabel: CSSProperties = {
+  color: '#94a3b8',
+  fontSize: 13,
+  fontWeight: 800,
 }
 
-const summaryCard: CSSProperties = {
+const statValue: CSSProperties = {
+  display: 'block',
+  fontSize: 30,
+  marginTop: 8,
+  marginBottom: 4,
+}
+
+const statDetail: CSSProperties = {
+  color: '#cbd5e1',
+  fontSize: 13,
+}
+
+const contentGrid: CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(310px, 1fr))',
+  gap: 18,
+}
+
+const card: CSSProperties = {
+  padding: 22,
+  borderRadius: 24,
+  background: 'rgba(15,23,42,.94)',
+  border: '1px solid rgba(255,255,255,.12)',
+}
+
+const focusCard: CSSProperties = {
+  ...card,
+  background:
+    'linear-gradient(145deg, rgba(15,23,42,.98), rgba(30,41,59,.92))',
+}
+
+const wideCard: CSSProperties = {
+  ...card,
+  gridColumn: '1 / -1',
+}
+
+const cardHeader: CSSProperties = {
   display: 'flex',
   justifyContent: 'space-between',
-  gap: 20,
+  gap: 14,
+  alignItems: 'flex-start',
   flexWrap: 'wrap',
-  padding: 24,
-  borderRadius: 26,
-  background: '#0f172a',
-  border: '1px solid rgba(255,255,255,.12)',
-  marginBottom: 24,
+  marginBottom: 16,
 }
 
-const sectionTitle: CSSProperties = {
+const cardTitle: CSSProperties = {
   margin: 0,
 }
 
@@ -486,94 +697,95 @@ const muted: CSSProperties = {
   lineHeight: 1.55,
 }
 
-const statsGrid: CSSProperties = {
+const smallMuted: CSSProperties = {
+  color: '#94a3b8',
+  lineHeight: 1.45,
+  margin: '6px 0 0',
+  fontSize: 14,
+}
+
+const focusBody: CSSProperties = {
+  position: 'relative',
   display: 'flex',
-  gap: 12,
-  flexWrap: 'wrap',
+  gap: 16,
 }
 
-const statBox: CSSProperties = {
-  minWidth: 115,
-  padding: '14px 16px',
-  borderRadius: 18,
-  background: '#1e293b',
-  display: 'grid',
-  gap: 4,
-}
-
-const contentGrid: CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-  gap: 18,
-}
-
-const card: CSSProperties = {
-  padding: 22,
-  borderRadius: 24,
-  background: '#0f172a',
-  border: '1px solid rgba(255,255,255,.12)',
-}
-
-const focusCard: CSSProperties = {
-  ...card,
-  background:
-    'linear-gradient(145deg, rgba(15,23,42,.96), rgba(30,41,59,.88))',
-}
-
-const wideCard: CSSProperties = {
-  ...card,
-  gridColumn: '1 / -1',
-}
-
-const cardTop: CSSProperties = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  gap: 12,
-  alignItems: 'center',
-  flexWrap: 'wrap',
-}
-
-const cardTitle: CSSProperties = {
-  margin: 0,
+const subjectStripe: CSSProperties = {
+  width: 6,
+  borderRadius: 999,
+  flexShrink: 0,
 }
 
 const focusTitle: CSSProperties = {
+  margin: '0 0 8px',
   fontSize: 24,
-  marginBottom: 8,
 }
 
 const contentsText: CSSProperties = {
   color: '#e2e8f0',
   lineHeight: 1.6,
-  marginTop: 14,
+  marginTop: 12,
+}
+
+const buttonRow: CSSProperties = {
+  display: 'flex',
+  gap: 10,
+  flexWrap: 'wrap',
 }
 
 const primaryButton: CSSProperties = {
-  marginTop: 14,
+  marginTop: 12,
   padding: '13px 16px',
   borderRadius: 16,
   border: 'none',
-  background: '#2563eb',
+  background: 'linear-gradient(135deg,#2563eb,#3b82f6)',
   color: 'white',
   fontWeight: 900,
   cursor: 'pointer',
 }
 
-const miniCard: CSSProperties = {
+const secondaryButton: CSSProperties = {
   marginTop: 12,
+  padding: '13px 16px',
+  borderRadius: 16,
+  border: '1px solid rgba(255,255,255,.14)',
+  background: 'rgba(255,255,255,.07)',
+  color: 'white',
+  fontWeight: 900,
+  cursor: 'pointer',
+}
+
+const ghostButton: CSSProperties = {
+  ...secondaryButton,
+}
+
+const list: CSSProperties = {
+  display: 'grid',
+  gap: 12,
+}
+
+const subjectItem: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 12,
   padding: 14,
   borderRadius: 16,
   background: '#111827',
 }
 
-const miniHeader: CSSProperties = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  gap: 10,
-  flexWrap: 'wrap',
+const subjectDot: CSSProperties = {
+  width: 12,
+  height: 12,
+  borderRadius: 999,
+  flexShrink: 0,
 }
 
-const evaluationRow: CSSProperties = {
+const evaluationList: CSSProperties = {
+  display: 'grid',
+  gap: 12,
+}
+
+const evaluationCard: CSSProperties = {
   display: 'flex',
   justifyContent: 'space-between',
   gap: 18,
@@ -581,7 +793,13 @@ const evaluationRow: CSSProperties = {
   padding: 16,
   borderRadius: 18,
   background: '#111827',
-  marginTop: 12,
+}
+
+const evaluationTop: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 10,
+  flexWrap: 'wrap',
 }
 
 const evaluationTitle: CSSProperties = {
@@ -589,8 +807,24 @@ const evaluationTitle: CSSProperties = {
 }
 
 const dateBox: CSSProperties = {
-  minWidth: 155,
+  minWidth: 150,
   display: 'grid',
   gap: 6,
   color: '#bfdbfe',
+}
+
+const emptyState: CSSProperties = {
+  padding: 18,
+  borderRadius: 18,
+  background: '#111827',
+  border: '1px solid rgba(255,255,255,.08)',
+}
+
+const errorBox: CSSProperties = {
+  padding: 16,
+  borderRadius: 16,
+  marginBottom: 18,
+  background: 'rgba(239,68,68,.16)',
+  border: '1px solid rgba(239,68,68,.35)',
+  color: '#fecaca',
 }
