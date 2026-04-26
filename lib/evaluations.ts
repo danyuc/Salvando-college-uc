@@ -16,8 +16,52 @@ export type EvaluationInput = {
   difficulty?: EvaluationDifficulty
   notes?: string | null
   weight_percent?: number | null
-  weight?: number | null
   grade?: number | null
+}
+
+function normalizeEvaluation(item: any): Evaluation {
+  const startDate = item.start_date ?? item.date ?? null
+  const endDate = item.end_date ?? startDate
+
+  return {
+    ...item,
+    start_date: startDate,
+    end_date: endDate,
+    weight_percent:
+      item.weight_percent === null || item.weight_percent === undefined
+        ? null
+        : Number(item.weight_percent),
+    grade:
+      item.grade === null || item.grade === undefined
+        ? null
+        : Number(item.grade),
+  } as Evaluation
+}
+
+function cleanPayload(input: EvaluationInput) {
+  const startDate = input.start_date ?? input.date ?? null
+  const endDate = input.end_date ?? startDate
+
+  return {
+    user_id: input.user_id,
+    subject: input.subject.trim(),
+    type: input.type.trim(),
+    number: input.number ?? null,
+    topic: input.topic?.trim() || null,
+    title: input.title?.trim() || null,
+    start_date: startDate,
+    end_date: endDate,
+    difficulty: input.difficulty ?? 'media',
+    notes: input.notes?.trim() || null,
+    weight_percent:
+      input.weight_percent === null || input.weight_percent === undefined
+        ? null
+        : Number(input.weight_percent),
+    grade:
+      input.grade === null || input.grade === undefined
+        ? null
+        : Number(input.grade),
+  }
 }
 
 export async function getUserEvaluations(userId: string): Promise<Evaluation[]> {
@@ -29,41 +73,28 @@ export async function getUserEvaluations(userId: string): Promise<Evaluation[]> 
 
   if (error) {
     console.error('EVALUATIONS SELECT ERROR:', error)
-    throw new Error('No se pudieron cargar las evaluaciones')
+    throw new Error(error.message || 'No se pudieron cargar las evaluaciones')
   }
 
-  const normalized = (data ?? []).map((item: any) => ({
-    ...item,
-    start_date: item.start_date ?? item.date ?? null,
-    end_date: item.end_date ?? item.start_date ?? item.date ?? null,
-    weight_percent:
-      item.weight_percent ??
-      (typeof item.weight === 'number' ? item.weight * 100 : null),
-  }))
+  return (data ?? [])
+    .map(normalizeEvaluation)
+    .sort((a: any, b: any) => {
+      const da = a.start_date
+        ? new Date(`${a.start_date}T00:00:00`).getTime()
+        : Infinity
 
-  return normalized.sort((a: any, b: any) => {
-    const da = a.start_date ? new Date(`${a.start_date}T00:00:00`).getTime() : Infinity
-    const db = b.start_date ? new Date(`${b.start_date}T00:00:00`).getTime() : Infinity
-    return da - db
-  }) as Evaluation[]
+      const db = b.start_date
+        ? new Date(`${b.start_date}T00:00:00`).getTime()
+        : Infinity
+
+      return da - db
+    })
 }
 
-export async function createEvaluation(input: EvaluationInput): Promise<Evaluation> {
-  const start = input.start_date ?? input.date ?? null
-  const end = input.end_date ?? start
-
-  const payload = {
-    ...input,
-    start_date: start,
-    end_date: end,
-    difficulty: input.difficulty ?? 'media',
-    notes: input.notes ?? null,
-    number: input.number ?? null,
-    topic: input.topic ?? null,
-    title: input.title ?? null,
-    weight_percent: input.weight_percent ?? null,
-    grade: input.grade ?? null,
-  }
+export async function createEvaluation(
+  input: EvaluationInput
+): Promise<Evaluation> {
+  const payload = cleanPayload(input)
 
   const { data, error } = await supabase
     .from('evaluations')
@@ -73,10 +104,10 @@ export async function createEvaluation(input: EvaluationInput): Promise<Evaluati
 
   if (error) {
     console.error('EVALUATION INSERT ERROR:', error)
-    throw new Error('No se pudo crear la evaluación')
+    throw new Error(error.message || 'No se pudo crear la evaluación')
   }
 
-  return data as Evaluation
+  return normalizeEvaluation(data)
 }
 
 export async function bulkCreateEvaluations(
@@ -84,23 +115,7 @@ export async function bulkCreateEvaluations(
 ): Promise<Evaluation[]> {
   if (!items.length) return []
 
-  const payload = items.map((item) => {
-    const start = item.start_date ?? item.date ?? null
-    const end = item.end_date ?? start
-
-    return {
-      ...item,
-      start_date: start,
-      end_date: end,
-      difficulty: item.difficulty ?? 'media',
-      notes: item.notes ?? null,
-      number: item.number ?? null,
-      topic: item.topic ?? null,
-      title: item.title ?? null,
-      weight_percent: item.weight_percent ?? null,
-      grade: item.grade ?? null,
-    }
-  })
+  const payload = items.map(cleanPayload)
 
   const { data, error } = await supabase
     .from('evaluations')
@@ -109,21 +124,58 @@ export async function bulkCreateEvaluations(
 
   if (error) {
     console.error('EVALUATIONS BULK INSERT ERROR:', error)
-    throw new Error('No se pudieron importar las evaluaciones')
+    throw new Error(error.message || 'No se pudieron importar las evaluaciones')
   }
 
-  return (data ?? []) as Evaluation[]
+  return (data ?? []).map(normalizeEvaluation)
 }
 
 export async function updateEvaluation(
   id: string,
   updates: Partial<EvaluationInput>
 ): Promise<Evaluation> {
-  const start = updates.start_date ?? updates.date
   const payload: any = { ...updates }
 
-  if (start) payload.start_date = start
-  if (updates.end_date || start) payload.end_date = updates.end_date ?? start
+  if (updates.subject !== undefined) {
+    payload.subject = updates.subject.trim()
+  }
+
+  if (updates.type !== undefined) {
+    payload.type = updates.type.trim()
+  }
+
+  if (updates.topic !== undefined) {
+    payload.topic = updates.topic?.trim() || null
+  }
+
+  if (updates.title !== undefined) {
+    payload.title = updates.title?.trim() || null
+  }
+
+  if (updates.notes !== undefined) {
+    payload.notes = updates.notes?.trim() || null
+  }
+
+  if (updates.start_date !== undefined || updates.date !== undefined) {
+    const startDate = updates.start_date ?? updates.date ?? null
+    payload.start_date = startDate
+    payload.end_date = updates.end_date ?? startDate
+  }
+
+  if (updates.end_date !== undefined) {
+    payload.end_date = updates.end_date
+  }
+
+  if (updates.weight_percent !== undefined) {
+    payload.weight_percent =
+      updates.weight_percent === null ? null : Number(updates.weight_percent)
+  }
+
+  if (updates.grade !== undefined) {
+    payload.grade = updates.grade === null ? null : Number(updates.grade)
+  }
+
+  delete payload.date
 
   const { data, error } = await supabase
     .from('evaluations')
@@ -134,18 +186,21 @@ export async function updateEvaluation(
 
   if (error) {
     console.error('EVALUATION UPDATE ERROR:', error)
-    throw new Error('No se pudo actualizar la evaluación')
+    throw new Error(error.message || 'No se pudo actualizar la evaluación')
   }
 
-  return data as Evaluation
+  return normalizeEvaluation(data)
 }
 
 export async function deleteEvaluation(id: string): Promise<void> {
-  const { error } = await supabase.from('evaluations').delete().eq('id', id)
+  const { error } = await supabase
+    .from('evaluations')
+    .delete()
+    .eq('id', id)
 
   if (error) {
     console.error('EVALUATION DELETE ERROR:', error)
-    throw new Error('No se pudo eliminar la evaluación')
+    throw new Error(error.message || 'No se pudo eliminar la evaluación')
   }
 }
 

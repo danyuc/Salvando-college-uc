@@ -337,15 +337,25 @@ export default function HomeView() {
     router.push(path)
   }
 
-  function practiceEvaluation(evaluation?: Evaluation | null, mode?: string) {
+   function practiceEvaluation(evaluation?: Evaluation | null, mode?: string) {
+  if (mode === 'diagnostico') {
     if (evaluation?.id) {
-      const suffix = mode ? `&mode=${mode}` : ''
-      router.push(`/practica?evaluationId=${evaluation.id}${suffix}`)
+      router.push(`/diagnostico?evaluationId=${evaluation.id}`)
       return
     }
 
-    router.push('/practica')
+    router.push('/diagnostico')
+    return
   }
+
+  if (evaluation?.id) {
+    const suffix = mode ? `&mode=${mode}` : ''
+    router.push(`/practica?evaluationId=${evaluation.id}${suffix}`)
+    return
+  }
+
+  router.push('/practica')
+}
 
   if (loading) {
     return (
