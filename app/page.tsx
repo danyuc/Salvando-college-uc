@@ -28,26 +28,19 @@ export default function HomePage() {
       try {
         const profile = await getMyProfile(data.user.id)
 
-        if (profile?.username) {
-          setUsername(profile.username)
-        } else if (profile?.institutional_email) {
-          setUsername(profile.institutional_email.split('@')[0])
-        } else if (userEmail) {
-          setUsername(userEmail.split('@')[0])
-        } else {
-          setUsername('Usuario UC')
-        }
+        const finalUsername =
+          profile?.username ||
+          profile?.institutional_email?.split('@')[0] ||
+          userEmail.split('@')[0] ||
+          'Usuario UC'
 
-        if (profile?.career) {
-          setCareer(profile.career)
-        }
+        setUsername(finalUsername)
 
-        if (profile?.year) {
-          setYear(String(profile.year))
-        }
+        if (profile?.career) setCareer(profile.career)
+        if (profile?.year) setYear(String(profile.year))
       } catch (error) {
-        console.error(error)
-        setUsername(userEmail ? userEmail.split('@')[0] : 'Usuario UC')
+        console.error('Error cargando perfil:', error)
+        setUsername(userEmail.split('@')[0] || 'Usuario UC')
       }
     }
 
@@ -82,21 +75,25 @@ export default function HomePage() {
       <nav style={nav}>
         <button onClick={() => go('/')} style={activeBtn}>🏠 Home</button>
         <button onClick={() => go('/calendario')} style={btn}>📅 Calendario</button>
-        <button onClick={() => go('/ensayo')} style={btn}>🧩 Práctica IA</button>
-        <button onClick={() => go('/banco')} style={btn}>📚 Banco</button>
-        <button onClick={() => go('/riesgo')} style={btn}>⚠️ Riesgo</button>
-        <button onClick={() => go('/coach-semanal')} style={btn}>🧠 Coach semanal</button>
-        <button onClick={() => go('/ranking')} style={btn}>🏆 Ranking</button>
+        <button onClick={() => go('/ia')} style={btn}>🧠 IA</button>
         <button onClick={() => go('/notas')} style={btn}>📊 Notas</button>
         <button onClick={() => go('/disponibilidad')} style={btn}>⏱️ Disponibilidad</button>
-        <button onClick={() => go('/ia')} style={btn}>🤖 IA</button>
+        <button onClick={() => go('/ensayo')} style={btn}>🧩 Práctica IA</button>
+        <button onClick={() => go('/banco')} style={btn}>📚 Banco</button>
+        <button onClick={() => go('/pizarra')} style={btn}>✍️ Pizarra</button>
+        <button onClick={() => go('/ranking')} style={btn}>🏆 Ranking</button>
+        <button onClick={() => go('/riesgo')} style={btn}>⚠️ Riesgo</button>
+        <button onClick={() => go('/coach-semanal')} style={btn}>🧠 Coach semanal</button>
+        <button onClick={() => go('/debilidades')} style={btn}>🎯 Debilidades</button>
+        <button onClick={() => go('/coach')} style={btn}>🧠 Coach</button>
+        <button onClick={() => go('/texto-pdf')} style={btn}>📄 Texto / PDF</button>
       </nav>
 
       <section style={panel}>
         <div>
           <h2 style={panelTitle}>Panel central de estudio UC</h2>
           <p style={muted}>
-            Tu sistema ahora puede priorizar evaluaciones, práctica inteligente, riesgo académico y coach semanal.
+            Práctica inteligente, riesgo académico, calendario, banco de preguntas y coach semanal.
           </p>
         </div>
 
