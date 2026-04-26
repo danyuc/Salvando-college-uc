@@ -9,6 +9,15 @@ type CreateCodeRow = {
   message: string
 }
 
+function cleanEmail(value: unknown) {
+  return String(value ?? '')
+    .trim()
+    .replace(/^"+|"+$/g, '')
+    .replace(/^'+|'+$/g, '')
+    .trim()
+    .toLowerCase()
+}
+
 function getResend() {
   const key = process.env.RESEND_API_KEY
 
@@ -36,7 +45,7 @@ function getSupabaseAdmin() {
 }
 
 function getFromEmail() {
-  const from = process.env.RESEND_FROM_EMAIL
+  const from = process.env.RESEND_FROM_EMAIL?.trim()
 
   if (!from) {
     throw new Error('RESEND_FROM_EMAIL no configurado')
@@ -46,9 +55,7 @@ function getFromEmail() {
 }
 
 function isValidUCEmail(email: string) {
-  return /^[^\s@]+@(uc\.cl|estudiante\.uc\.cl|estudiantes\.uc\.cl)$/.test(
-    email.trim().toLowerCase()
-  )
+  return /^[^\s@]+@(uc\.cl|estudiante\.uc\.cl|estudiantes\.uc\.cl)$/.test(email)
 }
 
 export async function POST(req: Request) {
@@ -56,7 +63,7 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => null)
 
     const userId = String(body?.userId ?? '').trim()
-    const email = String(body?.email ?? '').trim().toLowerCase()
+    const email = cleanEmail(body?.email)
 
     if (!userId) {
       return NextResponse.json(
@@ -94,18 +101,17 @@ export async function POST(req: Request) {
     )
 
     if (codeError) {
-      console.error('SEND RPC ERROR:', codeError)
+      console.error('SEND RPC ERROR:', JSON.stringify(codeError, null, 2))
 
       return NextResponse.json(
-        {
-          success: false,
-          message: 'No se pudo generar el código',
-        },
+        { success: false, message: 'No se pudo generar el código' },
         { status: 500 }
       )
     }
 
-    const row = (codeData?.[0] ?? null) as CreateCodeRow | null
+    const row = (Array.isArray(codeData) ? codeData[0] : codeData) as
+      | CreateCodeRow
+      | null
 
     if (!row?.success || !row.code) {
       return NextResponse.json(
@@ -154,13 +160,10 @@ export async function POST(req: Request) {
     })
 
     if (error) {
-      console.error('RESEND ERROR:', error)
+      console.error('RESEND ERROR:', JSON.stringify(error, null, 2))
 
       return NextResponse.json(
-        {
-          success: false,
-          message: 'No se pudo enviar el correo',
-        },
+        { success: false, message: 'No se pudo enviar el correo' },
         { status: 502 }
       )
     }
