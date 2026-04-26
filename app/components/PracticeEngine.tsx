@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import { supabase } from '@/lib/supabase'
 
+type PracticeMode = 'adaptativo' | 'practica' | 'diagnostico' | 'todos'
+
 type Question = {
   id: string
   pregunta: string
@@ -27,7 +29,7 @@ export default function PracticeEngine() {
   const [questions, setQuestions] = useState<Question[]>([])
   const [selectedSubject, setSelectedSubject] = useState('Todas')
   const [selectedTopic, setSelectedTopic] = useState('Todos')
-  const [selectedMode, setSelectedMode] = useState<'todos' | 'practica' | 'diagnostico' | 'adaptativo'>('todos')
+  const [selectedMode, setSelectedMode] = useState<PracticeMode>('adaptativo')
   const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState('')
   const [showResult, setShowResult] = useState(false)
@@ -51,10 +53,42 @@ export default function PracticeEngine() {
     if (error) {
       console.error('LOAD QUESTIONS ERROR:', error)
       setQuestions([])
-    } else {
-      setQuestions((data || []) as Question[])
+      setLoading(false)
+      return
     }
 
+    const loadedQuestions = ((data || []) as Question[]).filter((q) => {
+      const hasQuestion = Boolean(q.pregunta)
+      const hasType = Boolean(q.tipo)
+      const hasOptions =
+        q.tipo === 'desarrollo' ||
+        (Array.isArray(q.opciones) && q.opciones.length >= 4)
+
+      return hasQuestion && hasType && hasOptions
+    })
+
+    setQuestions(loadedQuestions)
+
+    const uniqueSubjects = Array.from(
+      new Set(
+        loadedQuestions
+          .map((q) => q.asignatura || 'Sociología')
+          .filter(Boolean)
+      )
+    )
+
+    if (uniqueSubjects.length === 1) {
+      setSelectedSubject(uniqueSubjects[0])
+    } else {
+      setSelectedSubject('Todas')
+    }
+
+    setSelectedTopic('Todos')
+    setSelectedMode('adaptativo')
+    setCurrentIndex(0)
+    setSelectedAnswer('')
+    setShowResult(false)
+    setScore(0)
     setLoading(false)
   }
 
@@ -62,7 +96,11 @@ export default function PracticeEngine() {
     return [
       'Todas',
       ...Array.from(
-        new Set(questions.map((q) => q.asignatura || 'Sociología').filter(Boolean))
+        new Set(
+          questions
+            .map((q) => q.asignatura || 'Sociología')
+            .filter(Boolean)
+        )
       ),
     ] as string[]
   }, [questions])
@@ -71,7 +109,9 @@ export default function PracticeEngine() {
     const base =
       selectedSubject === 'Todas'
         ? questions
-        : questions.filter((q) => (q.asignatura || 'Sociología') === selectedSubject)
+        : questions.filter(
+            (q) => (q.asignatura || 'Sociología') === selectedSubject
+          )
 
     return [
       'Todos',
@@ -84,15 +124,16 @@ export default function PracticeEngine() {
       const subject = q.asignatura || 'Sociología'
       const subjectOk = selectedSubject === 'Todas' || subject === selectedSubject
       const topicOk = selectedTopic === 'Todos' || q.tema === selectedTopic
-      const validOptions =
-        q.tipo === 'desarrollo' ||
-        (Array.isArray(q.opciones) && q.opciones.length >= 4)
 
-      return subjectOk && topicOk && validOptions
+      return subjectOk && topicOk
     })
 
     if (selectedMode === 'diagnostico') {
-      base = base.filter((q) => q.nivel_cognitivo === 'diagnostico')
+      const diagnostico = base.filter(
+        (q) => q.nivel_cognitivo === 'diagnostico'
+      )
+
+      base = diagnostico.length > 0 ? diagnostico : base.slice(0, 20)
     }
 
     if (selectedMode === 'practica') {
@@ -100,11 +141,25 @@ export default function PracticeEngine() {
     }
 
     if (selectedMode === 'adaptativo') {
-      base = [...base].sort((a, b) => {
-        const aErrors = errorsByTopic[a.tema || ''] || 0
-        const bErrors = errorsByTopic[b.tema || ''] || 0
-        return bErrors - aErrors
-      })
+      base = base
+        .filter((q) => q.tipo === 'seleccion_multiple')
+        .sort((a, b) => {
+          const aErrors = errorsByTopic[a.tema || ''] || 0
+          const bErrors = errorsByTopic[b.tema || ''] || 0
+
+          if (bErrors !== aErrors) return bErrors - aErrors
+
+          const difficultyOrder: Record<string, number> = {
+            facil: 1,
+            media: 2,
+            alta: 3,
+          }
+
+          return (
+            (difficultyOrder[a.dificultad || 'media'] || 2) -
+            (difficultyOrder[b.dificultad || 'media'] || 2)
+          )
+        })
     }
 
     return base
@@ -115,6 +170,11 @@ export default function PracticeEngine() {
   const progress =
     filteredQuestions.length > 0
       ? Math.round(((currentIndex + 1) / filteredQuestions.length) * 100)
+      : 0
+
+  const accuracy =
+    currentIndex + (showResult ? 1 : 0) > 0
+      ? Math.round((score / (currentIndex + (showResult ? 1 : 0))) * 100)
       : 0
 
   function resetPractice() {
@@ -135,7 +195,7 @@ export default function PracticeEngine() {
     resetPractice()
   }
 
-  function changeMode(value: 'todos' | 'practica' | 'diagnostico' | 'adaptativo') {
+  function changeMode(value: PracticeMode) {
     setSelectedMode(value)
     resetPractice()
   }
@@ -172,6 +232,7 @@ export default function PracticeEngine() {
       setScore((prev) => prev + 1)
     } else {
       const topic = currentQuestion.tema || 'Sin tema'
+
       setErrorsByTopic((prev) => ({
         ...prev,
         [topic]: (prev[topic] || 0) + 1,
@@ -205,7 +266,8 @@ export default function PracticeEngine() {
           <p style={pill}>Práctica inteligente</p>
           <h1 style={title}>Modo UC adaptativo</h1>
           <p style={muted}>
-            Preguntas reales desde Supabase, filtradas por asignatura, tema y tipo.
+            Preguntas reales desde Supabase, con selección automática de
+            asignatura, diagnóstico y modo adaptativo.
           </p>
         </div>
 
@@ -218,29 +280,45 @@ export default function PracticeEngine() {
         <div style={filters}>
           <div>
             <label style={label}>Asignatura</label>
-            <select value={selectedSubject} onChange={(e) => changeSubject(e.target.value)} style={select}>
+            <select
+              value={selectedSubject}
+              onChange={(e) => changeSubject(e.target.value)}
+              style={select}
+            >
               {subjects.map((subject) => (
-                <option key={subject} value={subject}>{subject}</option>
+                <option key={subject} value={subject}>
+                  {subject}
+                </option>
               ))}
             </select>
           </div>
 
           <div>
             <label style={label}>Tema</label>
-            <select value={selectedTopic} onChange={(e) => changeTopic(e.target.value)} style={select}>
+            <select
+              value={selectedTopic}
+              onChange={(e) => changeTopic(e.target.value)}
+              style={select}
+            >
               {topics.map((topic) => (
-                <option key={topic} value={topic}>{topic}</option>
+                <option key={topic} value={topic}>
+                  {topic}
+                </option>
               ))}
             </select>
           </div>
 
           <div>
             <label style={label}>Modo</label>
-            <select value={selectedMode} onChange={(e) => changeMode(e.target.value as any)} style={select}>
-              <option value="todos">Todos</option>
-              <option value="practica">Práctica</option>
+            <select
+              value={selectedMode}
+              onChange={(e) => changeMode(e.target.value as PracticeMode)}
+              style={select}
+            >
+              <option value="adaptativo">Adaptativo UC</option>
+              <option value="practica">Práctica por tema</option>
               <option value="diagnostico">Diagnóstico UC</option>
-              <option value="adaptativo">Adaptativo</option>
+              <option value="todos">Todos</option>
             </select>
           </div>
         </div>
@@ -249,6 +327,7 @@ export default function PracticeEngine() {
       <section style={stats}>
         <div style={statBox}>Preguntas: {filteredQuestions.length}</div>
         <div style={statBox}>Puntaje: {score}</div>
+        <div style={statBox}>Precisión: {accuracy}%</div>
         <div style={statBox}>Progreso: {progress}%</div>
       </section>
 
@@ -256,7 +335,8 @@ export default function PracticeEngine() {
         <section style={card}>
           <h2>No hay preguntas para este filtro.</h2>
           <p style={muted}>
-            Revisa que existan registros con asignatura, tema, tipo, pregunta, opciones y respuesta_correcta.
+            Cambia a “Todos” o revisa que tus registros tengan asignatura, tema,
+            tipo, pregunta, opciones y respuesta_correcta.
           </p>
         </section>
       ) : (
@@ -265,7 +345,14 @@ export default function PracticeEngine() {
             <span style={badge}>{currentQuestion.asignatura || 'Sociología'}</span>
             <span style={badge}>{currentQuestion.tema || 'Sin tema'}</span>
             <span style={badge}>{currentQuestion.tipo || 'tipo desconocido'}</span>
-            <span style={badge}>{currentQuestion.dificultad || 'sin dificultad'}</span>
+            <span style={badge}>
+              {selectedMode === 'adaptativo'
+                ? 'Adaptativo'
+                : selectedMode === 'diagnostico'
+                  ? 'Diagnóstico'
+                  : selectedMode}
+            </span>
+            <span style={badge}>{currentQuestion.dificultad || 'media'}</span>
           </div>
 
           <h2 style={questionTitle}>
@@ -304,10 +391,19 @@ export default function PracticeEngine() {
                   ? '✅ Correcta'
                   : '❌ Incorrecta'}
               </strong>
+
               <p>{currentQuestion.explicacion || 'Sin explicación cargada.'}</p>
 
               {currentQuestion.error_comun && (
-                <p><strong>Error común:</strong> {currentQuestion.error_comun}</p>
+                <p>
+                  <strong>Error común:</strong> {currentQuestion.error_comun}
+                </p>
+              )}
+
+              {currentQuestion.referencia_autor && (
+                <p>
+                  <strong>Referencia:</strong> {currentQuestion.referencia_autor}
+                </p>
               )}
 
               {currentIndex < filteredQuestions.length - 1 ? (
@@ -346,9 +442,21 @@ const hero: CSSProperties = {
   flexWrap: 'wrap',
 }
 
-const pill: CSSProperties = { margin: 0, color: '#93c5fd', fontWeight: 900 }
-const title: CSSProperties = { margin: '8px 0', fontSize: 36 }
-const muted: CSSProperties = { color: '#cbd5e1', lineHeight: 1.5 }
+const pill: CSSProperties = {
+  margin: 0,
+  color: '#93c5fd',
+  fontWeight: 900,
+}
+
+const title: CSSProperties = {
+  margin: '8px 0',
+  fontSize: 36,
+}
+
+const muted: CSSProperties = {
+  color: '#cbd5e1',
+  lineHeight: 1.5,
+}
 
 const card: CSSProperties = {
   padding: 22,
@@ -364,7 +472,11 @@ const filters: CSSProperties = {
   gap: 14,
 }
 
-const label: CSSProperties = { display: 'block', marginBottom: 8, fontWeight: 900 }
+const label: CSSProperties = {
+  display: 'block',
+  marginBottom: 8,
+  fontWeight: 900,
+}
 
 const select: CSSProperties = {
   width: '100%',
@@ -374,7 +486,12 @@ const select: CSSProperties = {
   fontSize: 16,
 }
 
-const stats: CSSProperties = { display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 18 }
+const stats: CSSProperties = {
+  display: 'flex',
+  gap: 12,
+  flexWrap: 'wrap',
+  marginBottom: 18,
+}
 
 const statBox: CSSProperties = {
   padding: '12px 14px',
@@ -383,7 +500,12 @@ const statBox: CSSProperties = {
   fontWeight: 900,
 }
 
-const questionTop: CSSProperties = { display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }
+const questionTop: CSSProperties = {
+  display: 'flex',
+  gap: 8,
+  flexWrap: 'wrap',
+  marginBottom: 14,
+}
 
 const badge: CSSProperties = {
   padding: '7px 10px',
@@ -394,11 +516,19 @@ const badge: CSSProperties = {
   fontSize: 13,
 }
 
-const questionTitle: CSSProperties = { marginTop: 0 }
+const questionTitle: CSSProperties = {
+  marginTop: 0,
+}
 
-const questionText: CSSProperties = { fontSize: 20, lineHeight: 1.5 }
+const questionText: CSSProperties = {
+  fontSize: 20,
+  lineHeight: 1.5,
+}
 
-const optionsGrid: CSSProperties = { display: 'grid', gap: 12 }
+const optionsGrid: CSSProperties = {
+  display: 'grid',
+  gap: 12,
+}
 
 const optionButton: CSSProperties = {
   padding: 16,
