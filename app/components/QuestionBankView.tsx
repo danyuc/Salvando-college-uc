@@ -1,319 +1,247 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { getCurrentUser } from '../../lib/auth'
+import { supabase } from '@/lib/supabase'
 import {
-  createAvailabilityBlock,
-  deleteAvailabilityBlock,
-  getAvailabilityBlocks,
-  type AvailabilityBlock,
-} from '../../lib/availability'
+  Question,
+  AnswerOption,
+  getQuestionOptions,
+  normalizeCorrectAnswer,
+} from '@/lib/questionTypes'
 
-const DAYS = [
-  'Lunes',
-  'Martes',
-  'Miércoles',
-  'Jueves',
-  'Viernes',
-  'Sábado',
-  'Domingo',
-]
-
-export default function AvailabilityView() {
-  const [userId, setUserId] = useState('')
-  const [blocks, setBlocks] = useState<AvailabilityBlock[]>([])
+export default function QuestionBankView() {
+  const [questions, setQuestions] = useState<Question[]>([])
   const [loading, setLoading] = useState(true)
-
-  const [day, setDay] = useState('Lunes')
-  const [start, setStart] = useState('09:00')
-  const [end, setEnd] = useState('10:00')
-
-  async function loadAll(currentUserId?: string) {
-    try {
-      setLoading(true)
-      const user = currentUserId
-        ? { id: currentUserId }
-        : await getCurrentUser()
-
-      if (!user) return
-
-      setUserId(user.id)
-
-      const data = await getAvailabilityBlocks(user.id)
-      setBlocks(data || [])
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const [search, setSearch] = useState('')
+  const [tema, setTema] = useState('Todos')
+  const [dificultad, setDificultad] = useState('Todas')
+  const [selectedAnswers, setSelectedAnswers] = useState<Record<string, AnswerOption>>({})
 
   useEffect(() => {
-    loadAll()
+    loadQuestions()
   }, [])
 
-  const grouped = useMemo(() => {
-    const map = new Map<string, AvailabilityBlock[]>()
+  async function loadQuestions() {
+    setLoading(true)
 
-    for (const dayName of DAYS) {
-      map.set(dayName, [])
+    const { data, error } = await supabase
+      .from('questions')
+      .select('*')
+      .order('tema', { ascending: true })
+
+    if (error) {
+      console.error('Error cargando preguntas:', error.message)
+      setQuestions([])
+    } else {
+      setQuestions((data || []) as Question[])
     }
 
-    for (const block of blocks) {
-      if (!map.has(block.day_of_week)) {
-        map.set(block.day_of_week, [])
-      }
-      map.get(block.day_of_week)!.push(block)
-    }
-
-    return [...map.entries()]
-  }, [blocks])
-
-  async function addBlock() {
-    if (!userId) return
-
-    if (start >= end) {
-      alert('La hora de inicio debe ser menor que la de término')
-      return
-    }
-
-    try {
-      await createAvailabilityBlock({
-        user_id: userId,
-        day_of_week: day,
-        start_time: start,
-        end_time: end,
-      })
-
-      await loadAll(userId)
-    } catch (error) {
-      console.error(error)
-      alert('No se pudo agregar el bloque')
-    }
+    setLoading(false)
   }
 
-  async function removeBlock(id: string) {
-    try {
-      await deleteAvailabilityBlock(id)
-      await loadAll(userId)
-    } catch (error) {
-      console.error(error)
-      alert('No se pudo eliminar el bloque')
-    }
+  const temas = useMemo(() => {
+    const unique = Array.from(
+      new Set(questions.map((q) => q.tema).filter(Boolean))
+    ) as string[]
+
+    return ['Todos', ...unique]
+  }, [questions])
+
+  const dificultades = useMemo(() => {
+    const unique = Array.from(
+      new Set(questions.map((q) => q.dificultad).filter(Boolean))
+    ) as string[]
+
+    return ['Todas', ...unique]
+  }, [questions])
+
+  const filteredQuestions = useMemo(() => {
+    return questions.filter((q) => {
+      const matchesSearch =
+        q.pregunta?.toLowerCase().includes(search.toLowerCase()) ||
+        q.tema?.toLowerCase().includes(search.toLowerCase()) ||
+        q.subtema?.toLowerCase().includes(search.toLowerCase())
+
+      const matchesTema = tema === 'Todos' || q.tema === tema
+      const matchesDificultad =
+        dificultad === 'Todas' || q.dificultad === dificultad
+
+      return matchesSearch && matchesTema && matchesDificultad
+    })
+  }, [questions, search, tema, dificultad])
+
+  function handleAnswer(questionId: string, option: AnswerOption) {
+    setSelectedAnswers((prev) => ({
+      ...prev,
+      [questionId]: option,
+    }))
+  }
+
+  if (loading) {
+    return (
+      <div className="rounded-2xl border bg-white p-6 shadow-sm">
+        <p className="text-sm text-gray-500">Cargando banco de preguntas...</p>
+      </div>
+    )
   }
 
   return (
-    <div style={container}>
-      <div style={heroCard}>
-        <h2 style={title}>Disponibilidad real</h2>
-        <p style={subtitle}>
-          Puedes crear distintos bloques por día, por ejemplo un horario en la mañana
-          y otro completamente distinto en la tarde.
-        </p>
-      </div>
-
-      <div style={card}>
-        <h3 style={sectionTitle}>Agregar bloque</h3>
-
-        <div style={formGrid}>
-          <div style={field}>
-            <label style={label}>Día</label>
-            <select
-              value={day}
-              onChange={(e) => setDay(e.target.value)}
-              style={select}
-            >
-              {DAYS.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
+    <section className="space-y-6">
+      <div className="rounded-3xl border bg-white p-6 shadow-sm">
+        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
+              Banco de preguntas
+            </p>
+            <h2 className="mt-1 text-2xl font-bold text-gray-950">
+              Preguntas cargadas en Supabase
+            </h2>
+            <p className="mt-2 text-sm text-gray-600">
+              Total: {questions.length} preguntas · Mostrando:{' '}
+              {filteredQuestions.length}
+            </p>
           </div>
 
-          <div style={field}>
-            <label style={label}>Desde</label>
-            <input
-              type="time"
-              value={start}
-              onChange={(e) => setStart(e.target.value)}
-              style={input}
-            />
-          </div>
-
-          <div style={field}>
-            <label style={label}>Hasta</label>
-            <input
-              type="time"
-              value={end}
-              onChange={(e) => setEnd(e.target.value)}
-              style={input}
-            />
-          </div>
+          <a
+            href="/ensayo"
+            className="rounded-xl bg-gray-950 px-5 py-3 text-center text-sm font-semibold text-white transition hover:bg-gray-800"
+          >
+            Iniciar modo PSU
+          </a>
         </div>
 
-        <div style={actions}>
-          <button onClick={addBlock} style={button}>
-            Agregar bloque
-          </button>
-        </div>
-      </div>
+        <div className="mt-6 grid gap-3 md:grid-cols-3">
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Buscar por pregunta, tema o subtema..."
+            className="rounded-xl border px-4 py-3 text-sm outline-none focus:border-blue-500"
+          />
 
-      <div style={card}>
-        <h3 style={sectionTitle}>Tus bloques semanales</h3>
-
-        {loading ? (
-          <div style={emptyText}>Cargando...</div>
-        ) : (
-          <div style={dayGrid}>
-            {grouped.map(([dayName, dayBlocks]) => (
-              <div key={dayName} style={dayCard}>
-                <div style={dayTitle}>{dayName}</div>
-
-                {dayBlocks.length === 0 ? (
-                  <div style={emptyText}>Sin bloques</div>
-                ) : (
-                  dayBlocks.map((block) => (
-                    <div key={block.id} style={blockItem}>
-                      <div>
-                        {block.start_time} - {block.end_time}
-                      </div>
-
-                      <button
-                        onClick={() => removeBlock(block.id)}
-                        style={deleteButton}
-                      >
-                        Eliminar
-                      </button>
-                    </div>
-                  ))
-                )}
-              </div>
+          <select
+            value={tema}
+            onChange={(e) => setTema(e.target.value)}
+            className="rounded-xl border px-4 py-3 text-sm outline-none focus:border-blue-500"
+          >
+            {temas.map((t) => (
+              <option key={t} value={t}>
+                Tema: {t}
+              </option>
             ))}
-          </div>
-        )}
+          </select>
+
+          <select
+            value={dificultad}
+            onChange={(e) => setDificultad(e.target.value)}
+            className="rounded-xl border px-4 py-3 text-sm outline-none focus:border-blue-500"
+          >
+            {dificultades.map((d) => (
+              <option key={d} value={d}>
+                Dificultad: {d}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
-    </div>
+
+      {filteredQuestions.length === 0 ? (
+        <div className="rounded-2xl border bg-white p-6 text-sm text-gray-500">
+          No hay preguntas que coincidan con los filtros.
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {filteredQuestions.map((q, index) => {
+            const selected = selectedAnswers[q.id]
+            const correct = normalizeCorrectAnswer(q.correcta)
+            const answered = Boolean(selected)
+            const isCorrect = selected === correct
+
+            return (
+              <article
+                key={q.id}
+                className="rounded-3xl border bg-white p-6 shadow-sm"
+              >
+                <div className="mb-4 flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+                    Pregunta {index + 1}
+                  </span>
+
+                  {q.tema && (
+                    <span className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700">
+                      {q.tema}
+                    </span>
+                  )}
+
+                  {q.subtema && (
+                    <span className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700">
+                      {q.subtema}
+                    </span>
+                  )}
+
+                  {q.dificultad && (
+                    <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
+                      {q.dificultad}
+                    </span>
+                  )}
+                </div>
+
+                <h3 className="text-lg font-bold leading-relaxed text-gray-950">
+                  {q.pregunta}
+                </h3>
+
+                <div className="mt-5 space-y-3">
+                  {getQuestionOptions(q).map((option) => {
+                    const optionIsSelected = selected === option.letter
+                    const optionIsCorrect = correct === option.letter
+
+                    let style =
+                      'border-gray-200 bg-white hover:border-blue-400 hover:bg-blue-50'
+
+                    if (answered && optionIsCorrect) {
+                      style = 'border-green-500 bg-green-50'
+                    }
+
+                    if (answered && optionIsSelected && !optionIsCorrect) {
+                      style = 'border-red-500 bg-red-50'
+                    }
+
+                    return (
+                      <button
+                        key={option.letter}
+                        onClick={() => handleAnswer(q.id, option.letter)}
+                        className={`w-full rounded-2xl border p-4 text-left transition ${style}`}
+                      >
+                        <span className="font-bold">{option.letter})</span>{' '}
+                        <span>{option.text}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+
+                {answered && (
+                  <div className="mt-5 rounded-2xl border bg-gray-50 p-4">
+                    <p
+                      className={`font-bold ${
+                        isCorrect ? 'text-green-700' : 'text-red-700'
+                      }`}
+                    >
+                      {isCorrect
+                        ? 'Correcto ✅'
+                        : `Incorrecto ❌ · Respuesta correcta: ${correct}`}
+                    </p>
+
+                    {q.explicacion && (
+                      <p className="mt-2 text-sm leading-relaxed text-gray-700">
+                        {q.explicacion}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </article>
+            )
+          })}
+        </div>
+      )}
+    </section>
   )
-}
-
-const container: React.CSSProperties = {
-  display: 'grid',
-  gap: '18px',
-  padding: '20px',
-  color: 'white',
-}
-
-const heroCard: React.CSSProperties = {
-  padding: '18px',
-  borderRadius: '18px',
-  background: 'rgba(255,255,255,0.05)',
-  border: '1px solid rgba(255,255,255,0.10)',
-}
-
-const title: React.CSSProperties = {
-  margin: 0,
-}
-
-const subtitle: React.CSSProperties = {
-  marginTop: '8px',
-  opacity: 0.75,
-}
-
-const card: React.CSSProperties = {
-  padding: '18px',
-  borderRadius: '18px',
-  background: 'rgba(255,255,255,0.05)',
-  border: '1px solid rgba(255,255,255,0.10)',
-}
-
-const sectionTitle: React.CSSProperties = {
-  marginTop: 0,
-}
-
-const formGrid: React.CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(3, minmax(0,1fr))',
-  gap: '12px',
-}
-
-const field: React.CSSProperties = {
-  display: 'grid',
-  gap: '8px',
-}
-
-const label: React.CSSProperties = {
-  fontWeight: 700,
-}
-
-const select: React.CSSProperties = {
-  padding: '10px',
-  borderRadius: '10px',
-  border: '1px solid rgba(255,255,255,0.10)',
-  background: 'rgba(255,255,255,0.06)',
-  color: 'white',
-}
-
-const input: React.CSSProperties = {
-  padding: '10px',
-  borderRadius: '10px',
-  border: '1px solid rgba(255,255,255,0.10)',
-  background: 'rgba(255,255,255,0.06)',
-  color: 'white',
-}
-
-const actions: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'flex-end',
-  marginTop: '12px',
-}
-
-const button: React.CSSProperties = {
-  padding: '12px 14px',
-  borderRadius: '12px',
-  border: 'none',
-  background: '#2563eb',
-  color: 'white',
-  cursor: 'pointer',
-}
-
-const dayGrid: React.CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(2, minmax(0,1fr))',
-  gap: '12px',
-}
-
-const dayCard: React.CSSProperties = {
-  padding: '12px',
-  borderRadius: '12px',
-  background: 'rgba(255,255,255,0.04)',
-}
-
-const dayTitle: React.CSSProperties = {
-  fontWeight: 800,
-  marginBottom: '10px',
-}
-
-const blockItem: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  gap: '10px',
-  alignItems: 'center',
-  padding: '10px',
-  borderRadius: '10px',
-  background: 'rgba(255,255,255,0.04)',
-  marginBottom: '8px',
-}
-
-const deleteButton: React.CSSProperties = {
-  padding: '6px 10px',
-  borderRadius: '10px',
-  border: 'none',
-  background: 'rgba(239,68,68,0.18)',
-  color: 'white',
-  cursor: 'pointer',
-}
-
-const emptyText: React.CSSProperties = {
-  opacity: 0.75,
 }
