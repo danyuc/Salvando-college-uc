@@ -11,7 +11,7 @@ export type AdaptiveQuestion = {
 }
 
 export function getNextDifficulty(input: {
-  currentDifficulty: Difficulty
+  currentDifficulty?: Difficulty
   lastAnswers: boolean[]
   fatigueLevel: 'normal' | 'atencion' | 'fatiga'
 }): Difficulty {
@@ -21,28 +21,31 @@ export function getNextDifficulty(input: {
   const recent = input.lastAnswers.slice(-3)
   const correct = recent.filter(Boolean).length
 
-  if (correct === 3) return 'alta'
-  if (correct <= 1) return 'baja'
+  if (recent.length >= 3 && correct === 3) return 'alta'
+  if (recent.length >= 3 && correct <= 1) return 'baja'
 
-  return 'media'
+  return input.currentDifficulty ?? 'media'
 }
 
 export function selectAdaptiveQuestion(input: {
   questions: AdaptiveQuestion[]
   subject: string
-  weakTopics: string[]
+  weakTopics?: string[]
   usedQuestionIds: string[]
   difficulty: Difficulty
-}) {
-  const filtered = input.questions.filter((q) => {
-    const sameSubject = q.subject === input.subject
-    const notUsed = !input.usedQuestionIds.includes(q.id)
-    const sameDifficulty = q.difficulty === input.difficulty
-    return sameSubject && notUsed && sameDifficulty
+}): AdaptiveQuestion | null {
+  const weakTopics = input.weakTopics ?? []
+
+  const candidates = input.questions.filter((q) => {
+    return (
+      q.subject === input.subject &&
+      q.difficulty === input.difficulty &&
+      !input.usedQuestionIds.includes(q.id)
+    )
   })
 
-  const weakFirst = filtered.find((q) => input.weakTopics.includes(q.topic))
-  if (weakFirst) return weakFirst
+  const weakCandidate = candidates.find((q) => weakTopics.includes(q.topic))
+  if (weakCandidate) return weakCandidate
 
-  return filtered[0] ?? null
+  return candidates[0] ?? null
 }
