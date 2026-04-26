@@ -5,128 +5,138 @@ import { supabase } from '@/lib/supabase'
 
 type Mode = 'mixto' | 'alternativas' | 'desarrollo'
 
-type RawQuestion = {
-  id: string
-  pregunta: string | null
-
-  opciona?: string | null
-  opcionb?: string | null
-  opcionc?: string | null
-  opciond?: string | null
-  correcta?: string | null
-
-  opciones?: string[] | null
-  respuesta_correcta?: string | null
-
-  explicacion: string | null
-  clase?: string | null
-  asignatura?: string | null
-  tema: string | null
-  subtema: string | null
-  tipopregunta?: string | null
-  tipo?: string | null
-  dificultad: string | null
-  nivel_cognitivo?: string | null
-  expected_answer?: string | null
-  respuesta_esperada?: string | null
-  evaluation_criteria?: string[] | null
-  criterios_evaluacion?: string[] | null
-  error_comun?: string | null
-  referencia_autor?: string | null
-}
+type RawQuestion = Record<string, any>
 
 type Question = {
   id: string
   pregunta: string
-  opciona: string | null
-  opcionb: string | null
-  opcionc: string | null
-  opciond: string | null
+  asignatura: string
+  tema: string
+  subtema: string
+  tipo: 'seleccion_multiple' | 'desarrollo'
+  dificultad: string
+  opciones: string[]
   correcta: string | null
   explicacion: string | null
-  clase: string | null
-  tema: string | null
-  subtema: string | null
-  tipopregunta: string | null
-  dificultad: string | null
-  nivel_cognitivo: string | null
-  expected_answer: string | null
-  evaluation_criteria: string[] | null
-  error_comun: string | null
-  referencia_autor: string | null
+  expectedAnswer: string | null
+  criterios: string[]
+  errorComun: string | null
+  referenciaAutor: string | null
 }
 
-const letters = ['A', 'B', 'C', 'D'] as const
+const LETTERS = ['A', 'B', 'C', 'D']
 
-function normalizeQuestion(raw: RawQuestion): Question | null {
-  if (!raw.pregunta) return null
-
-  const tipo = raw.tipo ?? raw.tipopregunta ?? 'desarrollo'
-  const clase = raw.asignatura ?? raw.clase ?? 'Sociología'
-
-  let opciona = raw.opciona ?? null
-  let opcionb = raw.opcionb ?? null
-  let opcionc = raw.opcionc ?? null
-  let opciond = raw.opciond ?? null
-
-  if (Array.isArray(raw.opciones) && raw.opciones.length > 0) {
-    opciona = raw.opciones[0] ?? opciona
-    opcionb = raw.opciones[1] ?? opcionb
-    opcionc = raw.opciones[2] ?? opcionc
-    opciond = raw.opciones[3] ?? opciond
-  }
-
-  return {
-    id: raw.id,
-    pregunta: raw.pregunta,
-    opciona,
-    opcionb,
-    opcionc,
-    opciond,
-    correcta: raw.respuesta_correcta ?? raw.correcta ?? null,
-    explicacion: raw.explicacion ?? null,
-    clase,
-    tema: raw.tema ?? 'General',
-    subtema: raw.subtema ?? 'General',
-    tipopregunta: tipo,
-    dificultad: raw.dificultad ?? 'media',
-    nivel_cognitivo: raw.nivel_cognitivo ?? null,
-    expected_answer: raw.respuesta_esperada ?? raw.expected_answer ?? null,
-    evaluation_criteria:
-      raw.criterios_evaluacion ?? raw.evaluation_criteria ?? null,
-    error_comun: raw.error_comun ?? null,
-    referencia_autor: raw.referencia_autor ?? null,
-  }
+function cleanText(value: unknown) {
+  if (typeof value !== 'string') return ''
+  return value.trim()
 }
 
-function shuffleOptions(question: Question): Question {
-  if (question.tipopregunta === 'desarrollo') return question
+function normalizeType(raw: RawQuestion): 'seleccion_multiple' | 'desarrollo' {
+  const value = cleanText(raw.tipo ?? raw.tipopregunta).toLowerCase()
 
-  const options = [
-    { letter: 'A', text: question.opciona },
-    { letter: 'B', text: question.opcionb },
-    { letter: 'C', text: question.opcionc },
-    { letter: 'D', text: question.opciond },
-  ].filter((item) => Boolean(item.text))
+  if (
+    value.includes('seleccion') ||
+    value.includes('alternativa') ||
+    value.includes('multiple')
+  ) {
+    return 'seleccion_multiple'
+  }
 
-  const correctText = options.find(
-    (item) => item.letter === question.correcta
+  return 'desarrollo'
+}
+
+function normalizeCorrect(value: unknown) {
+  const text = cleanText(value).toUpperCase()
+  if (['A', 'B', 'C', 'D'].includes(text)) return text
+  return null
+}
+
+function parseOptions(raw: RawQuestion) {
+  const fromJson = Array.isArray(raw.opciones)
+    ? raw.opciones
+        .map((item: unknown) => cleanText(item))
+        .filter(Boolean)
+    : []
+
+  const fromColumns = [
+    raw.opciona,
+    raw.opcionb,
+    raw.opcionc,
+    raw.opciond,
+  ]
+    .map((item) => cleanText(item))
+    .filter(Boolean)
+
+  const options = fromJson.length > 0 ? fromJson : fromColumns
+
+  return options.map((option, index) => {
+    const trimmed = cleanText(option)
+    const alreadyHasLetter = /^[A-D]\)/i.test(trimmed)
+    return alreadyHasLetter ? trimmed : `${LETTERS[index]}) ${trimmed}`
+  })
+}
+
+function shuffleQuestionOptions(question: Question): Question {
+  if (question.tipo !== 'seleccion_multiple') return question
+  if (!question.correcta) return question
+  if (question.opciones.length < 2) return question
+
+  const original = question.opciones.map((option, index) => ({
+    originalLetter: LETTERS[index],
+    text: option.replace(/^[A-D]\)\s*/i, '').trim(),
+  }))
+
+  const correctText = original.find(
+    (item) => item.originalLetter === question.correcta
   )?.text
 
-  const shuffled = [...options].sort(() => Math.random() - 0.5)
+  const shuffled = [...original].sort(() => Math.random() - 0.5)
 
-  const newCorrectIndex = shuffled.findIndex(
-    (item) => item.text === correctText
-  )
+  const newCorrectIndex = shuffled.findIndex((item) => item.text === correctText)
 
   return {
     ...question,
-    opciona: shuffled[0]?.text ?? null,
-    opcionb: shuffled[1]?.text ?? null,
-    opcionc: shuffled[2]?.text ?? null,
-    opciond: shuffled[3]?.text ?? null,
-    correcta:
-      newCorrectIndex >= 0 ? letters[newCorrectIndex] : question.correcta,
+    opciones: shuffled.map((item, index) => `${LETTERS[index]}) ${item.text}`),
+    correcta: newCorrectIndex >= 0 ? LETTERS[newCorrectIndex] : question.correcta,
+  }
+}
+
+function normalizeQuestion(raw: RawQuestion): Question | null {
+  const pregunta = cleanText(raw.pregunta ?? raw.question)
+  if (!pregunta) return null
+
+  const tipo = normalizeType(raw)
+  const opciones = parseOptions(raw)
+  const correcta = normalizeCorrect(raw.respuesta_correcta ?? raw.correcta)
+
+  const isMultipleValid =
+    tipo === 'seleccion_multiple' && opciones.length >= 2 && Boolean(correcta)
+
+  const isDevelopmentValid = tipo === 'desarrollo'
+
+  if (!isMultipleValid && !isDevelopmentValid) return null
+
+  return {
+    id: String(raw.id),
+    pregunta,
+    asignatura: cleanText(raw.asignatura ?? raw.clase ?? raw.subject) || 'Sociología',
+    tema: cleanText(raw.tema ?? raw.topic) || 'General',
+    subtema: cleanText(raw.subtema ?? raw.subtopic) || 'General',
+    tipo,
+    dificultad: cleanText(raw.dificultad ?? raw.difficulty) || 'media',
+    opciones,
+    correcta,
+    explicacion: cleanText(raw.explicacion ?? raw.explanation) || null,
+    expectedAnswer:
+      cleanText(raw.respuesta_esperada ?? raw.expected_answer) || null,
+    criterios: Array.isArray(raw.criterios_evaluacion)
+      ? raw.criterios_evaluacion
+      : Array.isArray(raw.evaluation_criteria)
+        ? raw.evaluation_criteria
+        : [],
+    errorComun: cleanText(raw.error_comun ?? raw.common_mistake) || null,
+    referenciaAutor:
+      cleanText(raw.referencia_autor ?? raw.author_reference) || null,
   }
 }
 
@@ -135,7 +145,6 @@ export default function PracticeEngine() {
   const [mode, setMode] = useState<Mode>('mixto')
   const [selectedSubject, setSelectedSubject] = useState('Todas')
   const [selectedTopic, setSelectedTopic] = useState('Todos')
-
   const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState('')
   const [developmentAnswer, setDevelopmentAnswer] = useState('')
@@ -150,10 +159,7 @@ export default function PracticeEngine() {
   async function loadQuestions() {
     setLoading(true)
 
-    const { data, error } = await supabase
-      .from('questions')
-      .select('*')
-      .order('tema', { ascending: true })
+    const { data, error } = await supabase.from('questions').select('*')
 
     if (error) {
       console.error('LOAD QUESTIONS ERROR:', error)
@@ -167,10 +173,26 @@ export default function PracticeEngine() {
       .filter(Boolean) as Question[]
 
     const randomized = normalized
-      .map(shuffleOptions)
+      .map(shuffleQuestionOptions)
       .sort(() => Math.random() - 0.5)
 
+    console.log('QUESTIONS RAW:', data?.length ?? 0)
+    console.log('QUESTIONS NORMALIZED:', randomized.length)
+    console.log('SUBJECTS:', Array.from(new Set(randomized.map((q) => q.asignatura))))
+
     setQuestions(randomized)
+
+    const uniqueSubjects = Array.from(
+      new Set(randomized.map((q) => q.asignatura).filter(Boolean))
+    )
+
+    if (uniqueSubjects.length === 1) {
+      setSelectedSubject(uniqueSubjects[0])
+    } else {
+      setSelectedSubject('Todas')
+    }
+
+    setSelectedTopic('Todos')
     setCurrentIndex(0)
     setSelectedAnswer('')
     setDevelopmentAnswer('')
@@ -180,42 +202,38 @@ export default function PracticeEngine() {
   }
 
   const subjects = useMemo(() => {
-    return [
-      'Todas',
-      ...Array.from(new Set(questions.map((q) => q.clase).filter(Boolean))),
-    ] as string[]
+    const values = Array.from(
+      new Set(questions.map((q) => q.asignatura).filter(Boolean))
+    )
+
+    return ['Todas', ...values]
   }, [questions])
 
   const topics = useMemo(() => {
     const base =
       selectedSubject === 'Todas'
         ? questions
-        : questions.filter((q) => q.clase === selectedSubject)
+        : questions.filter((q) => q.asignatura === selectedSubject)
 
     return [
       'Todos',
       ...Array.from(new Set(base.map((q) => q.tema).filter(Boolean))),
-    ] as string[]
+    ]
   }, [questions, selectedSubject])
 
   const filteredQuestions = useMemo(() => {
     return questions.filter((q) => {
-      const subjectOk = selectedSubject === 'Todas' || q.clase === selectedSubject
+      const subjectOk =
+        selectedSubject === 'Todas' || q.asignatura === selectedSubject
+
       const topicOk = selectedTopic === 'Todos' || q.tema === selectedTopic
-
-      const isDevelopment = q.tipopregunta === 'desarrollo'
-
-      const isMultiple =
-        q.tipopregunta === 'seleccion_multiple' &&
-        Boolean(q.correcta) &&
-        [q.opciona, q.opcionb, q.opcionc, q.opciond].filter(Boolean).length >= 2
 
       const modeOk =
         mode === 'mixto' ||
-        (mode === 'alternativas' && isMultiple) ||
-        (mode === 'desarrollo' && isDevelopment)
+        (mode === 'alternativas' && q.tipo === 'seleccion_multiple') ||
+        (mode === 'desarrollo' && q.tipo === 'desarrollo')
 
-      return subjectOk && topicOk && modeOk && (isDevelopment || isMultiple)
+      return subjectOk && topicOk && modeOk
     })
   }, [questions, selectedSubject, selectedTopic, mode])
 
@@ -255,6 +273,7 @@ export default function PracticeEngine() {
 
     const { data } = await supabase.auth.getUser()
     const userId = data.user?.id
+
     if (!userId) return
 
     await supabase.from('user_question_attempts').insert({
@@ -265,7 +284,7 @@ export default function PracticeEngine() {
       tema: currentQuestion.tema,
       subtema: currentQuestion.subtema,
       dificultad: currentQuestion.dificultad,
-      nivel_cognitivo: currentQuestion.nivel_cognitivo,
+      nivel_cognitivo: null,
     })
   }
 
@@ -277,7 +296,9 @@ export default function PracticeEngine() {
     setSelectedAnswer(letter)
     setShowResult(true)
 
-    if (isCorrect) setScore((prev) => prev + 1)
+    if (isCorrect) {
+      setScore((prev) => prev + 1)
+    }
 
     saveAttempt(letter, isCorrect)
   }
@@ -312,7 +333,8 @@ export default function PracticeEngine() {
           <p style={pill}>Práctica inteligente</p>
           <h1 style={title}>Modo UC adaptativo</h1>
           <p style={muted}>
-            Preguntas de alternativas y desarrollo desde Supabase, con alternativas mezcladas automáticamente.
+            Alternativas y desarrollo desde Supabase. Las alternativas se mezclan
+            automáticamente.
           </p>
         </div>
 
@@ -369,7 +391,8 @@ export default function PracticeEngine() {
       </section>
 
       <section style={stats}>
-        <div style={statBox}>Preguntas: {filteredQuestions.length}</div>
+        <div style={statBox}>Total banco: {questions.length}</div>
+        <div style={statBox}>Preguntas filtro: {filteredQuestions.length}</div>
         <div style={statBox}>Puntaje: {score}</div>
         <div style={statBox}>Progreso: {progress}%</div>
       </section>
@@ -378,16 +401,16 @@ export default function PracticeEngine() {
         <section style={card}>
           <h2>No hay preguntas para este filtro.</h2>
           <p style={muted}>
-            Revisa que existan preguntas de alternativas o desarrollo para la asignatura y tema seleccionados.
+            Prueba con Asignatura “Todas”, Tema “Todos” y Modo “Mixto”.
           </p>
         </section>
       ) : (
         <section style={card}>
           <div style={questionTop}>
-            <span style={badge}>{currentQuestion.clase || 'Sin asignatura'}</span>
-            <span style={badge}>{currentQuestion.tema || 'Sin tema'}</span>
-            <span style={badge}>{currentQuestion.tipopregunta || 'Sin tipo'}</span>
-            <span style={badge}>{currentQuestion.dificultad || 'media'}</span>
+            <span style={badge}>{currentQuestion.asignatura}</span>
+            <span style={badge}>{currentQuestion.tema}</span>
+            <span style={badge}>{currentQuestion.tipo}</span>
+            <span style={badge}>{currentQuestion.dificultad}</span>
           </div>
 
           <h2 style={questionTitle}>
@@ -396,7 +419,7 @@ export default function PracticeEngine() {
 
           <p style={questionText}>{currentQuestion.pregunta}</p>
 
-          {currentQuestion.tipopregunta === 'desarrollo' ? (
+          {currentQuestion.tipo === 'desarrollo' ? (
             <>
               <textarea
                 value={developmentAnswer}
@@ -415,56 +438,51 @@ export default function PracticeEngine() {
                 <div style={resultBox}>
                   <strong>Respuesta esperada:</strong>
                   <p>
-                    {currentQuestion.expected_answer ||
+                    {currentQuestion.expectedAnswer ||
                       currentQuestion.explicacion ||
                       'Sin pauta cargada.'}
                   </p>
 
-                  {currentQuestion.evaluation_criteria?.length ? (
+                  {currentQuestion.criterios.length > 0 && (
                     <>
                       <strong>Criterios:</strong>
                       <ul>
-                        {currentQuestion.evaluation_criteria.map((criterion, i) => (
-                          <li key={i}>{criterion}</li>
+                        {currentQuestion.criterios.map((criterion, index) => (
+                          <li key={index}>{criterion}</li>
                         ))}
                       </ul>
                     </>
-                  ) : null}
+                  )}
                 </div>
               )}
             </>
           ) : (
             <div style={optionsGrid}>
-              {[
-                ['A', currentQuestion.opciona],
-                ['B', currentQuestion.opcionb],
-                ['C', currentQuestion.opcionc],
-                ['D', currentQuestion.opciond],
-              ].map(([letter, text]) => {
-                if (!text) return null
-
+              {currentQuestion.opciones.map((option) => {
+                const letter = option.trim().slice(0, 1)
                 const isCorrect = letter === currentQuestion.correcta
                 const isSelected = letter === selectedAnswer
 
                 let style = optionButton
+
                 if (showResult && isCorrect) style = correctButton
                 else if (showResult && isSelected && !isCorrect) style = wrongButton
 
                 return (
                   <button
-                    key={letter}
+                    key={option}
                     onClick={() => answerMultiple(letter)}
                     style={style}
                     disabled={showResult}
                   >
-                    <strong>{letter})</strong> {text}
+                    {option}
                   </button>
                 )
               })}
             </div>
           )}
 
-          {showResult && currentQuestion.tipopregunta !== 'desarrollo' && (
+          {showResult && currentQuestion.tipo !== 'desarrollo' && (
             <div style={resultBox}>
               <strong>
                 {selectedAnswer === currentQuestion.correcta
@@ -472,14 +490,16 @@ export default function PracticeEngine() {
                   : '❌ Incorrecta'}
               </strong>
               <p>{currentQuestion.explicacion || 'Sin explicación cargada.'}</p>
-              {currentQuestion.error_comun && (
+
+              {currentQuestion.errorComun && (
                 <p>
-                  <strong>Error común:</strong> {currentQuestion.error_comun}
+                  <strong>Error común:</strong> {currentQuestion.errorComun}
                 </p>
               )}
-              {currentQuestion.referencia_autor && (
+
+              {currentQuestion.referenciaAutor && (
                 <p>
-                  <strong>Referencia:</strong> {currentQuestion.referencia_autor}
+                  <strong>Referencia:</strong> {currentQuestion.referenciaAutor}
                 </p>
               )}
             </div>
