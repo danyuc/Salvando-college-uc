@@ -3,8 +3,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 
-type PracticeMode = 'practica' | 'diagnostico'
+type PracticeMode = 'practica' | 'diagnostico' | 'adaptativo'
 type AnswerState = 'idle' | 'correct' | 'incorrect'
+type Difficulty = 'facil' | 'media' | 'alta'
 
 type Question = {
   id: string
@@ -12,7 +13,7 @@ type Question = {
   tema: string
   subtema: string
   tipo: 'seleccion_multiple' | 'desarrollo'
-  dificultad: 'facil' | 'media' | 'alta'
+  dificultad: Difficulty
   pregunta: string
   opciones: string[] | null
   respuesta_correcta: 'A' | 'B' | 'C' | 'D' | null
@@ -33,7 +34,7 @@ export default function PracticeView() {
 
   const [selectedSubject, setSelectedSubject] = useState('')
   const [selectedTopic, setSelectedTopic] = useState('')
-  const [selectedDifficulty, setSelectedDifficulty] = useState('alta')
+  const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('alta')
   const [mode, setMode] = useState<PracticeMode>('practica')
 
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -42,19 +43,41 @@ export default function PracticeView() {
   const [loading, setLoading] = useState(false)
   const [initialLoading, setInitialLoading] = useState(true)
 
+  const [userId, setUserId] = useState<string | null>(null)
+  const [correctCount, setCorrectCount] = useState(0)
+  const [wrongCount, setWrongCount] = useState(0)
+  const [seenIds, setSeenIds] = useState<string[]>([])
+  const [weakTopics, setWeakTopics] = useState<string[]>([])
+
   const currentQuestion = questions[currentIndex]
 
+  const accuracy = useMemo(() => {
+    const total = correctCount + wrongCount
+    if (total === 0) return 0
+    return Math.round((correctCount / total) * 100)
+  }, [correctCount, wrongCount])
+
+  const adaptiveDifficulty = useMemo<Difficulty>(() => {
+    if (accuracy < 50) return 'facil'
+    if (accuracy < 80) return 'media'
+    return 'alta'
+  }, [accuracy])
+
   const stats = useMemo(() => {
-    const answered = questions.filter((_, index) => index < currentIndex).length
     const total = questions.length
     const progress = total ? Math.round(((currentIndex + 1) / total) * 100) : 0
 
     return {
-      answered,
       total,
       progress,
+      answered: correctCount + wrongCount,
     }
-  }, [questions, currentIndex])
+  }, [questions.length, currentIndex, correctCount, wrongCount])
+
+  async function loadUser() {
+    const { data } = await supabase.auth.getUser()
+    setUserId(data.user?.id ?? null)
+  }
 
   async function loadInitialData() {
     try {
@@ -69,7 +92,7 @@ export default function PracticeView() {
 
       const uniqueSubjects = Array.from(
         new Set((data ?? []).map((item) => item.asignatura).filter(Boolean))
-      )
+      ) as string[]
 
       setSubjects(uniqueSubjects)
 
@@ -98,13 +121,29 @@ export default function PracticeView() {
 
       const uniqueTopics = Array.from(
         new Set((data ?? []).map((item) => item.tema).filter(Boolean))
-      )
+      ) as string[]
 
       setTopics(uniqueTopics)
     } catch (error) {
       console.error('LOAD TOPICS ERROR:', error)
       setTopics([])
     }
+  }
+
+  async function loadWeakTopics(currentUserId: string) {
+    const { data, error } = await supabase
+      .from('user_topic_stats')
+      .select('tema, mastery_score')
+      .eq('user_id', currentUserId)
+      .lt('mastery_score', 70)
+
+    if (error) {
+      console.error('LOAD WEAK TOPICS ERROR:', error)
+      setWeakTopics([])
+      return
+    }
+
+    setWeakTopics((data ?? []).map((item) => item.tema).filter(Boolean))
   }
 
   async function loadQuestions() {
@@ -114,12 +153,15 @@ export default function PracticeView() {
       setCurrentIndex(0)
       setSelectedAnswer(null)
       setAnswerState('idle')
+      setCorrectCount(0)
+      setWrongCount(0)
+      setSeenIds([])
 
       let query = supabase
         .from('questions')
         .select('*')
         .eq('tipo', 'seleccion_multiple')
-        .limit(30)
+        .limit(80)
 
       if (selectedSubject) {
         query = query.eq('asignatura', selectedSubject)
@@ -127,25 +169,32 @@ export default function PracticeView() {
 
       if (mode === 'diagnostico') {
         query = query.eq('nivel_cognitivo', 'diagnostico')
-      } else {
-        if (selectedTopic) {
-          query = query.eq('tema', selectedTopic)
-        }
+      }
 
-        if (selectedDifficulty) {
-          query = query.eq('dificultad', selectedDifficulty)
-        }
+      if (mode === 'practica') {
+        if (selectedTopic) query = query.eq('tema', selectedTopic)
+        if (selectedDifficulty) query = query.eq('dificultad', selectedDifficulty)
+      }
+
+      if (mode === 'adaptativo') {
+        if (selectedTopic) query = query.eq('tema', selectedTopic)
       }
 
       const { data, error } = await query
 
       if (error) throw error
 
-      const shuffled = [...((data ?? []) as Question[])].sort(
-        () => Math.random() - 0.5
+      const cleanData = ((data ?? []) as Question[]).filter(
+        (q) => q.pregunta && Array.isArray(q.opciones) && q.opciones.length === 4
       )
 
+      const shuffled = [...cleanData].sort(() => Math.random() - 0.5)
+
       setQuestions(shuffled)
+
+      if (userId) {
+        await loadWeakTopics(userId)
+      }
     } catch (error) {
       console.error('LOAD QUESTIONS ERROR:', error)
       alert('No se pudieron cargar las preguntas.')
@@ -154,21 +203,136 @@ export default function PracticeView() {
     }
   }
 
+  async function saveAttempt(question: Question, selected: string, isCorrect: boolean) {
+    if (!userId) return
+
+    const { error } = await supabase.from('user_question_attempts').insert({
+      user_id: userId,
+      question_id: question.id,
+      selected_answer: selected,
+      is_correct: isCorrect,
+      tema: question.tema,
+      subtema: question.subtema,
+      dificultad: question.dificultad,
+      nivel_cognitivo: question.nivel_cognitivo,
+    })
+
+    if (error) {
+      console.error('SAVE ATTEMPT ERROR:', error)
+      return
+    }
+
+    await updateTopicStats(question.tema, isCorrect)
+  }
+
+  async function updateTopicStats(tema: string, isCorrect: boolean) {
+    if (!userId || !tema) return
+
+    const { data, error } = await supabase
+      .from('user_topic_stats')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('tema', tema)
+      .maybeSingle()
+
+    if (error) {
+      console.error('GET TOPIC STATS ERROR:', error)
+      return
+    }
+
+    if (!data) {
+      await supabase.from('user_topic_stats').insert({
+        user_id: userId,
+        tema,
+        total_attempts: 1,
+        correct_attempts: isCorrect ? 1 : 0,
+        wrong_attempts: isCorrect ? 0 : 1,
+        mastery_score: isCorrect ? 100 : 0,
+        last_attempt_at: new Date().toISOString(),
+      })
+
+      return
+    }
+
+    const total = Number(data.total_attempts ?? 0) + 1
+    const correct = Number(data.correct_attempts ?? 0) + (isCorrect ? 1 : 0)
+    const wrong = total - correct
+    const mastery = Math.round((correct / total) * 100)
+
+    await supabase
+      .from('user_topic_stats')
+      .update({
+        total_attempts: total,
+        correct_attempts: correct,
+        wrong_attempts: wrong,
+        mastery_score: mastery,
+        last_attempt_at: new Date().toISOString(),
+      })
+      .eq('id', data.id)
+  }
+
   function handleAnswer(letter: string) {
     if (!currentQuestion || selectedAnswer) return
 
-    setSelectedAnswer(letter)
+    const isCorrect = letter === currentQuestion.respuesta_correcta
 
-    if (letter === currentQuestion.respuesta_correcta) {
-      setAnswerState('correct')
+    setSelectedAnswer(letter)
+    setAnswerState(isCorrect ? 'correct' : 'incorrect')
+
+    if (isCorrect) {
+      setCorrectCount((prev) => prev + 1)
     } else {
-      setAnswerState('incorrect')
+      setWrongCount((prev) => prev + 1)
+      if (!weakTopics.includes(currentQuestion.tema)) {
+        setWeakTopics((prev) => [...prev, currentQuestion.tema])
+      }
     }
+
+    saveAttempt(currentQuestion, letter, isCorrect)
+  }
+
+  function pickAdaptiveNextIndex() {
+    const candidates = questions.filter((q) => !seenIds.includes(q.id))
+
+    if (candidates.length === 0) return -1
+
+    const weakCandidates = candidates.filter(
+      (q) => weakTopics.includes(q.tema) && q.dificultad === adaptiveDifficulty
+    )
+
+    const difficultyCandidates = candidates.filter(
+      (q) => q.dificultad === adaptiveDifficulty
+    )
+
+    const finalPool =
+      weakCandidates.length > 0
+        ? weakCandidates
+        : difficultyCandidates.length > 0
+          ? difficultyCandidates
+          : candidates
+
+    const selected = finalPool[Math.floor(Math.random() * finalPool.length)]
+
+    return questions.findIndex((q) => q.id === selected.id)
   }
 
   function nextQuestion() {
     setSelectedAnswer(null)
     setAnswerState('idle')
+
+    if (!currentQuestion) return
+
+    setSeenIds((prev) => [...prev, currentQuestion.id])
+
+    if (mode === 'adaptativo') {
+      const nextIndex = pickAdaptiveNextIndex()
+
+      if (nextIndex !== -1) {
+        setCurrentIndex(nextIndex)
+      }
+
+      return
+    }
 
     if (currentIndex < questions.length - 1) {
       setCurrentIndex((prev) => prev + 1)
@@ -179,9 +343,13 @@ export default function PracticeView() {
     setCurrentIndex(0)
     setSelectedAnswer(null)
     setAnswerState('idle')
+    setCorrectCount(0)
+    setWrongCount(0)
+    setSeenIds([])
   }
 
   useEffect(() => {
+    loadUser()
     loadInitialData()
   }, [])
 
@@ -205,8 +373,7 @@ export default function PracticeView() {
         <div>
           <h2 style={title}>🧠 Práctica inteligente</h2>
           <p style={subtitle}>
-            Entrena con preguntas reales desde Supabase, modo práctica y
-            diagnóstico obligatorio.
+            Entrena con preguntas reales, diagnóstico obligatorio y modo adaptativo.
           </p>
         </div>
 
@@ -226,8 +393,8 @@ export default function PracticeView() {
       <div style={statsGrid}>
         <Stat label="Asignaturas" value={subjects.length} />
         <Stat label="Temas" value={topics.length} />
-        <Stat label="Preguntas cargadas" value={questions.length} />
-        <Stat label="Progreso" value={`${stats.progress}%`} />
+        <Stat label="Preguntas" value={questions.length} />
+        <Stat label="Precisión" value={`${accuracy}%`} />
       </div>
 
       <div style={card}>
@@ -260,6 +427,7 @@ export default function PracticeView() {
             >
               <option value="practica">Práctica</option>
               <option value="diagnostico">Diagnóstico obligatorio</option>
+              <option value="adaptativo">Adaptativo UC</option>
             </select>
           </div>
 
@@ -287,11 +455,11 @@ export default function PracticeView() {
             <label style={label}>Dificultad</label>
             <select
               value={selectedDifficulty}
-              onChange={(e) => setSelectedDifficulty(e.target.value)}
-              disabled={mode === 'diagnostico'}
+              onChange={(e) => setSelectedDifficulty(e.target.value as Difficulty)}
+              disabled={mode !== 'practica'}
               style={{
                 ...select,
-                opacity: mode === 'diagnostico' ? 0.55 : 1,
+                opacity: mode !== 'practica' ? 0.55 : 1,
               }}
             >
               <option value="facil">Fácil</option>
@@ -306,8 +474,8 @@ export default function PracticeView() {
         <div style={card}>
           <h3 style={sectionTitle}>Banco conectado ✅</h3>
           <p style={emptyText}>
-            Selecciona una asignatura y presiona “Comenzar”. Si usas diagnóstico,
-            se cargarán preguntas con nivel cognitivo diagnóstico.
+            Selecciona una asignatura y presiona “Comenzar”. El modo adaptativo
+            sube o baja dificultad según tu rendimiento.
           </p>
         </div>
       )}
@@ -319,13 +487,18 @@ export default function PracticeView() {
               <span style={chip}>{currentQuestion.asignatura ?? 'General'}</span>
               <span style={chip}>{currentQuestion.tema}</span>
               <span style={chip}>{currentQuestion.subtema}</span>
+              <span style={chip}>{currentQuestion.dificultad}</span>
               <span style={chip}>
                 {currentIndex + 1}/{questions.length}
               </span>
             </div>
 
             <div style={modeBadge}>
-              {mode === 'diagnostico' ? 'Diagnóstico' : 'Práctica'}
+              {mode === 'diagnostico'
+                ? 'Diagnóstico'
+                : mode === 'adaptativo'
+                  ? `Adaptativo · ${adaptiveDifficulty}`
+                  : 'Práctica'}
             </div>
           </div>
 
@@ -336,6 +509,13 @@ export default function PracticeView() {
                 width: `${stats.progress}%`,
               }}
             />
+          </div>
+
+          <div style={miniStats}>
+            <span>Correctas: {correctCount}</span>
+            <span>Errores: {wrongCount}</span>
+            <span>Precisión: {accuracy}%</span>
+            <span>Débiles: {weakTopics.length}</span>
           </div>
 
           <h3 style={questionTitle}>{currentQuestion.pregunta}</h3>
@@ -349,17 +529,11 @@ export default function PracticeView() {
               let optionStyle: React.CSSProperties = optionButton
 
               if (selectedAnswer && isCorrect) {
-                optionStyle = {
-                  ...optionButton,
-                  ...correctOption,
-                }
+                optionStyle = { ...optionButton, ...correctOption }
               }
 
               if (selectedAnswer && isSelected && !isCorrect) {
-                optionStyle = {
-                  ...optionButton,
-                  ...wrongOption,
-                }
+                optionStyle = { ...optionButton, ...wrongOption }
               }
 
               return (
@@ -385,13 +559,12 @@ export default function PracticeView() {
               }}
             >
               <div style={feedbackTitle}>
-                {answerState === 'correct'
-                  ? '✅ Correcta'
-                  : '❌ Incorrecta'}
+                {answerState === 'correct' ? '✅ Correcta' : '❌ Incorrecta'}
               </div>
 
               <div style={feedbackText}>
-                Respuesta correcta: <strong>{currentQuestion.respuesta_correcta}</strong>
+                Respuesta correcta:{' '}
+                <strong>{currentQuestion.respuesta_correcta}</strong>
               </div>
 
               {currentQuestion.explicacion && (
@@ -404,14 +577,8 @@ export default function PracticeView() {
                 </div>
               )}
 
-              <button
-                onClick={nextQuestion}
-                disabled={currentIndex >= questions.length - 1}
-                style={button}
-              >
-                {currentIndex >= questions.length - 1
-                  ? 'Terminaste'
-                  : 'Siguiente'}
+              <button onClick={nextQuestion} style={button}>
+                Siguiente
               </button>
             </div>
           )}
@@ -608,6 +775,15 @@ const progressFill: React.CSSProperties = {
   height: '100%',
   borderRadius: '999px',
   background: '#2563eb',
+}
+
+const miniStats: React.CSSProperties = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '10px',
+  opacity: 0.85,
+  fontWeight: 800,
+  fontSize: '0.9rem',
 }
 
 const questionTitle: React.CSSProperties = {
