@@ -24,13 +24,43 @@ export async function getSubjects() {
   const { data, error } = await supabase
     .from('questions')
     .select('asignatura')
-    .not('asignatura', 'is', null)
 
-  if (error) throw error
+  if (error) {
+    console.error('GET SUBJECTS ERROR:', error)
+    return []
+  }
+
+  const subjects = Array.from(
+    new Set(
+      (data ?? [])
+        .map((item) => item.asignatura)
+        .filter(Boolean)
+    )
+  ) as string[]
+
+  return subjects
+}
+
+export async function getTopics(asignatura?: string) {
+  let query = supabase
+    .from('questions')
+    .select('tema')
+    .not('tema', 'is', null)
+
+  if (asignatura && asignatura !== 'todas') {
+    query = query.eq('asignatura', asignatura)
+  }
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('GET TOPICS ERROR:', error)
+    return []
+  }
 
   return Array.from(
-    new Set((data ?? []).map((item) => item.asignatura).filter(Boolean))
-  )
+    new Set((data ?? []).map((item) => item.tema).filter(Boolean))
+  ) as string[]
 }
 
 export async function getPracticeQuestions({
@@ -50,13 +80,24 @@ export async function getPracticeQuestions({
     .eq('tipo', 'seleccion_multiple')
     .limit(limit)
 
-  if (asignatura) query = query.eq('asignatura', asignatura)
-  if (tema) query = query.eq('tema', tema)
-  if (dificultad) query = query.eq('dificultad', dificultad)
+  if (asignatura && asignatura !== 'todas') {
+    query = query.eq('asignatura', asignatura)
+  }
+
+  if (tema && tema !== 'todos') {
+    query = query.eq('tema', tema)
+  }
+
+  if (dificultad && dificultad !== 'todas') {
+    query = query.eq('dificultad', dificultad)
+  }
 
   const { data, error } = await query
 
-  if (error) throw error
+  if (error) {
+    console.error('GET PRACTICE QUESTIONS ERROR:', error)
+    return []
+  }
 
   return (data ?? []) as Question[]
 }
@@ -71,31 +112,20 @@ export async function getDiagnosticQuestions({
   let query = supabase
     .from('questions')
     .select('*')
+    .eq('tipo', 'seleccion_multiple')
     .eq('nivel_cognitivo', 'diagnostico')
     .limit(limit)
 
-  if (asignatura) query = query.eq('asignatura', asignatura)
+  if (asignatura && asignatura !== 'todas') {
+    query = query.eq('asignatura', asignatura)
+  }
 
   const { data, error } = await query
 
-  if (error) throw error
+  if (error) {
+    console.error('GET DIAGNOSTIC QUESTIONS ERROR:', error)
+    return []
+  }
 
   return (data ?? []) as Question[]
-}
-
-export async function getTopics(asignatura?: string) {
-  let query = supabase
-    .from('questions')
-    .select('tema')
-    .not('tema', 'is', null)
-
-  if (asignatura) query = query.eq('asignatura', asignatura)
-
-  const { data, error } = await query
-
-  if (error) throw error
-
-  return Array.from(
-    new Set((data ?? []).map((item) => item.tema).filter(Boolean))
-  )
 }
