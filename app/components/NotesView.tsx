@@ -21,7 +21,8 @@ const subjects = [
 ]
 
 function safeGrade(value: unknown) {
-  const n = Number(value)
+  const clean = String(value ?? '').trim().replace(',', '.')
+  const n = Number(clean)
   return Number.isFinite(n) && n >= 1 && n <= 7 ? n : null
 }
 
@@ -103,10 +104,21 @@ export default function NotesView() {
 
   async function updateGrade(ev: Evaluation, value: string) {
     if (!ev.id) return
+
     const grade = safeGrade(value)
-    if (grade === null) return alert('La nota debe estar entre 1.0 y 7.0.')
-    await updateEvaluation(ev.id, { grade } as any)
-    await load()
+
+    if (grade === null) {
+      alert('La nota debe estar entre 1.0 y 7.0. Puedes usar 5.5 o 5,5.')
+      return
+    }
+
+    try {
+      await updateEvaluation(ev.id, { grade } as any)
+      await load()
+    } catch (error) {
+      console.error('UPDATE GRADE ERROR:', error)
+      alert('No se pudo guardar la nota.')
+    }
   }
 
   async function removeEvaluation(id?: string) {
@@ -317,7 +329,12 @@ export default function NotesView() {
                         <div style={styles.mutedSmall}>{ev.type ?? 'nota'} · {Number(ev.weight_percent ?? ev.weight ?? 0)}% · {ev.start_date ?? ev.date ?? 'sin fecha'}</div>
                       </div>
                       <div style={styles.actions}>
-                        <input style={styles.miniInput} type="number" min={1} max={7} step={0.1} defaultValue={gradeValue(ev) || ''} onBlur={(e) => updateGrade(ev, e.target.value)} />
+                        <input style={styles.miniInput} type="number" min={1} max={7} step={0.1} defaultValue={gradeValue(ev) || ''} onBlur={(e) => updateGrade(ev, e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.currentTarget.blur()
+                            }
+                          }} />
                         <button style={styles.dangerButton} onClick={() => removeEvaluation(ev.id)}>Eliminar</button>
                       </div>
                     </div>
