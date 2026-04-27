@@ -150,7 +150,7 @@ export default function DiagnosticExamView() {
   const searchParams = useSearchParams()
 
   const subject = searchParams.get('subject') || ''
-  const next = searchParams.get('next') || '/home'
+  const next = searchParams.get('next') || '/practica'
   const mode = searchParams.get('mode') || 'diagnostico'
 
   const [userId, setUserId] = useState<string | null>(null)
@@ -385,7 +385,8 @@ export default function DiagnosticExamView() {
         console.error('PRACTICE ATTEMPTS NON BLOCKING ERROR:', attemptError)
       }
 
-      router.replace(next)
+      const safeNext = next && next.startsWith('/') ? next : '/practica'
+      router.replace(safeNext)
     } catch (error) {
       console.error('DIAGNOSTIC EXAM SAVE ERROR:', error)
       alert(
