@@ -342,18 +342,23 @@ export default function NotesView() {
                           placeholder="Nota"
                         />
 
-                        <button
-                          type="button"
+                        <div
+                          role="button"
+                          tabIndex={0}
                           style={styles.saveButton}
-                          onClick={(e) => {
-                            e.preventDefault()
-                            e.stopPropagation()
+                          onClick={() => {
                             const input = document.getElementById(`grade-${ev.id}`) as HTMLInputElement | null
                             updateGrade(ev, (input?.value ?? '').replace(',', '.'))
                           }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              const input = document.getElementById(`grade-${ev.id}`) as HTMLInputElement | null
+                              updateGrade(ev, (input?.value ?? '').replace(',', '.'))
+                            }
+                          }}
                         >
                           Guardar
-                        </button>
+                        </div>
 
                         <button type="button" style={styles.dangerButton} onClick={() => removeEvaluation(ev.id)}>
                           Eliminar
