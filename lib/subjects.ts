@@ -904,3 +904,33 @@ export function getEvaluationKinds(subjectName: string) {
 export function getAllowedFormats(subjectName: string) {
   return getSubjectPreset(subjectName)?.allowedFormats || ['multiple-choice']
 }
+
+
+export const SUBJECT_CODE_TO_NAME: Record<string, string> = {
+  SOL500: 'Sociología',
+  MAT1000: 'Precálculo',
+  PSI1101: 'Psicología',
+  IHI0204: 'Historia',
+  SEMINARIO: 'Seminario',
+}
+
+export function getSubjectName(subject?: string | null) {
+  if (!subject) return 'Sin asignatura'
+  return SUBJECT_CODE_TO_NAME[subject] || subject
+}
+
+export function getSubjectPresetByCodeOrName(subject?: string | null) {
+  if (!subject) return null
+  const name = getSubjectName(subject)
+
+  return (
+    SUBJECT_PRESETS.find((preset) => preset.name === name) ||
+    SUBJECT_PRESETS.find((preset) => preset.name === subject) ||
+    null
+  )
+}
+
+export function getSubjectColorByCodeOrName(subject?: string | null) {
+  const preset = getSubjectPresetByCodeOrName(subject)
+  return preset?.color || '#2563eb'
+}
