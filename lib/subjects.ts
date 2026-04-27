@@ -873,45 +873,24 @@ export const SUBJECT_PRESETS: SubjectPreset[] = [
   },
 ]
 
-export const SUBJECT_COLORS: Record<string, string> = Object.fromEntries(
-  SUBJECT_PRESETS.map((subject) => [subject.name, subject.color])
-)
-
-export function getSubjectPreset(subjectName: string) {
-  return SUBJECT_PRESETS.find((subject) => subject.name === subjectName) || null
-}
-
-export function getSubjectColor(subjectName: string) {
-  return SUBJECT_COLORS[subjectName] || '#2563eb'
-}
-
-export function getSubjectUnits(subjectName: string) {
-  return getSubjectPreset(subjectName)?.units || []
-}
-
-export function getSubjectTopics(subjectName: string) {
-  return getSubjectUnits(subjectName).flatMap((unit) => unit.topics || [])
-}
-
-export function getSubjectReadings(subjectName: string) {
-  return getSubjectUnits(subjectName).flatMap((unit) => unit.readings || [])
-}
-
-export function getEvaluationKinds(subjectName: string) {
-  return getSubjectPreset(subjectName)?.evaluationKinds || ['todas']
-}
-
-export function getAllowedFormats(subjectName: string) {
-  return getSubjectPreset(subjectName)?.allowedFormats || ['multiple-choice']
-}
-
 
 export const SUBJECT_CODE_TO_NAME: Record<string, string> = {
+  CLG0000: 'Seminario',
+  SEMINARIO: 'Seminario',
+  PSI1101: 'Psicología',
   SOL500: 'Sociología',
   MAT1000: 'Precálculo',
-  PSI1101: 'Psicología',
   IHI0204: 'Historia',
-  CLG0000: 'Seminario',
+}
+
+export const SUBJECT_COLORS_BY_CODE: Record<string, string> = {
+  CLG0000: '#8b5cf6',
+  SEMINARIO: '#8b5cf6',
+  PSI1101: '#ec4899',
+  SOL500: '#f59e0b',
+  MAT1000: '#3b82f6',
+  IHI0204: '#10b981',
+  DEFAULT: '#64748b',
 }
 
 export function getSubjectName(subject?: string | null) {
@@ -919,18 +898,42 @@ export function getSubjectName(subject?: string | null) {
   return SUBJECT_CODE_TO_NAME[subject] || subject
 }
 
-export function getSubjectPresetByCodeOrName(subject?: string | null) {
-  if (!subject) return null
-  const name = getSubjectName(subject)
+export function getSubjectColorByCodeOrName(subject?: string | null) {
+  if (!subject) return SUBJECT_COLORS_BY_CODE.DEFAULT
+
+  const direct = SUBJECT_COLORS_BY_CODE[subject]
+  if (direct) return direct
+
+  const normalized = getSubjectName(subject)
+
+  const byName: Record<string, string> = {
+    Seminario: '#8b5cf6',
+    Psicología: '#ec4899',
+    Sociología: '#f59e0b',
+    Precálculo: '#3b82f6',
+    Historia: '#10b981',
+  }
+
+  return byName[normalized] || SUBJECT_COLORS_BY_CODE.DEFAULT
+}
+
+export function getSubjectColor(subject?: string | null) {
+  return getSubjectColorByCodeOrName(subject)
+}
+
+export function getSubjectPreset(subjectName?: string | null) {
+  if (!subjectName) return null
+
+  const normalized = getSubjectName(subjectName)
 
   return (
-    SUBJECT_PRESETS.find((preset) => preset.name === name) ||
-    SUBJECT_PRESETS.find((preset) => preset.name === subject) ||
+    SUBJECT_PRESETS.find((subject) => subject.name === normalized) ||
+    SUBJECT_PRESETS.find((subject) => subject.name === subjectName) ||
     null
   )
 }
 
-export function getSubjectColorByCodeOrName(subject?: string | null) {
-  const preset = getSubjectPresetByCodeOrName(subject)
-  return preset?.color || '#2563eb'
+export function getSubjectTopics(subjectName?: string | null) {
+  const preset = getSubjectPreset(subjectName)
+  return preset?.units?.flatMap((unit) => unit.topics || []) || []
 }
