@@ -115,6 +115,51 @@ export default function NotesView() {
     await load()
   }
 
+  async function createPrecalculoControls() {
+    if (!userId) return alert('Debes iniciar sesión.')
+
+    const existing = evaluations.filter(
+      (ev) =>
+        ev.subject === 'MAT1000' &&
+        String(ev.title ?? '').toLowerCase().startsWith('control ')
+    )
+
+    if (existing.length >= 7) {
+      return alert('Los 7 controles de Precálculo ya están creados.')
+    }
+
+    try {
+      setSaving(true)
+
+      for (let i = 1; i <= 7; i++) {
+        const alreadyExists = evaluations.some(
+          (ev) =>
+            ev.subject === 'MAT1000' &&
+            String(ev.title ?? '').toLowerCase() === `control ${i}`.toLowerCase()
+        )
+
+        if (!alreadyExists) {
+          await createEvaluation({
+            user_id: userId,
+            subject: 'MAT1000',
+            title: `Control ${i}`,
+            type: 'control',
+            grade: null,
+            weight_percent: 7,
+          } as any)
+        }
+      }
+
+      await load()
+      alert('Controles de Precálculo creados correctamente.')
+    } catch (error) {
+      console.error('CREATE PRECALCULO CONTROLS ERROR:', error)
+      alert('No se pudieron crear los controles.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
   const handlePerusall = useCallback(async (grade: number) => {
     if (!userId || !Number.isFinite(grade) || grade <= 0) return
 
@@ -190,6 +235,15 @@ export default function NotesView() {
           </div>
 
           <button style={styles.primaryButton} disabled={saving}>{saving ? 'Guardando...' : 'Guardar evaluación'}</button>
+
+          <button
+            type="button"
+            style={{ ...styles.primaryButton, background: '#3b82f6' }}
+            disabled={saving}
+            onClick={createPrecalculoControls}
+          >
+            Crear 7 controles de Precálculo
+          </button>
         </form>
 
         <aside style={styles.panel}>
