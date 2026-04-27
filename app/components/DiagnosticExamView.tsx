@@ -150,7 +150,7 @@ export default function DiagnosticExamView() {
   const searchParams = useSearchParams()
 
   const subject = searchParams.get('subject') || ''
-  const next = searchParams.get('next') || '/practica'
+  const rawNext = searchParams.get('next') || '/practica'
   const mode = searchParams.get('mode') || 'diagnostico'
 
   const [userId, setUserId] = useState<string | null>(null)
@@ -376,7 +376,7 @@ export default function DiagnosticExamView() {
             topic: r.question.topic,
             question_id: r.question.id,
             question_text: r.question.text,
-            question_type: mode,
+            question_type: String(mode || 'diagnostico'),
             source: 'diagnostic',
             is_correct: r.isCorrect,
           }))
@@ -385,7 +385,14 @@ export default function DiagnosticExamView() {
         console.error('PRACTICE ATTEMPTS NON BLOCKING ERROR:', attemptError)
       }
 
-      const safeNext = next && next.startsWith('/') ? next : '/practica'
+      const safeNext =
+        rawNext &&
+        rawNext.startsWith('/') &&
+        !rawNext.startsWith('//') &&
+        !rawNext.includes('undefined')
+          ? rawNext
+          : '/practica'
+
       router.replace(safeNext)
     } catch (error) {
       console.error('DIAGNOSTIC EXAM SAVE ERROR:', error)
