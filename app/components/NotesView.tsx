@@ -329,13 +329,28 @@ export default function NotesView() {
                         <div style={styles.mutedSmall}>{ev.type ?? 'nota'} · {Number(ev.weight_percent ?? ev.weight ?? 0)}% · {ev.start_date ?? ev.date ?? 'sin fecha'}</div>
                       </div>
                       <div style={styles.actions}>
-                        <input style={styles.miniInput} type="number" min={1} max={7} step={0.1} defaultValue={gradeValue(ev) || ''} onBlur={(e) => updateGrade(ev, e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                              e.currentTarget.blur()
-                            }
-                          }} />
-                        <button style={styles.dangerButton} onClick={() => removeEvaluation(ev.id)}>Eliminar</button>
+                        <input
+                          id={`grade-${ev.id}`}
+                          style={styles.miniInput}
+                          type="text"
+                          inputMode="decimal"
+                          defaultValue={gradeValue(ev) || ''}
+                          placeholder="Nota"
+                        />
+
+                        <button
+                          style={styles.saveButton}
+                          onClick={() => {
+                            const input = document.getElementById(`grade-${ev.id}`) as HTMLInputElement | null
+                            updateGrade(ev, input?.value ?? '')
+                          }}
+                        >
+                          Guardar
+                        </button>
+
+                        <button style={styles.dangerButton} onClick={() => removeEvaluation(ev.id)}>
+                          Eliminar
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -408,5 +423,6 @@ const styles: Record<string, CSSProperties> = {
   evaluationRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, padding: 12, borderRadius: 14, background: 'rgba(255,255,255,0.04)' },
   actions: { display: 'flex', gap: 8, alignItems: 'center' },
   miniInput: { width: 72, padding: '8px 9px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(15,23,42,0.9)', color: 'white' },
+  saveButton: { padding: '8px 10px', borderRadius: 10, border: '1px solid rgba(34,197,94,0.25)', background: 'rgba(34,197,94,0.14)', color: '#bbf7d0', cursor: 'pointer', fontWeight: 900 },
   dangerButton: { padding: '8px 10px', borderRadius: 10, border: '1px solid rgba(239,68,68,0.25)', background: 'rgba(239,68,68,0.12)', color: '#fecaca', cursor: 'pointer' },
 }
