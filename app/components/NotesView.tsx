@@ -246,7 +246,7 @@ export default function NotesView() {
             <input style={styles.input} type="number" min={1} max={100} step={0.1} placeholder="Ponderación %" value={form.weight} onChange={(e) => updateForm('weight', e.target.value)} />
           </div>
 
-          <button style={styles.primaryButton} disabled={saving}>{saving ? 'Guardando...' : 'Guardar evaluación'}</button>
+          <button type="submit" style={styles.primaryButton} disabled={saving}>{saving ? 'Guardando...' : 'Guardar evaluación'}</button>
 
           <button
             type="button"
@@ -339,6 +339,7 @@ export default function NotesView() {
                         />
 
                         <button
+                          type="button"
                           style={styles.saveButton}
                           onClick={() => {
                             const input = document.getElementById(`grade-${ev.id}`) as HTMLInputElement | null
@@ -348,7 +349,7 @@ export default function NotesView() {
                           Guardar
                         </button>
 
-                        <button style={styles.dangerButton} onClick={() => removeEvaluation(ev.id)}>
+                        <button type="button" style={styles.dangerButton} onClick={() => removeEvaluation(ev.id)}>
                           Eliminar
                         </button>
                       </div>
