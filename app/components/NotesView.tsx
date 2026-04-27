@@ -35,7 +35,7 @@ const defaultSubjects = [
   { code: 'SOL500', name: 'Sociología' },
   { code: 'MAT1000', name: 'Precálculo' },
   { code: 'IHI0204', name: 'Historia' },
-  { code: 'SEMINARIO', name: 'Seminario' },
+  { code: 'CLG0000', name: 'Seminario' },
 ]
 
 function isPsychology(subject?: string | null) {

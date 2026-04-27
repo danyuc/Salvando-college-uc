@@ -911,7 +911,7 @@ export const SUBJECT_CODE_TO_NAME: Record<string, string> = {
   MAT1000: 'Precálculo',
   PSI1101: 'Psicología',
   IHI0204: 'Historia',
-  SEMINARIO: 'Seminario',
+  CLG0000: 'Seminario',
 }
 
 export function getSubjectName(subject?: string | null) {
