@@ -140,25 +140,11 @@ export async function updateEvaluation(
 ): Promise<Evaluation> {
   const payload: any = { ...updates }
 
-  if (updates.subject !== undefined) {
-    payload.subject = updates.subject.trim()
-  }
-
-  if (updates.type !== undefined) {
-    payload.type = updates.type.trim()
-  }
-
-  if (updates.topic !== undefined) {
-    payload.topic = updates.topic?.trim() || null
-  }
-
-  if (updates.title !== undefined) {
-    payload.title = updates.title?.trim() || null
-  }
-
-  if (updates.notes !== undefined) {
-    payload.notes = updates.notes?.trim() || null
-  }
+  if (updates.subject !== undefined) payload.subject = updates.subject.trim()
+  if (updates.type !== undefined) payload.type = updates.type.trim()
+  if (updates.topic !== undefined) payload.topic = updates.topic?.trim() || null
+  if (updates.title !== undefined) payload.title = updates.title?.trim() || null
+  if (updates.notes !== undefined) payload.notes = updates.notes?.trim() || null
 
   if (updates.start_date !== undefined || updates.date !== undefined) {
     const startDate = updates.start_date ?? updates.date ?? null
@@ -166,9 +152,7 @@ export async function updateEvaluation(
     payload.end_date = updates.end_date ?? startDate
   }
 
-  if (updates.end_date !== undefined) {
-    payload.end_date = updates.end_date
-  }
+  if (updates.end_date !== undefined) payload.end_date = updates.end_date
 
   if (updates.weight_percent !== undefined) {
     payload.weight_percent =
@@ -181,23 +165,17 @@ export async function updateEvaluation(
 
   delete payload.date
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from('evaluations')
     .update(payload)
     .eq('id', id)
-    .select()
-    .maybeSingle()
 
   if (error) {
     console.error('EVALUATION UPDATE ERROR:', error)
     throw new Error(error.message || 'No se pudo actualizar la evaluación')
   }
 
-  if (!data) {
-    return payload as Evaluation
-  }
-
-  return normalizeEvaluation(data)
+  return { id, ...payload } as unknown as Evaluation
 }
 
 export async function deleteEvaluation(id: string): Promise<void> {

@@ -1,41 +1,73 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 
 type Props = {
   onGradeChange?: (grade: number) => void
+}
+
+const STORAGE_KEY = 'salvando_uc_perusall_psi1101_scores'
+
+function parseScore(value: string) {
+  const n = Number(value.trim().replace(',', '.'))
+  return Number.isFinite(n) ? n : null
+}
+
+function calculatePerusallGrade(points: number) {
+  return Math.min(7, Math.max(1, 1 + (Math.min(points, 40) / 40) * 6))
 }
 
 export default function PerusallTracker({ onGradeChange }: Props) {
   const [scores, setScores] = useState<number[]>([])
   const [input, setInput] = useState('')
 
-  // total acumulado (máx 40)
-  const totalPoints = useMemo(() => {
-    const sorted = [...scores].sort((a, b) => b - a)
-    return sorted.slice(0, 8).reduce((acc, v) => acc + v, 0)
-  }, [scores])
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY)
+      if (!raw) return
 
-  // conversión a nota 1-7
-  const finalGrade = useMemo(() => {
-    return Math.min(7, (totalPoints / 40) * 7)
-  }, [totalPoints])
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed)) {
+        setScores(
+          parsed
+            .map((value) => Number(value))
+            .filter((value) => Number.isFinite(value) && value >= 0 && value <= 5)
+        )
+      }
+    } catch {
+      localStorage.removeItem(STORAGE_KEY)
+    }
+  }, [])
 
   useEffect(() => {
-    if (onGradeChange) {
-      onGradeChange(Number(finalGrade.toFixed(2)))
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(scores))
+  }, [scores])
+
+  const totalPoints = useMemo(() => {
+    const sorted = [...scores].sort((a, b) => b - a)
+    return sorted.slice(0, 8).reduce((acc, value) => acc + value, 0)
+  }, [scores])
+
+  const finalGrade = useMemo(() => {
+    if (scores.length === 0) return null
+    return calculatePerusallGrade(totalPoints)
+  }, [scores.length, totalPoints])
+
+  useEffect(() => {
+    if (finalGrade !== null) {
+      onGradeChange?.(Number(finalGrade.toFixed(2)))
     }
   }, [finalGrade, onGradeChange])
 
   function addScore() {
-    const value = Number(input)
+    const value = parseScore(input)
 
-    if (!Number.isFinite(value) || value < 0 || value > 5) {
-      alert('Cada lectura debe estar entre 0 y 5 puntos')
+    if (value === null || value < 0 || value > 5) {
+      alert('Cada lectura debe estar entre 0 y 5 puntos. Puedes usar 4.5 o 4,5.')
       return
     }
 
-    setScores((prev) => [...prev, value])
+    setScores((prev) => [...prev, Number(value.toFixed(2))])
     setInput('')
   }
 
@@ -43,18 +75,40 @@ export default function PerusallTracker({ onGradeChange }: Props) {
     setScores((prev) => prev.filter((_, i) => i !== index))
   }
 
+  function clearScores() {
+    if (!confirm('¿Borrar todos los puntajes de Perusall?')) return
+    setScores([])
+    localStorage.removeItem(STORAGE_KEY)
+  }
+
   return (
     <div style={box}>
-      <h3 style={title}>Perusall Tracker</h3>
+      <div style={header}>
+        <div>
+          <h3 style={title}>Perusall Tracker</h3>
+          <p style={muted}>Suma tus mejores 8 lecturas. 40 puntos = 7.0</p>
+        </div>
+
+        {scores.length > 0 && (
+          <button type="button" onClick={clearScores} style={ghostBtn}>
+            Limpiar
+          </button>
+        )}
+      </div>
 
       <div style={row}>
         <input
           style={inputStyle}
-          placeholder="Puntaje (0-5)"
+          placeholder="Puntaje 0-5"
           value={input}
+          inputMode="decimal"
           onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') addScore()
+          }}
         />
-        <button style={btn} onClick={addScore}>
+
+        <button type="button" style={btn} onClick={addScore}>
           Agregar
         </button>
       </div>
@@ -62,10 +116,10 @@ export default function PerusallTracker({ onGradeChange }: Props) {
       <div style={scoresBox}>
         {scores.length === 0 && <span style={muted}>Sin lecturas aún</span>}
 
-        {scores.map((s, i) => (
-          <div key={i} style={scoreItem}>
-            <span>{s}</span>
-            <button onClick={() => removeScore(i)} style={removeBtn}>
+        {scores.map((score, index) => (
+          <div key={`${score}-${index}`} style={scoreItem}>
+            <span>{score}</span>
+            <button type="button" onClick={() => removeScore(index)} style={removeBtn}>
               ✕
             </button>
           </div>
@@ -74,40 +128,46 @@ export default function PerusallTracker({ onGradeChange }: Props) {
 
       <div style={metrics}>
         <div style={metric}>
-          <span style={label}>Top 8 sumados</span>
-          <strong>{totalPoints} / 40</strong>
+          <span style={label}>Puntos válidos</span>
+          <strong>{totalPoints.toFixed(1)} / 40</strong>
         </div>
 
         <div style={metric}>
-          <span style={label}>Nota final</span>
-          <strong>{finalGrade.toFixed(2)}</strong>
+          <span style={label}>Nota Perusall</span>
+          <strong>{finalGrade === null ? '—' : finalGrade.toFixed(2)}</strong>
         </div>
       </div>
     </div>
   )
 }
 
-/* ---------------- STYLES ---------------- */
-
-const box: React.CSSProperties = {
+const box: CSSProperties = {
   marginTop: 16,
   padding: 14,
   borderRadius: 16,
   background: 'rgba(0,0,0,0.25)',
 }
 
-const title: React.CSSProperties = {
-  margin: '0 0 10px',
-  fontSize: 16,
-  fontWeight: 800,
+const header: CSSProperties = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  gap: 12,
+  alignItems: 'flex-start',
+  marginBottom: 10,
 }
 
-const row: React.CSSProperties = {
+const title: CSSProperties = {
+  margin: 0,
+  fontSize: 16,
+  fontWeight: 900,
+}
+
+const row: CSSProperties = {
   display: 'flex',
   gap: 8,
 }
 
-const inputStyle: React.CSSProperties = {
+const inputStyle: CSSProperties = {
   flex: 1,
   padding: '8px 10px',
   borderRadius: 10,
@@ -116,24 +176,34 @@ const inputStyle: React.CSSProperties = {
   color: 'white',
 }
 
-const btn: React.CSSProperties = {
+const btn: CSSProperties = {
   padding: '8px 12px',
   borderRadius: 10,
   border: 'none',
   background: '#2563eb',
   color: 'white',
   cursor: 'pointer',
-  fontWeight: 700,
+  fontWeight: 800,
 }
 
-const scoresBox: React.CSSProperties = {
+const ghostBtn: CSSProperties = {
+  padding: '7px 10px',
+  borderRadius: 10,
+  border: '1px solid rgba(255,255,255,0.12)',
+  background: 'rgba(255,255,255,0.06)',
+  color: 'white',
+  cursor: 'pointer',
+  fontWeight: 800,
+}
+
+const scoresBox: CSSProperties = {
   display: 'flex',
   flexWrap: 'wrap',
   gap: 6,
   marginTop: 10,
 }
 
-const scoreItem: React.CSSProperties = {
+const scoreItem: CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   gap: 6,
@@ -142,29 +212,32 @@ const scoreItem: React.CSSProperties = {
   background: 'rgba(255,255,255,0.08)',
 }
 
-const removeBtn: React.CSSProperties = {
+const removeBtn: CSSProperties = {
   background: 'transparent',
   border: 'none',
   color: '#f87171',
   cursor: 'pointer',
 }
 
-const metrics: React.CSSProperties = {
+const metrics: CSSProperties = {
   display: 'flex',
   justifyContent: 'space-between',
   marginTop: 12,
+  gap: 10,
 }
 
-const metric: React.CSSProperties = {
+const metric: CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
 }
 
-const label: React.CSSProperties = {
+const label: CSSProperties = {
   fontSize: 11,
   opacity: 0.7,
 }
 
-const muted: React.CSSProperties = {
-  opacity: 0.6,
+const muted: CSSProperties = {
+  margin: 0,
+  opacity: 0.65,
+  fontSize: 12,
 }
