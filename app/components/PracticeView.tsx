@@ -203,26 +203,47 @@ export default function PracticeView() {
       .select('*')
       .eq('user_id', currentUserId)
       .eq('subject', subject)
+      .eq('completed', true)
       .maybeSingle()
 
-    if (error) {
-      console.error('DIAGNOSTIC CHECK ERROR:', error)
+    if (!error && data) {
+      setDiagnosticRequired(false)
+
+      if (Array.isArray(data.weak_topics)) {
+        setWeakTopics(data.weak_topics)
+      }
+
+      return true
+    }
+
+    const { data: anyDiagnostic, error: anyError } = await supabase
+      .from('subject_diagnostics')
+      .select('*')
+      .eq('user_id', currentUserId)
+      .eq('completed', true)
+      .order('updated_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (anyError) {
+      console.error('DIAGNOSTIC CHECK ERROR:', anyError)
       setDiagnosticRequired(true)
       return false
     }
 
-    if (!data?.completed) {
-      setDiagnosticRequired(true)
-      return false
+    if (anyDiagnostic?.subject) {
+      setSelectedSubject(anyDiagnostic.subject)
+      setDiagnosticRequired(false)
+
+      if (Array.isArray(anyDiagnostic.weak_topics)) {
+        setWeakTopics(anyDiagnostic.weak_topics)
+      }
+
+      return true
     }
 
-    setDiagnosticRequired(false)
-
-    if (Array.isArray(data.weak_topics)) {
-      setWeakTopics(data.weak_topics)
-    }
-
-    return true
+    setDiagnosticRequired(true)
+    return false
   }
 
   async function loadQuestions() {
