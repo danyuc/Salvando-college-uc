@@ -183,7 +183,22 @@ export default function PracticeView() {
       setSubjects(uniqueSubjects)
       setTopics(uniqueTopics)
 
-      const firstSubject = urlSubject || uniqueSubjects[0] || ''
+      // 🔥 BUSCAR DIAGNÓSTICO COMPLETADO PRIMERO
+      const { data: diag } = await supabase
+        .from('subject_diagnostics')
+        .select('*')
+        .eq('user_id', data.user.id)
+        .eq('completed', true)
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+
+      const firstSubject =
+        urlSubject ||
+        diag?.subject ||
+        uniqueSubjects[0] ||
+        ''
+
       setSelectedSubject(firstSubject)
 
       if (firstSubject) {
