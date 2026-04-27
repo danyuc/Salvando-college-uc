@@ -34,7 +34,6 @@ export async function POST(req: Request) {
       user_id: body.user_id,
       subject: body.subject,
       completed: body.completed ?? true,
-      score: Number(body.score ?? body.score_percent ?? 0),
       score_percent: Number(body.score_percent ?? body.score ?? 0),
       correct_answers: Number(body.correct_answers ?? 0),
       total_questions: Number(body.total_questions ?? 0),
