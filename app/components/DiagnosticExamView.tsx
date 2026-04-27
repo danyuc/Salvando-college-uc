@@ -385,15 +385,7 @@ export default function DiagnosticExamView() {
         console.error('PRACTICE ATTEMPTS NON BLOCKING ERROR:', attemptError)
       }
 
-      const safeNext =
-        rawNext &&
-        rawNext.startsWith('/') &&
-        !rawNext.startsWith('//') &&
-        !rawNext.includes('undefined')
-          ? rawNext
-          : '/practica'
-
-      router.replace(safeNext)
+      window.location.href = '/practica'
     } catch (error) {
       console.error('DIAGNOSTIC EXAM SAVE ERROR:', error)
       alert(
