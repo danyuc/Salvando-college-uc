@@ -117,7 +117,11 @@ export default function NotesView() {
       await load()
     } catch (error) {
       console.error('UPDATE GRADE ERROR:', error)
-      alert('No se pudo guardar la nota.')
+      alert(
+        error instanceof Error
+          ? `No se pudo guardar la nota: ${error.message}`
+          : 'No se pudo guardar la nota.'
+      )
     }
   }
 
@@ -341,9 +345,11 @@ export default function NotesView() {
                         <button
                           type="button"
                           style={styles.saveButton}
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
                             const input = document.getElementById(`grade-${ev.id}`) as HTMLInputElement | null
-                            updateGrade(ev, input?.value ?? '')
+                            updateGrade(ev, (input?.value ?? '').replace(',', '.'))
                           }}
                         >
                           Guardar
