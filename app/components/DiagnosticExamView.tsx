@@ -368,23 +368,31 @@ export default function DiagnosticExamView() {
         },
       })
 
-      await createPracticeAttempts(
-        results.map((r) => ({
-          user_id: userId,
-          subject: r.question.subject,
-          topic: r.question.topic,
-          question_id: r.question.id,
-          question_text: r.question.text,
-          question_type: mode,
-          source: 'diagnostic',
-          is_correct: r.isCorrect,
-        }))
-      )
+      try {
+        await createPracticeAttempts(
+          results.map((r) => ({
+            user_id: userId,
+            subject: r.question.subject,
+            topic: r.question.topic,
+            question_id: r.question.id,
+            question_text: r.question.text,
+            question_type: mode,
+            source: 'diagnostic',
+            is_correct: r.isCorrect,
+          }))
+        )
+      } catch (attemptError) {
+        console.error('PRACTICE ATTEMPTS NON BLOCKING ERROR:', attemptError)
+      }
 
       router.replace(next)
     } catch (error) {
       console.error('DIAGNOSTIC EXAM SAVE ERROR:', error)
-      alert('No se pudo guardar el diagnóstico.')
+      alert(
+        error instanceof Error
+          ? `No se pudo guardar el diagnóstico: ${error.message}`
+          : 'No se pudo guardar el diagnóstico.'
+      )
       setSaving(false)
     }
   }
