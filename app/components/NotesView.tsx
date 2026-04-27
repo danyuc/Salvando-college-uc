@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState, type CSSProperties, type FormEvent } from 'react'
 import { getCurrentUser } from '../../lib/auth'
 import {
   createEvaluation,
@@ -11,10 +11,7 @@ import {
 } from '../../lib/evaluations'
 import { buildAcademicAnalysis } from '../../lib/academic-engine'
 import { buildAcademicAlerts } from '../../lib/alert-engine'
-import {
-  getSubjectName,
-  getSubjectColorByCodeOrName,
-} from '../../lib/subjects'
+import { getSubjectName, getSubjectColorByCodeOrName } from '../../lib/subjects'
 import PerusallTracker from './PerusallTracker'
 
 type FormState = {
@@ -25,14 +22,6 @@ type FormState = {
   weight_percent: string
 }
 
-const defaultSubjects = [
-  { code: 'PSI1101', name: 'Psicología' },
-  { code: 'SOL500', name: 'Sociología' },
-  { code: 'MAT1000', name: 'Precálculo' },
-  { code: 'IHI0204', name: 'Historia' },
-  { code: 'SEMINARIO', name: 'Seminario' },
-]
-
 const initialForm: FormState = {
   subject: 'PSI1101',
   title: '',
@@ -41,6 +30,14 @@ const initialForm: FormState = {
   weight_percent: '',
 }
 
+const defaultSubjects = [
+  { code: 'PSI1101', name: 'Psicología' },
+  { code: 'SOL500', name: 'Sociología' },
+  { code: 'MAT1000', name: 'Precálculo' },
+  { code: 'IHI0204', name: 'Historia' },
+  { code: 'SEMINARIO', name: 'Seminario' },
+]
+
 function isPsychology(subject?: string | null) {
   return subject === 'PSI1101' || getSubjectName(subject) === 'Psicología'
 }
@@ -48,6 +45,113 @@ function isPsychology(subject?: string | null) {
 function safeNumber(value: unknown, fallback = 0) {
   const n = Number(value)
   return Number.isFinite(n) ? n : fallback
+}
+
+const styles: Record<string, CSSProperties> = {
+  container: { padding: 24, display: 'grid', gap: 20, color: 'white' },
+  hero: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    gap: 20,
+    padding: 24,
+    borderRadius: 28,
+    background: 'linear-gradient(135deg, rgba(37,99,235,0.35), rgba(2,6,23,0.92))',
+    border: '1px solid rgba(255,255,255,0.12)',
+  },
+  panel: {
+    padding: 18,
+    borderRadius: 24,
+    background: 'rgba(255,255,255,0.06)',
+    border: '1px solid rgba(255,255,255,0.10)',
+  },
+  title: { margin: '4px 0', fontSize: 34, fontWeight: 950 },
+  subtitle: { margin: 0, opacity: 0.76 },
+  eyebrow: { fontSize: 12, letterSpacing: 1.6, textTransform: 'uppercase', opacity: 0.7 },
+  heroStats: { minWidth: 150, padding: 18, borderRadius: 22, background: 'rgba(0,0,0,0.25)', textAlign: 'center' },
+  heroNumber: { fontSize: 34, fontWeight: 950 },
+  heroLabel: { fontSize: 12, opacity: 0.7 },
+  topGrid: { display: 'grid', gridTemplateColumns: 'minmax(0, 1.25fr) minmax(300px, 0.75fr)', gap: 16 },
+  sectionHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 },
+  sectionTitle: { margin: 0, fontSize: 20, fontWeight: 900 },
+  badge: { padding: '5px 10px', borderRadius: 999, background: 'rgba(37,99,235,0.22)', color: '#bfdbfe', fontSize: 12, fontWeight: 800 },
+  formGrid: { display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 10 },
+  input: {
+    width: '100%',
+    padding: '12px 13px',
+    borderRadius: 14,
+    border: '1px solid rgba(255,255,255,0.12)',
+    background: 'rgba(15,23,42,0.88)',
+    color: 'white',
+    outline: 'none',
+  },
+  primaryButton: {
+    width: '100%',
+    marginTop: 12,
+    padding: '13px 16px',
+    borderRadius: 14,
+    border: 'none',
+    background: '#2563eb',
+    color: 'white',
+    fontWeight: 900,
+    cursor: 'pointer',
+  },
+  stack: { display: 'grid', gap: 10 },
+  muted: { margin: '5px 0 0', opacity: 0.72, lineHeight: 1.4 },
+  mutedSmall: { fontSize: 12, opacity: 0.65 },
+  alertText: { margin: '6px 0', lineHeight: 1.35 },
+  simBox: { marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.10)' },
+  miniTitle: { margin: '0 0 10px' },
+  label: { display: 'block', fontSize: 13, marginTop: 10, opacity: 0.8 },
+  emptyState: { padding: 20, borderRadius: 22, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.10)', opacity: 0.8 },
+  cardsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 16 },
+  subjectCard: { padding: 18, borderRadius: 24, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)' },
+  cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16 },
+  subjectTitle: { margin: 0, fontSize: 22, fontWeight: 900 },
+  metricsGrid: { display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 10, marginTop: 16 },
+  metricCard: { padding: 12, borderRadius: 16, background: 'rgba(0,0,0,0.22)' },
+  metricLabel: { display: 'block', fontSize: 11, opacity: 0.62, marginBottom: 4 },
+  metricValue: { fontSize: 18, fontWeight: 900 },
+  progressTrack: { height: 8, marginTop: 16, borderRadius: 999, background: 'rgba(255,255,255,0.10)', overflow: 'hidden' },
+  progressFill: { height: '100%', borderRadius: 999 },
+  perusallBox: { marginTop: 14, padding: 13, borderRadius: 18, background: 'rgba(236,72,153,0.10)', border: '1px solid rgba(236,72,153,0.22)' },
+  box: { marginTop: 14, padding: 13, borderRadius: 16, background: 'rgba(0,0,0,0.20)' },
+  evaluationRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, padding: 12, borderRadius: 14, background: 'rgba(255,255,255,0.04)' },
+  actions: { display: 'flex', gap: 8, alignItems: 'center' },
+  miniInput: { width: 72, padding: '8px 9px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(15,23,42,0.9)', color: 'white' },
+  dangerButton: { padding: '8px 10px', borderRadius: 10, border: '1px solid rgba(239,68,68,0.25)', background: 'rgba(239,68,68,0.12)', color: '#fecaca', cursor: 'pointer' },
+}
+
+function alertStyle(level: string): CSSProperties {
+  const base: CSSProperties = { padding: 13, borderRadius: 16, border: '1px solid rgba(255,255,255,0.10)' }
+  if (level === 'critico') return { ...base, background: 'rgba(239,68,68,0.15)', color: '#fecaca' }
+  if (level === 'alto') return { ...base, background: 'rgba(245,158,11,0.14)', color: '#fde68a' }
+  return { ...base, background: 'rgba(59,130,246,0.13)', color: '#bfdbfe' }
+}
+
+function gradeCircle(risk: string): CSSProperties {
+  let border = 'rgba(34,197,94,0.55)'
+  if (risk === 'critico' || risk === 'alto') border = 'rgba(239,68,68,0.65)'
+  if (risk === 'medio') border = 'rgba(245,158,11,0.65)'
+  return {
+    width: 76,
+    height: 76,
+    borderRadius: 999,
+    display: 'grid',
+    placeItems: 'center',
+    border: `2px solid ${border}`,
+    background: 'rgba(0,0,0,0.24)',
+    fontSize: 23,
+    fontWeight: 950,
+  }
+}
+
+function Metric({ label, value }: { label: string; value: string }) {
+  return (
+    <div style={styles.metricCard}>
+      <span style={styles.metricLabel}>{label}</span>
+      <strong style={styles.metricValue}>{value}</strong>
+    </div>
+  )
 }
 
 export default function NotesView() {
@@ -62,7 +166,6 @@ export default function NotesView() {
   async function load() {
     try {
       setLoading(true)
-
       const user = await getCurrentUser()
 
       if (!user) {
@@ -72,7 +175,6 @@ export default function NotesView() {
       }
 
       setUserId(user.id)
-
       const data = await getUserEvaluations(user.id)
       setEvaluations(data ?? [])
     } catch (error) {
@@ -95,7 +197,6 @@ export default function NotesView() {
       .filter((n): n is number => typeof n === 'number')
 
     if (!valid.length) return null
-
     return valid.reduce((a, b) => a + b, 0) / valid.length
   }, [analysis])
 
@@ -103,29 +204,20 @@ export default function NotesView() {
     setForm((prev) => ({ ...prev, [key]: value }))
   }
 
-  async function createEv(e: React.FormEvent) {
+  async function createEv(e: FormEvent) {
     e.preventDefault()
-
-    if (!userId) {
-      alert('Debes iniciar sesión.')
-      return
-    }
+    if (!userId) return alert('Debes iniciar sesión.')
 
     const grade = Number(form.current_grade)
     const weight = Number(form.weight_percent)
 
     if (!form.subject.trim()) return alert('Selecciona un ramo.')
     if (!form.title.trim()) return alert('Falta el nombre de la evaluación.')
-    if (!Number.isFinite(grade) || grade < 1 || grade > 7) {
-      return alert('La nota debe estar entre 1.0 y 7.0.')
-    }
-    if (!Number.isFinite(weight) || weight <= 0 || weight > 100) {
-      return alert('La ponderación debe estar entre 1 y 100.')
-    }
+    if (!Number.isFinite(grade) || grade < 1 || grade > 7) return alert('La nota debe estar entre 1.0 y 7.0.')
+    if (!Number.isFinite(weight) || weight <= 0 || weight > 100) return alert('La ponderación debe estar entre 1 y 100.')
 
     try {
       setSaving(true)
-
       await createEvaluation({
         user_id: userId,
         subject: form.subject.trim(),
@@ -138,9 +230,6 @@ export default function NotesView() {
 
       setForm(initialForm)
       await load()
-    } catch (error) {
-      console.error('CREATE NOTE ERROR:', error)
-      alert('No se pudo guardar la evaluación.')
     } finally {
       setSaving(false)
     }
@@ -148,19 +237,10 @@ export default function NotesView() {
 
   async function updateGrade(ev: Evaluation, value: string) {
     if (!ev.id) return
-
     const grade = Number(value)
+    if (!Number.isFinite(grade) || grade < 1 || grade > 7) return alert('La nota debe estar entre 1.0 y 7.0.')
 
-    if (!Number.isFinite(grade) || grade < 1 || grade > 7) {
-      alert('La nota debe estar entre 1.0 y 7.0.')
-      return
-    }
-
-    await updateEvaluation(ev.id, {
-      current_grade: grade,
-      grade,
-    } as any)
-
+    await updateEvaluation(ev.id, { current_grade: grade, grade } as any)
     await load()
   }
 
@@ -180,8 +260,7 @@ export default function NotesView() {
       const existing = evaluations.find(
         (ev) =>
           ev.subject === 'PSI1101' &&
-          String(ev.type ?? '').toLowerCase() === 'lectura-colaborativa' &&
-          String(ev.title ?? '').toLowerCase().includes('perusall')
+          String(ev.title ?? '').toLowerCase() === 'perusall acumulado'
       )
 
       try {
@@ -190,9 +269,6 @@ export default function NotesView() {
           if (Math.abs(current - cleanGrade) < 0.01) return
 
           await updateEvaluation(existing.id, {
-            subject: 'PSI1101',
-            title: 'Perusall acumulado',
-            type: 'lectura-colaborativa',
             current_grade: cleanGrade,
             grade: cleanGrade,
             weight_percent: 30,
@@ -203,6 +279,7 @@ export default function NotesView() {
             subject: 'PSI1101',
             title: 'Perusall acumulado',
             type: 'lectura-colaborativa',
+            topic: 'Perusall',
             current_grade: cleanGrade,
             grade: cleanGrade,
             weight_percent: 30,
@@ -253,11 +330,7 @@ export default function NotesView() {
           </div>
 
           <div style={styles.formGrid}>
-            <select
-              style={styles.input}
-              value={form.subject}
-              onChange={(e) => updateForm('subject', e.target.value)}
-            >
+            <select style={styles.input} value={form.subject} onChange={(e) => updateForm('subject', e.target.value)}>
               {defaultSubjects.map((subject) => (
                 <option key={subject.code} value={subject.code}>
                   {subject.name} · {subject.code}
@@ -265,18 +338,9 @@ export default function NotesView() {
               ))}
             </select>
 
-            <input
-              style={styles.input}
-              placeholder="Nombre evaluación"
-              value={form.title}
-              onChange={(e) => updateForm('title', e.target.value)}
-            />
+            <input style={styles.input} placeholder="Nombre evaluación" value={form.title} onChange={(e) => updateForm('title', e.target.value)} />
 
-            <select
-              style={styles.input}
-              value={form.type}
-              onChange={(e) => updateForm('type', e.target.value)}
-            >
+            <select style={styles.input} value={form.type} onChange={(e) => updateForm('type', e.target.value)}>
               <option value="prueba">Prueba</option>
               <option value="control">Control</option>
               <option value="control-lectura">Control lectura</option>
@@ -286,27 +350,8 @@ export default function NotesView() {
               <option value="examen">Examen</option>
             </select>
 
-            <input
-              style={styles.input}
-              type="number"
-              min={1}
-              max={7}
-              step={0.1}
-              placeholder="Nota"
-              value={form.current_grade}
-              onChange={(e) => updateForm('current_grade', e.target.value)}
-            />
-
-            <input
-              style={styles.input}
-              type="number"
-              min={1}
-              max={100}
-              step={1}
-              placeholder="Ponderación %"
-              value={form.weight_percent}
-              onChange={(e) => updateForm('weight_percent', e.target.value)}
-            />
+            <input style={styles.input} type="number" min={1} max={7} step={0.1} placeholder="Nota" value={form.current_grade} onChange={(e) => updateForm('current_grade', e.target.value)} />
+            <input style={styles.input} type="number" min={1} max={100} step={1} placeholder="Ponderación %" value={form.weight_percent} onChange={(e) => updateForm('weight_percent', e.target.value)} />
           </div>
 
           <button style={styles.primaryButton} disabled={saving}>
@@ -337,31 +382,11 @@ export default function NotesView() {
           <div style={styles.simBox}>
             <h3 style={styles.miniTitle}>Simulador global</h3>
 
-            <label style={styles.label}>
-              Nota simulada: <b>{simulationGrade.toFixed(1)}</b>
-            </label>
-            <input
-              type="range"
-              min={1}
-              max={7}
-              step={0.1}
-              value={simulationGrade}
-              onChange={(e) => setSimulationGrade(Number(e.target.value))}
-              style={{ width: '100%' }}
-            />
+            <label style={styles.label}>Nota simulada: <b>{simulationGrade.toFixed(1)}</b></label>
+            <input type="range" min={1} max={7} step={0.1} value={simulationGrade} onChange={(e) => setSimulationGrade(Number(e.target.value))} style={{ width: '100%' }} />
 
-            <label style={styles.label}>
-              Peso simulado: <b>{simulationWeight}%</b>
-            </label>
-            <input
-              type="range"
-              min={1}
-              max={60}
-              step={1}
-              value={simulationWeight}
-              onChange={(e) => setSimulationWeight(Number(e.target.value))}
-              style={{ width: '100%' }}
-            />
+            <label style={styles.label}>Peso simulado: <b>{simulationWeight}%</b></label>
+            <input type="range" min={1} max={60} step={1} value={simulationWeight} onChange={(e) => setSimulationWeight(Number(e.target.value))} style={{ width: '100%' }} />
           </div>
         </aside>
       </section>
@@ -376,20 +401,15 @@ export default function NotesView() {
         {analysis.map((item) => {
           const color = getSubjectColorByCodeOrName(item.subject)
           const subjectName = getSubjectName(item.subject)
-          const simulatedFinal =
-            ((item.weightedScore ?? 0) + simulationGrade * simulationWeight) / 100
+          const simulatedFinal = ((item.weightedScore ?? 0) + simulationGrade * simulationWeight) / 100
 
           return (
-            <article
-              key={item.subject}
-              style={{ ...styles.subjectCard, borderTop: `4px solid ${color}` }}
-            >
+            <article key={item.subject} style={{ ...styles.subjectCard, borderTop: `4px solid ${color}` }}>
               <header style={styles.cardHeader}>
                 <div>
                   <h2 style={styles.subjectTitle}>{subjectName}</h2>
                   <p style={styles.muted}>
-                    Código: {item.subject} · {item.completedWeight.toFixed(0)}% rendido ·{' '}
-                    {item.remainingWeight.toFixed(0)}% restante
+                    Código: {item.subject} · {item.completedWeight.toFixed(0)}% rendido · {item.remainingWeight.toFixed(0)}% restante
                   </p>
                 </div>
 
@@ -403,27 +423,12 @@ export default function NotesView() {
                 <Metric label="Salud" value={`${item.healthScore}/100`} />
                 <Metric label="Riesgo" value={item.risk.toUpperCase()} />
                 <Metric label="Tendencia" value={item.trend.toUpperCase()} />
-                <Metric
-                  label="Necesitas 4.0"
-                  value={
-                    item.neededToPass === null
-                      ? '—'
-                      : item.neededToPass > 7
-                        ? '+7.0'
-                        : Math.max(item.neededToPass, 1).toFixed(2)
-                  }
-                />
+                <Metric label="Necesitas 4.0" value={item.neededToPass === null ? '—' : item.neededToPass > 7 ? '+7.0' : Math.max(item.neededToPass, 1).toFixed(2)} />
                 <Metric label="Simulado" value={simulatedFinal.toFixed(2)} />
               </div>
 
               <div style={styles.progressTrack}>
-                <div
-                  style={{
-                    ...styles.progressFill,
-                    width: `${Math.min(item.completedWeight, 100)}%`,
-                    background: color,
-                  }}
-                />
+                <div style={{ ...styles.progressFill, width: `${Math.min(item.completedWeight, 100)}%`, background: color }} />
               </div>
 
               {isPsychology(item.subject) && (
@@ -439,35 +444,19 @@ export default function NotesView() {
 
               <div style={styles.box}>
                 <strong>Evaluaciones</strong>
-
                 <div style={styles.stack}>
                   {item.evaluations.map((ev) => (
                     <div key={ev.id} style={styles.evaluationRow}>
                       <div>
                         <strong>{ev.title ?? ev.type ?? 'Evaluación'}</strong>
                         <div style={styles.mutedSmall}>
-                          {ev.type ?? 'nota'} · {Number(ev.weight_percent ?? ev.weight ?? 0)}% ·{' '}
-                          {ev.start_date ?? ev.date ?? 'sin fecha'}
+                          {ev.type ?? 'nota'} · {Number(ev.weight_percent ?? ev.weight ?? 0)}% · {ev.start_date ?? ev.date ?? 'sin fecha'}
                         </div>
                       </div>
 
                       <div style={styles.actions}>
-                        <input
-                          style={styles.miniInput}
-                          type="number"
-                          min={1}
-                          max={7}
-                          step={0.1}
-                          defaultValue={Number(ev.current_grade ?? ev.grade ?? 0)}
-                          onBlur={(e) => updateGrade(ev, e.target.value)}
-                        />
-
-                        <button
-                          style={styles.dangerButton}
-                          onClick={() => removeEvaluation(ev.id)}
-                        >
-                          Eliminar
-                        </button>
+                        <input style={styles.miniInput} type="number" min={1} max={7} step={0.1} defaultValue={Number(ev.current_grade ?? ev.grade ?? 0)} onBlur={(e) => updateGrade(ev, e.target.value)} />
+                        <button style={styles.dangerButton} onClick={() => removeEvaluation(ev.id)}>Eliminar</button>
                       </div>
                     </div>
                   ))}
@@ -479,289 +468,4 @@ export default function NotesView() {
       </section>
     </main>
   )
-}
-
-function Metric({ label, value }: { label: string; value: string }) {
-  return (
-    <div style={styles.metricCard}>
-      <span style={styles.metricLabel}>{label}</span>
-      <strong style={styles.metricValue}>{value}</strong>
-    </div>
-  )
-}
-
-function alertStyle(level: string): React.CSSProperties {
-  const base: React.CSSProperties = {
-    padding: 13,
-    borderRadius: 16,
-    border: '1px solid rgba(255,255,255,0.10)',
-  }
-
-  if (level === 'critico') {
-    return { ...base, background: 'rgba(239,68,68,0.15)', color: '#fecaca' }
-  }
-
-  if (level === 'alto') {
-    return { ...base, background: 'rgba(245,158,11,0.14)', color: '#fde68a' }
-  }
-
-  return { ...base, background: 'rgba(59,130,246,0.13)', color: '#bfdbfe' }
-}
-
-function gradeCircle(risk: string): React.CSSProperties {
-  let border = 'rgba(34,197,94,0.55)'
-
-  if (risk === 'critico' || risk === 'alto') border = 'rgba(239,68,68,0.65)'
-  if (risk === 'medio') border = 'rgba(245,158,11,0.65)'
-
-  return {
-    width: 76,
-    height: 76,
-    borderRadius: 999,
-    display: 'grid',
-    placeItems: 'center',
-    border: `2px solid ${border}`,
-    background: 'rgba(0,0,0,0.24)',
-    fontSize: 23,
-    fontWeight: 950,
-  }
-}
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    padding: 24,
-    display: 'grid',
-    gap: 20,
-    color: 'white',
-  },
-  hero: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: 20,
-    padding: 24,
-    borderRadius: 28,
-    background: 'linear-gradient(135deg, rgba(37,99,235,0.35), rgba(2,6,23,0.92))',
-    border: '1px solid rgba(255,255,255,0.12)',
-  },
-  eyebrow: {
-    fontSize: 12,
-    letterSpacing: 1.6,
-    textTransform: 'uppercase',
-    opacity: 0.7,
-  },
-  title: {
-    margin: '4px 0',
-    fontSize: 34,
-    fontWeight: 950,
-  },
-  subtitle: {
-    margin: 0,
-    opacity: 0.76,
-  },
-  heroStats: {
-    minWidth: 150,
-    padding: 18,
-    borderRadius: 22,
-    background: 'rgba(0,0,0,0.25)',
-    textAlign: 'center',
-  },
-  heroNumber: {
-    fontSize: 34,
-    fontWeight: 950,
-  },
-  heroLabel: {
-    fontSize: 12,
-    opacity: 0.7,
-  },
-  topGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'minmax(0, 1.25fr) minmax(300px, 0.75fr)',
-    gap: 16,
-  },
-  panel: {
-    padding: 18,
-    borderRadius: 24,
-    background: 'rgba(255,255,255,0.06)',
-    border: '1px solid rgba(255,255,255,0.10)',
-  },
-  sectionHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 14,
-  },
-  sectionTitle: {
-    margin: 0,
-    fontSize: 20,
-    fontWeight: 900,
-  },
-  badge: {
-    padding: '5px 10px',
-    borderRadius: 999,
-    background: 'rgba(37,99,235,0.22)',
-    color: '#bfdbfe',
-    fontSize: 12,
-    fontWeight: 800,
-  },
-  formGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-    gap: 10,
-  },
-  input: {
-    width: '100%',
-    padding: '12px 13px',
-    borderRadius: 14,
-    border: '1px solid rgba(255,255,255,0.12)',
-    background: 'rgba(15,23,42,0.88)',
-    color: 'white',
-    outline: 'none',
-  },
-  primaryButton: {
-    width: '100%',
-    marginTop: 12,
-    padding: '13px 16px',
-    borderRadius: 14,
-    border: 'none',
-    background: '#2563eb',
-    color: 'white',
-    fontWeight: 900,
-    cursor: 'pointer',
-  },
-  stack: {
-    display: 'grid',
-    gap: 10,
-  },
-  alertText: {
-    margin: '6px 0',
-    lineHeight: 1.35,
-  },
-  muted: {
-    margin: '5px 0 0',
-    opacity: 0.72,
-    lineHeight: 1.4,
-  },
-  mutedSmall: {
-    fontSize: 12,
-    opacity: 0.65,
-  },
-  simBox: {
-    marginTop: 16,
-    paddingTop: 16,
-    borderTop: '1px solid rgba(255,255,255,0.10)',
-  },
-  miniTitle: {
-    margin: '0 0 10px',
-  },
-  label: {
-    display: 'block',
-    fontSize: 13,
-    marginTop: 10,
-    opacity: 0.8,
-  },
-  emptyState: {
-    padding: 20,
-    borderRadius: 22,
-    background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.10)',
-    opacity: 0.8,
-  },
-  cardsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-    gap: 16,
-  },
-  subjectCard: {
-    padding: 18,
-    borderRadius: 24,
-    background: 'rgba(255,255,255,0.06)',
-    border: '1px solid rgba(255,255,255,0.10)',
-  },
-  cardHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    gap: 16,
-  },
-  subjectTitle: {
-    margin: 0,
-    fontSize: 22,
-    fontWeight: 900,
-  },
-  metricsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-    gap: 10,
-    marginTop: 16,
-  },
-  metricCard: {
-    padding: 12,
-    borderRadius: 16,
-    background: 'rgba(0,0,0,0.22)',
-  },
-  metricLabel: {
-    display: 'block',
-    fontSize: 11,
-    opacity: 0.62,
-    marginBottom: 4,
-  },
-  metricValue: {
-    fontSize: 18,
-    fontWeight: 900,
-  },
-  progressTrack: {
-    height: 8,
-    marginTop: 16,
-    borderRadius: 999,
-    background: 'rgba(255,255,255,0.10)',
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    borderRadius: 999,
-  },
-  perusallBox: {
-    marginTop: 14,
-    padding: 13,
-    borderRadius: 18,
-    background: 'rgba(236,72,153,0.10)',
-    border: '1px solid rgba(236,72,153,0.22)',
-  },
-  box: {
-    marginTop: 14,
-    padding: 13,
-    borderRadius: 16,
-    background: 'rgba(0,0,0,0.20)',
-  },
-  evaluationRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: 12,
-    padding: 12,
-    borderRadius: 14,
-    background: 'rgba(255,255,255,0.04)',
-  },
-  actions: {
-    display: 'flex',
-    gap: 8,
-    alignItems: 'center',
-  },
-  miniInput: {
-    width: 72,
-    padding: '8px 9px',
-    borderRadius: 10,
-    border: '1px solid rgba(255,255,255,0.12)',
-    background: 'rgba(15,23,42,0.9)',
-    color: 'white',
-  },
-  dangerButton: {
-    padding: '8px 10px',
-    borderRadius: 10,
-    border: '1px solid rgba(239,68,68,0.25)',
-    background: 'rgba(239,68,68,0.12)',
-    color: '#fecaca',
-    cursor: 'pointer',
-  },
 }
