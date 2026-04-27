@@ -107,6 +107,10 @@ export async function createEvaluation(
     throw new Error(error.message || 'No se pudo crear la evaluación')
   }
 
+  if (!data) {
+    throw new Error('No se pudo crear la evaluación')
+  }
+
   return normalizeEvaluation(data)
 }
 
@@ -182,11 +186,15 @@ export async function updateEvaluation(
     .update(payload)
     .eq('id', id)
     .select()
-    .single()
+    .maybeSingle()
 
   if (error) {
     console.error('EVALUATION UPDATE ERROR:', error)
     throw new Error(error.message || 'No se pudo actualizar la evaluación')
+  }
+
+  if (!data) {
+    return payload as Evaluation
   }
 
   return normalizeEvaluation(data)
