@@ -196,7 +196,10 @@ export default function PracticeView() {
       const finalSubjects = Array.from(
         new Set([
           ...uniqueSubjects,
-          ...fallbackSubjects,
+          'SOL500',
+          'MAT1000',
+          'PSI1101',
+          'IHI0204',
         ])
       )
 
