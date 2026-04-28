@@ -96,22 +96,19 @@ export async function createEvaluation(
 ): Promise<Evaluation> {
   const payload = cleanPayload(input)
 
-  const { data, error } = await supabase
-    .from('evaluations')
-    .insert(payload)
-    .select()
-    .single()
+  const res = await fetch('/api/evaluations/create', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
 
-  if (error) {
-    console.error('EVALUATION INSERT ERROR:', error)
-    throw new Error(error.message || 'No se pudo crear la evaluación')
+  const json = await res.json().catch(() => null)
+
+  if (!res.ok || !json?.success) {
+    throw new Error(json?.message || 'No se pudo crear la evaluación')
   }
 
-  if (!data) {
-    throw new Error('No se pudo crear la evaluación')
-  }
-
-  return normalizeEvaluation(data)
+  return normalizeEvaluation(json.data)
 }
 
 export async function bulkCreateEvaluations(
