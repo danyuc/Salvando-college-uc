@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { getCurrentUser } from '../../lib/auth'
-import { SUBJECT_PRESETS } from '../../lib/subjects'
+import {getSubjectMeta, SUBJECT_PRESETS_ARRAY} from '../../lib/subjects'
 import { getQuestionsFromBank } from '../../lib/question-bank'
 import {
   getDiagnosticBySubject,
@@ -61,7 +61,7 @@ export default function PizarraView() {
   const [currentStroke, setCurrentStroke] = useState<Stroke | null>(null)
 
   const subjectConfig = useMemo(
-    () => SUBJECT_PRESETS.find((s) => s.name === selectedSubject) || null,
+    () => getSubjectMeta(selectedSubject),
     [selectedSubject]
   )
 
@@ -424,7 +424,7 @@ export default function PizarraView() {
               }}
               style={select}
             >
-              {SUBJECT_PRESETS.map((item) => (
+              {SUBJECT_PRESETS_ARRAY.map((item) => (
                 <option key={item.name} value={item.name}>
                   {item.icon ? `${item.icon} ` : ''}
                   {item.name}

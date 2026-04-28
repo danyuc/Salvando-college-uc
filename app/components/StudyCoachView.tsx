@@ -12,7 +12,7 @@ import {
   type PracticeAttempt,
 } from '../../lib/practice-attempts'
 import { buildWeaknessesByTopic } from '../../lib/weakness-engine'
-import { SUBJECT_PRESETS, getSubjectColor } from '../../lib/subjects'
+import {SUBJECT_PRESETS_ARRAY, getSubjectColor} from '../../lib/subjects'
 import {
   buildStudyCoachPlan,
   getWeekKey,
@@ -95,7 +95,7 @@ export default function StudyCoachView() {
       evaluations,
       weaknesses,
       availability,
-      subjects: SUBJECT_PRESETS,
+      subjects: SUBJECT_PRESETS_ARRAY,
       weeklyHours,
     })
   }, [evaluations, weaknesses, availability, weeklyHours])

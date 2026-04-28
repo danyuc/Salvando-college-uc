@@ -8,7 +8,7 @@ import {
   getSubjectRanking,
   type UserScore,
 } from '../../lib/scores'
-import { SUBJECT_PRESETS } from '../../lib/subjects'
+import {SUBJECT_PRESETS_ARRAY} from '../../lib/subjects'
 
 type RankingMode = 'global' | 'subject' | 'mine'
 
@@ -115,7 +115,7 @@ export default function RankingView() {
             onChange={(e) => setSubject(e.target.value)}
             style={select}
           >
-            {SUBJECT_PRESETS.map((item) => (
+            {SUBJECT_PRESETS_ARRAY.map((item) => (
               <option key={item.name} value={item.name}>
                 {item.name}
               </option>

@@ -10,7 +10,7 @@ import {
 } from '../../lib/practice-attempts'
 import { buildWeaknessesByTopic, type WeaknessSummary } from '../../lib/weakness-engine'
 import { buildGradePredictions } from '../../lib/grade-prediction'
-import { getSubjectColor } from '../../lib/subjects'
+import {getSubjectColor} from '../../lib/subjects'
 
 function normalizeAttempts(attempts: PracticeAttempt[]) {
   return attempts.map((attempt) => ({

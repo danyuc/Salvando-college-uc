@@ -5,7 +5,7 @@ import { getCurrentUser } from '../../lib/auth'
 import { createEvaluation, deleteEvaluation, getUserEvaluations, updateEvaluation, type Evaluation } from '../../lib/evaluations'
 import { buildAcademicAnalysis } from '../../lib/academic-engine'
 import { buildAcademicAlerts } from '../../lib/alert-engine'
-import { getSubjectName, getSubjectColorByCodeOrName } from '../../lib/subjects'
+import {getSubjectName, getSubjectColorByCodeOrName} from '../../lib/subjects'
 import PerusallTracker from './PerusallTracker'
 
 type FormState = { subject: string; title: string; type: string; grade: string; weight: string }

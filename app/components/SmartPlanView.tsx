@@ -1,5 +1,6 @@
 'use client'
 
+import { getSubjectColor, SUBJECT_PRESETS_ARRAY } from '../../lib/subjects'
 import { useEffect, useMemo, useState } from 'react'
 import { getCurrentUser } from '../../lib/auth'
 import { getUserEvaluations, type Evaluation } from '../../lib/evaluations'
@@ -15,7 +16,6 @@ import {
   buildWeaknessesByTopic,
   type WeaknessSummary,
 } from '../../lib/weakness-engine'
-import { SUBJECT_PRESETS, getSubjectColor } from '../../lib/subjects'
 import { buildStudyCoachPlan } from '../../lib/study-coach'
 
 function normalizeAttempts(attempts: PracticeAttempt[]) {
@@ -75,7 +75,7 @@ export default function SmartPlanView() {
       evaluations,
       weaknesses,
       availability,
-      subjects: SUBJECT_PRESETS,
+      subjects: SUBJECT_PRESETS_ARRAY,
       weeklyHours,
     })
   }, [evaluations, weaknesses, availability, weeklyHours])

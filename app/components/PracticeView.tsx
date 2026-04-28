@@ -1,7 +1,7 @@
 // ===== PARTE 1/3 =====
 'use client'
 
-import { getSubjectName } from '../../lib/subjects'
+import {getSubjectName, getSubjectMeta} from '../../lib/subjects'
 import {
   useEffect,
   useMemo,
@@ -457,19 +457,23 @@ export default function PracticeView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   if (loading) {
-    return (
+    const subjectMeta = getSubjectMeta(selectedSubject)
+
+  return (
       <main style={container}>
         <section style={card}>Cargando práctica inteligente...</section>
       </main>
     )
   }
 
+  const subjectMeta = getSubjectMeta(selectedSubject)
+
   return (
     <main style={container}>
       <section style={hero}>
         <div>
           <div style={pill}>Motor UC</div>
-          <h1 style={title}>🧠 Práctica inteligente</h1>
+          <h1 style={title}>{subjectMeta.icon} Práctica inteligente</h1>
           <p style={subtitle}>
             Diagnóstico obligatorio, dificultad adaptativa, fatiga cognitiva y foco en debilidades.
           </p>
@@ -525,7 +529,7 @@ export default function PracticeView() {
               <option value="">Selecciona asignatura</option>
               {subjects.map((s) => (
                 <option key={s} value={s}>
-                  {getSubjectName(s)}
+                  {getSubjectMeta(s).icon} {getSubjectMeta(s).name}
                 </option>
               ))}
             </select>
@@ -690,7 +694,9 @@ export default function PracticeView() {
                   optionStyle = { ...optionButton, ...wrongOption }
                 }
 
-                return (
+                const subjectMeta = getSubjectMeta(selectedSubject)
+
+  return (
                   <button
                     key={option}
                     style={optionStyle}

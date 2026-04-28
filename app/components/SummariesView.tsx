@@ -1,8 +1,9 @@
 'use client'
 
+import { SUBJECT_PRESETS_ARRAY } from '../../lib/subjects'
 import { useState } from 'react'
 import { buildSubjectPrompt } from '@/lib/subject-prompts'
-import { SUBJECT_PRESETS } from '@/lib/subjects'
+import {SUBJECT_PRESETS} from '@/lib/subjects'
 
 export default function SummariesView() {
   const [subject, setSubject] = useState('Seminario')
@@ -48,7 +49,7 @@ export default function SummariesView() {
         value={subject}
         onChange={(e) => setSubject(e.target.value)}
       >
-        {SUBJECT_PRESETS.map((s) => (
+        {SUBJECT_PRESETS_ARRAY.map((s) => (
           <option key={s.name}>{s.name}</option>
         ))}
       </select>

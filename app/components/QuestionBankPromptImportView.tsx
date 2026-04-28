@@ -7,7 +7,7 @@ import {
   getAllQuestionBankItems,
   type BankQuestion,
 } from '../../lib/question-bank'
-import { SUBJECT_PRESETS, getSubjectColor, getSubjectTopics } from '../../lib/subjects'
+import {SUBJECT_PRESETS_ARRAY, getSubjectColor, getSubjectTopics} from '../../lib/subjects'
 import QuestionBankPromptImportView from './QuestionBankPromptImportView'
 
 type DraftQuestion = {
@@ -80,7 +80,7 @@ export default function QuestionBankView() {
   }, [selectedSubject, useNewSubject])
 
   const subjectOptions = useMemo(() => {
-    const presetNames = SUBJECT_PRESETS.map((item) => item.name)
+    const presetNames = SUBJECT_PRESETS_ARRAY.map((item) => item.name)
     const bankNames = items
       .map((item) => item.subject || '')
       .filter(Boolean) as string[]

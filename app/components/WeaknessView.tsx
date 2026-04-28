@@ -7,7 +7,7 @@ import {
   type PracticeAttempt,
 } from '../../lib/practice-attempts'
 import { buildWeaknessesByTopic } from '../../lib/weakness-engine'
-import { SUBJECT_PRESETS, getSubjectColor } from '../../lib/subjects'
+import {getSubjectColor, SUBJECT_PRESETS_ARRAY} from '../../lib/subjects'
 
 function normalizeAttempts(attempts: PracticeAttempt[]) {
   return attempts.map((attempt) => ({
@@ -100,7 +100,7 @@ export default function WeaknessView() {
           style={select}
         >
           <option value="">Todas las asignaturas</option>
-          {SUBJECT_PRESETS.map((subject) => (
+          {SUBJECT_PRESETS_ARRAY.map((subject) => (
             <option key={subject.name} value={subject.name}>
               {subject.icon ? `${subject.icon} ` : ''}
               {subject.name}
