@@ -132,6 +132,10 @@ export default function PracticeView() {
   const [answerState, setAnswerState] = useState<AnswerState>('idle')
   const [attempts, setAttempts] = useState<Attempt[]>([])
   const [weakTopics, setWeakTopics] = useState<string[]>([])
+  const [guidedFocus, setGuidedFocus] = useState<string | null>(null)
+  const [guidedMessage, setGuidedMessage] = useState(
+    'Modo guiado listo: partiré reforzando tus temas débiles.'
+  )
   const [questionStart, setQuestionStart] = useState(Date.now())
 
   const [loading, setLoading] = useState(true)
@@ -144,6 +148,7 @@ export default function PracticeView() {
   const fatigue = useMemo(() => detectFatigue(attempts), [attempts])
   const adaptiveDifficulty = useMemo(() => getAdaptiveDifficulty(attempts), [attempts])
   const predictedScore = useMemo(() => predictScore(attempts), [attempts])
+  const isGuidedMode = mode === 'practica' || mode === 'adaptativo'
 
   const correctCount = attempts.filter(a => a.correct).length
   const wrongCount = attempts.filter(a => !a.correct).length
@@ -253,6 +258,7 @@ export default function PracticeView() {
 
     if (Array.isArray(match.weak_topics)) {
       setWeakTopics(match.weak_topics)
+      setGuidedFocus(match.weak_topics[0] || null)
     }
 
     return true
@@ -333,10 +339,28 @@ export default function PracticeView() {
       const limit = mode === 'rapido' ? 5 : selectedLimit
       const weakSet = new Set(weakTopics)
 
-      const prioritized = [
-        ...shuffle(clean.filter(q => weakSet.has(q.tema))),
-        ...shuffle(clean.filter(q => !weakSet.has(q.tema))),
-      ]
+      let prioritized: Question[] = []
+
+      if (isGuidedMode && weakTopics.length > 0) {
+        const weak = clean.filter(q => weakSet.has(q.tema))
+        const rest = clean.filter(q => !weakSet.has(q.tema))
+
+        prioritized = [
+          ...shuffle(weak),
+          ...shuffle(rest),
+        ]
+
+        setGuidedFocus(weak[0]?.tema || weakTopics[0] || null)
+        setGuidedMessage(
+          weak.length > 0
+            ? `Estoy reforzando tu debilidad principal: ${weak[0]?.tema || weakTopics[0]}.`
+            : 'No encontré preguntas exactas de tu debilidad, así que usaré práctica general adaptativa.'
+        )
+      } else {
+        prioritized = shuffle(clean)
+        setGuidedFocus(null)
+        setGuidedMessage('Modo práctica general: iré ajustando según tus respuestas.')
+      }
 
       setQuestions(prioritized.slice(0, limit))
     } catch (error) {
@@ -505,6 +529,18 @@ export default function PracticeView() {
           >
             Hacer diagnóstico ahora
           </button>
+        </section>
+      )}
+
+      {isGuidedMode && (
+        <section style={guidedPanel}>
+          <div>
+            <strong>🧠 Modo guiado UC activo</strong>
+            <p style={guidedText}>{guidedMessage}</p>
+            {guidedFocus && (
+              <div style={guidedChip}>Foco actual: {guidedFocus}</div>
+            )}
+          </div>
         </section>
       )}
 
@@ -1062,4 +1098,29 @@ const warningBox: CSSProperties = {
   background: 'rgba(245,158,11,.14)',
   border: '1px solid rgba(245,158,11,.25)',
   color: '#fde68a',
+}
+
+const guidedPanel: React.CSSProperties = {
+  padding: '16px',
+  borderRadius: '18px',
+  background: 'linear-gradient(135deg, rgba(37,99,235,0.22), rgba(15,23,42,0.92))',
+  border: '1px solid rgba(96,165,250,0.35)',
+  marginBottom: '16px',
+}
+
+const guidedText: React.CSSProperties = {
+  margin: '6px 0 0',
+  opacity: 0.82,
+  lineHeight: 1.45,
+}
+
+const guidedChip: React.CSSProperties = {
+  display: 'inline-block',
+  marginTop: '10px',
+  padding: '6px 10px',
+  borderRadius: '999px',
+  background: 'rgba(59,130,246,0.22)',
+  color: '#bfdbfe',
+  fontSize: '13px',
+  fontWeight: 800,
 }
