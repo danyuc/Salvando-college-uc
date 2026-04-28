@@ -136,6 +136,7 @@ export default function PracticeView() {
   const [guidedMessage, setGuidedMessage] = useState(
     'Modo guiado listo: partiré reforzando tus temas débiles.'
   )
+  const [tutorExplanation, setTutorExplanation] = useState('')
   const [questionStart, setQuestionStart] = useState(Date.now())
 
   const [loading, setLoading] = useState(true)
