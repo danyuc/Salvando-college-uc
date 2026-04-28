@@ -259,6 +259,7 @@ export default function PracticeView() {
   }
 
   async function loadQuestions() {
+    const subjectName = getSubjectName(selectedSubject)
     if (!userId || !selectedSubject) {
       alert('Selecciona una asignatura.')
       return
@@ -524,7 +525,7 @@ export default function PracticeView() {
               <option value="">Selecciona asignatura</option>
               {subjects.map((s) => (
                 <option key={s} value={s}>
-                  {s}
+                  {getSubjectName(s)}
                 </option>
               ))}
             </select>
