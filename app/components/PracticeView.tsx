@@ -123,6 +123,10 @@ export default function PracticeView() {
 
   const [selectedSubject, setSelectedSubject] = useState(urlSubject)
   const [selectedTopic, setSelectedTopic] = useState('')
+  const [selectedAuthor, setSelectedAuthor] = useState('')
+  const [selectedClassSource, setSelectedClassSource] = useState('')
+  const [authors, setAuthors] = useState<string[]>([])
+  const [classSources, setClassSources] = useState<string[]>([])
   const [selectedLimit, setSelectedLimit] = useState(20)
   const [mode, setMode] = useState<PracticeMode>(urlMode)
 
@@ -172,7 +176,7 @@ export default function PracticeView() {
 
       const { data: questionMeta, error } = await supabase
         .from('questions')
-        .select('asignatura, tema')
+        .select('asignatura, tema, autor, clase_fuente, fuente, clase')
         .not('asignatura', 'is', null)
 
       if (error) throw error
@@ -196,8 +200,22 @@ export default function PracticeView() {
         ])
       )
 
+      const uniqueAuthors = Array.from(
+        new Set(rows.map((r: any) => r.autor).filter(Boolean))
+      ) as string[]
+
+      const uniqueClassSources = Array.from(
+        new Set(
+          rows
+            .map((r: any) => r.clase_fuente || r.fuente || r.clase)
+            .filter(Boolean)
+        )
+      ) as string[]
+
       setSubjects(finalSubjects)
       setTopics(uniqueTopics)
+      setAuthors(uniqueAuthors)
+      setClassSources(uniqueClassSources)
 
       // 🔥 BUSCAR DIAGNÓSTICO COMPLETADO PRIMERO
       const { data: diag } = await supabase
@@ -296,6 +314,16 @@ export default function PracticeView() {
 
       if (selectedTopic) {
         query = query.eq('tema', selectedTopic)
+      }
+
+      if (selectedAuthor) {
+        query = query.eq('autor', selectedAuthor)
+      }
+
+      if (selectedClassSource) {
+        query = query.or(
+          `clase_fuente.eq.${selectedClassSource},fuente.eq.${selectedClassSource},clase.eq.${selectedClassSource}`
+        )
       }
 
       if (mode === 'rapido') {
@@ -584,6 +612,38 @@ export default function PracticeView() {
               {topics.map((t) => (
                 <option key={t} value={t}>
                   {t}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label style={field}>
+            <span>Autor</span>
+            <select
+              style={select}
+              value={selectedAuthor}
+              onChange={(e) => setSelectedAuthor(e.target.value)}
+            >
+              <option value="">Todos</option>
+              {authors.map((author) => (
+                <option key={author} value={author}>
+                  {author}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label style={field}>
+            <span>Clase / fuente</span>
+            <select
+              style={select}
+              value={selectedClassSource}
+              onChange={(e) => setSelectedClassSource(e.target.value)}
+            >
+              <option value="">Todas</option>
+              {classSources.map((source) => (
+                <option key={source} value={source}>
+                  {source}
                 </option>
               ))}
             </select>
