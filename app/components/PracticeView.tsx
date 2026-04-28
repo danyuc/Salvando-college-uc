@@ -115,7 +115,7 @@ export default function PracticeView() {
   const params = useSearchParams()
 
   const urlSubject = params.get('subject') || ''
-  const urlMode = (params.get('mode') || 'practica') as PracticeMode
+  const urlMode = (params.get('mode') || '') as PracticeMode
 
   const [userId, setUserId] = useState<string | null>(null)
   const [subjects, setSubjects] = useState<string[]>([])
@@ -323,6 +323,11 @@ export default function PracticeView() {
   async function loadQuestions() {
     if (!userId || !selectedSubject) {
       alert('Selecciona una asignatura.')
+      return
+    }
+
+    if (!mode) {
+      alert('Selecciona un modo de práctica.')
       return
     }
 
@@ -742,41 +747,14 @@ export default function PracticeView() {
               value={mode}
               onChange={(e) => setMode(e.target.value as PracticeMode)}
             >
-              <option value="practica">Práctica</option>
+              <option value="">Selecciona modo</option>
+              <option value="practica">Práctica guiada</option>
               <option value="adaptativo">Adaptativo</option>
               <option value="simulacion">Modo examen UC</option>
               <option value="rapido">Ronda corta</option>
               <option value="diagnostico">Diagnóstico</option>
             </select>
           </label>
-
-          <label style={field}>
-            <span>Tiempo / método</span>
-            <select
-              style={select}
-              value={sessionStyle}
-              onChange={(e) => setSessionStyle(e.target.value as any)}
-            >
-              <option value="auto">Automático inteligente</option>
-              <option value="pomodoro25">Pomodoro 25 min</option>
-              <option value="deep50">Bloque profundo 50 min</option>
-              <option value="custom">Personalizado</option>
-            </select>
-          </label>
-
-          {sessionStyle === 'custom' && (
-            <label style={field}>
-              <span>Minutos</span>
-              <input
-                style={select}
-                type="number"
-                min={5}
-                max={180}
-                value={customMinutes}
-                onChange={(e) => setCustomMinutes(Number(e.target.value) || 45)}
-              />
-            </label>
-          )}
 
           <label style={field}>
             <span>Cantidad</span>
@@ -862,7 +840,7 @@ export default function PracticeView() {
       )}
 
       {currentQuestion && !finished && (
-        <section style={{ ...questionCard, border: `1px solid ${subjectMeta.color}55`, boxShadow: `0 0 28px ${subjectMeta.color}22` }}>
+        <section style={{ ...questionCard, border: `2px solid ${subjectMeta.color}`, boxShadow: `0 0 42px ${subjectMeta.color}66`, background: `linear-gradient(135deg, ${subjectMeta.color}22, rgba(2,6,23,0.94))` }}>
           <div style={questionHeader}>
             <div style={chips}>
               <span style={chip}>{currentQuestion.asignatura || 'General'}</span>
