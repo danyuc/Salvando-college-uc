@@ -153,7 +153,12 @@ export default function PracticeView() {
   const fatigue = useMemo(() => detectFatigue(attempts), [attempts])
   const adaptiveDifficulty = useMemo(() => getAdaptiveDifficulty(attempts), [attempts])
   const predictedScore = useMemo(() => predictScore(attempts), [attempts])
-  const isGuidedMode = mode === 'practica' || mode === 'adaptativo'
+  const isGuidedMode = mode === 'practica' || mode === 'adaptativo' || mode === 'simulacion'
+  const subjectMeta = useMemo(() => getSubjectMeta(selectedSubject), [selectedSubject])
+  const isExamMode = mode === 'simulacion'
+  const [examSecondsLeft, setExamSecondsLeft] = useState(45 * 60)
+  const [mentalState, setMentalState] = useState('calibrado')
+  const [colorPerformance, setColorPerformance] = useState<Record<string, { attempts: number; correct: number }>>({})
 
   const correctCount = attempts.filter(a => a.correct).length
   const wrongCount = attempts.filter(a => !a.correct).length
@@ -293,6 +298,7 @@ export default function PracticeView() {
     try {
       setSessionLoading(true)
       setFinished(false)
+      if (isExamMode) setExamSecondsLeft(45 * 60)
       setCurrentIndex(0)
       setSelectedAnswer(null)
       setAnswerState('idle')
@@ -515,11 +521,15 @@ export default function PracticeView() {
     )
   }
 
-  const subjectMeta = getSubjectMeta(selectedSubject)
-
   return (
     <main style={container}>
-      <section style={hero}>
+      <section style={{
+        ...hero,
+        background: `linear-gradient(135deg, ${subjectMeta.color}66, rgba(15,23,42,0.96))`,
+        border: `1px solid ${subjectMeta.color}55`,
+        boxShadow: `0 0 46px ${subjectMeta.color}22`,
+        transition: 'all 450ms ease',
+      }}>
         <div>
           <div style={pill}>Motor UC</div>
           <h1 style={title}>{subjectMeta.icon} Práctica inteligente</h1>
@@ -564,6 +574,49 @@ export default function PracticeView() {
             {guidedFocus && (
               <div style={guidedChip}>Foco actual: {guidedFocus}</div>
             )}
+          </div>
+        </section>
+      )}
+
+      {isExamMode && (
+        <section style={{
+          ...examPanel,
+          border: `1px solid ${subjectMeta.color}66`,
+          boxShadow: `0 0 38px ${subjectMeta.color}22`,
+        }}>
+          <div>
+            <strong>🧪 Modo examen UC real</strong>
+            <p style={guidedText}>
+              Temporizador activo, presión progresiva, dificultad realista y lectura del estado mental.
+            </p>
+          </div>
+
+          <div style={examGrid}>
+            <div style={examMetric}>
+              <span>Tiempo</span>
+              <strong>
+                {Math.floor(examSecondsLeft / 60)}:{String(examSecondsLeft % 60).padStart(2, '0')}
+              </strong>
+            </div>
+
+            <div style={examMetric}>
+              <span>Estado mental</span>
+              <strong>{mentalState}</strong>
+            </div>
+
+            <div style={examMetric}>
+              <span>Color activo</span>
+              <strong>{subjectMeta.name}</strong>
+            </div>
+
+            <div style={examMetric}>
+              <span>Rendimiento color</span>
+              <strong>
+                {colorPerformance[subjectMeta.color]?.attempts
+                  ? `${Math.round((colorPerformance[subjectMeta.color].correct / colorPerformance[subjectMeta.color].attempts) * 100)}%`
+                  : 'nuevo'}
+              </strong>
+            </div>
           </div>
         </section>
       )}
@@ -653,7 +706,7 @@ export default function PracticeView() {
             >
               <option value="practica">Práctica</option>
               <option value="adaptativo">Adaptativo</option>
-              <option value="simulacion">Simulación UC</option>
+              <option value="simulacion">Modo examen UC</option>
               <option value="rapido">Ronda corta</option>
               <option value="diagnostico">Diagnóstico</option>
             </select>
@@ -1179,4 +1232,29 @@ const guidedChip: React.CSSProperties = {
   color: '#bfdbfe',
   fontSize: '13px',
   fontWeight: 800,
+}
+
+
+const examPanel: React.CSSProperties = {
+  padding: '18px',
+  borderRadius: '22px',
+  background: 'linear-gradient(135deg, rgba(15,23,42,0.96), rgba(2,6,23,0.98))',
+  marginBottom: '16px',
+  transition: 'all 450ms ease',
+}
+
+const examGrid: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+  gap: '10px',
+  marginTop: '14px',
+}
+
+const examMetric: React.CSSProperties = {
+  display: 'grid',
+  gap: '4px',
+  padding: '12px',
+  borderRadius: '14px',
+  background: 'rgba(255,255,255,0.06)',
+  border: '1px solid rgba(255,255,255,0.08)',
 }
