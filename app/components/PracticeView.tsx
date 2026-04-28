@@ -156,9 +156,22 @@ export default function PracticeView() {
   const isGuidedMode = mode === 'practica' || mode === 'adaptativo' || mode === 'simulacion'
   const subjectMeta = useMemo(() => getSubjectMeta(selectedSubject), [selectedSubject])
   const isExamMode = mode === 'simulacion'
+  const [examDurationMinutes, setExamDurationMinutes] = useState(45)
+  const [sessionStyle, setSessionStyle] = useState<'auto' | 'pomodoro25' | 'deep50' | 'custom'>('auto')
+  const [customMinutes, setCustomMinutes] = useState(45)
   const [examSecondsLeft, setExamSecondsLeft] = useState(45 * 60)
+  const [savedPrediction, setSavedPrediction] = useState<number | null>(null)
   const [mentalState, setMentalState] = useState('calibrado')
   const [colorPerformance, setColorPerformance] = useState<Record<string, { attempts: number; correct: number }>>({})
+
+  function resolveSessionMinutes() {
+    if (sessionStyle === 'pomodoro25') return 25
+    if (sessionStyle === 'deep50') return 50
+    if (sessionStyle === 'custom') return Math.max(5, Math.min(180, customMinutes || 45))
+    if (mode === 'rapido') return 10
+    if (mode === 'simulacion') return 45
+    return 30
+  }
 
   const correctCount = attempts.filter(a => a.correct).length
   const wrongCount = attempts.filter(a => !a.correct).length
@@ -298,7 +311,7 @@ export default function PracticeView() {
     try {
       setSessionLoading(true)
       setFinished(false)
-      if (isExamMode) setExamSecondsLeft(45 * 60)
+      if (isExamMode) setExamSecondsLeft(resolveSessionMinutes() * 60)
       setCurrentIndex(0)
       setSelectedAnswer(null)
       setAnswerState('idle')
@@ -539,7 +552,7 @@ export default function PracticeView() {
         </div>
 
         <div style={heroStats}>
-          <strong>{predictedScore.toFixed(1)}</strong>
+          <strong>{(savedPrediction ?? predictedScore).toFixed(1)}</strong>
           <span>predicción sesión</span>
         </div>
       </section>
@@ -587,7 +600,7 @@ export default function PracticeView() {
           <div>
             <strong>🧪 Modo examen UC real</strong>
             <p style={guidedText}>
-              Temporizador activo, presión progresiva, dificultad realista y lectura del estado mental.
+              Temporizador activo, presión progresiva, dificultad realista, Pomodoro/bloques y lectura del estado mental.
             </p>
           </div>
 
@@ -713,6 +726,34 @@ export default function PracticeView() {
           </label>
 
           <label style={field}>
+            <span>Tiempo / método</span>
+            <select
+              style={select}
+              value={sessionStyle}
+              onChange={(e) => setSessionStyle(e.target.value as any)}
+            >
+              <option value="auto">Automático inteligente</option>
+              <option value="pomodoro25">Pomodoro 25 min</option>
+              <option value="deep50">Bloque profundo 50 min</option>
+              <option value="custom">Personalizado</option>
+            </select>
+          </label>
+
+          {sessionStyle === 'custom' && (
+            <label style={field}>
+              <span>Minutos</span>
+              <input
+                style={select}
+                type="number"
+                min={5}
+                max={180}
+                value={customMinutes}
+                onChange={(e) => setCustomMinutes(Number(e.target.value) || 45)}
+              />
+            </label>
+          )}
+
+          <label style={field}>
             <span>Cantidad</span>
             <select
               style={select}
@@ -774,7 +815,7 @@ export default function PracticeView() {
         <section style={summaryCard}>
           <h2>✅ Sesión terminada</h2>
           <p style={muted}>
-            Predicción de nota: <strong>{predictedScore.toFixed(1)}</strong> ·
+            Predicción de nota: <strong>{(savedPrediction ?? predictedScore).toFixed(1)}</strong> ·
             Correctas: {correctCount} · Errores: {wrongCount} · Precisión: {accuracy}%
           </p>
 
