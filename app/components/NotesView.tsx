@@ -161,7 +161,7 @@ export default function NotesView() {
             title: `Control ${i}`,
             type: 'control',
             grade: null,
-            weight_percent: 7,
+            weight_percent: 1,
           } as any)
         }
       }

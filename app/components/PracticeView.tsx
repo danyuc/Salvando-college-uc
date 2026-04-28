@@ -224,7 +224,7 @@ export default function PracticeView() {
 
       const { data: questionMeta, error } = await supabase
         .from('questions')
-        .select('asignatura, tema')
+        .select('*')
         .not('asignatura', 'is', null)
 
       if (error) throw error
@@ -251,8 +251,21 @@ export default function PracticeView() {
         ])
       )
 
-      const uniqueAuthors: string[] = []
-      const uniqueClassSources: string[] = []
+      const uniqueAuthors = Array.from(
+        new Set(
+          rows
+            .map((r: any) => r.autor || r.author || r.profesor || r.docente)
+            .filter(Boolean)
+        )
+      ) as string[]
+
+      const uniqueClassSources = Array.from(
+        new Set(
+          rows
+            .map((r: any) => r.clase_fuente || r.fuente || r.clase || r.lectura || r.material || r.source)
+            .filter(Boolean)
+        )
+      ) as string[]
 
       setSubjects(finalSubjects)
       setTopics(uniqueTopics)
@@ -402,6 +415,20 @@ export default function PracticeView() {
       if (error) throw error
 
       let clean = ((data || []) as Question[]).filter(q => {
+        if (selectedAuthor) {
+          const authorValue = String(
+            (q as any).autor || (q as any).author || (q as any).profesor || (q as any).docente || ''
+          )
+          if (authorValue !== selectedAuthor) return false
+        }
+
+        if (selectedClassSource) {
+          const sourceValue = String(
+            (q as any).clase_fuente || (q as any).fuente || (q as any).clase || (q as any).lectura || (q as any).material || (q as any).source || ''
+          )
+          if (sourceValue !== selectedClassSource) return false
+        }
+
         if (!q.pregunta) return false
         if (q.tipo === 'seleccion_multiple') {
           return Array.isArray(q.opciones) && q.opciones.length >= 2
@@ -952,11 +979,11 @@ export default function PracticeView() {
             <div
               style={{
                 ...feedback,
-                ...(answerState === 'correct' && !isExamMode ? feedbackGood : feedbackBad),
+                ...(answerState === 'correct' && !isExamMode && !isExamMode ? feedbackGood : feedbackBad),
               }}
             >
               <strong>
-                {answerState === 'correct' && !isExamMode ? '✅ Correcta' : '❌ Incorrecta'}
+                {answerState === 'correct' && !isExamMode && !isExamMode ? '✅ Correcta' : '❌ Incorrecta'}
               </strong>
 
               {currentQuestion.respuesta_correcta && (
