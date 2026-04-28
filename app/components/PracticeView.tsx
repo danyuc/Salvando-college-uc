@@ -1,6 +1,7 @@
 // ===== PARTE 1/3 =====
 'use client'
 
+import { getSubjectName } from '../../lib/subjects'
 import {
   useEffect,
   useMemo,
@@ -213,52 +214,39 @@ export default function PracticeView() {
   }
 
   async function checkDiagnostic(currentUserId: string, subject: string) {
+    const subjectName = getSubjectName(subject)
+
     const { data, error } = await supabase
-      .from('subject_diagnostics')
-      .select('*')
-      .eq('user_id', currentUserId)
-      .eq('subject', subject)
-      .eq('completed', true)
-      .maybeSingle()
-
-    if (!error && data) {
-      setDiagnosticRequired(false)
-
-      if (Array.isArray(data.weak_topics)) {
-        setWeakTopics(data.weak_topics)
-      }
-
-      return true
-    }
-
-    const { data: anyDiagnostic, error: anyError } = await supabase
       .from('subject_diagnostics')
       .select('*')
       .eq('user_id', currentUserId)
       .eq('completed', true)
       .order('updated_at', { ascending: false })
-      .limit(1)
-      .maybeSingle()
 
-    if (anyError) {
-      console.error('DIAGNOSTIC CHECK ERROR:', anyError)
+    if (error) {
+      console.error('DIAGNOSTIC CHECK ERROR:', error)
       setDiagnosticRequired(true)
       return false
     }
 
-    if (anyDiagnostic?.subject) {
-      setSelectedSubject(anyDiagnostic.subject)
-      setDiagnosticRequired(false)
+    const match = (data || []).find((diag: any) => {
+      const diagSubject = String(diag.subject || '')
+      return diagSubject === subject || diagSubject === subjectName || getSubjectName(diagSubject) === subjectName
+    })
 
-      if (Array.isArray(anyDiagnostic.weak_topics)) {
-        setWeakTopics(anyDiagnostic.weak_topics)
-      }
-
-      return true
+    if (!match) {
+      setDiagnosticRequired(true)
+      return false
     }
 
-    setDiagnosticRequired(true)
-    return false
+    setSelectedSubject(match.subject || subject)
+    setDiagnosticRequired(false)
+
+    if (Array.isArray(match.weak_topics)) {
+      setWeakTopics(match.weak_topics)
+    }
+
+    return true
   }
 
   async function loadQuestions() {
@@ -286,7 +274,7 @@ export default function PracticeView() {
       let query = supabase
         .from('questions')
         .select('*')
-        .eq('asignatura', selectedSubject)
+        .eq('asignatura', getSubjectName(selectedSubject))
         .limit(300)
 
       if (selectedTopic) {

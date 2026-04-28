@@ -6,7 +6,7 @@ import { useState, type CSSProperties } from 'react'
 const links = [
   { path: '/', label: 'Home', icon: '🏠' },
   { path: '/calendario', label: 'Calendario', icon: '📅' },
-  { path: '/ensayo', label: 'Práctica', icon: '🧩' },
+  { path: '/practica', label: 'Práctica', icon: '🧩' },
   { path: '/banco', label: 'Banco', icon: '📚' },
   { path: '/notas', label: 'Notas', icon: '📊' },
   { path: '/disponibilidad', label: 'Disponibilidad', icon: '⏱️' },
