@@ -181,7 +181,16 @@ export default function PracticeView() {
         new Set(rows.map((r) => r.tema).filter(Boolean))
       ) as string[]
 
-      setSubjects(uniqueSubjects)
+      const fallbackSubjects = ['SOL500', 'MAT1000', 'PSI1101', 'IHI0204']
+
+      const finalSubjects = Array.from(
+        new Set([
+          ...uniqueSubjects,
+          ...fallbackSubjects,
+        ])
+      )
+
+      setSubjects(finalSubjects)
       setTopics(uniqueTopics)
 
       // 🔥 BUSCAR DIAGNÓSTICO COMPLETADO PRIMERO
