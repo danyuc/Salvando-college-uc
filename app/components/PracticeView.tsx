@@ -176,7 +176,7 @@ export default function PracticeView() {
 
       const { data: questionMeta, error } = await supabase
         .from('questions')
-        .select('asignatura, tema, autor, clase_fuente, fuente, clase')
+        .select('asignatura, tema')
         .not('asignatura', 'is', null)
 
       if (error) throw error
@@ -203,17 +203,8 @@ export default function PracticeView() {
         ])
       )
 
-      const uniqueAuthors = Array.from(
-        new Set(rows.map((r: any) => r.autor).filter(Boolean))
-      ) as string[]
-
-      const uniqueClassSources = Array.from(
-        new Set(
-          rows
-            .map((r: any) => r.clase_fuente || r.fuente || r.clase)
-            .filter(Boolean)
-        )
-      ) as string[]
+      const uniqueAuthors: string[] = []
+      const uniqueClassSources: string[] = []
 
       setSubjects(finalSubjects)
       setTopics(uniqueTopics)
@@ -287,7 +278,6 @@ export default function PracticeView() {
   }
 
   async function loadQuestions() {
-    const subjectName = getSubjectName(selectedSubject)
     if (!userId || !selectedSubject) {
       alert('Selecciona una asignatura.')
       return
@@ -309,10 +299,12 @@ export default function PracticeView() {
       setAttempts([])
       setQuestionStart(Date.now())
 
+      const subjectLabel = getSubjectName(selectedSubject)
+
       let query = supabase
         .from('questions')
         .select('*')
-        .eq('asignatura', getSubjectName(selectedSubject))
+        .or(`asignatura.eq.${subjectLabel},asignatura.eq.${selectedSubject}`)
         .limit(300)
 
       if (selectedTopic) {
