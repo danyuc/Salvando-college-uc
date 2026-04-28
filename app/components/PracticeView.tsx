@@ -156,6 +156,32 @@ export default function PracticeView() {
   const isGuidedMode = mode === 'practica' || mode === 'adaptativo' || mode === 'simulacion'
   const subjectMeta = useMemo(() => getSubjectMeta(selectedSubject), [selectedSubject])
   const isExamMode = mode === 'simulacion'
+
+  const modeInfo = {
+    practica: {
+      title: '🧠 Modo guiado UC activo',
+      text: 'Refuerza tus temas débiles con apoyo inmediato y práctica inteligente.',
+    },
+    adaptativo: {
+      title: '⚙️ Modo adaptativo activo',
+      text: 'La dificultad se ajusta según tus respuestas: si aciertas sube, si fallas baja.',
+    },
+    simulacion: {
+      title: '🧪 Modo prueba UC real',
+      text: 'Simula una evaluación real: temporizador, presión progresiva y feedback solo al final.',
+    },
+    rapido: {
+      title: '⚡ Ronda corta activa',
+      text: 'Sesión breve para repasar rápido sin sobrecargarte.',
+    },
+    diagnostico: {
+      title: '🔍 Diagnóstico activo',
+      text: 'Detecta fortalezas y debilidades para personalizar tu entrenamiento.',
+    },
+  }[mode] || {
+    title: '🧠 Práctica inteligente',
+    text: 'Sesión personalizada según tu avance.',
+  }
   const [examDurationMinutes, setExamDurationMinutes] = useState(45)
   const [sessionStyle, setSessionStyle] = useState<'auto' | 'pomodoro25' | 'deep50' | 'custom'>('auto')
   const [customMinutes, setCustomMinutes] = useState(45)
@@ -165,12 +191,11 @@ export default function PracticeView() {
   const [colorPerformance, setColorPerformance] = useState<Record<string, { attempts: number; correct: number }>>({})
 
   function resolveSessionMinutes() {
-    if (sessionStyle === 'pomodoro25') return 25
-    if (sessionStyle === 'deep50') return 50
-    if (sessionStyle === 'custom') return Math.max(5, Math.min(180, customMinutes || 45))
-    if (mode === 'rapido') return 10
     if (mode === 'simulacion') return 45
-    return 30
+    if (mode === 'rapido') return 10
+    if (selectedLimit <= 10) return 20
+    if (selectedLimit <= 20) return 30
+    return 45
   }
 
   const correctCount = attempts.filter(a => a.correct).length
@@ -582,8 +607,8 @@ export default function PracticeView() {
       {isGuidedMode && (
         <section style={guidedPanel}>
           <div>
-            <strong>🧠 Modo guiado UC activo</strong>
-            <p style={guidedText}>{guidedMessage}</p>
+            <strong>{modeInfo.title}</strong>
+            <p style={guidedText}>{isExamMode ? modeInfo.text : guidedMessage}</p>
             {guidedFocus && (
               <div style={guidedChip}>Foco actual: {guidedFocus}</div>
             )}
@@ -837,7 +862,7 @@ export default function PracticeView() {
       )}
 
       {currentQuestion && !finished && (
-        <section style={questionCard}>
+        <section style={{ ...questionCard, border: `1px solid ${subjectMeta.color}55`, boxShadow: `0 0 28px ${subjectMeta.color}22` }}>
           <div style={questionHeader}>
             <div style={chips}>
               <span style={chip}>{currentQuestion.asignatura || 'General'}</span>
