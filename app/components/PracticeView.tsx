@@ -186,12 +186,17 @@ export default function PracticeView() {
   const [sessionStyle, setSessionStyle] = useState<'auto' | 'pomodoro25' | 'deep50' | 'custom'>('auto')
   const [customMinutes, setCustomMinutes] = useState(45)
   const [examSecondsLeft, setExamSecondsLeft] = useState(45 * 60)
+  const [examDurationOption, setExamDurationOption] = useState<'auto' | '30' | '45' | '60' | '90'>('auto')
   const [savedPrediction, setSavedPrediction] = useState<number | null>(null)
   const [mentalState, setMentalState] = useState('calibrado')
   const [colorPerformance, setColorPerformance] = useState<Record<string, { attempts: number; correct: number }>>({})
 
   function resolveSessionMinutes() {
-    if (mode === 'simulacion') return 45
+    if (mode === 'simulacion') {
+      if (examDurationOption !== 'auto') return Number(examDurationOption)
+      return selectedLimit <= 10 ? 25 : selectedLimit <= 20 ? 45 : 60
+    }
+
     if (mode === 'rapido') return 10
     if (selectedLimit <= 10) return 20
     if (selectedLimit <= 20) return 30
@@ -323,6 +328,16 @@ export default function PracticeView() {
   async function loadQuestions() {
     if (!userId || !selectedSubject) {
       alert('Selecciona una asignatura.')
+      return
+    }
+
+    if (!mode) {
+      alert('Selecciona un modo de práctica.')
+      return
+    }
+
+    if (!mode) {
+      alert('Selecciona un modo de práctica.')
       return
     }
 
@@ -756,6 +771,23 @@ export default function PracticeView() {
             </select>
           </label>
 
+          {mode === 'simulacion' && (
+            <label style={field}>
+              <span>Duración prueba</span>
+              <select
+                style={select}
+                value={examDurationOption}
+                onChange={(e) => setExamDurationOption(e.target.value as any)}
+              >
+                <option value="auto">Automática</option>
+                <option value="30">30 minutos</option>
+                <option value="45">45 minutos</option>
+                <option value="60">60 minutos</option>
+                <option value="90">90 minutos</option>
+              </select>
+            </label>
+          )}
+
           <label style={field}>
             <span>Cantidad</span>
             <select
@@ -920,11 +952,11 @@ export default function PracticeView() {
             <div
               style={{
                 ...feedback,
-                ...(answerState === 'correct' ? feedbackGood : feedbackBad),
+                ...(answerState === 'correct' && !isExamMode ? feedbackGood : feedbackBad),
               }}
             >
               <strong>
-                {answerState === 'correct' ? '✅ Correcta' : '❌ Incorrecta'}
+                {answerState === 'correct' && !isExamMode ? '✅ Correcta' : '❌ Incorrecta'}
               </strong>
 
               {currentQuestion.respuesta_correcta && (
