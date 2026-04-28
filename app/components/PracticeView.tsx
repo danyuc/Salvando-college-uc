@@ -316,7 +316,8 @@ export default function PracticeView() {
       })
 
       if (mode === 'practica') {
-        clean = clean.filter(q => q.dificultad === adaptiveDifficulty)
+        const byDifficulty = clean.filter(q => q.dificultad === adaptiveDifficulty)
+        clean = byDifficulty.length > 0 ? byDifficulty : clean
       }
 
       if (mode === 'simulacion') {
