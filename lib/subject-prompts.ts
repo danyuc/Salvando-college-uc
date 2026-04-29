@@ -4,7 +4,7 @@ import type {
   SubjectPreset,
   SubjectStudyMode,
 } from './subjects'
-import {getSubjectPreset} from './subjects'
+import { getSubjectPreset } from './subjects'
 
 export type PromptPurpose =
   | 'summary'

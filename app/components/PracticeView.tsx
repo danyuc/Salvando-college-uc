@@ -59,6 +59,24 @@ const LETTERS = ['A', 'B', 'C', 'D'] as const
 
 /* ================= HELPERS ================= */
 
+function normalizeQuestionType(tipo: string) {
+  const t = String(tipo || '').toLowerCase()
+
+  if (
+    t.includes('multiple') ||
+    t.includes('seleccion') ||
+    t.includes('mcq')
+  ) return 'alternativas'
+
+  if (
+    t.includes('desarrollo') ||
+    t.includes('abierta') ||
+    t.includes('open')
+  ) return 'desarrollo'
+
+  return 'alternativas'
+}
+
 function shuffle<T>(arr: T[]) {
   return [...arr].sort(() => Math.random() - 0.5)
 }
@@ -419,6 +437,11 @@ export default function PracticeView() {
 
       // QUESTION_FORMAT_FILTER_PATCH
       let clean = ((data || []) as Question[]).filter(q => {
+
+        const tipoNormalizado = normalizeQuestionType(q.tipo)
+
+        if (questionFormat === 'alternativas' && tipoNormalizado !== 'alternativas') return false
+        if (questionFormat === 'desarrollo' && tipoNormalizado !== 'desarrollo') return false
         if (selectedAuthor) {
           const authorValue = String(
             (q as any).autor || (q as any).author || (q as any).profesor || (q as any).docente || ''
@@ -484,7 +507,13 @@ export default function PracticeView() {
         setGuidedMessage('Modo práctica general: iré ajustando según tus respuestas.')
       }
 
-      setQuestions(prioritized.slice(0, limit))
+      console.log('FORMAT DEBUG', {
+  total: data?.length,
+  despuesFiltro: clean.length,
+  formato: questionFormat,
+})
+
+setQuestions(prioritized.slice(0, limit))
     } catch (error) {
       console.error('LOAD QUESTIONS ERROR:', error)
       alert('No se pudieron cargar las preguntas.')
@@ -823,7 +852,18 @@ export default function PracticeView() {
           )}
 
           <label style={field}>
-            <span>Cantidad</span>
+            <span>Tipo de preguntas</span>
+<select
+  style={select}
+  value={questionFormat}
+  onChange={(e) => setQuestionFormat(e.target.value as any)}
+>
+  <option value="mixto">Mixtas</option>
+  <option value="alternativas">Alternativas</option>
+  <option value="desarrollo">Desarrollo</option>
+</select>
+
+<span>Cantidad</span>
             <select
               style={select}
               value={selectedLimit}

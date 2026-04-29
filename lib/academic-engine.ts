@@ -1,4 +1,4 @@
-import type { Evaluation } from './types'
+import type { Evaluation } from './evaluations'
 
 export type AcademicRisk = 'critico' | 'alto' | 'medio' | 'bajo' | 'sin-datos'
 export type AcademicTrend = 'subiendo' | 'bajando' | 'estable' | 'sin-datos'
@@ -29,7 +29,7 @@ function toNumber(value: unknown, fallback = 0): number {
 }
 
 function getGrade(ev: Evaluation): number | null {
-  const raw = ev.current_grade ?? ev.grade ?? null
+  const raw = ev.grade ?? null
   if (raw === null || raw === undefined) return null
 
   const grade = Number(raw)
@@ -39,7 +39,7 @@ function getGrade(ev: Evaluation): number | null {
 }
 
 function getWeight(ev: Evaluation): number {
-  const raw = ev.weight_percent ?? ev.weight ?? 0
+  const raw = ev.weight_percent ?? 0
   const weight = Number(raw)
 
   if (!Number.isFinite(weight)) return 0
@@ -51,7 +51,7 @@ function getWeight(ev: Evaluation): number {
 }
 
 function getDate(ev: Evaluation): string | null {
-  return ev.start_date ?? ev.date ?? null
+  return ev.start_date  ?? null
 }
 
 export function daysUntil(date?: string | null): number | null {

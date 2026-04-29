@@ -1,13 +1,21 @@
-
-// 🔥 TIPOS FALTANTES (compatibilidad total)
-
-export type EvaluationTarget = 'prueba' | 'control' | 'examen' | 'tarea'
+export type EvaluationTarget =
+  | 'control'
+  | 'prueba'
+  | 'examen'
+  | 'tarea'
+  | 'interrogacion'
+  | 'poster'
+  | 'ensayo'
+  | 'presentacion'
+  | 'all'
 
 export type PracticeFormat =
-  | 'multiple_choice'
-  | 'true_false'
-  | 'development'
+  | 'exam'
+  | 'summary'
   | 'flashcards'
+  | 'quiz'
+  | 'development'
+  | 'mixed'
 
 export type SubjectStudyMode = string
 
@@ -22,11 +30,11 @@ export type SubjectMeta = {
   name: string
   color: string
   icon: string
-  units?: SubjectUnit[]
   studyMode?: SubjectStudyMode
+  preferredDefaultFormat?: PracticeFormat
   evaluationTargets?: EvaluationTarget[]
   practiceFormats?: PracticeFormat[]
-  preferredDefaultFormat?: string
+  units?: SubjectUnit[]
 }
 
 export type SubjectPreset = SubjectMeta
@@ -36,40 +44,89 @@ export const SUBJECT_PRESETS: Record<string, SubjectMeta> = {
     code: 'SOL500',
     name: 'Sociología',
     color: '#3b82f6',
-    icon: '🏛️',
-    studyMode: 'mixed',
-    preferredDefaultFormat: 'exam',
+    icon: '📘',
+    units: [
+      {
+        id: 'soc-1',
+        name: 'Sociología',
+        topics: [
+          'Imaginación sociológica',
+          'Estructura social',
+          'Cultura',
+          'Instituciones'
+        ]
+      }
+    ],
   },
   MAT1000: {
     code: 'MAT1000',
     name: 'Matemática',
     color: '#10b981',
     icon: '📐',
-    studyMode: 'practice',
-    preferredDefaultFormat: 'exam',
+    units: [
+      {
+        id: 'mat-1',
+        name: 'Precálculo',
+        topics: [
+          'Funciones',
+          'Trigonometría',
+          'Inecuaciones',
+          'Polinomios',
+          'Límites'
+        ]
+      }
+    ],
   },
   PSI1101: {
     code: 'PSI1101',
     name: 'Psicología',
     color: '#a855f7',
     icon: '🧠',
-    studyMode: 'mixed',
-    preferredDefaultFormat: 'exam',
+    units: [
+      {
+        id: 'psi-1',
+        name: 'Psicología',
+        topics: [
+          'Memoria',
+          'Aprendizaje',
+          'Conducta',
+          'Cognición'
+        ]
+      }
+    ],
   },
   IHI0204: {
     code: 'IHI0204',
     name: 'Historia',
     color: '#f59e0b',
-    icon: '📜',
-    studyMode: 'study',
-    preferredDefaultFormat: 'summary',
+    icon: '📚',
+    units: [
+      {
+        id: 'his-1',
+        name: 'Historia',
+        topics: [
+          'Guerra Fría',
+          'Democracia',
+          'Descolonización',
+          'Liberalismo'
+        ]
+      }
+    ],
+  },
+  CL0000: {
+    code: 'CL0000',
+    name: 'Seminario',
+    color: '#ef4444',
+    icon: '🧪',
   },
 }
 
-// 🔥 ARRAY PARA UI
 export const SUBJECT_PRESETS_ARRAY = Object.values(SUBJECT_PRESETS)
 
-// 🔥 CORE
+// =========================
+// CORE
+// =========================
+
 export function getSubjectMeta(code: string): SubjectMeta {
   return SUBJECT_PRESETS[code] || {
     code,
@@ -79,8 +136,6 @@ export function getSubjectMeta(code: string): SubjectMeta {
   }
 }
 
-// 🔥 COMPATIBILIDAD TOTAL
-
 export function getSubjectName(code: string) {
   return getSubjectMeta(code).name
 }
@@ -89,22 +144,29 @@ export function getSubjectColor(code: string) {
   return getSubjectMeta(code).color
 }
 
-export function getSubjectColorByCodeOrName(input: string) {
-  const match =
-    SUBJECT_PRESETS[input] ||
-    SUBJECT_PRESETS_ARRAY.find(
-      (s) => s.name.toLowerCase() === input.toLowerCase()
-    )
+// =========================
+// 🔥 COMPATIBILIDAD TOTAL
+// =========================
 
-  return match?.color || '#64748b'
+export function getSubjectColorByCodeOrName(value: string) {
+  const found = SUBJECT_PRESETS_ARRAY.find(
+    s => s.code === value || s.name === value
+  )
+  return found?.color || '#64748b'
 }
 
 export function getSubjectPreset(code: string) {
   return getSubjectMeta(code)
 }
 
+
+// =========================
+// GET SUBJECT TOPICS
+// =========================
 export function getSubjectTopics(code: string): string[] {
-  const meta = getSubjectMeta(code)
-  if (!meta.units) return []
-  return meta.units.flatMap((u) => u.topics || [])
+  const subject = SUBJECT_PRESETS[code]
+
+  if (!subject || !subject.units) return []
+
+  return subject.units.flatMap(unit => unit.topics || [])
 }

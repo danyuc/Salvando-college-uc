@@ -1,7 +1,7 @@
-import type { Evaluation } from './types'
+import type { Evaluation } from './evaluations'
 
 function getEvaluationDate(evaluation: Evaluation): string | null {
-  return evaluation.start_date ?? evaluation.date ?? null
+  return evaluation.start_date ?? null
 }
 
 function getEvaluationWeight(evaluation: Evaluation): number {

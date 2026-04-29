@@ -1,4 +1,4 @@
-import type { Evaluation } from './types'
+import type { Evaluation } from './evaluations'
 import type { SubjectAcademicAnalysis } from './academic-engine'
 import { daysUntil } from './academic-engine'
 
@@ -14,11 +14,11 @@ export type AcademicAlert = {
 }
 
 function getDate(ev: Evaluation): string | null {
-  return ev.start_date ?? ev.date ?? null
+  return ev.start_date  ?? null
 }
 
 function getWeight(ev: Evaluation): number {
-  const raw = ev.weight_percent ?? ev.weight ?? 0
+  const raw = ev.weight_percent ?? 0
   const weight = Number(raw)
 
   if (!Number.isFinite(weight)) return 0

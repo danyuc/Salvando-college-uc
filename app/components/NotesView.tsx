@@ -330,7 +330,7 @@ export default function NotesView() {
                     <div key={ev.id} style={styles.evaluationRow}>
                       <div>
                         <strong>{ev.title ?? ev.type ?? 'Evaluación'}</strong>
-                        <div style={styles.mutedSmall}>{ev.type ?? 'nota'} · {Number(ev.weight_percent ?? ev.weight ?? 0)}% · {ev.start_date ?? ev.date ?? 'sin fecha'}</div>
+                        <div style={styles.mutedSmall}>{ev.type ?? 'nota'} · {Number(ev.weight_percent ?? 0)}% · {ev.start_date ?? 'sin fecha'}</div>
                       </div>
                       <div style={styles.actions}>
                         <input

@@ -18,11 +18,11 @@ import { safeDate } from '@/lib/utils/date'
 type ViewMode = 'list' | 'summary'
 
 function getEvaluationDate(evaluation: any) {
-  return evaluation.start_date ?? evaluation.end_date ?? evaluation.date ?? null
+  return evaluation.start_date ?? evaluation.end_date  ?? null
 }
 
 function getEvaluationEndDate(evaluation: any) {
-  return evaluation.end_date ?? evaluation.start_date ?? evaluation.date ?? null
+  return evaluation.end_date ?? evaluation.start_date ?? null
 }
 
 function getEvaluationTitle(evaluation: any) {

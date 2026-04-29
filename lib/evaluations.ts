@@ -1,190 +1,93 @@
-import type { Evaluation } from './types'
-import { supabase } from './supabase'
+import { supabase } from '@/lib/supabase'
 
-export type EvaluationDifficulty = 'baja' | 'media' | 'alta'
-
-export type EvaluationInput = {
+export type Evaluation = {
+  id: string
   user_id: string
+
   subject: string
-  type: string
-  number?: number | null
-  topic?: string | null
+  type: 'control' | 'prueba' | 'examen' | 'tarea' | 'otro'
+
   title?: string | null
+  topic?: string | null
+
+  number?: number | null
+  difficulty?: 'facil' | 'media' | 'dificil'
+  notes?: string | null
+
+  grade?: number | null
+  weight_percent: number
+
   start_date?: string | null
   end_date?: string | null
-  date?: string | null
-  difficulty?: EvaluationDifficulty
-  notes?: string | null
-  weight_percent?: number | null
-  grade?: number | null
+
+  estimated?: boolean
+  trend_weight?: number
 }
 
-function normalizeEvaluation(item: any): Evaluation {
-  const startDate = item.start_date ?? item.date ?? null
-  const endDate = item.end_date ?? startDate
+// =========================
+// CREATE
+// =========================
+export async function createEvaluation(input: Evaluation) {
+  const { data, error } = await supabase
+    .from('evaluations')
+    .insert(input)
+    .select('*')
+    .single()
 
-  return {
-    ...item,
-    start_date: startDate,
-    end_date: endDate,
-    weight_percent:
-      item.weight_percent === null || item.weight_percent === undefined
-        ? null
-        : Number(item.weight_percent),
-    grade:
-      item.grade === null || item.grade === undefined
-        ? null
-        : Number(item.grade),
-  } as Evaluation
+  if (error) throw error
+  return data
 }
 
-function cleanPayload(input: EvaluationInput) {
-  const startDate = input.start_date ?? input.date ?? null
-  const endDate = input.end_date ?? startDate
+// =========================
+// BULK
+// =========================
+export async function bulkCreateEvaluations(items: Evaluation[]) {
+  const { data, error } = await supabase
+    .from('evaluations')
+    .insert(items)
 
-  return {
-    user_id: input.user_id,
-    subject: input.subject.trim(),
-    type: input.type.trim(),
-    number: input.number ?? null,
-    topic: input.topic?.trim() || null,
-    title: input.title?.trim() || null,
-    start_date: startDate,
-    end_date: endDate,
-    difficulty: input.difficulty ?? 'media',
-    notes: input.notes?.trim() || null,
-    weight_percent:
-      input.weight_percent === null || input.weight_percent === undefined
-        ? null
-        : Number(input.weight_percent),
-    grade:
-      input.grade === null || input.grade === undefined
-        ? null
-        : Number(input.grade),
-  }
+  if (error) throw error
+  return data
 }
 
-export async function getUserEvaluations(userId: string): Promise<Evaluation[]> {
+// =========================
+// GET
+// =========================
+export async function getUserEvaluations(userId: string) {
   const { data, error } = await supabase
     .from('evaluations')
     .select('*')
-    .or(`user_id.eq.${userId},user_id.is.null`)
-    .order('created_at', { ascending: true })
+    .eq('user_id', userId)
+    .order('start_date', { ascending: true })
 
-  if (error) {
-    console.error('EVALUATIONS SELECT ERROR:', error)
-    throw new Error(error.message || 'No se pudieron cargar las evaluaciones')
-  }
-
-  return (data ?? [])
-    .map(normalizeEvaluation)
-    .sort((a: any, b: any) => {
-      const da = a.start_date
-        ? new Date(`${a.start_date}T00:00:00`).getTime()
-        : Infinity
-
-      const db = b.start_date
-        ? new Date(`${b.start_date}T00:00:00`).getTime()
-        : Infinity
-
-      return da - db
-    })
+  if (error) throw error
+  return data || []
 }
 
-export async function createEvaluation(
-  input: EvaluationInput
-): Promise<Evaluation> {
-  const payload = cleanPayload(input)
-
-  const res = await fetch('/api/evaluations/create', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  })
-
-  const json = await res.json().catch(() => null)
-
-  if (!res.ok || !json?.success) {
-    throw new Error(json?.message || 'No se pudo crear la evaluación')
-  }
-
-  return normalizeEvaluation(json.data)
-}
-
-export async function bulkCreateEvaluations(
-  items: EvaluationInput[]
-): Promise<Evaluation[]> {
-  if (!items.length) return []
-
-  const payload = items.map(cleanPayload)
-
+// =========================
+// UPDATE
+// =========================
+export async function updateEvaluation(id: string, updates: Partial<Evaluation>) {
   const { data, error } = await supabase
     .from('evaluations')
-    .insert(payload)
-    .select()
-
-  if (error) {
-    console.error('EVALUATIONS BULK INSERT ERROR:', error)
-    throw new Error(error.message || 'No se pudieron importar las evaluaciones')
-  }
-
-  return (data ?? []).map(normalizeEvaluation)
-}
-
-export async function updateEvaluation(
-  id: string,
-  updates: Partial<EvaluationInput>
-): Promise<Evaluation> {
-  const payload: any = { ...updates }
-
-  if (updates.subject !== undefined) payload.subject = updates.subject.trim()
-  if (updates.type !== undefined) payload.type = updates.type.trim()
-  if (updates.topic !== undefined) payload.topic = updates.topic?.trim() || null
-  if (updates.title !== undefined) payload.title = updates.title?.trim() || null
-  if (updates.notes !== undefined) payload.notes = updates.notes?.trim() || null
-
-  if (updates.start_date !== undefined || updates.date !== undefined) {
-    const startDate = updates.start_date ?? updates.date ?? null
-    payload.start_date = startDate
-    payload.end_date = updates.end_date ?? startDate
-  }
-
-  if (updates.end_date !== undefined) payload.end_date = updates.end_date
-
-  if (updates.weight_percent !== undefined) {
-    payload.weight_percent =
-      updates.weight_percent === null ? null : Number(updates.weight_percent)
-  }
-
-  if (updates.grade !== undefined) {
-    payload.grade = updates.grade === null ? null : Number(updates.grade)
-  }
-
-  delete payload.date
-
-  const { error } = await supabase
-    .from('evaluations')
-    .update(payload)
+    .update(updates)
     .eq('id', id)
+    .select('*')
+    .single()
 
-  if (error) {
-    console.error('EVALUATION UPDATE ERROR:', error)
-    throw new Error(error.message || 'No se pudo actualizar la evaluación')
-  }
-
-  return { id, ...payload } as unknown as Evaluation
+  if (error) throw error
+  return data
 }
 
-export async function deleteEvaluation(id: string): Promise<void> {
+// =========================
+// DELETE
+// =========================
+export async function deleteEvaluation(id: string) {
   const { error } = await supabase
     .from('evaluations')
     .delete()
     .eq('id', id)
 
-  if (error) {
-    console.error('EVALUATION DELETE ERROR:', error)
-    throw new Error(error.message || 'No se pudo eliminar la evaluación')
-  }
+  if (error) throw error
+  return true
 }
-
-export type { Evaluation } from './types'
