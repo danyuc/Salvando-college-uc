@@ -128,6 +128,7 @@ export default function PracticeView() {
   const [authors, setAuthors] = useState<string[]>([])
   const [classSources, setClassSources] = useState<string[]>([])
   const [selectedLimit, setSelectedLimit] = useState(20)
+  const [questionFormat, setQuestionFormat] = useState<'alternativas' | 'desarrollo' | 'mixto'>('mixto')
   const [mode, setMode] = useState<PracticeMode>(urlMode)
 
   const [questions, setQuestions] = useState<Question[]>([])
@@ -194,7 +195,9 @@ export default function PracticeView() {
   function resolveSessionMinutes() {
     if (mode === 'simulacion') {
       if (examDurationOption !== 'auto') return Number(examDurationOption)
-      return selectedLimit <= 10 ? 25 : selectedLimit <= 20 ? 45 : 60
+      if (selectedLimit <= 10) return 25
+      if (selectedLimit <= 20) return 45
+      return 60
     }
 
     if (mode === 'rapido') return 10
@@ -414,6 +417,7 @@ export default function PracticeView() {
 
       if (error) throw error
 
+      // QUESTION_FORMAT_FILTER_PATCH
       let clean = ((data || []) as Question[]).filter(q => {
         if (selectedAuthor) {
           const authorValue = String(
@@ -430,6 +434,9 @@ export default function PracticeView() {
         }
 
         if (!q.pregunta) return false
+
+        if (questionFormat === 'alternativas' && q.tipo !== 'seleccion_multiple') return false
+        if (questionFormat === 'desarrollo' && q.tipo !== 'desarrollo') return false
         if (q.tipo === 'seleccion_multiple') {
           return Array.isArray(q.opciones) && q.opciones.length >= 2
         }
