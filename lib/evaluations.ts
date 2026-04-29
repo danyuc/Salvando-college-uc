@@ -57,11 +57,18 @@ export async function getUserEvaluations(userId: string) {
   const { data, error } = await supabase
     .from('evaluations')
     .select('*')
-    .eq('user_id', userId)
-    .order('start_date', { ascending: true })
+    .or(`user_id.eq.${userId},user_id.is.null`)
+    .order('start_date', { ascending: true, nullsFirst: false })
 
   if (error) throw error
-  return data || []
+
+  return (data || []).map((ev: any) => ({
+    ...ev,
+    weight_percent: Number(ev.weight_percent ?? 0),
+    grade: ev.grade === null || ev.grade === undefined ? null : Number(ev.grade),
+    start_date: ev.start_date ?? null,
+    end_date: ev.end_date ?? ev.start_date ?? null,
+  }))
 }
 
 // =========================

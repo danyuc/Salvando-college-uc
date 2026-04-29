@@ -166,6 +166,7 @@ export default function PracticeView() {
   const [sessionLoading, setSessionLoading] = useState(false)
   const [diagnosticRequired, setDiagnosticRequired] = useState(false)
   const [finished, setFinished] = useState(false)
+  const [focusMode, setFocusMode] = useState(false)
 
   const currentQuestion = questions[currentIndex]
 
@@ -514,6 +515,7 @@ export default function PracticeView() {
 })
 
 setQuestions(prioritized.slice(0, limit))
+      setFocusMode(true)
     } catch (error) {
       console.error('LOAD QUESTIONS ERROR:', error)
       alert('No se pudieron cargar las preguntas.')
@@ -638,7 +640,15 @@ setQuestions(prioritized.slice(0, limit))
   return (
       <main style={container}>
         <section style={card}>Cargando práctica inteligente...</section>
-      </main>
+      {questions.length > 0 && (
+        <div style={dockPractice}>
+          <button style={dockButton} onClick={() => setFocusMode(false)}>⚙️ Filtros</button>
+          <button style={dockButton} onClick={() => loadQuestions()}>🔁 Nueva sesión</button>
+          <button style={dockButton} onClick={() => setFinished(true)}>🏁 Terminar</button>
+        </div>
+      )}
+
+    </main>
     )
   }
 
@@ -892,6 +902,14 @@ setQuestions(prioritized.slice(0, limit))
           </button>
         </div>
       </section>
+
+      {questions.length > 0 && (
+        <div style={dockPractice}>
+          <button style={dockButton} onClick={() => setFocusMode(false)}>⚙️ Filtros</button>
+          <button style={dockButton} onClick={() => loadQuestions()}>🔁 Nueva sesión</button>
+          <button style={dockButton} onClick={() => setFinished(true)}>🏁 Terminar</button>
+        </div>
+      )}
 
       <section style={statsGrid}>
         <Stat label="Preguntas" value={questions.length} />
@@ -1407,4 +1425,31 @@ const examMetric: React.CSSProperties = {
   borderRadius: '14px',
   background: 'rgba(255,255,255,0.06)',
   border: '1px solid rgba(255,255,255,0.08)',
+}
+
+
+const dockPractice: React.CSSProperties = {
+  position: 'fixed',
+  left: '50%',
+  bottom: 22,
+  transform: 'translateX(-50%)',
+  zIndex: 50,
+  display: 'flex',
+  gap: 10,
+  padding: 10,
+  borderRadius: 999,
+  background: 'rgba(15,23,42,0.78)',
+  border: '1px solid rgba(255,255,255,0.16)',
+  backdropFilter: 'blur(18px)',
+  boxShadow: '0 22px 60px rgba(0,0,0,0.35)',
+}
+
+const dockButton: React.CSSProperties = {
+  border: 'none',
+  borderRadius: 999,
+  padding: '10px 14px',
+  background: 'rgba(255,255,255,0.10)',
+  color: 'white',
+  cursor: 'pointer',
+  fontWeight: 900,
 }
