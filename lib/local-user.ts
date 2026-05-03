@@ -27,13 +27,16 @@ export function saveLocalUser(email: string) {
   }
 
   localStorage.setItem(KEY, JSON.stringify(user))
+  localStorage.setItem("uc_user", JSON.stringify(user))
   return user
 }
 
 export function getLocalUser(): LocalUser | null {
   if (typeof window === "undefined") return null
-  const raw = localStorage.getItem(KEY)
+
+  const raw = localStorage.getItem(KEY) || localStorage.getItem("uc_user")
   if (!raw) return null
+
   try {
     return JSON.parse(raw)
   } catch {
@@ -43,4 +46,5 @@ export function getLocalUser(): LocalUser | null {
 
 export function clearLocalUser() {
   localStorage.removeItem(KEY)
+  localStorage.removeItem("uc_user")
 }

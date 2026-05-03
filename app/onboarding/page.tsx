@@ -1,218 +1,92 @@
 'use client'
 
-import { useEffect, useMemo, useState, type CSSProperties } from 'react'
-import { useRouter } from 'next/navigation'
-import { getCurrentUser } from '../../lib/auth'
-import { getMyProfile, upsertMyProfile } from '../../lib/profile'
-import { sendVerificationCode, verifyCode } from '../../lib/email'
+import { useEffect, useMemo, useState } from "react"
+import { useRouter } from "next/navigation"
+import { supabase } from "@/lib/supabase"
+import { getUsernameFromEmail, isValidUcEmail, saveLocalUser } from "@/lib/local-user"
 
-const careers = ['College UC', 'Ingeniería', 'Historia', 'Sociología', 'Psicología', 'Otra']
-const CODE_LENGTH = 6
-const RESEND_SECONDS = 60
-
-function isValidUCEmail(email: string) {
-  return /^[^\s@]+@(uc\.cl|estudiante\.uc\.cl|estudiantes\.uc\.cl)$/.test(
-    email.trim().toLowerCase()
-  )
-}
-
-function extractUsername(email: string) {
-  return email.split('@')[0] || ''
-}
+const careers = [
+  "College UC",
+  "Ingeniería",
+  "Historia",
+  "Sociología",
+  "Psicología",
+  "Otra",
+]
 
 export default function OnboardingPage() {
   const router = useRouter()
 
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [sending, setSending] = useState(false)
-  const [verifying, setVerifying] = useState(false)
+  const [error, setError] = useState("")
 
-  const [error, setError] = useState('')
-  const [successMessage, setSuccessMessage] = useState('')
+  const [googleEmail, setGoogleEmail] = useState("")
+  const [institutionalEmail, setInstitutionalEmail] = useState("")
+  const [career, setCareer] = useState("College UC")
+  const [customCareer, setCustomCareer] = useState("")
+  const [year, setYear] = useState("1")
 
-  const [userId, setUserId] = useState('')
-  const [googleEmail, setGoogleEmail] = useState('')
-
-  const [institutionalEmail, setInstitutionalEmail] = useState('')
-  const [career, setCareer] = useState('College UC')
-  const [customCareer, setCustomCareer] = useState('')
-  const [year, setYear] = useState('1')
-
-  const [codeSent, setCodeSent] = useState(false)
-  const [code, setCode] = useState('')
-  const [isVerified, setIsVerified] = useState(false)
-  const [resendCountdown, setResendCountdown] = useState(0)
-
-  const cleanInstitutionalEmail = institutionalEmail.trim().toLowerCase()
-  const username = useMemo(() => extractUsername(cleanInstitutionalEmail), [cleanInstitutionalEmail])
-  const isValidEmail = isValidUCEmail(cleanInstitutionalEmail)
-  const finalCareer = career === 'Otra' ? customCareer.trim() : career
-
-  const canSave =
-    Boolean(userId) &&
-    Boolean(username) &&
-    Boolean(finalCareer) &&
-    Boolean(year) &&
-    isValidEmail &&
-    isVerified &&
-    !saving
+  const cleanEmail = institutionalEmail.trim().toLowerCase()
+  const username = useMemo(() => getUsernameFromEmail(cleanEmail), [cleanEmail])
+  const finalCareer = career === "Otra" ? customCareer.trim() : career
+  const isValid = isValidUcEmail(cleanEmail)
 
   useEffect(() => {
     async function load() {
-      try {
-        const user = await getCurrentUser()
+      const { data } = await supabase.auth.getUser()
+      const email = data.user?.email || ""
+      setGoogleEmail(email)
 
-        if (!user) {
-          router.replace('/login')
-          return
-        }
-
-        setUserId(user.id)
-        setGoogleEmail(user.email || '')
-
-        const profile = await getMyProfile(user.id)
-
-        if (profile?.is_onboarded) {
-          router.replace('/')
-          return
-        }
-
-        if (profile) {
-          setInstitutionalEmail(profile.institutional_email ?? '')
-          setCareer(
-            profile.career && careers.includes(profile.career)
-              ? profile.career
-              : profile.career
-              ? 'Otra'
-              : 'College UC'
-          )
-          setCustomCareer(
-            profile.career && !careers.includes(profile.career) ? profile.career : ''
-          )
-          setYear(String(profile.year ?? 1))
-          setIsVerified(Boolean(profile.institutional_email_verified))
-          setCodeSent(Boolean(profile.institutional_email))
-        }
-      } catch (err) {
-        console.error(err)
-        setError('No se pudo cargar tu información. Intenta iniciar sesión nuevamente.')
-      } finally {
-        setLoading(false)
+      if (email && isValidUcEmail(email)) {
+        setInstitutionalEmail(email)
       }
+
+      setLoading(false)
     }
 
     load()
-  }, [router])
+  }, [])
 
-  useEffect(() => {
-    if (resendCountdown <= 0) return
+  async function save() {
+    setError("")
 
-    const timer = window.setInterval(() => {
-      setResendCountdown((prev) => (prev <= 1 ? 0 : prev - 1))
-    }, 1000)
-
-    return () => window.clearInterval(timer)
-  }, [resendCountdown])
-
-  function resetVerificationStateOnEmailChange(nextEmail: string) {
-    setInstitutionalEmail(nextEmail)
-    setIsVerified(false)
-    setCodeSent(false)
-    setCode('')
-    setError('')
-    setSuccessMessage('')
-    setResendCountdown(0)
-  }
-
-  async function handleSendCode() {
-    try {
-      setError('')
-      setSuccessMessage('')
-
-      if (!isValidEmail) {
-        setError('Ingresa un correo UC válido: @uc.cl, @estudiante.uc.cl o @estudiantes.uc.cl')
-        return
-      }
-
-      if (!userId) {
-        setError('No se encontró una sesión activa. Vuelve a iniciar sesión.')
-        router.replace('/login')
-        return
-      }
-
-      setSending(true)
-
-      await sendVerificationCode(userId, cleanInstitutionalEmail)
-
-      setCodeSent(true)
-      setIsVerified(false)
-      setCode('')
-      setResendCountdown(RESEND_SECONDS)
-      setSuccessMessage('Código enviado. Revisa tu correo institucional UC.')
-    } catch (err) {
-      console.error(err)
-      setError(err instanceof Error ? err.message : 'No se pudo enviar el código')
-    } finally {
-      setSending(false)
+    if (!isValid) {
+      setError("Debes ingresar un correo UC válido.")
+      return
     }
-  }
 
-  async function handleVerifyCode() {
-    try {
-      setError('')
-      setSuccessMessage('')
-
-      if (code.length !== CODE_LENGTH) {
-        setError(`El código debe tener ${CODE_LENGTH} dígitos`)
-        return
-      }
-
-      setVerifying(true)
-
-      const result = await verifyCode(userId, cleanInstitutionalEmail, code.trim())
-
-      if (result?.success) {
-        setIsVerified(true)
-        setSuccessMessage('Correo institucional verificado correctamente.')
-      } else {
-        setIsVerified(false)
-        setError(result?.message || 'Código inválido o vencido.')
-      }
-    } catch (err) {
-      console.error(err)
-      setError('Error verificando el código.')
-    } finally {
-      setVerifying(false)
+    if (!finalCareer) {
+      setError("Debes seleccionar o escribir tu carrera.")
+      return
     }
-  }
 
-  async function handleSave() {
+    setSaving(true)
+
     try {
-      setError('')
-      setSuccessMessage('')
+      saveLocalUser(cleanEmail)
 
-      if (!canSave) {
-        setError('Completa todos los datos y verifica tu correo institucional.')
-        return
+      const { data } = await supabase.auth.getUser()
+      const user = data.user
+
+      if (user) {
+        await supabase.from("profiles").upsert({
+          id: user.id,
+          username,
+          career: finalCareer,
+          year: Number(year),
+          institutional_email: cleanEmail,
+          institutional_email_verified: true,
+          is_onboarded: true,
+          updated_at: new Date().toISOString(),
+        })
       }
 
-      setSaving(true)
-
-      await upsertMyProfile({
-        id: userId,
-        username,
-        career: finalCareer,
-        year: Number(year),
-        institutional_email: cleanInstitutionalEmail,
-        institutional_email_verified: true,
-        is_onboarded: true,
-      })
-
-      router.replace('/')
+      router.push("/")
     } catch (err) {
       console.error(err)
-      setError('No se pudo guardar tu perfil.')
+      saveLocalUser(cleanEmail)
+      router.push("/")
     } finally {
       setSaving(false)
     }
@@ -220,53 +94,43 @@ export default function OnboardingPage() {
 
   if (loading) {
     return (
-      <main style={mainStyle}>
-        <div style={cardStyle}>Cargando perfil...</div>
+      <main className="page">
+        <section className="card">Cargando...</section>
       </main>
     )
   }
 
   return (
-    <main style={mainStyle}>
-      <div style={cardStyle}>
-        <div style={pillStyle}>Salvando College UC</div>
-
-        <h1 style={titleStyle}>Completa tu perfil UC</h1>
-        <p style={subtitleStyle}>
-          Verifica tu correo institucional para activar el banco de preguntas, modo PSU,
-          ranking y recomendaciones personalizadas.
+    <main className="page">
+      <section className="card">
+        <p className="eyebrow">Bienvenido</p>
+        <h1>Completemos tu perfil</h1>
+        <p className="sub">
+          Tu sesión puede venir de Google, pero tu usuario académico se arma con tu correo UC.
         </p>
 
-        <div style={sessionBoxStyle}>
-          <strong>Sesión Google:</strong>
-          <span>{googleEmail || 'Sin correo detectado'}</span>
+        <div className="googleBox">
+          <small>Sesión Google</small>
+          <strong>{googleEmail || "Sin correo Google detectado"}</strong>
         </div>
 
-        {error && <div style={errorStyle}>{error}</div>}
-        {successMessage && <div style={successStyle}>{successMessage}</div>}
-
-        <div style={gridStyle}>
-          <label style={labelStyle}>Carrera</label>
-          <select value={career} onChange={(e) => setCareer(e.target.value)} style={selectStyle}>
-            {careers.map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
+        <label>
+          Carrera
+          <select value={career} onChange={(e) => setCareer(e.target.value)}>
+            {careers.map(c => <option key={c}>{c}</option>)}
           </select>
+        </label>
 
-          {career === 'Otra' && (
-            <>
-              <label style={labelStyle}>Escribe tu carrera</label>
-              <input
-                value={customCareer}
-                onChange={(e) => setCustomCareer(e.target.value)}
-                style={inputStyle}
-                placeholder="Ej: Derecho, Arquitectura..."
-              />
-            </>
-          )}
+        {career === "Otra" && (
+          <label>
+            Escribe tu carrera
+            <input value={customCareer} onChange={(e) => setCustomCareer(e.target.value)} />
+          </label>
+        )}
 
-          <label style={labelStyle}>Año académico</label>
-          <select value={year} onChange={(e) => setYear(e.target.value)} style={selectStyle}>
+        <label>
+          Año
+          <select value={year} onChange={(e) => setYear(e.target.value)}>
             <option value="1">1° año</option>
             <option value="2">2° año</option>
             <option value="3">3° año</option>
@@ -274,220 +138,131 @@ export default function OnboardingPage() {
             <option value="5">5° año</option>
             <option value="6">6° año</option>
           </select>
+        </label>
 
-          <label style={labelStyle}>Correo institucional UC</label>
+        <label>
+          Correo institucional UC
           <input
             value={institutionalEmail}
-            onChange={(e) => resetVerificationStateOnEmailChange(e.target.value)}
-            placeholder="tu.nombre@estudiantes.uc.cl"
-            style={{
-              ...inputStyle,
-              borderColor: cleanInstitutionalEmail
-                ? isValidEmail
-                  ? 'rgba(34,197,94,.8)'
-                  : 'rgba(248,113,113,.8)'
-                : 'rgba(255,255,255,.16)',
-            }}
+            onChange={(e) => setInstitutionalEmail(e.target.value)}
+            placeholder="usuario@estudiante.uc.cl"
+            autoCapitalize="none"
           />
+        </label>
 
-          {cleanInstitutionalEmail && (
-            <p style={{ ...hintStyle, color: isValidEmail ? '#86efac' : '#fca5a5' }}>
-              {isValidEmail ? 'Correo UC válido' : 'Correo UC no válido'}
-            </p>
-          )}
+        {cleanEmail && (
+          <p className={isValid ? "ok" : "bad"}>
+            {isValid ? `Usuario UC: ${username}` : "Correo UC no válido"}
+          </p>
+        )}
 
-          <button
-            onClick={handleSendCode}
-            disabled={sending || !isValidEmail || resendCountdown > 0}
-            style={secondaryButtonStyle}
-          >
-            {sending
-              ? 'Enviando...'
-              : resendCountdown > 0
-              ? `Reenviar en ${resendCountdown}s`
-              : codeSent
-              ? 'Reenviar código'
-              : 'Enviar código'}
-          </button>
+        {error && <p className="bad">{error}</p>}
 
-          {codeSent && (
-            <>
-              <label style={labelStyle}>Código de verificación</label>
-              <input
-                value={code}
-                onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, CODE_LENGTH))}
-                inputMode="numeric"
-                maxLength={CODE_LENGTH}
-                placeholder="123456"
-                style={inputStyle}
-              />
+        <button onClick={save} disabled={saving}>
+          {saving ? "Guardando..." : "Guardar y continuar"}
+        </button>
+      </section>
 
-              <button
-                onClick={handleVerifyCode}
-                disabled={verifying || code.length !== CODE_LENGTH}
-                style={secondaryButtonStyle}
-              >
-                {verifying ? 'Verificando...' : 'Validar código'}
-              </button>
-            </>
-          )}
+      <style jsx>{`
+        .page {
+          min-height: 100vh;
+          display: grid;
+          place-items: center;
+          padding: 24px;
+          color: white;
+          background:
+            radial-gradient(circle at 18% 0%, rgba(37,99,235,.34), transparent 34%),
+            linear-gradient(180deg,#020617,#0f172a);
+        }
 
-          <div style={statusBoxStyle}>
-            {isVerified ? '✅ Correo institucional verificado' : '⚠️ Verificación pendiente'}
-          </div>
+        .card {
+          width: min(720px,100%);
+          padding: 32px;
+          border-radius: 32px;
+          background: rgba(255,255,255,.08);
+          border: 1px solid rgba(255,255,255,.14);
+          box-shadow: 0 30px 90px rgba(0,0,0,.34);
+          display: grid;
+          gap: 16px;
+        }
 
-          <button
-            onClick={handleSave}
-            disabled={!canSave}
-            style={{
-              ...primaryButtonStyle,
-              opacity: canSave ? 1 : 0.55,
-              cursor: canSave ? 'pointer' : 'not-allowed',
-            }}
-          >
-            {saving ? 'Guardando...' : 'Guardar y entrar'}
-          </button>
-        </div>
-      </div>
+        .eyebrow {
+          color: #93c5fd;
+          font-weight: 950;
+          text-transform: uppercase;
+          margin: 0;
+        }
+
+        h1 {
+          font-size: clamp(34px,5vw,52px);
+          margin: 0;
+          letter-spacing: -.05em;
+        }
+
+        .sub {
+          color: #cbd5e1;
+        }
+
+        .googleBox {
+          padding: 14px;
+          border-radius: 18px;
+          background: rgba(255,255,255,.06);
+          border: 1px solid rgba(255,255,255,.12);
+        }
+
+        .googleBox small {
+          display: block;
+          color: #94a3b8;
+          margin-bottom: 4px;
+        }
+
+        label {
+          display: grid;
+          gap: 8px;
+          color: #cbd5e1;
+          font-weight: 900;
+        }
+
+        input,
+        select {
+          min-height: 54px;
+          border-radius: 16px;
+          border: 1px solid rgba(255,255,255,.14);
+          background: rgba(15,23,42,.82);
+          color: white;
+          padding: 0 14px;
+          font-weight: 900;
+        }
+
+        option {
+          color: #0f172a;
+        }
+
+        button {
+          min-height: 56px;
+          border-radius: 18px;
+          border: none;
+          background: linear-gradient(135deg,#2563eb,#7c3aed);
+          color: white;
+          font-weight: 950;
+          font-size: 16px;
+          cursor: pointer;
+        }
+
+        button:disabled {
+          opacity: .6;
+        }
+
+        .ok {
+          color: #bbf7d0;
+          font-weight: 900;
+        }
+
+        .bad {
+          color: #fecaca;
+          font-weight: 900;
+        }
+      `}</style>
     </main>
   )
-}
-
-const mainStyle: CSSProperties = {
-  minHeight: '100vh',
-  background:
-    'radial-gradient(circle at top left, rgba(37,99,235,.28), transparent 35%), linear-gradient(180deg,#07111f,#111827)',
-  color: 'white',
-  display: 'grid',
-  placeItems: 'center',
-  padding: 20,
-  fontFamily: 'Arial, sans-serif',
-}
-
-const cardStyle: CSSProperties = {
-  width: '100%',
-  maxWidth: 720,
-  padding: 28,
-  borderRadius: 28,
-  background: 'rgba(255,255,255,.075)',
-  border: '1px solid rgba(255,255,255,.14)',
-  boxShadow: '0 24px 70px rgba(0,0,0,.35)',
-  backdropFilter: 'blur(18px)',
-}
-
-const pillStyle: CSSProperties = {
-  display: 'inline-block',
-  padding: '8px 14px',
-  borderRadius: 999,
-  background: 'rgba(59,130,246,.22)',
-  color: '#bfdbfe',
-  fontWeight: 800,
-  marginBottom: 14,
-}
-
-const titleStyle: CSSProperties = {
-  margin: 0,
-  fontSize: '2rem',
-  lineHeight: 1.15,
-}
-
-const subtitleStyle: CSSProperties = {
-  color: '#cbd5e1',
-  lineHeight: 1.6,
-  marginBottom: 18,
-}
-
-const sessionBoxStyle: CSSProperties = {
-  display: 'grid',
-  gap: 4,
-  padding: 14,
-  borderRadius: 16,
-  background: 'rgba(255,255,255,.06)',
-  border: '1px solid rgba(255,255,255,.1)',
-  marginBottom: 16,
-  wordBreak: 'break-word',
-}
-
-const gridStyle: CSSProperties = {
-  display: 'grid',
-  gap: 12,
-}
-
-const labelStyle: CSSProperties = {
-  color: '#e2e8f0',
-  fontWeight: 800,
-  marginTop: 4,
-}
-
-const inputStyle: CSSProperties = {
-  width: '100%',
-  padding: '13px 14px',
-  borderRadius: 14,
-  border: '1px solid rgba(255,255,255,.16)',
-  background: 'rgba(255,255,255,.08)',
-  color: 'white',
-  outline: 'none',
-  fontSize: 16,
-}
-
-const selectStyle: CSSProperties = {
-  width: '100%',
-  padding: '13px 14px',
-  borderRadius: 14,
-  border: '1px solid rgba(255,255,255,.16)',
-  background: 'white',
-  color: '#0f172a',
-  outline: 'none',
-  fontSize: 16,
-}
-
-const hintStyle: CSSProperties = {
-  margin: 0,
-  fontSize: 14,
-}
-
-const primaryButtonStyle: CSSProperties = {
-  width: '100%',
-  padding: 15,
-  borderRadius: 16,
-  border: 'none',
-  background: 'linear-gradient(135deg,#2563eb,#3b82f6)',
-  color: 'white',
-  fontWeight: 900,
-  fontSize: 16,
-}
-
-const secondaryButtonStyle: CSSProperties = {
-  width: '100%',
-  padding: 13,
-  borderRadius: 14,
-  border: '1px solid rgba(255,255,255,.16)',
-  background: 'rgba(255,255,255,.1)',
-  color: 'white',
-  fontWeight: 800,
-}
-
-const statusBoxStyle: CSSProperties = {
-  padding: 14,
-  borderRadius: 16,
-  background: 'rgba(255,255,255,.06)',
-  border: '1px solid rgba(255,255,255,.12)',
-}
-
-const errorStyle: CSSProperties = {
-  padding: 13,
-  borderRadius: 14,
-  background: 'rgba(239,68,68,.16)',
-  border: '1px solid rgba(239,68,68,.35)',
-  color: '#fecaca',
-  marginBottom: 12,
-}
-
-const successStyle: CSSProperties = {
-  padding: 13,
-  borderRadius: 14,
-  background: 'rgba(34,197,94,.16)',
-  border: '1px solid rgba(34,197,94,.35)',
-  color: '#bbf7d0',
-  marginBottom: 12,
 }
