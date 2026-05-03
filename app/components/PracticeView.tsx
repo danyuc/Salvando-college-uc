@@ -607,7 +607,7 @@ export default function PracticeView() {
         setGuidedMessage(
           weak.length > 0
             ? `Estoy reforzando tu debilidad principal: ${weak[0]?.tema || weakTopics[0]}.`
-            : 'No encontré preguntas exactas de tu debilidad, así que usaré práctica general adaptativa.'
+            : 'Selecciona evaluación, módulo y subtema. El sistema generará práctica MAT1000 según ese foco.'
         )
       } else {
         prioritized = shuffle(clean)
@@ -897,7 +897,7 @@ setQuestions(prioritized.slice(0, limit))
           </label>
 
           <label style={field}>
-            <span>Tema</span>
+            <span>Evaluación</span>
             <select disabled={diagnosticRequired}
               style={select}
               value={selectedTopic}
@@ -913,7 +913,7 @@ setQuestions(prioritized.slice(0, limit))
           </label>
 
           <label style={field}>
-            <span>Autor</span>
+            <span>Módulo</span>
             <select disabled={diagnosticRequired}
               style={select}
               value={selectedAuthor}
@@ -929,7 +929,7 @@ setQuestions(prioritized.slice(0, limit))
           </label>
 
           <label style={field}>
-            <span>Clase / fuente</span>
+            <span>Subtema</span>
             <select disabled={diagnosticRequired}
               style={select}
               value={selectedClassSource}
@@ -1293,7 +1293,7 @@ const panel: CSSProperties = {
 
 const filters: CSSProperties = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
   gap: 12,
 }
 
@@ -1337,7 +1337,7 @@ const secondaryButton: CSSProperties = {
 
 const statsGrid: CSSProperties = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
   gap: 12,
 }
 
@@ -1544,7 +1544,7 @@ const examPanel: React.CSSProperties = {
 
 const examGrid: React.CSSProperties = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
   gap: '10px',
   marginTop: '14px',
 }

@@ -198,3 +198,63 @@ select:disabled {
   color: white;
   text-shadow: 0 2px 8px rgba(0,0,0,.85);
 }
+
+
+/* ===== FIX PRACTICE FILTER LAYOUT ===== */
+.practice-filter-grid,
+.filters-grid,
+.practice-controls,
+.practice-form,
+.form-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)) !important;
+  gap: 14px !important;
+  align-items: end !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+select {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  height: 58px !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+select option {
+  font-size: 15px !important;
+}
+
+@media (max-width: 900px) {
+  .practice-filter-grid,
+  .filters-grid,
+  .practice-controls,
+  .practice-form,
+  .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  select {
+    height: 54px !important;
+  }
+}
+
+/* Forzar que cualquier contenedor de filtros no se salga */
+label:has(select),
+div:has(> select) {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+/* Evitar overflow horizontal en práctica */
+main,
+section,
+div {
+  box-sizing: border-box;
+}
+
+body {
+  overflow-x: hidden;
+}
