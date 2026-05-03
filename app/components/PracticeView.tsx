@@ -1,7 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import Link from 'next/link'
+import { useMemo, useState } from 'react'
 import { generateMat1000ForceQuestions } from '@/lib/mat1000-force-questions'
 import {
   getMat1000ModulesForEvaluation,
@@ -11,262 +10,177 @@ import PrecalculoVisual from './PrecalculoVisual'
 import PrecalculoSteps from './PrecalculoSteps'
 
 type Mode = 'practica' | 'diagnostico' | 'simulacion'
-type Answer = {
-  subtema: string
-  correct: boolean
-  selected: string
-  correctAnswer: string
-}
-
 const evaluations = ['I1', 'I2', 'I3', 'EXAMEN']
 
-function normalizeEvaluation(value?: string | null) {
-  if (value === 'I1' || value === 'I2' || value === 'I3' || value === 'EXAMEN') return value
-  return 'I1'
-}
-
-function normalizeMode(value?: string | null): Mode {
-  if (value === 'diagnostico') return 'diagnostico'
-  if (value === 'simulacion' || value === 'examen' || value === 'interrogacion') return 'simulacion'
-  return 'practica'
-}
-
-function buildDiagnosis(answers: Answer[]) {
-  const stats = new Map<string, { total: number; correct: number }>()
-
-  for (const a of answers) {
-    const prev = stats.get(a.subtema) || { total: 0, correct: 0 }
-    prev.total += 1
-    prev.correct += a.correct ? 1 : 0
-    stats.set(a.subtema, prev)
-  }
-
-  const weak = [...stats.entries()]
-    .filter(([, s]) => s.correct / s.total < 0.65)
-    .map(([subtema]) => subtema)
-
-  const strong = [...stats.entries()]
-    .filter(([, s]) => s.correct / s.total >= 0.8)
-    .map(([subtema]) => subtema)
-
-  const accuracy = answers.length
-    ? Math.round((answers.filter(a => a.correct).length / answers.length) * 100)
-    : 0
-
-  return { accuracy, weak, strong }
-}
-
 export default function PracticeView() {
-  const [subject, setSubject] = useState('MAT1000')
   const [evaluation, setEvaluation] = useState('I1')
   const [moduleLabel, setModuleLabel] = useState('Todos')
   const [subtema, setSubtema] = useState('Todos')
   const [mode, setMode] = useState<Mode>('practica')
+  const [amount, setAmount] = useState(20)
 
   const [questions, setQuestions] = useState<any[]>([])
   const [index, setIndex] = useState(0)
   const [selected, setSelected] = useState('')
-  const [answers, setAnswers] = useState<Answer[]>([])
   const [showSteps, setShowSteps] = useState(false)
+  const [answers, setAnswers] = useState<any[]>([])
   const [finished, setFinished] = useState(false)
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    setSubject(params.get('subject') || 'MAT1000')
-    setEvaluation(normalizeEvaluation(params.get('evaluation')))
-    setMode(normalizeMode(params.get('mode')))
-  }, [])
-
-  const modules = useMemo(() => {
-    if (subject !== 'MAT1000') return ['Todos']
-    return getMat1000ModulesForEvaluation(evaluation)
-  }, [subject, evaluation])
-
-  const subtemas = useMemo(() => {
-    if (subject !== 'MAT1000') return ['Todos']
-    return getMat1000SubtemasForModule(moduleLabel, evaluation)
-  }, [subject, moduleLabel, evaluation])
-
+  const modules = useMemo(() => getMat1000ModulesForEvaluation(evaluation), [evaluation])
+  const subtemas = useMemo(() => getMat1000SubtemasForModule(moduleLabel, evaluation), [moduleLabel, evaluation])
   const current = questions[index]
-  const isExamMode = mode === 'simulacion'
-  const diagnosis = buildDiagnosis(answers)
 
-  function resetSession() {
+  const correctCount = answers.filter(a => a.correct).length
+  const accuracy = answers.length ? Math.round((correctCount / answers.length) * 100) : 0
+  const weak = [...new Set(answers.filter(a => !a.correct).map(a => a.subtema))]
+  const isExam = mode === 'simulacion'
+
+  function reset() {
     setQuestions([])
     setIndex(0)
     setSelected('')
-    setAnswers([])
     setShowSteps(false)
+    setAnswers([])
     setFinished(false)
   }
 
-  function changeEvaluation(value: string) {
-    setEvaluation(normalizeEvaluation(value))
-    setModuleLabel('Todos')
-    setSubtema('Todos')
-    resetSession()
-  }
-
-  function changeModule(value: string) {
-    setModuleLabel(value)
-    setSubtema('Todos')
-    resetSession()
-  }
-
-  function startPractice() {
+  function start() {
     const generated = generateMat1000ForceQuestions({
       evaluation,
       mode,
       moduleLabel,
       subtema,
-      cantidad: mode === 'diagnostico' ? 12 : mode === 'simulacion' ? 13 : 20,
+      cantidad: mode === 'simulacion' ? 13 : mode === 'diagnostico' ? 12 : amount,
     })
 
     setQuestions(generated)
     setIndex(0)
     setSelected('')
-    setAnswers([])
     setShowSteps(false)
+    setAnswers([])
     setFinished(false)
   }
 
   function answer(option: string) {
     if (!current || selected) return
-
     const correct = option === current.respuesta_correcta
     setSelected(option)
-
-    setAnswers(prev => [
-      ...prev,
-      {
-        subtema: current.subtema,
-        correct,
-        selected: option,
-        correctAnswer: current.respuesta_correcta,
-      },
-    ])
+    setAnswers(prev => [...prev, { subtema: current.subtema, correct }])
   }
 
-  function nextQuestion() {
+  function next() {
     if (index >= questions.length - 1) {
       setFinished(true)
       return
     }
-
-    setIndex(prev => prev + 1)
+    setIndex(i => i + 1)
     setSelected('')
     setShowSteps(false)
   }
 
   return (
     <main className="practice-page">
-      <section className="practice-shell">
-        <header className="hero">
+      <section className="shell">
+        <section className="hero-card">
           <div>
-            <p className="eyebrow">MAT1000 · Precálculo UC</p>
-            <h1>Práctica inteligente</h1>
-            <p className="subtitle">
-              Entrena con preguntas tipo prueba real, visualización matemática, paso a paso docente y diagnóstico por subtema.
-            </p>
+            <span className="badge">Motor UC</span>
+            <h1>📐 Práctica inteligente</h1>
+            <p>Diagnóstico obligatorio, dificultad adaptativa, fatiga cognitiva y foco en debilidades.</p>
           </div>
+          <div className="prediction">
+            <strong>{answers.length ? (1 + accuracy * 0.06).toFixed(1) : '4.0'}</strong>
+            <span>predicción sesión</span>
+          </div>
+        </section>
 
-          <div className="hero-actions">
-            <Link href="/calendario">Calendario</Link>
-            <Link href="/">Inicio</Link>
-          </div>
-        </header>
+        <section className="mode-card">
+          <h3>{mode === 'simulacion' ? '🏁 Modo Prueba UC real' : mode === 'diagnostico' ? '🧠 Diagnóstico activo' : '🧠 Modo guiado UC activo'}</h3>
+          <p>
+            {mode === 'simulacion'
+              ? 'Sin pistas ni feedback inmediato. Revisión al terminar.'
+              : 'Modo guiado listo: partiré reforzando tus temas débiles.'}
+          </p>
+          <span>Foco actual: {subtema === 'Todos' ? evaluation : subtema}</span>
+        </section>
 
         <section className="filters-card">
           <label>
             Asignatura
-            <select value={subject} onChange={(e) => setSubject(e.target.value)}>
-              <option value="MAT1000">MAT1000 · Precálculo</option>
+            <select value="MAT1000" disabled>
+              <option>📐 Matemática</option>
             </select>
           </label>
 
           <label>
             Evaluación
-            <select value={evaluation} onChange={(e) => changeEvaluation(e.target.value)}>
-              {evaluations.map(ev => <option key={ev} value={ev}>{ev}</option>)}
+            <select value={evaluation} onChange={(e) => { setEvaluation(e.target.value); setModuleLabel('Todos'); setSubtema('Todos'); reset() }}>
+              {evaluations.map(ev => <option key={ev}>{ev}</option>)}
             </select>
           </label>
 
           <label>
             Módulo
-            <select value={moduleLabel} onChange={(e) => changeModule(e.target.value)}>
-              {modules.map(m => <option key={m} value={m}>{m}</option>)}
+            <select value={moduleLabel} onChange={(e) => { setModuleLabel(e.target.value); setSubtema('Todos'); reset() }}>
+              {modules.map(m => <option key={m}>{m}</option>)}
             </select>
           </label>
 
           <label>
             Subtema
-            <select value={subtema} onChange={(e) => { setSubtema(e.target.value); resetSession() }}>
-              {subtemas.map(s => <option key={s} value={s}>{s}</option>)}
+            <select value={subtema} onChange={(e) => { setSubtema(e.target.value); reset() }}>
+              {subtemas.map(s => <option key={s}>{s}</option>)}
             </select>
           </label>
 
           <label>
             Modo
-            <select value={mode} onChange={(e) => { setMode(e.target.value as Mode); resetSession() }}>
+            <select value={mode} onChange={(e) => { setMode(e.target.value as Mode); reset() }}>
               <option value="practica">Práctica guiada</option>
               <option value="diagnostico">Diagnóstico</option>
               <option value="simulacion">Prueba UC real</option>
             </select>
           </label>
 
-          <button onClick={startPractice}>Comenzar práctica</button>
+          <label>
+            Cantidad
+            <select value={amount} onChange={(e) => setAmount(Number(e.target.value))}>
+              <option value={10}>10 preguntas</option>
+              <option value={20}>20 preguntas</option>
+              <option value={50}>50 preguntas</option>
+            </select>
+          </label>
+
+          <div className="actions">
+            <button onClick={start}>Comenzar sesión</button>
+            <button className="secondary" onClick={reset}>Reiniciar</button>
+          </div>
         </section>
 
-        {questions.length === 0 && (
-          <section className="intro-card">
-            <div>
-              <p className="eyebrow">Ruta activa</p>
-              <h2>{evaluation} · {moduleLabel} · {subtema}</h2>
-              <p>
-                En práctica guiada verás feedback inmediato. En Prueba UC real no hay pistas ni corrección hasta el final.
-                En diagnóstico se detectan debilidades por subtema.
-              </p>
-            </div>
-          </section>
-        )}
+        <section className="stats">
+          <div><span>Preguntas</span><strong>{questions.length}</strong></div>
+          <div><span>Respondidas</span><strong>{answers.length}</strong></div>
+          <div><span>Precisión</span><strong>{accuracy}%</strong></div>
+          <div><span>Dificultad</span><strong>MEDIA</strong></div>
+          <div><span>Débiles</span><strong>{weak.length}</strong></div>
+        </section>
 
         {finished && (
           <section className="result-card">
-            <p className="eyebrow">Resultado</p>
-            <h2>{mode === 'diagnostico' ? 'Diagnóstico finalizado' : 'Sesión finalizada'}</h2>
-            <p className="score">{diagnosis.accuracy}% de precisión</p>
-
-            {diagnosis.weak.length > 0 ? (
-              <div className="diagnosis-box weak">
-                <strong>Debilidades detectadas</strong>
-                <p>Estás débil en: {diagnosis.weak.join(', ')}.</p>
-              </div>
-            ) : (
-              <div className="diagnosis-box strong">
-                <strong>Buen desempeño</strong>
-                <p>No se detectaron debilidades críticas en esta sesión.</p>
-              </div>
-            )}
-
-            {diagnosis.strong.length > 0 && (
-              <div className="diagnosis-box">
-                <strong>Fortalezas</strong>
-                <p>{diagnosis.strong.join(', ')}</p>
-              </div>
-            )}
-
-            <button className="primary-button" onClick={startPractice}>Repetir práctica</button>
+            <h2>Sesión finalizada</h2>
+            <p>Precisión: <strong>{accuracy}%</strong></p>
+            {weak.length > 0 ? <p>Estás débil en: <strong>{weak.join(', ')}</strong>.</p> : <p>No se detectaron debilidades críticas.</p>}
+            <button onClick={start}>Repetir sesión</button>
           </section>
         )}
 
         {!finished && current && (
           <section className="question-card">
-            <div className="question-top">
+            <div className="chips">
+              <span>MAT1000</span>
               <span>{evaluation}</span>
-              <span>{moduleLabel}</span>
               <span>{current.subtema}</span>
               <span>{index + 1}/{questions.length}</span>
-              {isExamMode && <span className="exam-pill">Modo Prueba UC</span>}
+              <span>{mode}</span>
             </div>
 
             <h2>{current.pregunta}</h2>
@@ -276,62 +190,41 @@ export default function PracticeView() {
             )}
 
             <div className="options">
-              {(current.opciones || []).map((option: string) => {
-                const answered = Boolean(selected)
-                const correct = option === current.respuesta_correcta
-                const chosen = selected === option
-
+              {(current.opciones || []).map((op: string) => {
+                const answered = !!selected
+                const correct = op === current.respuesta_correcta
+                const chosen = op === selected
                 return (
                   <button
-                    key={option}
-                    onClick={() => answer(option)}
-                    className={`option ${answered && !isExamMode && correct ? 'correct' : ''} ${answered && !isExamMode && chosen && !correct ? 'wrong' : ''} ${chosen ? 'chosen' : ''}`}
+                    key={op}
+                    onClick={() => answer(op)}
+                    className={`option ${answered && !isExam && correct ? 'correct' : ''} ${answered && !isExam && chosen && !correct ? 'wrong' : ''}`}
                   >
-                    {option}
+                    {op}
                   </button>
                 )
               })}
             </div>
 
-            {selected && isExamMode && (
-              <section className="feedback exam">
-                <p>Respuesta guardada. En Prueba UC real el feedback se muestra al final.</p>
-                <button className="next-button" onClick={nextQuestion}>Siguiente pregunta</button>
-              </section>
-            )}
-
-            {selected && !isExamMode && (
-              <section className="feedback">
-                <h3 className={selected === current.respuesta_correcta ? 'ok' : 'bad'}>
-                  {selected === current.respuesta_correcta ? 'Correcto' : 'Incorrecto'}
-                </h3>
-
-                <p><strong>Respuesta correcta:</strong> {current.respuesta_correcta}</p>
-                <p>{current.explicacion || current.explanation}</p>
-
-                {current.error_comun && (
-                  <div className="teacher-note">
-                    <strong>Error común:</strong> {current.error_comun}
-                  </div>
-                )}
-
-                {current.mini_refuerzo && (
-                  <div className="teacher-note">
-                    <strong>Mini refuerzo:</strong> {current.mini_refuerzo}
-                  </div>
-                )}
-
-                <div className="feedback-actions">
-                  <button onClick={() => setShowSteps(!showSteps)}>
-                    {showSteps ? 'Ocultar paso a paso' : 'Ver paso a paso animado'}
-                  </button>
-                  <button className="next-button" onClick={nextQuestion}>
-                    Siguiente pregunta
-                  </button>
-                </div>
-
-                {showSteps && (
-                  <PrecalculoSteps pasos={current.pasos || []} animaciones={current.animaciones || []} />
+            {selected && (
+              <section className={`feedback ${isExam ? 'exam' : ''}`}>
+                {isExam ? (
+                  <>
+                    <p>Respuesta guardada. En Prueba UC real se corrige al final.</p>
+                    <button onClick={next}>Siguiente</button>
+                  </>
+                ) : (
+                  <>
+                    <h3>{selected === current.respuesta_correcta ? '✅ Correcta' : '❌ Incorrecta'}</h3>
+                    <p><strong>Respuesta correcta:</strong> {current.respuesta_correcta}</p>
+                    <p>{current.explicacion || current.explanation}</p>
+                    {current.error_comun && <div className="note">Error común: {current.error_comun}</div>}
+                    <div className="feedback-actions">
+                      <button onClick={() => setShowSteps(v => !v)}>{showSteps ? 'Ocultar paso a paso' : 'Ver paso a paso animado'}</button>
+                      <button onClick={next}>Siguiente</button>
+                    </div>
+                    {showSteps && <PrecalculoSteps pasos={current.pasos || []} animaciones={current.animaciones || []} />}
+                  </>
                 )}
               </section>
             )}
@@ -342,261 +235,128 @@ export default function PracticeView() {
       <style jsx>{`
         .practice-page {
           min-height: 100vh;
-          padding: 24px;
+          padding: 28px;
           color: white;
           background:
-            radial-gradient(circle at top left, rgba(37,99,235,.36), transparent 32%),
-            radial-gradient(circle at top right, rgba(124,58,237,.28), transparent 34%),
-            linear-gradient(180deg, #020617, #0f172a);
+            radial-gradient(circle at 18% 10%, rgba(37,99,235,.38), transparent 34%),
+            radial-gradient(circle at 88% 0%, rgba(16,185,129,.16), transparent 30%),
+            linear-gradient(180deg,#020617,#0f172a);
         }
-
-        .practice-shell {
-          max-width: 1180px;
-          margin: 0 auto;
+        .shell { max-width: 1180px; margin: 0 auto; display: grid; gap: 18px; }
+        .hero-card, .mode-card, .filters-card, .question-card, .result-card {
+          border: 1px solid rgba(148,163,184,.20);
+          background: linear-gradient(135deg, rgba(30,41,59,.82), rgba(15,23,42,.86));
+          border-radius: 28px;
+          box-shadow: 0 28px 80px rgba(0,0,0,.28);
         }
-
-        .hero {
+        .hero-card {
+          padding: 28px;
           display: flex;
           justify-content: space-between;
-          gap: 20px;
           align-items: center;
-          margin-bottom: 20px;
+          min-height: 170px;
         }
-
-        .eyebrow {
-          margin: 0;
-          color: #93c5fd;
-          font-weight: 950;
-          text-transform: uppercase;
-          letter-spacing: .06em;
+        .badge, .mode-card span, .chips span {
+          display: inline-flex;
+          padding: 7px 11px;
+          border-radius: 999px;
+          background: rgba(59,130,246,.22);
+          color: #bfdbfe;
+          font-weight: 900;
           font-size: 12px;
         }
-
-        h1 {
-          font-size: clamp(36px, 6vw, 62px);
-          margin: 6px 0;
-          letter-spacing: -0.06em;
+        h1 { font-size: clamp(36px,5vw,58px); margin: 14px 0 8px; letter-spacing: -.05em; }
+        .hero-card p, .mode-card p { color: #cbd5e1; font-size: 16px; }
+        .prediction {
+          width: 150px;
+          height: 110px;
+          border-radius: 24px;
+          background: rgba(2,6,23,.55);
+          display: grid;
+          place-items: center;
+          text-align: center;
         }
-
-        .subtitle {
-          color: #cbd5e1;
-          max-width: 720px;
-          font-size: 16px;
-        }
-
-        .hero-actions {
-          display: flex;
-          gap: 10px;
-        }
-
-        .hero-actions a {
-          color: white;
-          text-decoration: none;
-          padding: 12px 16px;
-          border-radius: 16px;
-          background: rgba(255,255,255,.08);
-          border: 1px solid rgba(255,255,255,.14);
-          font-weight: 900;
-        }
+        .prediction strong { font-size: 28px; }
+        .prediction span { color: #cbd5e1; font-size: 13px; }
+        .mode-card { padding: 22px; }
+        .mode-card h3 { margin: 0 0 8px; font-size: 20px; }
 
         .filters-card {
+          padding: 22px;
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-          gap: 14px;
-          padding: 18px;
-          border-radius: 28px;
-          background: rgba(255,255,255,.075);
-          border: 1px solid rgba(255,255,255,.13);
-          box-shadow: 0 24px 70px rgba(0,0,0,.25);
-          margin-bottom: 18px;
+          grid-template-columns: repeat(3, minmax(0,1fr));
+          gap: 16px;
         }
-
-        label {
-          display: grid;
-          gap: 7px;
-          color: #cbd5e1;
-          font-weight: 850;
-          font-size: 13px;
+        label { display: grid; gap: 8px; color: #e2e8f0; font-weight: 900; }
+        select {
+          min-height: 58px;
+          border-radius: 18px;
+          border: 1px solid rgba(148,163,184,.24);
+          background: rgba(15,23,42,.88);
+          color: white;
+          padding: 0 16px;
+          font-weight: 900;
+          font-size: 15px;
         }
-
-        select,
+        .actions { display: flex; gap: 10px; align-items: end; }
         button {
           min-height: 54px;
           border-radius: 17px;
           border: 1px solid rgba(255,255,255,.14);
-          background: rgba(15,23,42,.94);
+          background: linear-gradient(135deg,#2563eb,#7c3aed);
           color: white;
-          padding: 0 14px;
-          font-weight: 900;
-        }
-
-        .filters-card button,
-        .primary-button {
-          cursor: pointer;
-          background: linear-gradient(135deg, #2563eb, #7c3aed);
-          box-shadow: 0 18px 45px rgba(37,99,235,.28);
-        }
-
-        .intro-card,
-        .question-card,
-        .result-card {
-          padding: 26px;
-          border-radius: 30px;
-          background:
-            linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
-          border: 1px solid rgba(255,255,255,.14);
-          box-shadow: 0 25px 75px rgba(0,0,0,.28);
-        }
-
-        .intro-card h2,
-        .result-card h2 {
-          margin: 8px 0;
-          font-size: 28px;
-        }
-
-        .question-top {
-          display: flex;
-          gap: 8px;
-          flex-wrap: wrap;
-          margin-bottom: 14px;
-        }
-
-        .question-top span {
-          padding: 7px 11px;
-          border-radius: 999px;
-          background: rgba(59,130,246,.18);
-          border: 1px solid rgba(59,130,246,.22);
-          color: #bfdbfe;
+          padding: 0 18px;
           font-weight: 950;
-          font-size: 12px;
-        }
-
-        .question-top .exam-pill {
-          background: rgba(244,114,182,.18);
-          color: #fbcfe8;
-          border-color: rgba(244,114,182,.25);
-        }
-
-        .question-card h2 {
-          font-size: 25px;
-          line-height: 1.35;
-        }
-
-        .options {
-          display: grid;
-          gap: 11px;
-          margin-top: 18px;
-        }
-
-        .option {
-          text-align: left;
           cursor: pointer;
-          background: rgba(255,255,255,.065);
+        }
+        button.secondary { background: rgba(255,255,255,.08); }
+
+        .stats { display: grid; grid-template-columns: repeat(5,1fr); gap: 14px; }
+        .stats div {
+          padding: 18px;
+          border-radius: 20px;
+          background: rgba(255,255,255,.06);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+        .stats span { color: #cbd5e1; display:block; margin-bottom: 8px; }
+        .stats strong { font-size: 22px; }
+
+        .question-card, .result-card { padding: 24px; }
+        .chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+        .question-card h2 { font-size: 24px; line-height: 1.35; }
+        .options { display:grid; gap: 11px; margin-top:18px; }
+        .option {
+          text-align:left;
+          background: rgba(255,255,255,.06);
           border: 1px solid rgba(255,255,255,.12);
-          transition: .18s ease;
+          transition:.18s ease;
         }
-
-        .option:hover {
-          transform: translateX(4px);
-          background: rgba(255,255,255,.12);
-        }
-
-        .option.chosen {
-          border-color: rgba(147,197,253,.8);
-        }
-
-        .option.correct {
-          background: rgba(34,197,94,.22);
-          border-color: rgba(34,197,94,.75);
-        }
-
-        .option.wrong {
-          background: rgba(239,68,68,.2);
-          border-color: rgba(239,68,68,.75);
-        }
+        .option:hover { transform: translateX(4px); background: rgba(255,255,255,.11); }
+        .option.correct { background: rgba(34,197,94,.20); border-color: rgba(34,197,94,.65); }
+        .option.wrong { background: rgba(239,68,68,.20); border-color: rgba(239,68,68,.65); }
 
         .feedback {
           margin-top: 18px;
           padding: 18px;
-          border-radius: 24px;
-          background: rgba(15,23,42,.75);
-          border: 1px solid rgba(255,255,255,.11);
+          border-radius: 22px;
+          background: rgba(15,23,42,.78);
+          border: 1px solid rgba(255,255,255,.12);
         }
-
-        .feedback.exam {
-          background: rgba(99,102,241,.13);
+        .feedback.exam { background: rgba(99,102,241,.15); }
+        .note {
+          margin-top: 12px;
+          padding: 12px;
+          border-radius: 14px;
+          background: rgba(245,158,11,.16);
+          border: 1px solid rgba(245,158,11,.30);
+          color: #fde68a;
         }
+        .feedback-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
 
-        .feedback h3 {
-          margin: 0 0 10px;
-          font-size: 22px;
-        }
-
-        .feedback h3.ok {
-          color: #4ade80;
-        }
-
-        .feedback h3.bad {
-          color: #f87171;
-        }
-
-        .teacher-note,
-        .diagnosis-box {
-          margin-top: 10px;
-          padding: 13px;
-          border-radius: 16px;
-          background: rgba(255,255,255,.07);
-          border: 1px solid rgba(255,255,255,.1);
-          color: #e2e8f0;
-        }
-
-        .diagnosis-box.weak {
-          background: rgba(239,68,68,.14);
-          border-color: rgba(239,68,68,.24);
-        }
-
-        .diagnosis-box.strong {
-          background: rgba(34,197,94,.14);
-          border-color: rgba(34,197,94,.24);
-        }
-
-        .feedback-actions {
-          display: flex;
-          gap: 10px;
-          flex-wrap: wrap;
-          margin-top: 14px;
-        }
-
-        .next-button {
-          background: rgba(16,185,129,.22);
-          border-color: rgba(16,185,129,.35);
-          cursor: pointer;
-        }
-
-        .score {
-          font-size: 38px;
-          font-weight: 950;
-          color: #bfdbfe;
-        }
-
-        @media (max-width: 760px) {
-          .practice-page {
-            padding: 18px;
-          }
-
-          .hero {
-            flex-direction: column;
-            align-items: stretch;
-          }
-
-          .hero-actions {
-            width: 100%;
-          }
-
-          .hero-actions a {
-            flex: 1;
-            text-align: center;
-          }
+        @media (max-width: 900px) {
+          .filters-card { grid-template-columns: 1fr; }
+          .stats { grid-template-columns: repeat(2,1fr); }
+          .hero-card { flex-direction: column; align-items: flex-start; }
         }
       `}</style>
     </main>
