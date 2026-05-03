@@ -1,3 +1,5 @@
+import { buildDistanceSteps } from './mat1000-step-engine'
+
 export function generateMat1000ForceQuestions(input: {
   evaluation?: string
   mode?: string
@@ -40,8 +42,22 @@ export function generateMat1000ForceQuestions(input: {
       error_comun: q.error_comun,
       pista: q.pista,
       mini_refuerzo: q.mini_refuerzo,
-      pasos: q.pasos,
-      animaciones: [],
+      pasos: q.subtema === "Distancia entre puntos" && typeof (q as any).visualizacion?.parametros?.puntos?.[0]?.x === "number"
+        ? buildDistanceSteps({
+            x1: (q as any).visualizacion.parametros.puntos[0].x,
+            y1: (q as any).visualizacion.parametros.puntos[0].y,
+            x2: (q as any).visualizacion.parametros.puntos[1].x,
+            y2: (q as any).visualizacion.parametros.puntos[1].y,
+          }).pasos
+        : q.pasos,
+      animaciones: q.subtema === "Distancia entre puntos" && typeof (q as any).visualizacion?.parametros?.puntos?.[0]?.x === "number"
+        ? buildDistanceSteps({
+            x1: (q as any).visualizacion.parametros.puntos[0].x,
+            y1: (q as any).visualizacion.parametros.puntos[0].y,
+            x2: (q as any).visualizacion.parametros.puntos[1].x,
+            y2: (q as any).visualizacion.parametros.puntos[1].y,
+          }).animaciones
+        : [],
       operacion_visual: [],
       visualizacion: (q as any).visualizacion || {
         requiere_visual: false,

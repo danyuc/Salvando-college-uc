@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { generateMat1000ForceQuestions } from '@/lib/mat1000-force-questions'
 import PrecalculoVisual from './PrecalculoVisual'
 import PrecalculoSteps from './PrecalculoSteps'
+import { analyzeMat1000Diagnostic } from '@/lib/mat1000-diagnostic-engine'
 
 function getEvaluationFromUrl() {
   if (typeof window === 'undefined') return 'I1'
@@ -48,10 +49,11 @@ export default function DiagnosticView() {
   function next() {
     if (index >= questions.length - 1) {
       const result = {
-        evaluation,
+        ...analyzeMat1000Diagnostic(
+          answers.map(a => ({ subtema: a.subtema, correct: a.correct })),
+          evaluation
+        ),
         completedAt: new Date().toISOString(),
-        accuracy,
-        weak,
       }
 
       localStorage.setItem(`mat1000-diagnostic-${evaluation}`, JSON.stringify(result))

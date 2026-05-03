@@ -8,6 +8,7 @@ import {
 } from '@/lib/precalculo-ui-options'
 import PrecalculoVisual from './PrecalculoVisual'
 import PrecalculoSteps from './PrecalculoSteps'
+import { analyzeMat1000Diagnostic } from '@/lib/mat1000-diagnostic-engine'
 
 type Mode = 'practica' | 'diagnostico' | 'simulacion'
 const evaluations = ['I1', 'I2', 'I3', 'EXAMEN']
@@ -37,6 +38,10 @@ export default function PracticeView() {
   const correctCount = answers.filter(a => a.correct).length
   const accuracy = answers.length ? Math.round((correctCount / answers.length) * 100) : 0
   const weak = [...new Set(answers.filter(a => !a.correct).map(a => a.subtema))]
+  const smartDiagnostic = analyzeMat1000Diagnostic(
+    answers.map(a => ({ subtema: a.subtema, correct: a.correct })),
+    evaluation
+  )
   const isExam = mode === 'simulacion'
 
   function reset() {
@@ -160,7 +165,7 @@ export default function PracticeView() {
             <select value={amount} onChange={(e) => setAmount(Number(e.target.value))}>
               <option value={10}>10 preguntas</option>
               <option value={20}>20 preguntas</option>
-              <option value={50}>50 preguntas</option>
+              <option value={50}>50 preguntas</option><option value={80}>80 preguntas</option><option value={100}>100 preguntas</option>
             </select>
           </label>
 
@@ -182,7 +187,14 @@ export default function PracticeView() {
           <section className="result-card">
             <h2>Sesión finalizada</h2>
             <p>Precisión: <strong>{accuracy}%</strong></p>
-            {weak.length > 0 ? <p>Estás débil en: <strong>{weak.join(', ')}</strong>.</p> : <p>No se detectaron debilidades críticas.</p>}
+            {smartDiagnostic.debilidades.length > 0 ? (
+              <>
+                <p>Estás débil en: <strong>{smartDiagnostic.debilidades.join(', ')}</strong>.</p>
+                <p>{smartDiagnostic.recomendacion}</p>
+              </>
+            ) : (
+              <p>{smartDiagnostic.recomendacion}</p>
+            )}
             <button onClick={start}>Repetir sesión</button>
           </section>
         )}
@@ -224,7 +236,7 @@ export default function PracticeView() {
               <section className={`feedback ${isExam ? 'exam' : ''}`}>
                 {isExam ? (
                   <>
-                    <p>Respuesta guardada. En Prueba UC real se corrige al final.</p>
+                    <p>Respuesta guardada. En Prueba UC real no hay pistas, no hay corrección inmediata y se revisa todo al final.</p>
                     <button onClick={next}>Siguiente</button>
                   </>
                 ) : (
