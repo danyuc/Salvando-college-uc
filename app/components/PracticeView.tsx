@@ -8,7 +8,7 @@ const PrecalculoVisual = dynamic(() => import('./PrecalculoVisual'), { ssr: fals
 const PrecalculoSteps = dynamic(() => import('./PrecalculoSteps'), { ssr: false })
 
 import { generatePracticeSet } from '@/lib/precalculo-engine'
-import { generateMat1000SafeSession } from '@/lib/mat1000-safe-session'
+import { generateMat1000FullMode } from '@/lib/mat1000-full-mode'
 import { generateMat1000Session } from '@/lib/mat1000-uc-real-adapter'
 import { MAT1000_FILTER_OPTIONS, getMat1000ModulesForEvaluation, getMat1000SubtemasForModule, resolveModuloIdFromLabel } from '@/lib/precalculo-ui-options'
 import { generarDiagnostico } from '@/lib/precalculo-diagnostico'
@@ -244,7 +244,7 @@ export default function PracticeView() {
       text: 'Simula una evaluación real: temporizador, presión progresiva y feedback solo al final.',
     },
     rapido: {
-      title: '⚡ Ronda corta activa',
+      title: '⚡ Práctica rápida activa',
       text: 'Sesión breve para repasar rápido sin sobrecargarte.',
     },
     diagnostico: {
@@ -901,7 +901,7 @@ setQuestions(prioritized.slice(0, limit))
               <option value="practica">Práctica guiada</option>
               <option value="adaptativo">Adaptativo</option>
               <option value="simulacion">Modo examen UC</option>
-              <option value="rapido">Ronda corta</option>
+              <option value="rapido">Práctica rápida</option>
               <option value="diagnostico">Diagnóstico</option>
             </select>
           </label>
