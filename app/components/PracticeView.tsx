@@ -8,6 +8,7 @@ const PrecalculoVisual = dynamic(() => import('./PrecalculoVisual'), { ssr: fals
 const PrecalculoSteps = dynamic(() => import('./PrecalculoSteps'), { ssr: false })
 
 import { generatePracticeSet } from '@/lib/precalculo-engine'
+import { generateMat1000Session } from '@/lib/mat1000-uc-real-adapter'
 import { MAT1000_FILTER_OPTIONS, getMat1000ModulesForEvaluation, getMat1000SubtemasForModule, resolveModuloIdFromLabel } from '@/lib/precalculo-ui-options'
 import { generarDiagnostico } from '@/lib/precalculo-diagnostico'
 
