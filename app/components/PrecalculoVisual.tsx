@@ -6,48 +6,83 @@ type Point = {
   y: number
 }
 
+function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value))
+}
+
 export default function PrecalculoVisual({ puntos = [] }: { puntos?: Point[] }) {
   if (!Array.isArray(puntos) || puntos.length === 0) return null
 
+  const ticks = [-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6]
+  const scale = 6
+
+  function toLeft(x: number) {
+    return `${clamp(50 + (x / scale) * 42, 4, 96)}%`
+  }
+
+  function toTop(y: number) {
+    return `${clamp(50 - (y / scale) * 42, 4, 96)}%`
+  }
+
   return (
-    <section style={{ marginTop: 16, padding: 16, borderRadius: 18, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.06)' }}>
-      <h3 style={{ margin: 0, marginBottom: 10 }}>Visualización matemática</h3>
+    <section className="precalculo-visual-card">
+      <div className="precalculo-visual-title">Visualización matemática</div>
 
-      <div style={{
-        height: 260,
-        borderRadius: 14,
-        background:
-          'linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px)',
-        backgroundSize: '22px 22px',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        <div style={{ position: 'absolute', left: 0, right: 0, top: '50%', height: 2, background: 'rgba(255,255,255,0.55)' }} />
-        <div style={{ position: 'absolute', top: 0, bottom: 0, left: '50%', width: 2, background: 'rgba(255,255,255,0.55)' }} />
+      <div className="precalculo-plane">
+        <div className="axis axis-x" />
+        <div className="axis axis-y" />
 
-        <span style={{ position: 'absolute', right: 12, top: 'calc(50% + 6px)', fontWeight: 700 }}>x</span>
-        <span style={{ position: 'absolute', left: 'calc(50% + 8px)', top: 8, fontWeight: 700 }}>y</span>
-        <span style={{ position: 'absolute', left: 'calc(50% + 6px)', top: 'calc(50% + 6px)', fontSize: 12, opacity: 0.8 }}>0</span>
+        <span className="axis-label axis-label-x">x</span>
+        <span className="axis-label axis-label-y">y</span>
+        <span className="origin-label">0</span>
+
+        {ticks.map((n) => (
+          <span
+            key={`x-${n}`}
+            className="tick-label tick-label-x"
+            style={{ left: toLeft(n) }}
+          >
+            {n}
+          </span>
+        ))}
+
+        {ticks.map((n) => (
+          <span
+            key={`y-${n}`}
+            className="tick-label tick-label-y"
+            style={{ top: toTop(n) }}
+          >
+            {n}
+          </span>
+        ))}
+
+        {ticks.map((n) => (
+          <span
+            key={`tx-${n}`}
+            className="tick tick-x"
+            style={{ left: toLeft(n) }}
+          />
+        ))}
+
+        {ticks.map((n) => (
+          <span
+            key={`ty-${n}`}
+            className="tick tick-y"
+            style={{ top: toTop(n) }}
+          />
+        ))}
 
         {puntos.map((p) => (
           <div
             key={`${p.etiqueta}-${p.x}-${p.y}`}
+            className="point"
             title={`${p.etiqueta}(${p.x}, ${p.y})`}
             style={{
-              position: 'absolute',
-              left: `${Math.max(5, Math.min(95, 50 + p.x * 4))}%`,
-              top: `${Math.max(5, Math.min(95, 50 - p.y * 4))}%`,
-              transform: 'translate(-50%, -50%)',
-              width: 14,
-              height: 14,
-              borderRadius: 999,
-              background: '#38bdf8',
-              boxShadow: '0 0 18px rgba(56,189,248,.75)',
+              left: toLeft(p.x),
+              top: toTop(p.y),
             }}
           >
-            <span style={{ position: 'absolute', left: 18, top: -8, fontSize: 13, fontWeight: 700, color: 'white' }}>
-              {p.etiqueta}
-            </span>
+            <span>{p.etiqueta}({p.x}, {p.y})</span>
           </div>
         ))}
       </div>

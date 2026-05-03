@@ -1,105 +1,5 @@
 export type Difficulty = "baja" | "media" | "alta"
-
-export const PRECALCULO_SYLLABUS = {
-  modulo_1: {
-    unidad: "Ecuaciones de la recta y la parábola",
-    evaluaciones: ["I1", "EXAMEN"],
-    subtemas: [
-      "Distancia entre puntos",
-      "Intersección con ejes coordenados",
-      "Ecuación de la recta",
-      "Rectas paralelas y perpendiculares",
-      "Sistemas lineales 2x2",
-      "Parábola y modelos cuadráticos",
-    ],
-  },
-  modulo_2: {
-    unidad: "Inecuaciones",
-    evaluaciones: ["I1", "EXAMEN"],
-    subtemas: [
-      "Orden en los reales",
-      "Intervalos",
-      "Inecuaciones lineales",
-      "Inecuaciones cuadráticas",
-      "Inecuaciones racionales",
-      "Tabla de signos",
-      "Valor absoluto",
-    ],
-  },
-  modulo_3: {
-    unidad: "Funciones reales",
-    evaluaciones: ["I2", "EXAMEN"],
-    subtemas: [
-      "Concepto de función",
-      "Dominio",
-      "Recorrido",
-      "Gráficas básicas",
-      "Transformaciones de funciones",
-      "Álgebra de funciones",
-      "Composición de funciones",
-      "Funciones inyectivas",
-      "Función inversa",
-      "Funciones por tramos",
-    ],
-  },
-  modulo_4: {
-    unidad: "Funciones exponenciales y logarítmicas",
-    evaluaciones: ["I2", "EXAMEN"],
-    subtemas: [
-      "Función exponencial",
-      "Transformaciones exponenciales",
-      "Propiedades de exponentes",
-      "Función logarítmica",
-      "Logaritmo como inversa",
-      "Propiedades de logaritmos",
-      "Ecuaciones exponenciales",
-      "Ecuaciones logarítmicas",
-    ],
-  },
-  modulo_5: {
-    unidad: "Funciones trigonométricas",
-    evaluaciones: ["I3", "EXAMEN"],
-    subtemas: [
-      "Razones trigonométricas",
-      "Circunferencia unitaria",
-      "Radianes",
-      "Ángulos notables",
-      "Gráficas seno y coseno",
-      "Amplitud",
-      "Período",
-      "Desfase",
-      "Identidades trigonométricas",
-      "Funciones trigonométricas inversas",
-    ],
-  },
-  modulo_6: {
-    unidad: "Funciones polinomiales",
-    evaluaciones: ["EXAMEN"],
-    subtemas: [
-      "Polinomios",
-      "Ceros de polinomios",
-      "Multiplicidad",
-      "Comportamiento al infinito",
-      "División polinomial",
-      "Teorema del factor",
-      "Gráfica de polinomios",
-    ],
-  },
-  modulo_7: {
-    unidad: "Sucesiones y sumas",
-    evaluaciones: ["EXAMEN"],
-    subtemas: [
-      "Sucesiones",
-      "Sucesiones aritméticas",
-      "Sucesiones geométricas",
-      "Notación sigma",
-      "Sumas finitas",
-      "Modelos discretos",
-    ],
-  },
-} as const
-
-export type PrecalculoModulo = keyof typeof PRECALCULO_SYLLABUS
+export type PrecalculoModulo = "modulo_1" | "modulo_2" | "modulo_3" | "modulo_4" | "modulo_5" | "modulo_6" | "modulo_7"
 
 export type PrecalculoQuestion = {
   asignatura: "Precálculo"
@@ -116,61 +16,67 @@ export type PrecalculoQuestion = {
   opciones: string[]
   respuesta_correcta: string
   explanation: string
-  pasos: Array<{
-    orden: number
-    titulo: string
-    explicacion: string
-    expresion: string
-    transformacion?: string
-    accion_visual: string
-    highlight: string[]
-    errores_posibles: string[]
-  }>
-  animaciones: Array<{
-    paso: number
-    tipo: string
-    objetivo: string
-    descripcion: string
-  }>
-  operacion_visual: Array<{
-    orden: number
-    tipo: string
-    antes: string
-    despues: string
-    animacion: string
-  }>
-  visualizacion: {
-    requiere_visual: boolean
-    tipo_visual: string
-    descripcion: string
-    parametros: Record<string, unknown>
-  }
-  deteccion_errores: Array<{
-    tipo: string
-    descripcion: string
-    trigger: string
-  }>
-  adaptatividad: {
-    nivel: "refuerzo" | "normal" | "desafio"
-    habilidad: string
-    si_falla: string
-    si_acierta: string
-  }
+  pasos: any[]
+  animaciones: any[]
+  operacion_visual: any[]
+  visualizacion: any
+  deteccion_errores: any[]
+  adaptatividad: any
   pista: string
   error_comun: string
   mini_refuerzo: string
 }
 
-function randomInt(min: number, max: number) {
+const META = {
+  modulo_1: { unidad: "Recta y parábola", evaluaciones: ["I1", "EXAMEN"] },
+  modulo_2: { unidad: "Inecuaciones", evaluaciones: ["I1", "EXAMEN"] },
+  modulo_3: { unidad: "Funciones reales", evaluaciones: ["I2", "EXAMEN"] },
+  modulo_4: { unidad: "Exponenciales y logaritmos", evaluaciones: ["I2", "EXAMEN"] },
+  modulo_5: { unidad: "Trigonometría", evaluaciones: ["I3", "EXAMEN"] },
+  modulo_6: { unidad: "Polinomios", evaluaciones: ["EXAMEN"] },
+  modulo_7: { unidad: "Sucesiones y sumas", evaluaciones: ["EXAMEN"] },
+} as const
+
+function r(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-function shuffle<T>(items: T[]) {
-  return [...items].sort(() => Math.random() - 0.5)
+function shuffle<T>(x: T[]) {
+  return [...x].sort(() => Math.random() - 0.5)
 }
 
-function uniqueOptions(options: string[]) {
-  return Array.from(new Set(options)).slice(0, 4)
+function base(input: Partial<PrecalculoQuestion> & { modulo: PrecalculoModulo; subtema: string }): PrecalculoQuestion {
+  const meta = META[input.modulo]
+  return {
+    asignatura: "Precálculo",
+    modulo: input.modulo,
+    unidad: meta.unidad,
+    tema: input.tema ?? input.subtema,
+    subtema: input.subtema,
+    evaluaciones: [...meta.evaluaciones],
+    origen: input.origen ?? "normal",
+    tipo: input.tipo ?? "seleccion_multiple",
+    dificultad: input.dificultad ?? "media",
+    tags: input.tags ?? ["MAT1000", input.subtema],
+    pregunta: input.pregunta ?? "",
+    opciones: input.opciones ?? [],
+    respuesta_correcta: input.respuesta_correcta ?? "",
+    explanation: input.explanation ?? "",
+    pasos: input.pasos ?? [],
+    animaciones: input.animaciones ?? [],
+    operacion_visual: input.operacion_visual ?? [],
+    visualizacion: input.visualizacion ?? { requiere_visual: false, tipo_visual: "ninguno", parametros: {} },
+    deteccion_errores: input.deteccion_errores ?? [],
+    adaptatividad: input.adaptatividad ?? {
+      nivel: "normal",
+      habilidad: input.subtema,
+      si_falla: "Bajar dificultad y mostrar más pasos.",
+      si_acierta: "Subir dificultad.",
+    },
+    pista: input.pista ?? "Identifica la fórmula antes de operar.",
+    error_comun: input.error_comun ?? "Saltar pasos algebraicos.",
+    mini_refuerzo: input.mini_refuerzo ?? "Repite un ejercicio similar con valores distintos.",
+  }
 }
 
 export function generateQuestion(input: {
@@ -179,15 +85,18 @@ export function generateQuestion(input: {
   dificultad?: Difficulty
   origen?: "normal" | "prueba_real"
 } = {}): PrecalculoQuestion {
-  const modulo = input.modulo ?? "modulo_1"
-  const dificultad = input.dificultad ?? "media"
   const subtema = input.subtema ?? "Distancia entre puntos"
+  const dificultad = input.dificultad ?? "media"
 
-  if (subtema === "Distancia entre puntos") {
-    return generateDistanceQuestion(modulo, dificultad, input.origen ?? "normal")
-  }
+  if (subtema.includes("Recta") || subtema.includes("Ecuación de la recta")) return recta(dificultad, input.origen)
+  if (subtema.includes("Inecuaciones lineales")) return inecuacionLineal(dificultad, input.origen)
+  if (subtema.includes("Dominio")) return dominioRaiz(dificultad, input.origen)
+  if (subtema.includes("Composición")) return composicion(dificultad, input.origen)
+  if (subtema.includes("Función inversa")) return inversa(dificultad, input.origen)
+  if (subtema.includes("Ecuaciones exponenciales")) return exponencial(dificultad, input.origen)
+  if (subtema.includes("Ecuaciones logarítmicas")) return logaritmo(dificultad, input.origen)
 
-  return generateDistanceQuestion("modulo_1", dificultad, input.origen ?? "normal")
+  return distancia(dificultad, input.origen)
 }
 
 export function generatePracticeSet(input: {
@@ -198,178 +107,206 @@ export function generatePracticeSet(input: {
   origen?: "normal" | "prueba_real"
 } = {}) {
   const cantidad = input.cantidad ?? 10
-
-  return Array.from({ length: cantidad }, (_, index) =>
+  return Array.from({ length: cantidad }, () =>
     generateQuestion({
-      modulo: input.modulo ?? "modulo_1",
-      subtema: input.subtema ?? "Distancia entre puntos",
-      dificultad: input.dificultad ?? (index % 3 === 0 ? "baja" : index % 3 === 1 ? "media" : "alta"),
-      origen: input.origen ?? (index % 3 === 0 ? "prueba_real" : "normal"),
+      modulo: input.modulo,
+      subtema: input.subtema,
+      dificultad: input.dificultad ?? "media",
+      origen: input.origen ?? "normal",
     })
   )
 }
 
-function generateDistanceQuestion(
-  modulo: PrecalculoModulo,
-  dificultad: Difficulty,
-  origen: "normal" | "prueba_real"
-): PrecalculoQuestion {
-  const max = dificultad === "alta" ? 14 : dificultad === "media" ? 9 : 5
+export function generateDiagnosticSet() {
+  const plan = [
+    "Distancia entre puntos",
+    "Ecuación de la recta",
+    "Inecuaciones lineales",
+    "Dominio",
+    "Composición de funciones",
+    "Función inversa",
+    "Ecuaciones exponenciales",
+    "Ecuaciones logarítmicas",
+    "Distancia entre puntos",
+    "Ecuación de la recta",
+    "Dominio",
+    "Composición de funciones",
+  ]
 
-  const x1 = randomInt(-max, max)
-  const y1 = randomInt(-max, max)
-  let x2 = randomInt(-max, max)
-  let y2 = randomInt(-max, max)
+  return plan.map((subtema, i) =>
+    generateQuestion({
+      subtema,
+      dificultad: i < 4 ? "baja" : i < 9 ? "media" : "alta",
+      origen: "prueba_real",
+    })
+  )
+}
 
-  if (x1 === x2 && y1 === y2) x2 += 1
+function distancia(dificultad: Difficulty, origen: "normal" | "prueba_real" = "normal") {
+  const max = dificultad === "alta" ? 8 : 5
+  const x1 = r(-max, max)
+  const y1 = r(-max, max)
+  let x2 = r(-max, max)
+  let y2 = r(-max, max)
+  if (x1 === x2 && y1 === y2) x2++
 
   const dx = x2 - x1
   const dy = y2 - y1
-  const radicando = dx * dx + dy * dy
-  const distancia = Math.sqrt(radicando)
-  const correcta = Number.isInteger(distancia) ? String(distancia) : `√${radicando}`
+  const rad = dx * dx + dy * dy
+  const ans = Number.isInteger(Math.sqrt(rad)) ? String(Math.sqrt(rad)) : `√${rad}`
 
-  const opciones = uniqueOptions(
-    shuffle([
-      correcta,
-      String(Math.abs(dx) + Math.abs(dy)),
-      `√${Math.abs(dx) + Math.abs(dy)}`,
-      String(Math.abs(dx * dy)),
-      `√${Math.max(1, radicando + randomInt(2, 8))}`,
-    ])
-  )
-
-  while (opciones.length < 4) opciones.push(`√${radicando + opciones.length + 3}`)
-
-  const meta = PRECALCULO_SYLLABUS.modulo_1
-
-  return {
-    asignatura: "Precálculo",
+  return base({
     modulo: "modulo_1",
-    unidad: meta.unidad,
-    tema: "Geometría analítica",
     subtema: "Distancia entre puntos",
-    evaluaciones: [...meta.evaluaciones],
     origen,
-    tipo: "seleccion_multiple",
     dificultad,
-    tags: ["plano cartesiano", "distancia", "pitágoras", "MAT1000"],
+    tema: "Geometría analítica",
     pregunta: `Calcula la distancia entre A(${x1}, ${y1}) y B(${x2}, ${y2}).`,
-    opciones,
-    respuesta_correcta: correcta,
-    explanation: `Se aplica d = √[(x₂ - x₁)² + (y₂ - y₁)²]. Aquí Δx = ${dx}, Δy = ${dy}, entonces d = √(${dx * dx} + ${dy * dy}) = ${correcta}.`,
+    opciones: shuffle([ans, String(Math.abs(dx) + Math.abs(dy)), `√${Math.abs(dx) + Math.abs(dy)}`, `√${rad + 4}`]),
+    respuesta_correcta: ans,
+    explanation: `d = √[(${x2} - ${x1})² + (${y2} - ${y1})²] = √(${dx * dx} + ${dy * dy}) = ${ans}.`,
     pasos: [
-      {
-        orden: 1,
-        titulo: "Identificar puntos",
-        explicacion: `Tomamos A(${x1}, ${y1}) como primer punto y B(${x2}, ${y2}) como segundo punto.`,
-        expresion: `A(${x1}, ${y1}), B(${x2}, ${y2})`,
-        transformacion: "Identificar x₁, y₁, x₂, y₂",
-        accion_visual: "marcar_punto",
-        highlight: ["A", "B"],
-        errores_posibles: ["Confundir x con y", "Invertir coordenadas"],
-      },
-      {
-        orden: 2,
-        titulo: "Restar coordenadas",
-        explicacion: `Calculamos las diferencias: Δx = ${x2} - ${x1} = ${dx} y Δy = ${y2} - ${y1} = ${dy}.`,
-        expresion: `Δx = ${dx}, Δy = ${dy}`,
-        transformacion: "Restar coordenadas correspondientes",
-        accion_visual: "resaltar",
-        highlight: ["Δx", "Δy"],
-        errores_posibles: ["Restar cruzado", "Perder signos negativos"],
-      },
-      {
-        orden: 3,
-        titulo: "Aplicar fórmula",
-        explicacion: "Elevamos ambas diferencias al cuadrado, sumamos y luego aplicamos raíz cuadrada.",
-        expresion: `d = √((${dx})² + (${dy})²) = √${radicando}`,
-        transformacion: `√(${dx * dx} + ${dy * dy})`,
-        accion_visual: "simplificar",
-        highlight: ["√", `${radicando}`],
-        errores_posibles: ["Olvidar la raíz", "Sumar sin elevar al cuadrado"],
-      },
-    ],
-    animaciones: [
-      {
-        paso: 1,
-        tipo: "marcar_punto",
-        objetivo: "A y B",
-        descripcion: "Marca ambos puntos en el plano cartesiano.",
-      },
-      {
-        paso: 2,
-        tipo: "resaltar",
-        objetivo: "diferencias de coordenadas",
-        descripcion: "Resalta Δx y Δy como catetos de un triángulo rectángulo.",
-      },
-      {
-        paso: 3,
-        tipo: "simplificar",
-        objetivo: "radicando",
-        descripcion: "Muestra la suma de cuadrados y la raíz final.",
-      },
-    ],
-    operacion_visual: [
-      {
-        orden: 1,
-        tipo: "grafica",
-        antes: `A(${x1}, ${y1}), B(${x2}, ${y2})`,
-        despues: "Segmento AB",
-        animacion: "marcar_punto",
-      },
-      {
-        orden: 2,
-        tipo: "simplificacion",
-        antes: `√((${dx})² + (${dy})²)`,
-        despues: correcta,
-        animacion: "simplificar",
-      },
+      { orden: 1, titulo: "Restar coordenadas", explicacion: `Δx=${dx}, Δy=${dy}`, expresion: `(${x2}-${x1}), (${y2}-${y1})` },
+      { orden: 2, titulo: "Aplicar distancia", explicacion: "Se elevan al cuadrado y se suma.", expresion: `√(${dx * dx}+${dy * dy})` },
     ],
     visualizacion: {
       requiere_visual: true,
       tipo_visual: "plano_cartesiano",
-      descripcion: "Plano cartesiano con puntos A y B y segmento de distancia.",
       parametros: {
-        xmin: -max,
-        xmax: max,
-        ymin: -max,
-        ymax: max,
         puntos: [
           { etiqueta: "A", x: x1, y: y1 },
           { etiqueta: "B", x: x2, y: y2 },
         ],
-        segmento: [
-          { x: x1, y: y1 },
-          { x: x2, y: y2 },
-        ],
       },
     },
-    deteccion_errores: [
-      {
-        tipo: "procedimental",
-        descripcion: "Confunde la fórmula de distancia con pendiente.",
-        trigger: "usa_dy_sobre_dx",
-      },
-      {
-        tipo: "algebraico",
-        descripcion: "Pierde signos negativos al restar coordenadas.",
-        trigger: "signos_en_delta",
-      },
-      {
-        tipo: "conceptual",
-        descripcion: "Olvida aplicar raíz cuadrada al final.",
-        trigger: "responde_radicando",
-      },
+  })
+}
+
+function recta(dificultad: Difficulty, origen: "normal" | "prueba_real" = "normal") {
+  const m = r(-5, 5) || 2
+  const b = r(-6, 6)
+  const x = r(-4, 4)
+  const y = m * x + b
+  const ans = `y = ${m}x ${b >= 0 ? "+" : "-"} ${Math.abs(b)}`
+
+  return base({
+    modulo: "modulo_1",
+    subtema: "Ecuación de la recta",
+    origen,
+    dificultad,
+    pregunta: `Una recta tiene pendiente ${m} y pasa por el punto (${x}, ${y}). ¿Cuál es su ecuación?`,
+    opciones: shuffle([ans, `y = ${b}x + ${m}`, `y = ${m}x ${-b >= 0 ? "+" : "-"} ${Math.abs(-b)}`, `y = ${x}x + ${y}`]),
+    respuesta_correcta: ans,
+    explanation: `Usamos y = mx + b. Como ${y} = ${m}·${x} + b, entonces b = ${b}.`,
+    pasos: [
+      { orden: 1, titulo: "Modelo", explicacion: "La forma pendiente-intercepto es y = mx + b.", expresion: "y = mx + b" },
+      { orden: 2, titulo: "Sustituir", explicacion: `Se reemplaza m=${m}, x=${x}, y=${y}.`, expresion: `${y}=${m}(${x})+b` },
     ],
-    adaptatividad: {
-      nivel: dificultad === "baja" ? "refuerzo" : dificultad === "alta" ? "desafio" : "normal",
-      habilidad: "rectas",
-      si_falla: "Generar una pregunta con puntos positivos y diferencias pequeñas.",
-      si_acierta: "Aumentar dificultad usando coordenadas negativas o distancia no entera.",
+  })
+}
+
+function inecuacionLineal(dificultad: Difficulty, origen: "normal" | "prueba_real" = "normal") {
+  const a = r(2, 6)
+  const b = r(-8, 8)
+  const c = r(1, 12)
+  const val = (c - b) / a
+  const ans = `x > ${val}`
+
+  return base({
+    modulo: "modulo_2",
+    subtema: "Inecuaciones lineales",
+    origen,
+    dificultad,
+    pregunta: `Resuelve la inecuación ${a}x ${b >= 0 ? "+" : "-"} ${Math.abs(b)} > ${c}.`,
+    opciones: shuffle([ans, `x < ${val}`, `x > ${c + b}`, `x < ${a + c}`]),
+    respuesta_correcta: ans,
+    explanation: `Se despeja: ${a}x > ${c - b}, entonces x > ${val}.`,
+  })
+}
+
+function dominioRaiz(dificultad: Difficulty, origen: "normal" | "prueba_real" = "normal") {
+  const a = r(1, 6)
+  const ans = `[${a}, ∞)`
+
+  return base({
+    modulo: "modulo_3",
+    subtema: "Dominio",
+    origen,
+    dificultad,
+    pregunta: `Determina el dominio de f(x)=√(x-${a}).`,
+    opciones: shuffle([ans, `(${a}, ∞)`, `(-∞, ${a}]`, "R"]),
+    respuesta_correcta: ans,
+    explanation: `Para que exista la raíz: x-${a} ≥ 0, entonces x ≥ ${a}.`,
+    visualizacion: {
+      requiere_visual: true,
+      tipo_visual: "recta_real",
+      parametros: {},
     },
-    pista: "Primero calcula x₂ - x₁ e y₂ - y₁. Después eleva al cuadrado, suma y saca raíz.",
-    error_comun: "Responder el radicando sin sacar raíz.",
-    mini_refuerzo: "La fórmula de distancia viene del Teorema de Pitágoras aplicado al triángulo formado entre los puntos.",
-  }
+  })
+}
+
+function composicion(dificultad: Difficulty, origen: "normal" | "prueba_real" = "normal") {
+  const a = r(2, 5)
+  const b = r(1, 5)
+  const ans = `${a}x + ${a * b + 1}`
+
+  return base({
+    modulo: "modulo_3",
+    subtema: "Composición de funciones",
+    origen,
+    dificultad,
+    pregunta: `Sean f(x)=${a}x+1 y g(x)=x+${b}. Calcula (f∘g)(x).`,
+    opciones: shuffle([ans, `${a}x + ${b + 1}`, `${a}x + ${b}`, `${a}x + ${a + b}`]),
+    respuesta_correcta: ans,
+    explanation: `(f∘g)(x)=f(g(x))=${a}(x+${b})+1=${ans}.`,
+  })
+}
+
+function inversa(dificultad: Difficulty, origen: "normal" | "prueba_real" = "normal") {
+  const a = r(2, 6)
+  const b = r(1, 6)
+  const ans = `(x-${b})/${a}`
+
+  return base({
+    modulo: "modulo_3",
+    subtema: "Función inversa",
+    origen,
+    dificultad,
+    pregunta: `Si f(x)=${a}x+${b}, ¿cuál es f⁻¹(x)?`,
+    opciones: shuffle([ans, `${a}/(x-${b})`, `(x+${b})/${a}`, `${a}x-${b}`]),
+    respuesta_correcta: ans,
+    explanation: `y=${a}x+${b}. Intercambiamos x e y: x=${a}y+${b}. Despejamos: y=(x-${b})/${a}.`,
+  })
+}
+
+function exponencial(dificultad: Difficulty, origen: "normal" | "prueba_real" = "normal") {
+  const n = r(2, 5)
+  const ans = String(n)
+
+  return base({
+    modulo: "modulo_4",
+    subtema: "Ecuaciones exponenciales",
+    origen,
+    dificultad,
+    pregunta: `Resuelve 2^x = ${2 ** n}.`,
+    opciones: shuffle([ans, String(n + 1), String(n - 1), String(2 ** n)]),
+    respuesta_correcta: ans,
+    explanation: `Como ${2 ** n}=2^${n}, entonces x=${n}.`,
+  })
+}
+
+function logaritmo(dificultad: Difficulty, origen: "normal" | "prueba_real" = "normal") {
+  const n = r(2, 5)
+  const ans = String(n)
+
+  return base({
+    modulo: "modulo_4",
+    subtema: "Ecuaciones logarítmicas",
+    origen,
+    dificultad,
+    pregunta: `Resuelve log₂(x) = ${n}.`,
+    opciones: shuffle([ans === String(n) ? String(2 ** n) : ans, String(n), String(2 ** n + 1), String(2 ** (n - 1))]),
+    respuesta_correcta: String(2 ** n),
+    explanation: `log₂(x)=${n} significa x=2^${n}=${2 ** n}.`,
+  })
 }

@@ -8,6 +8,7 @@ const PrecalculoVisual = dynamic(() => import('./PrecalculoVisual'), { ssr: fals
 const PrecalculoSteps = dynamic(() => import('./PrecalculoSteps'), { ssr: false })
 
 import { generatePracticeSet } from '@/lib/precalculo-engine'
+import { MAT1000_FILTER_OPTIONS } from '@/lib/precalculo-ui-options'
 import { generarDiagnostico } from '@/lib/precalculo-diagnostico'
 
 import {getSubjectName, getSubjectMeta} from '../../lib/subjects'
@@ -225,7 +226,7 @@ export default function PracticeView() {
 
     const generated = generatePracticeSet({
       modulo: "modulo_1",
-      subtema: diagnostico?.siguiente_practica?.subtema || "Distancia entre puntos",
+      subtema: selectedClassSource && selectedClassSource !== "Todas" ? selectedClassSource : diagnostico?.siguiente_practica?.subtema || "Distancia entre puntos",
       cantidad: selectedLimit,
       dificultad: dificultadFinal,
     })
@@ -261,6 +262,27 @@ export default function PracticeView() {
       setDiagnostico(generarDiagnostico(attempts))
     }
   }, [selectedSubject, attempts])
+
+
+  useEffect(() => {
+    if (selectedSubject !== "MAT1000") return
+
+    setTopics([...MAT1000_FILTER_OPTIONS.evaluaciones])
+    setAuthors([...MAT1000_FILTER_OPTIONS.modulos])
+    setClassSources([...MAT1000_FILTER_OPTIONS.subtemas])
+
+    if (!selectedTopic || !MAT1000_FILTER_OPTIONS.evaluaciones.includes(selectedTopic as any)) {
+      setSelectedTopic("I1")
+    }
+
+    if (!selectedAuthor || !MAT1000_FILTER_OPTIONS.modulos.includes(selectedAuthor as any)) {
+      setSelectedAuthor("Módulo 1: Recta y parábola")
+    }
+
+    if (!selectedClassSource || !MAT1000_FILTER_OPTIONS.subtemas.includes(selectedClassSource as any)) {
+      setSelectedClassSource("Distancia entre puntos")
+    }
+  }, [selectedSubject])
 
   const modeInfo = {
     practica: {
