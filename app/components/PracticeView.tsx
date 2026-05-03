@@ -8,6 +8,7 @@ const PrecalculoVisual = dynamic(() => import('./PrecalculoVisual'), { ssr: fals
 const PrecalculoSteps = dynamic(() => import('./PrecalculoSteps'), { ssr: false })
 
 import { generatePracticeSet } from '@/lib/precalculo-engine'
+import { generateMat1000SafeSession } from '@/lib/mat1000-safe-session'
 import { generateMat1000Session } from '@/lib/mat1000-uc-real-adapter'
 import { MAT1000_FILTER_OPTIONS, getMat1000ModulesForEvaluation, getMat1000SubtemasForModule, resolveModuloIdFromLabel } from '@/lib/precalculo-ui-options'
 import { generarDiagnostico } from '@/lib/precalculo-diagnostico'
@@ -212,10 +213,12 @@ export default function PracticeView() {
 
     const evaluaciones = [...MAT1000_FILTER_OPTIONS.evaluaciones]
     const evaluation = evaluaciones.includes(selectedTopic as any) ? selectedTopic : "I1"
+
     const modules = getMat1000ModulesForEvaluation(evaluation)
-    const moduleLabel = modules.includes(selectedAuthor) ? selectedAuthor : modules[0]
-    const subtemas = getMat1000SubtemasForModule(moduleLabel)
-    const subtema = subtemas.includes(selectedClassSource as any) ? selectedClassSource : subtemas[0]
+    const moduleLabel = modules.includes(selectedAuthor as any) ? selectedAuthor : "Todos"
+
+    const subtemas = getMat1000SubtemasForModule(moduleLabel, evaluation)
+    const subtema = subtemas.includes(selectedClassSource as any) ? selectedClassSource : "Todos"
 
     setTopics(evaluaciones)
     setAuthors(modules)
@@ -225,6 +228,7 @@ export default function PracticeView() {
     if (selectedAuthor !== moduleLabel) setSelectedAuthor(moduleLabel)
     if (selectedClassSource !== subtema) setSelectedClassSource(subtema)
   }, [selectedSubject, selectedTopic, selectedAuthor, selectedClassSource])
+
 
   const modeInfo = {
     practica: {

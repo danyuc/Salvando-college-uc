@@ -1,89 +1,18 @@
-export type Mat1000Evaluation = "I1" | "I2" | "I3" | "EXAMEN"
-
-export const MAT1000_FILTER_OPTIONS = {
-  evaluaciones: ["I1", "I2", "I3", "EXAMEN"],
-  modulos: [
-    "Módulo 1: Recta y parábola",
-    "Módulo 2: Inecuaciones",
-    "Módulo 3: Funciones reales",
-    "Módulo 4: Exponenciales y logaritmos",
-    "Módulo 5: Trigonometría",
-    "Módulo 6: Polinomios",
-    "Módulo 7: Sucesiones y sumas",
-  ],
-  subtemas: [
-    "Distancia entre puntos",
-    "Intersección con ejes coordenados",
-    "Ecuación de la recta",
-    "Rectas paralelas y perpendiculares",
-    "Sistemas lineales 2x2",
-    "Parábola y modelos cuadráticos",
-    "Modelamiento cuadrático",
-    "Intervalos",
-    "Inecuaciones lineales",
-    "Inecuaciones cuadráticas",
-    "Inecuaciones racionales",
-    "Tabla de signos",
-    "Valor absoluto",
-    "Modelamiento con inecuaciones",
-    "Dominio",
-    "Recorrido",
-    "Gráficas básicas",
-    "Transformaciones de funciones",
-    "Álgebra de funciones",
-    "Composición de funciones",
-    "Funciones inyectivas",
-    "Función inversa",
-    "Funciones por tramos",
-    "Modelamiento con funciones",
-    "Función exponencial",
-    "Transformaciones exponenciales",
-    "Propiedades de exponentes",
-    "Función logarítmica",
-    "Logaritmo como inversa",
-    "Propiedades de logaritmos",
-    "Ecuaciones exponenciales",
-    "Ecuaciones logarítmicas",
-    "Modelamiento exponencial y logarítmico",
-    "Razones trigonométricas",
-    "Circunferencia unitaria",
-    "Radianes",
-    "Ángulos notables",
-    "Gráficas seno y coseno",
-    "Amplitud",
-    "Período",
-    "Desfase",
-    "Identidades trigonométricas",
-    "Funciones trigonométricas inversas",
-    "Modelamiento trigonométrico",
-    "Polinomios",
-    "Ceros de polinomios",
-    "Multiplicidad",
-    "Comportamiento al infinito",
-    "División polinomial",
-    "Teorema del factor",
-    "Gráfica de polinomios",
-    "Modelamiento polinomial",
-    "Sucesiones",
-    "Sucesiones aritméticas",
-    "Sucesiones geométricas",
-    "Notación sigma",
-    "Sumas finitas",
-    "Modelos discretos",
-  ],
-} as const
-
 export const MAT1000_MODULES = {
   "Módulo 1: Recta y parábola": {
     id: "modulo_1",
     evaluaciones: ["I1", "EXAMEN"],
     subtemas: [
       "Distancia entre puntos",
-      "Intersección con ejes coordenados",
       "Ecuación de la recta",
       "Rectas paralelas y perpendiculares",
       "Sistemas lineales 2x2",
       "Parábola y modelos cuadráticos",
+      "Intervalos",
+      "Inecuaciones lineales",
+      "Inecuaciones cuadráticas",
+      "Inecuaciones racionales",
+      "Valor absoluto",
       "Modelamiento cuadrático",
     ],
   },
@@ -104,15 +33,12 @@ export const MAT1000_MODULES = {
     id: "modulo_3",
     evaluaciones: ["I2", "EXAMEN"],
     subtemas: [
+      "Funciones por tramos",
       "Dominio",
       "Recorrido",
-      "Gráficas básicas",
       "Transformaciones de funciones",
-      "Álgebra de funciones",
       "Composición de funciones",
-      "Funciones inyectivas",
       "Función inversa",
-      "Funciones por tramos",
       "Modelamiento con funciones",
     ],
   },
@@ -121,10 +47,7 @@ export const MAT1000_MODULES = {
     evaluaciones: ["I2", "EXAMEN"],
     subtemas: [
       "Función exponencial",
-      "Transformaciones exponenciales",
-      "Propiedades de exponentes",
       "Función logarítmica",
-      "Logaritmo como inversa",
       "Propiedades de logaritmos",
       "Ecuaciones exponenciales",
       "Ecuaciones logarítmicas",
@@ -137,12 +60,7 @@ export const MAT1000_MODULES = {
     subtemas: [
       "Razones trigonométricas",
       "Circunferencia unitaria",
-      "Radianes",
       "Ángulos notables",
-      "Gráficas seno y coseno",
-      "Amplitud",
-      "Período",
-      "Desfase",
       "Identidades trigonométricas",
       "Funciones trigonométricas inversas",
       "Modelamiento trigonométrico",
@@ -154,12 +72,9 @@ export const MAT1000_MODULES = {
     subtemas: [
       "Polinomios",
       "Ceros de polinomios",
-      "Multiplicidad",
-      "Comportamiento al infinito",
       "División polinomial",
       "Teorema del factor",
       "Gráfica de polinomios",
-      "Modelamiento polinomial",
     ],
   },
   "Módulo 7: Sucesiones y sumas": {
@@ -176,27 +91,38 @@ export const MAT1000_MODULES = {
   },
 } as const
 
+export const MAT1000_FILTER_OPTIONS = {
+  evaluaciones: ["I1", "I2", "I3", "EXAMEN"],
+  modulos: ["Todos", ...Object.keys(MAT1000_MODULES)],
+  subtemas: ["Todos", ...Object.values(MAT1000_MODULES).flatMap(m => [...m.subtemas])],
+} as const
+
 export function getMat1000ModulesForEvaluation(evaluation: string) {
   const modules = Object.entries(MAT1000_MODULES)
-    .filter(([, module]) => module.evaluaciones.includes(evaluation as any))
+    .filter(([, m]) => m.evaluaciones.includes(evaluation as any))
     .map(([label]) => label)
 
-  return evaluation === "EXAMEN" ? ["Todos", ...modules] : modules
+  return ["Todos", ...modules]
 }
 
-export function getMat1000SubtemasForModule(moduleLabel: string) {
-  const first = Object.keys(MAT1000_MODULES)[0]
-  if (moduleLabel === "Todos") {
-    return ["Todos", ...Object.values(MAT1000_MODULES).flatMap(m => [...m.subtemas])]
+export function getMat1000SubtemasForModule(moduleLabel: string, evaluation = "I1") {
+  if (!moduleLabel || moduleLabel === "Todos") {
+    return [
+      "Todos",
+      ...Object.entries(MAT1000_MODULES)
+        .filter(([, m]) => m.evaluaciones.includes(evaluation as any))
+        .flatMap(([, m]) => [...m.subtemas]),
+    ]
   }
 
-  const key = moduleLabel in MAT1000_MODULES ? moduleLabel : first
-  return ["Todos", ...MAT1000_MODULES[key as keyof typeof MAT1000_MODULES].subtemas]
+  const key = moduleLabel as keyof typeof MAT1000_MODULES
+  return MAT1000_MODULES[key]
+    ? ["Todos", ...MAT1000_MODULES[key].subtemas]
+    : ["Todos"]
 }
 
 export function resolveModuloIdFromLabel(moduleLabel: string) {
-  const first = Object.keys(MAT1000_MODULES)[0]
-  if (moduleLabel === "Todos") return "modulo_1"
-  const key = moduleLabel in MAT1000_MODULES ? moduleLabel : first
-  return MAT1000_MODULES[key as keyof typeof MAT1000_MODULES].id
+  if (!moduleLabel || moduleLabel === "Todos") return "modulo_1"
+  const key = moduleLabel as keyof typeof MAT1000_MODULES
+  return MAT1000_MODULES[key]?.id || "modulo_1"
 }
