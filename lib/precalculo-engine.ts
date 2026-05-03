@@ -95,6 +95,8 @@ export function generateQuestion(input: {
   if (subtema.includes("Función inversa")) return inversa(dificultad, input.origen)
   if (subtema.includes("Ecuaciones exponenciales")) return exponencial(dificultad, input.origen)
   if (subtema.includes("Ecuaciones logarítmicas")) return logaritmo(dificultad, input.origen)
+  if (subtema.includes("Modelamiento cuadrático")) return modelamientoCuadratico(dificultad, input.origen)
+  if (subtema.includes("Modelamiento exponencial")) return modelamientoExponencial(dificultad, input.origen)
 
   return distancia(dificultad, input.origen)
 }
@@ -308,5 +310,54 @@ function logaritmo(dificultad: Difficulty, origen: "normal" | "prueba_real" = "n
     opciones: shuffle([ans === String(n) ? String(2 ** n) : ans, String(n), String(2 ** n + 1), String(2 ** (n - 1))]),
     respuesta_correcta: String(2 ** n),
     explanation: `log₂(x)=${n} significa x=2^${n}=${2 ** n}.`,
+  })
+}
+
+
+function modelamientoCuadratico(dificultad: Difficulty, origen: "normal" | "prueba_real" = "prueba_real") {
+  const h0 = r(8, 20)
+  const v0 = r(6, 14)
+  const t = r(1, 3)
+  const altura = -5 * t * t + v0 * t + h0
+  const ans = String(altura)
+
+  return base({
+    modulo: "modulo_1",
+    subtema: "Modelamiento cuadrático",
+    origen,
+    dificultad,
+    tema: "Modelamiento",
+    pregunta: `Un objeto se lanza verticalmente y su altura está dada por h(t) = -5t² + ${v0}t + ${h0}. ¿Cuál es la altura a los ${t} segundos?`,
+    opciones: shuffle([ans, String(altura + 5), String(Math.abs(altura - 5)), String(h0 + v0 * t)]),
+    respuesta_correcta: ans,
+    explanation: `Se evalúa el modelo en t=${t}: h(${t}) = -5(${t})² + ${v0}(${t}) + ${h0} = ${altura}.`,
+    pasos: [
+      { orden: 1, titulo: "Identificar el modelo", explicacion: "La función entrega la altura según el tiempo.", expresion: `h(t) = -5t² + ${v0}t + ${h0}` },
+      { orden: 2, titulo: "Sustituir el tiempo", explicacion: `Reemplazamos t por ${t}.`, expresion: `h(${t}) = -5(${t})² + ${v0}(${t}) + ${h0}` },
+      { orden: 3, titulo: "Calcular", explicacion: "Se respeta el orden de operaciones.", expresion: `h(${t}) = ${altura}` },
+    ],
+  })
+}
+
+function modelamientoExponencial(dificultad: Difficulty, origen: "normal" | "prueba_real" = "prueba_real") {
+  const inicial = r(100, 400)
+  const tasa = 2
+  const tiempo = r(2, 5)
+  const ans = String(inicial * 2 ** tiempo)
+
+  return base({
+    modulo: "modulo_4",
+    subtema: "Modelamiento exponencial y logarítmico",
+    origen,
+    dificultad,
+    tema: "Modelamiento",
+    pregunta: `Una población inicial de ${inicial} bacterias se duplica cada hora. ¿Cuántas bacterias habrá después de ${tiempo} horas?`,
+    opciones: shuffle([ans, String(inicial * tiempo), String(inicial + tasa * tiempo), String(inicial * 2 ** (tiempo - 1))]),
+    respuesta_correcta: ans,
+    explanation: `Como se duplica cada hora, el modelo es P(t)=${inicial}·2^t. Entonces P(${tiempo})=${ans}.`,
+    pasos: [
+      { orden: 1, titulo: "Elegir modelo", explicacion: "Cuando una cantidad se duplica, se usa crecimiento exponencial.", expresion: `P(t)=${inicial}·2^t` },
+      { orden: 2, titulo: "Evaluar", explicacion: `Reemplazamos t=${tiempo}.`, expresion: `P(${tiempo})=${inicial}·2^${tiempo}` },
+    ],
   })
 }

@@ -8,7 +8,7 @@ const PrecalculoVisual = dynamic(() => import('./PrecalculoVisual'), { ssr: fals
 const PrecalculoSteps = dynamic(() => import('./PrecalculoSteps'), { ssr: false })
 
 import { generatePracticeSet } from '@/lib/precalculo-engine'
-import { MAT1000_FILTER_OPTIONS } from '@/lib/precalculo-ui-options'
+import { MAT1000_FILTER_OPTIONS, getMat1000ModulesForEvaluation, getMat1000SubtemasForModule, resolveModuloIdFromLabel } from '@/lib/precalculo-ui-options'
 import { generarDiagnostico } from '@/lib/precalculo-diagnostico'
 
 import {getSubjectName, getSubjectMeta} from '../../lib/subjects'
@@ -208,81 +208,22 @@ export default function PracticeView() {
 
   useEffect(() => {
     if (selectedSubject !== "MAT1000") return
-    setMode(normalizePracticeMode(String(mode || 'practica')))
 
-    const lastFails = attempts.slice(-3).filter(a => !a.correct).length
+    const evaluaciones = [...MAT1000_FILTER_OPTIONS.evaluaciones]
+    const evaluation = evaluaciones.includes(selectedTopic as any) ? selectedTopic : "I1"
+    const modules = getMat1000ModulesForEvaluation(evaluation)
+    const moduleLabel = modules.includes(selectedAuthor) ? selectedAuthor : modules[0]
+    const subtemas = getMat1000SubtemasForModule(moduleLabel)
+    const subtema = subtemas.includes(selectedClassSource as any) ? selectedClassSource : subtemas[0]
 
-    const dificultadFinal =
-      (diagnostico?.siguiente_practica?.dificultad ||
-        (lastFails >= 2
-          ? "baja"
-          : lastFails === 1
-            ? "media"
-            : adaptiveDifficulty === "alta"
-              ? "alta"
-              : adaptiveDifficulty === "facil"
-                ? "baja"
-                : "media")) as "baja" | "media" | "alta"
+    setTopics(evaluaciones)
+    setAuthors(modules)
+    setClassSources(subtemas)
 
-    const generated = generatePracticeSet({
-      modulo: "modulo_1",
-      subtema: selectedClassSource && selectedClassSource !== "Todas" ? selectedClassSource : diagnostico?.siguiente_practica?.subtema || "Distancia entre puntos",
-      cantidad: selectedLimit,
-      dificultad: dificultadFinal,
-    })
-
-    const mapped = generated.map((q, index) => ({
-      id: `precalculo-${index}-${Date.now()}`,
-      asignatura: "MAT1000",
-      tema: q.tema,
-      subtema: q.subtema,
-      tipo: "seleccion_multiple" as const,
-      dificultad: q.dificultad === "baja" ? "facil" as const : q.dificultad,
-      pregunta: q.pregunta,
-      opciones: q.opciones,
-      respuesta_correcta: ["A", "B", "C", "D"][q.opciones.indexOf(q.respuesta_correcta)] as "A" | "B" | "C" | "D",
-      explicacion: q.explanation,
-      respuesta_esperada: null,
-      criterios_evaluacion: null,
-      nivel_cognitivo: "adaptativo",
-      referencia_autor: "Motor Precálculo MAT1000",
-      error_comun: q.error_comun,
-      fuente: q.origen,
-      visualizacion: q.visualizacion,
-    }))
-
-    setQuestions(mapped)
-    setCurrentIndex(0)
-    setFinished(false)
-    setQuestionStart(Date.now())
-  }, [selectedSubject, adaptiveDifficulty, selectedLimit, diagnostico, attempts, mode])
-
-  useEffect(() => {
-    if (selectedSubject === "MAT1000" && attempts.length > 5) {
-      setDiagnostico(generarDiagnostico(attempts))
-    }
-  }, [selectedSubject, attempts])
-
-
-  useEffect(() => {
-    if (selectedSubject !== "MAT1000") return
-
-    setTopics([...MAT1000_FILTER_OPTIONS.evaluaciones])
-    setAuthors([...MAT1000_FILTER_OPTIONS.modulos])
-    setClassSources([...MAT1000_FILTER_OPTIONS.subtemas])
-
-    if (!selectedTopic || !MAT1000_FILTER_OPTIONS.evaluaciones.includes(selectedTopic as any)) {
-      setSelectedTopic("I1")
-    }
-
-    if (!selectedAuthor || !MAT1000_FILTER_OPTIONS.modulos.includes(selectedAuthor as any)) {
-      setSelectedAuthor("Módulo 1: Recta y parábola")
-    }
-
-    if (!selectedClassSource || !MAT1000_FILTER_OPTIONS.subtemas.includes(selectedClassSource as any)) {
-      setSelectedClassSource("Distancia entre puntos")
-    }
-  }, [selectedSubject])
+    if (selectedTopic !== evaluation) setSelectedTopic(evaluation)
+    if (selectedAuthor !== moduleLabel) setSelectedAuthor(moduleLabel)
+    if (selectedClassSource !== subtema) setSelectedClassSource(subtema)
+  }, [selectedSubject, selectedTopic, selectedAuthor, selectedClassSource])
 
   const modeInfo = {
     practica: {
@@ -1010,7 +951,7 @@ setQuestions(prioritized.slice(0, limit))
             onClick={loadQuestions}
             disabled={sessionLoading}
           >
-            {sessionLoading ? 'Cargando...' : 'Comenzar sesión'}
+            {sessionLoading ? 'Cargando...' : 'Comenzar práctica'}
           </button>
 
           <button style={secondaryButton} onClick={restartSession}>
@@ -1049,7 +990,7 @@ setQuestions(prioritized.slice(0, limit))
         <section style={card}>
           <h2>Banco conectado ✅</h2>
           <p style={muted}>
-            Selecciona asignatura, modo y presiona “Comenzar sesión”.
+            Selecciona asignatura, modo y presiona “Comenzar práctica”.
           </p>
         </section>
       )}
@@ -1113,13 +1054,6 @@ setQuestions(prioritized.slice(0, limit))
               puntos={(currentQuestion as any).visualizacion.parametros.puntos}
             />
           )}
-
-
-        {selectedSubject === "MAT1000" && currentQuestion?.visualizacion?.parametros?.puntos && (
-          <PrecalculoVisual
-            puntos={currentQuestion.visualizacion.parametros.puntos}
-          />
-        )}
 </h2>
 
           {currentQuestion.tipo === 'seleccion_multiple' ? (
@@ -1179,7 +1113,7 @@ setQuestions(prioritized.slice(0, limit))
               }}
             >
               <strong>
-                {answerState === 'correct' && !isExamMode && !isExamMode ? '✅ Correcta' : '❌ Incorrecta'}
+                {answerState === 'correct' && !isExamMode && !isExamMode ? '✅ Correcta' : '❌ Incorrecta — estilo prueba UC'}
               </strong>
 
               {currentQuestion.respuesta_correcta && (
@@ -1195,7 +1129,7 @@ setQuestions(prioritized.slice(0, limit))
 
               {currentQuestion.error_comun && (
                 <div style={warningBox}>
-                  Error común: {currentQuestion.error_comun}
+                  Puedes revisar el paso a paso antes de avanzar. Error común: {currentQuestion.error_comun}
                 </div>
               )}
 
