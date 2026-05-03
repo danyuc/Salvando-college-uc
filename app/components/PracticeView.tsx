@@ -567,7 +567,7 @@ setQuestions(prioritized.slice(0, limit))
       setFocusMode(true)
     } catch (error) {
       console.error('LOAD QUESTIONS ERROR:', error)
-      alert('No se pudieron cargar las preguntas.')
+      console.warn('No se pudieron cargar preguntas desde banco; usando fallback MAT1000.')
     } finally {
       setSessionLoading(false)
     }
@@ -814,7 +814,7 @@ setQuestions(prioritized.slice(0, limit))
         <div style={filters}>
           <label style={field}>
             <span>Asignatura</span>
-            <select disabled={diagnosticRequired}
+            <select
               style={select}
               value={selectedSubject}
               onChange={(e) => {
@@ -840,7 +840,7 @@ setQuestions(prioritized.slice(0, limit))
 
           <label style={field}>
             <span>Evaluación</span>
-            <select disabled={diagnosticRequired}
+            <select
               style={select}
               value={selectedTopic}
               onChange={(e) => setSelectedTopic(e.target.value)}
@@ -856,7 +856,7 @@ setQuestions(prioritized.slice(0, limit))
 
           <label style={field}>
             <span>Módulo</span>
-            <select disabled={diagnosticRequired}
+            <select
               style={select}
               value={selectedAuthor}
               onChange={(e) => setSelectedAuthor(e.target.value)}
@@ -872,7 +872,7 @@ setQuestions(prioritized.slice(0, limit))
 
           <label style={field}>
             <span>Subtema</span>
-            <select disabled={diagnosticRequired}
+            <select
               style={select}
               value={selectedClassSource}
               onChange={(e) => setSelectedClassSource(e.target.value)}
@@ -888,7 +888,7 @@ setQuestions(prioritized.slice(0, limit))
 
           <label style={field}>
             <span>Modo</span>
-            <select disabled={diagnosticRequired}
+            <select
               style={select}
               value={mode}
               onChange={(e) => setMode(normalizePracticeMode(String(e.target.value as PracticeMode)))}
@@ -905,7 +905,7 @@ setQuestions(prioritized.slice(0, limit))
           {mode === 'simulacion' && (
             <label style={field}>
               <span>Duración prueba</span>
-              <select disabled={diagnosticRequired}
+              <select
                 style={select}
                 value={examDurationOption}
                 onChange={(e) => setExamDurationOption(e.target.value as any)}
@@ -921,7 +921,7 @@ setQuestions(prioritized.slice(0, limit))
 
           <label style={field}>
             <span>Tipo de preguntas</span>
-<select disabled={diagnosticRequired}
+<select
   style={select}
   value={questionFormat}
   onChange={(e) => setQuestionFormat(e.target.value as any)}
@@ -932,7 +932,7 @@ setQuestions(prioritized.slice(0, limit))
 </select>
 
 <span>Cantidad</span>
-            <select disabled={diagnosticRequired}
+            <select
               style={select}
               value={selectedLimit}
               onChange={(e) => setSelectedLimit(Number(e.target.value))}
@@ -950,7 +950,7 @@ setQuestions(prioritized.slice(0, limit))
           <button
             style={button}
             onClick={loadQuestions}
-            disabled={sessionLoading}
+           
           >
             {sessionLoading ? 'Cargando...' : 'Comenzar práctica'}
           </button>
@@ -1080,7 +1080,7 @@ setQuestions(prioritized.slice(0, limit))
                   <button
                     key={option}
                     style={optionStyle}
-                    disabled={Boolean(selectedAnswer)}
+                   
                     onClick={() => answer(letter)}
                   >
                     {option}

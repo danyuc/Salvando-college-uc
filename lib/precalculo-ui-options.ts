@@ -177,19 +177,26 @@ export const MAT1000_MODULES = {
 } as const
 
 export function getMat1000ModulesForEvaluation(evaluation: string) {
-  return Object.entries(MAT1000_MODULES)
+  const modules = Object.entries(MAT1000_MODULES)
     .filter(([, module]) => module.evaluaciones.includes(evaluation as any))
     .map(([label]) => label)
+
+  return evaluation === "EXAMEN" ? ["Todos", ...modules] : modules
 }
 
 export function getMat1000SubtemasForModule(moduleLabel: string) {
   const first = Object.keys(MAT1000_MODULES)[0]
+  if (moduleLabel === "Todos") {
+    return ["Todos", ...Object.values(MAT1000_MODULES).flatMap(m => [...m.subtemas])]
+  }
+
   const key = moduleLabel in MAT1000_MODULES ? moduleLabel : first
-  return [...MAT1000_MODULES[key as keyof typeof MAT1000_MODULES].subtemas]
+  return ["Todos", ...MAT1000_MODULES[key as keyof typeof MAT1000_MODULES].subtemas]
 }
 
 export function resolveModuloIdFromLabel(moduleLabel: string) {
   const first = Object.keys(MAT1000_MODULES)[0]
+  if (moduleLabel === "Todos") return "modulo_1"
   const key = moduleLabel in MAT1000_MODULES ? moduleLabel : first
   return MAT1000_MODULES[key as keyof typeof MAT1000_MODULES].id
 }
