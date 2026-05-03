@@ -1,100 +1,136 @@
-import { supabase } from '@/lib/supabase'
+import { supabase } from "./supabase"
 
 export type Evaluation = {
-  id: string
+  id?: string
   user_id: string
-
   subject: string
-  type: 'control' | 'prueba' | 'examen' | 'tarea' | 'otro'
-
-  title?: string | null
+  title: string
+  type?: string | null
   topic?: string | null
-
   number?: number | null
-  difficulty?: 'facil' | 'media' | 'dificil'
-  notes?: string | null
-
   grade?: number | null
-  weight_percent: number
-
+  weight_percent?: number | null
+  notes?: string | null
+  date?: string | null
   start_date?: string | null
   end_date?: string | null
-
-  estimated?: boolean
-  trend_weight?: number
+  difficulty?: "baja" | "media" | "alta" | string | null
+  created_at?: string | null
 }
 
-// =========================
-// CREATE
-// =========================
-export async function createEvaluation(input: Evaluation) {
-  const { data, error } = await supabase
-    .from('evaluations')
-    .insert(input)
-    .select('*')
-    .single()
+function normalizeEvaluation(input: Partial<Evaluation>) {
+  const startDate = input.start_date ?? input.date ?? null
+  const endDate = input.end_date ?? startDate
 
-  if (error) throw error
-  return data
+  return {
+    user_id: input.user_id,
+    subject: input.subject ?? "Sin ramo",
+    title: input.title ?? input.topic ?? "Evaluación",
+    type: input.type ?? "evaluacion",
+    topic: input.topic ?? null,
+    number:
+      typeof input.number === "number" && Number.isFinite(input.number)
+        ? input.number
+        : null,
+    grade:
+      typeof input.grade === "number" && Number.isFinite(input.grade)
+        ? input.grade
+        : null,
+    weight_percent:
+      typeof input.weight_percent === "number" &&
+      Number.isFinite(input.weight_percent)
+        ? input.weight_percent
+        : 0,
+    notes: input.notes ?? null,
+    date: startDate,
+    start_date: startDate,
+    end_date: endDate,
+    difficulty: input.difficulty ?? "media",
+  }
 }
 
-// =========================
-// BULK
-// =========================
-export async function bulkCreateEvaluations(items: Evaluation[]) {
-  const { data, error } = await supabase
-    .from('evaluations')
-    .insert(items)
-
-  if (error) throw error
-  return data
-}
-
-// =========================
-// GET
-// =========================
 export async function getUserEvaluations(userId: string) {
   const { data, error } = await supabase
-    .from('evaluations')
-    .select('*')
-    .or(`user_id.eq.${userId},user_id.is.null`)
-    .order('start_date', { ascending: true, nullsFirst: false })
+    .from("evaluations")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
 
-  if (error) throw error
+  if (error) {
+    console.error("GET USER EVALUATIONS ERROR:", error)
+    throw new Error(error.message)
+  }
 
-  return (data || []).map((ev: any) => ({
-    ...ev,
-    weight_percent: Number(ev.weight_percent ?? 0),
-    grade: ev.grade === null || ev.grade === undefined ? null : Number(ev.grade),
-    start_date: ev.start_date ?? null,
-    end_date: ev.end_date ?? ev.start_date ?? null,
-  }))
+  return (data ?? []) as Evaluation[]
 }
 
-// =========================
-// UPDATE
-// =========================
-export async function updateEvaluation(id: string, updates: Partial<Evaluation>) {
+export async function createEvaluation(
+  input: Omit<Evaluation, "id" | "created_at">
+) {
   const { data, error } = await supabase
-    .from('evaluations')
-    .update(updates)
-    .eq('id', id)
-    .select('*')
+    .from("evaluations")
+    .insert(normalizeEvaluation(input))
+    .select()
     .single()
 
-  if (error) throw error
-  return data
+  if (error) {
+    console.error("CREATE EVALUATION ERROR:", error)
+    throw new Error(error.message)
+  }
+
+  return data as Evaluation
 }
 
-// =========================
-// DELETE
-// =========================
-export async function deleteEvaluation(id: string) {
-  const { error } = await supabase
-    .from('evaluations')
-    .delete()
-    .eq('id', id)
+export async function bulkCreateEvaluations(
+  evaluations: Array<Omit<Evaluation, "id" | "created_at">>
+) {
+  if (!evaluations.length) return []
 
-  if (error) throw error
+  const payload = evaluations.map(normalizeEvaluation)
+
+  const { data, error } = await supabase
+    .from("evaluations")
+    .insert(payload)
+    .select()
+
+  if (error) {
+    console.error("BULK CREATE EVALUATIONS ERROR:", error)
+    throw new Error(error.message)
+  }
+
+  return (data ?? []) as Evaluation[]
+}
+
+export async function updateEvaluation(
+  id: string,
+  updates: Partial<Evaluation>
+) {
+  const payload = normalizeEvaluation(updates)
+
+  delete (payload as any).user_id
+
+  const { data, error } = await supabase
+    .from("evaluations")
+    .update(payload)
+    .eq("id", id)
+    .select()
+    .single()
+
+  if (error) {
+    console.error("UPDATE EVALUATION ERROR:", error)
+    throw new Error(error.message)
+  }
+
+  return data as Evaluation
+}
+
+export async function deleteEvaluation(id: string) {
+  const { error } = await supabase.from("evaluations").delete().eq("id", id)
+
+  if (error) {
+    console.error("DELETE EVALUATION ERROR:", error)
+    throw new Error(error.message)
+  }
+
   return true
 }

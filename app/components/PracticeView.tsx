@@ -72,6 +72,19 @@ const LETTERS = ['A', 'B', 'C', 'D'] as const
 
 /* ================= HELPERS ================= */
 
+
+function normalizePracticeMode(value: string): PracticeMode {
+  const v = String(value || "").toLowerCase()
+
+  if (v.includes("diagn")) return "diagnostico"
+  if (v.includes("adapt")) return "adaptativo"
+  if (v.includes("simul") || v.includes("exam") || v.includes("uc")) return "simulacion"
+  if (v.includes("rapid") || v.includes("corta")) return "rapido"
+  if (v.includes("guiada") || v.includes("pract")) return "practica"
+
+  return "practica"
+}
+
 function normalizeQuestionType(tipo: string) {
   const t = String(tipo || '').toLowerCase()
 
@@ -160,7 +173,7 @@ export default function PracticeView() {
   const [classSources, setClassSources] = useState<string[]>([])
   const [selectedLimit, setSelectedLimit] = useState(20)
   const [questionFormat, setQuestionFormat] = useState<'alternativas' | 'desarrollo' | 'mixto'>('mixto')
-  const [mode, setMode] = useState<PracticeMode>(urlMode)
+  const [mode, setMode] = useState<PracticeMode>(normalizePracticeMode(urlMode || 'practica'))
 
   const [questions, setQuestions] = useState<Question[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -194,6 +207,7 @@ export default function PracticeView() {
 
   useEffect(() => {
     if (selectedSubject !== "MAT1000") return
+    setMode(normalizePracticeMode(String(mode || 'practica')))
 
     const lastFails = attempts.slice(-3).filter(a => !a.correct).length
 
@@ -240,7 +254,7 @@ export default function PracticeView() {
     setCurrentIndex(0)
     setFinished(false)
     setQuestionStart(Date.now())
-  }, [selectedSubject, adaptiveDifficulty, selectedLimit, diagnostico, attempts])
+  }, [selectedSubject, adaptiveDifficulty, selectedLimit, diagnostico, attempts, mode])
 
   useEffect(() => {
     if (selectedSubject === "MAT1000" && attempts.length > 5) {
@@ -437,17 +451,17 @@ export default function PracticeView() {
       return
     }
 
-    if (!mode) {
+    if (!normalizePracticeMode(String(mode))) {
       alert('Selecciona un modo de práctica.')
       return
     }
 
-    if (!mode) {
+    if (!normalizePracticeMode(String(mode))) {
       alert('Selecciona un modo de práctica.')
       return
     }
 
-    if (!mode) {
+    if (!normalizePracticeMode(String(mode))) {
       alert('Selecciona un modo de práctica.')
       return
     }
@@ -709,7 +723,7 @@ setQuestions(prioritized.slice(0, limit))
     const subjectMeta = getSubjectMeta(selectedSubject)
 
   return (
-      <main style={container}>
+<main style={container}>
         <section style={card}>Cargando práctica inteligente...</section>
       {questions.length > 0 && (
         <div style={dockPractice}>
@@ -836,7 +850,7 @@ setQuestions(prioritized.slice(0, limit))
         <div style={filters}>
           <label style={field}>
             <span>Asignatura</span>
-            <select
+            <select disabled={diagnosticRequired}
               style={select}
               value={selectedSubject}
               onChange={(e) => {
@@ -862,7 +876,7 @@ setQuestions(prioritized.slice(0, limit))
 
           <label style={field}>
             <span>Tema</span>
-            <select
+            <select disabled={diagnosticRequired}
               style={select}
               value={selectedTopic}
               onChange={(e) => setSelectedTopic(e.target.value)}
@@ -878,7 +892,7 @@ setQuestions(prioritized.slice(0, limit))
 
           <label style={field}>
             <span>Autor</span>
-            <select
+            <select disabled={diagnosticRequired}
               style={select}
               value={selectedAuthor}
               onChange={(e) => setSelectedAuthor(e.target.value)}
@@ -894,7 +908,7 @@ setQuestions(prioritized.slice(0, limit))
 
           <label style={field}>
             <span>Clase / fuente</span>
-            <select
+            <select disabled={diagnosticRequired}
               style={select}
               value={selectedClassSource}
               onChange={(e) => setSelectedClassSource(e.target.value)}
@@ -910,10 +924,10 @@ setQuestions(prioritized.slice(0, limit))
 
           <label style={field}>
             <span>Modo</span>
-            <select
+            <select disabled={diagnosticRequired}
               style={select}
               value={mode}
-              onChange={(e) => setMode(e.target.value as PracticeMode)}
+              onChange={(e) => setMode(normalizePracticeMode(String(e.target.value as PracticeMode)))}
             >
               <option value="">Selecciona modo</option>
               <option value="practica">Práctica guiada</option>
@@ -927,7 +941,7 @@ setQuestions(prioritized.slice(0, limit))
           {mode === 'simulacion' && (
             <label style={field}>
               <span>Duración prueba</span>
-              <select
+              <select disabled={diagnosticRequired}
                 style={select}
                 value={examDurationOption}
                 onChange={(e) => setExamDurationOption(e.target.value as any)}
@@ -943,7 +957,7 @@ setQuestions(prioritized.slice(0, limit))
 
           <label style={field}>
             <span>Tipo de preguntas</span>
-<select
+<select disabled={diagnosticRequired}
   style={select}
   value={questionFormat}
   onChange={(e) => setQuestionFormat(e.target.value as any)}
@@ -954,7 +968,7 @@ setQuestions(prioritized.slice(0, limit))
 </select>
 
 <span>Cantidad</span>
-            <select
+            <select disabled={diagnosticRequired}
               style={select}
               value={selectedLimit}
               onChange={(e) => setSelectedLimit(Number(e.target.value))}
