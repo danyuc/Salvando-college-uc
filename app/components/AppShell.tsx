@@ -191,13 +191,13 @@ const topLeft: CSSProperties = {
 }
 
 const iconButton: CSSProperties = {
-  display: 'none',
   padding: '10px 12px',
   borderRadius: 12,
   border: '1px solid rgba(255,255,255,.12)',
   background: 'rgba(255,255,255,.08)',
   color: 'white',
   fontWeight: 900,
+  cursor: 'pointer',
 }
 
 const backButton: CSSProperties = {
@@ -230,4 +230,5 @@ const overlay: CSSProperties = {
   zIndex: 45,
   background: 'rgba(0,0,0,.55)',
   border: 'none',
+  cursor: 'pointer',
 }
