@@ -358,14 +358,22 @@ export default function HomeView() {
 }
 
   if (loading) {
-    return (
+    
+  
+  
+  
+return (
       <main style={main}>
         <section style={loadingCard}>Cargando panel UC...</section>
       </main>
     )
   }
 
-  return (
+  
+  
+  
+  
+return (
     <main style={main}>
       <section style={hero}>
         <div style={heroContent}>
@@ -687,7 +695,11 @@ function EvaluationScope({
 
   if (!hasAny && compact) return null
 
-  return (
+  
+  
+  
+  
+return (
     <div style={compact ? scopeCompact : scopeBox}>
       {!compact && <strong style={scopeTitle}>Qué incluye la prueba</strong>}
 
@@ -739,7 +751,11 @@ function StatCard({
   value: string | number
   detail: string
 }) {
-  return (
+  
+  
+  
+  
+return (
     <div style={statCard}>
       <span style={statLabel}>{label}</span>
       <strong style={statValue}>{value}</strong>
@@ -759,7 +775,11 @@ function EmptyState({
   action: string
   onClick: () => void
 }) {
-  return (
+  
+  
+  
+  
+return (
     <div style={emptyState}>
       <strong>{title}</strong>
       <p style={muted}>{text}</p>

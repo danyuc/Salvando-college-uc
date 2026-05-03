@@ -1,638 +1,386 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import { supabase } from '@/lib/supabase'
-import { getCurrentUser } from '../../lib/auth'
-import {
-  bulkCreateEvaluations,
-  deleteEvaluation,
-  getUserEvaluations,
-  type Evaluation,
-} from '../../lib/evaluations'
-import { buildFullGradeAnalysis } from '../../lib/grade-engine'
-import { getStudyCoachPlan } from '../../lib/study-coach-storage'
-import { getWeekKey } from '../../lib/study-coach'
-import EvaluationForm from './EvaluationForm'
-import { safeDate } from '@/lib/utils/date'
+import { useEffect, useMemo, useState } from "react"
+import Link from "next/link"
+import { supabase } from "@/lib/supabase"
 
-type ViewMode = 'list' | 'summary'
-
-function getEvaluationDate(evaluation: any) {
-  return evaluation.start_date ?? evaluation.end_date  ?? null
+type Evaluation = {
+  id: string
+  subject: string
+  type: string
+  topic?: string | null
+  title?: string | null
+  start_date?: string | null
+  date?: string | null
+  end_date?: string | null
+  weight_percent?: number | null
 }
 
-function getEvaluationEndDate(evaluation: any) {
-  return evaluation.end_date ?? evaluation.start_date ?? null
+function getDate(e: Evaluation) {
+  return e.start_date || e.date || ""
 }
 
-function getEvaluationTitle(evaluation: any) {
-  return evaluation.topic ?? evaluation.title ?? evaluation.contents ?? 'Sin tema'
+function inferEvaluationType(e: Evaluation) {
+  const raw = `${e.type || ""} ${e.topic || ""} ${e.title || ""}`.toUpperCase()
+  if (raw.includes("I1") || raw.includes("INTERROGACIÓN 1")) return "I1"
+  if (raw.includes("I2") || raw.includes("INTERROGACIÓN 2")) return "I2"
+  if (raw.includes("I3") || raw.includes("INTERROGACIÓN 3")) return "I3"
+  if (raw.includes("EXAMEN")) return "EXAMEN"
+  return e.type || "Evaluación"
 }
 
-function getEvaluationWeight(evaluation: any) {
-  if (typeof evaluation.weight_percent === 'number') return evaluation.weight_percent
-  if (typeof evaluation.weight === 'number') return evaluation.weight * 100
-  return 0
-}
-
-function formatDate(value?: string | null) {
-  const date = safeDate(value)
-  if (!date) return 'Sin fecha'
-
-  return date.toLocaleDateString('es-CL', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
+function formatDate(date: string) {
+  if (!date) return "Sin fecha"
+  const d = new Date(date)
+  if (Number.isNaN(d.getTime())) return date
+  return d.toLocaleDateString("es-CL", {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
   })
 }
 
-function daysUntil(value?: string | null) {
-  const date = safeDate(value)
+function daysLeft(date: string) {
   if (!date) return null
-
   const today = new Date()
+  const d = new Date(date)
   today.setHours(0, 0, 0, 0)
-
-  return Math.ceil((date.getTime() - today.getTime()) / 86400000)
+  d.setHours(0, 0, 0, 0)
+  return Math.ceil((d.getTime() - today.getTime()) / 86400000)
 }
 
-function orderEvaluations(evaluations: any[]) {
-  return [...evaluations].sort((a, b) => {
-    const aDate = safeDate(getEvaluationDate(a))
-    const bDate = safeDate(getEvaluationDate(b))
-
-    if (!aDate && !bDate) return 0
-    if (!aDate) return 1
-    if (!bDate) return -1
-
-    return aDate.getTime() - bDate.getTime()
-  })
+function riskLabel(days: number | null, weight?: number | null) {
+  if (days === null) return "Sin fecha"
+  if (days < 0) return "Pasada"
+  if (days <= 3 && Number(weight || 0) >= 15) return "Riesgo alto"
+  if (days <= 7) return "Preparación urgente"
+  if (days <= 14) return "Preparación activa"
+  return "Estable"
 }
 
 export default function CalendarView() {
-  const [userId, setUserId] = useState('')
-  const [evaluations, setEvaluations] = useState<any[]>([])
+  const [events, setEvents] = useState<Evaluation[]>([])
   const [loading, setLoading] = useState(true)
-  const [view, setView] = useState<ViewMode>('list')
-  const [editingEvaluation, setEditingEvaluation] = useState<Evaluation | null>(null)
-  const [bulkText, setBulkText] = useState('')
-  const [importing, setImporting] = useState(false)
-  const [coachBlocks, setCoachBlocks] = useState<any[]>([])
-  const [coachSummary, setCoachSummary] = useState('')
-
-  async function loadAll() {
-    try {
-      setLoading(true)
-
-      const user = await getCurrentUser()
-      if (!user) return
-
-      setUserId(user.id)
-
-      const [userEvaluations, plan] = await Promise.all([
-        getUserEvaluations(user.id),
-        getStudyCoachPlan(user.id, getWeekKey()),
-      ])
-
-      let finalEvaluations: any[] = userEvaluations || []
-
-      if (finalEvaluations.length === 0) {
-        const { data, error } = await supabase
-          .from('evaluations')
-          .select('*')
-          .order('date', { ascending: true })
-
-        if (!error && data) {
-          finalEvaluations = data
-        }
-      }
-
-      setEvaluations(finalEvaluations)
-      setCoachBlocks(plan?.blocks || [])
-      setCoachSummary(plan?.coach_summary || '')
-    } catch (error) {
-      console.error('CALENDAR LOAD ERROR:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   useEffect(() => {
-    loadAll()
+    loadEvents()
   }, [])
 
-  const orderedEvaluations = useMemo(
-    () => orderEvaluations(evaluations),
-    [evaluations]
-  )
+  async function loadEvents() {
+    setLoading(true)
 
-  const upcomingEvaluations = useMemo(() => {
-    return orderedEvaluations.filter((evaluation) => {
-      const days = daysUntil(getEvaluationDate(evaluation))
-      return days !== null && days >= 0
-    })
-  }, [orderedEvaluations])
+    const { data, error } = await supabase
+      .from("evaluations")
+      .select("*")
+      .order("start_date", { ascending: true })
 
-  const gradeSummaries = useMemo(
-    () => buildFullGradeAnalysis(evaluations as Evaluation[]),
-    [evaluations]
-  )
-
-  async function removeEvaluation(id: string) {
-    try {
-      await deleteEvaluation(id)
-      await loadAll()
-    } catch (error) {
-      console.error(error)
-      alert('No se pudo eliminar la evaluación')
+    if (error) {
+      console.warn(error.message)
+      setEvents([])
+    } else {
+      setEvents(data || [])
     }
+
+    setLoading(false)
   }
 
-  async function importEvaluationsFromText() {
-    if (!userId || !bulkText.trim()) return
+  const upcoming = useMemo(() => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
 
-    try {
-      setImporting(true)
+    return events
+      .filter((e) => {
+        const d = new Date(getDate(e))
+        return !Number.isNaN(d.getTime()) && d >= today
+      })
+      .sort((a, b) => new Date(getDate(a)).getTime() - new Date(getDate(b)).getTime())
+  }, [events])
 
-      const lines = bulkText
-        .split('\n')
-        .map((line) => line.trim())
-        .filter(Boolean)
-
-      const items = lines
-        .map((line) => {
-          const parts = line.split('|').map((p) => p.trim())
-
-          if (parts.length < 7) return null
-
-          return {
-            user_id: userId,
-            subject: parts[0],
-            type: parts[1],
-            number: parts[2] ? Number(parts[2]) : null,
-            topic: parts[3],
-            start_date: parts[4],
-            end_date: parts[5] || parts[4],
-            weight_percent: parts[6] ? Number(parts[6]) : null,
-            difficulty: 'media' as const,
-            notes: null,
-          }
-        })
-        .filter(Boolean) as any[]
-
-      await bulkCreateEvaluations(items)
-      setBulkText('')
-      await loadAll()
-    } catch (error) {
-      console.error(error)
-      alert('No se pudieron importar las evaluaciones')
-    } finally {
-      setImporting(false)
-    }
-  }
+  const next = upcoming[0]
 
   return (
-    <div style={container}>
-      <div style={topBar}>
-        <div>
-          <h2 style={title}>Calendario y evaluaciones</h2>
-          <p style={subtitle}>
-            Evaluaciones reales leídas desde Supabase, usando date/start_date/end_date.
-          </p>
-        </div>
-
-        <div style={controls}>
-          <button
-            onClick={() => setView('list')}
-            style={view === 'list' ? activeToggleButton : toggleButton}
-          >
-            Lista
-          </button>
-          <button
-            onClick={() => setView('summary')}
-            style={view === 'summary' ? activeToggleButton : toggleButton}
-          >
-            Resumen
-          </button>
-        </div>
-      </div>
-
-      <div style={statsGrid}>
-        <Stat label="Total" value={orderedEvaluations.length} />
-        <Stat label="Próximas" value={upcomingEvaluations.length} />
-        <Stat
-          label="Más cercana"
-          value={
-            upcomingEvaluations[0]
-              ? formatDate(getEvaluationDate(upcomingEvaluations[0]))
-              : 'Sin datos'
-          }
-        />
-      </div>
-
-      <div style={layout}>
-        <div style={mainColumn}>
-          <div style={card}>
-            <EvaluationForm
-              userId={userId}
-              initialData={editingEvaluation}
-              onSaved={async () => {
-                setEditingEvaluation(null)
-                await loadAll()
-              }}
-            />
-          </div>
-
-          <div style={card}>
-            <h3 style={sectionTitle}>Importar evaluaciones en lote</h3>
-            <p style={subtitle}>
-              Formato por línea: ramo | tipo | número | tema | fecha inicio | fecha fin | peso
+    <main className="calendar-page">
+      <section className="calendar-shell">
+        <div className="calendar-hero">
+          <div>
+            <p className="eyebrow">Calendario académico</p>
+            <h1>Tu ruta de evaluaciones</h1>
+            <p className="subtitle">
+              Revisa fechas, ponderaciones y entra directo a practicar para cada evaluación.
             </p>
-
-            <textarea
-              value={bulkText}
-              onChange={(e) => setBulkText(e.target.value)}
-              placeholder="Precálculo | Control | 3 | Límites | 2026-04-25 | 2026-04-25 | 20"
-              style={textarea}
-            />
-
-            <div style={actions}>
-              <button
-                onClick={importEvaluationsFromText}
-                style={button}
-                disabled={importing}
-              >
-                {importing ? 'Importando...' : 'Importar evaluaciones'}
-              </button>
-            </div>
           </div>
 
-          <div style={card}>
-            <h3 style={sectionTitle}>Tus evaluaciones</h3>
-
-            {loading ? (
-              <div style={emptyText}>Cargando...</div>
-            ) : orderedEvaluations.length === 0 ? (
-              <div style={emptyText}>No hay evaluaciones todavía.</div>
-            ) : (
-              <div style={list}>
-                {orderedEvaluations.map((item) => {
-                  const start = getEvaluationDate(item)
-                  const end = getEvaluationEndDate(item)
-                  const days = daysUntil(start)
-
-                  return (
-                    <div key={item.id} style={listItem}>
-                      <div style={listTop}>
-                        <div>
-                          <div style={listTitle}>
-                            {item.subject || 'General'} · {item.type || 'Evaluación'}{' '}
-                            {item.number ?? ''}
-                          </div>
-
-                          <div style={listMeta}>
-                            {getEvaluationTitle(item)}
-                          </div>
-
-                          <div style={listMeta}>
-                            📅 {formatDate(start)}
-                            {end && end !== start ? ` → ${formatDate(end)}` : ''}
-                          </div>
-
-                          <div style={listMeta}>
-                            {days === null
-                              ? 'Sin fecha válida'
-                              : days < 0
-                              ? 'Ya pasó'
-                              : days === 0
-                              ? 'Es hoy'
-                              : `Faltan ${days} día(s)`}
-                          </div>
-
-                          <div style={listMeta}>
-                            Peso: {getEvaluationWeight(item).toFixed(1)}%
-                          </div>
-                        </div>
-
-                        <div style={rowActions}>
-                          <button
-                            onClick={() => setEditingEvaluation(item)}
-                            style={editButton}
-                          >
-                            Editar
-                          </button>
-
-                          <button
-                            onClick={() => removeEvaluation(item.id)}
-                            style={deleteButton}
-                          >
-                            Eliminar
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-          </div>
-
-          <div style={card}>
-            <h3 style={sectionTitle}>Plan semanal del coach</h3>
-
-            {coachBlocks.length === 0 ? (
-              <div style={emptyText}>Aún no hay plan semanal guardado.</div>
-            ) : (
-              <div style={list}>
-                {coachBlocks.map((block, index) => (
-                  <div key={index} style={listItem}>
-                    <div style={listTitle}>
-                      {block.day} · {block.subject}
-                    </div>
-                    <div style={listMeta}>
-                      {block.topic} · {block.minutes} min
-                    </div>
-                    <div style={listMeta}>{block.reason}</div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {coachSummary && (
-            <div style={card}>
-              <h3 style={sectionTitle}>Explicación del coach</h3>
-              <div style={coachSummaryBox}>{coachSummary}</div>
-            </div>
-          )}
+          <Link href="/practica" className="primary-link">
+            Practicar ahora
+          </Link>
         </div>
 
-        <div style={sideColumn}>
-          <div style={card}>
-            <h3 style={sectionTitle}>Resumen académico</h3>
+        {next && (
+          <section className="next-card">
+            <div>
+              <p className="eyebrow">Próxima evaluación</p>
+              <h2>{next.subject} · {inferEvaluationType(next)}</h2>
+              <p>{next.topic || next.title || "Evaluación programada"}</p>
+            </div>
 
-            {gradeSummaries.length === 0 ? (
-              <div style={emptyText}>Aún no hay datos suficientes.</div>
-            ) : (
-              gradeSummaries.map((item) => (
-                <div key={item.subject} style={summaryItem}>
-                  <div style={summaryTop}>
-                    <div style={summaryTitle}>{item.subject}</div>
-                    <div style={summaryBadge}>{item.status}</div>
+            <div className="next-meta">
+              <strong>{formatDate(getDate(next))}</strong>
+              <span>{riskLabel(daysLeft(getDate(next)), next.weight_percent)}</span>
+            </div>
+          </section>
+        )}
+
+        {loading && <p className="empty">Cargando calendario...</p>}
+
+        {!loading && upcoming.length === 0 && (
+          <section className="empty-card">
+            <h2>No hay evaluaciones próximas</h2>
+            <p>Agrega evaluaciones en Notas o vuelve cuando tengas fechas registradas.</p>
+          </section>
+        )}
+
+        <div className="calendar-grid">
+          {upcoming.map((e) => {
+            const evaluation = inferEvaluationType(e)
+            const date = getDate(e)
+            const days = daysLeft(date)
+
+            const practiceHref =
+              e.subject === "MAT1000" ||
+              e.subject === "Precálculo" ||
+              e.subject === "Matemática"
+                ? `/practica?subject=MAT1000&evaluation=${evaluation}&mode=practica`
+                : `/practica?subject=${encodeURIComponent(e.subject)}&mode=practica`
+
+            return (
+              <article className="event-card" key={e.id}>
+                <div className="event-top">
+                  <div>
+                    <span className="pill">{evaluation}</span>
+                    <h3>{e.subject}</h3>
                   </div>
 
-                  <div style={summaryMeta}>
-                    Promedio: {item.average === null ? '—' : item.average.toFixed(2)}
+                  <div className="days-badge">
+                    {days === 0 ? "Hoy" : days === 1 ? "Mañana" : `Faltan ${days} días`}
                   </div>
-
-                  <div style={summaryMeta}>
-                    Peso acumulado: {item.totalWeight}%
-                  </div>
-
-                  <div style={summaryMeta}>
-                    Peso restante: {item.remainingWeight}%
-                  </div>
-
-                  {item.neededToPass !== null && (
-                    <div style={summaryHint}>
-                      Para llegar al 4.0 necesitas aprox:{' '}
-                      <strong>{item.neededToPass.toFixed(2)}</strong>
-                    </div>
-                  )}
                 </div>
-              ))
-            )}
-          </div>
+
+                <p className="event-topic">{e.topic || e.title || "Sin tema definido"}</p>
+
+                <div className="event-info">
+                  <span>📅 {formatDate(date)}</span>
+                  <span>⚖️ {Number(e.weight_percent || 0)}%</span>
+                  <span>⚡ {riskLabel(days, e.weight_percent)}</span>
+                </div>
+
+                <div className="event-actions">
+                  <Link href={practiceHref}>Practicar esta evaluación</Link>
+                </div>
+              </article>
+            )
+          })}
         </div>
-      </div>
-    </div>
+      </section>
+
+      <style jsx>{`
+        .calendar-page {
+          min-height: 100vh;
+          padding: 28px;
+          color: white;
+          background:
+            radial-gradient(circle at top left, rgba(37, 99, 235, .35), transparent 34%),
+            radial-gradient(circle at top right, rgba(124, 58, 237, .28), transparent 32%),
+            linear-gradient(180deg, #020617, #0f172a);
+        }
+
+        .calendar-shell {
+          max-width: 1180px;
+          margin: 0 auto;
+        }
+
+        .calendar-hero {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 20px;
+          margin-bottom: 22px;
+        }
+
+        .eyebrow {
+          margin: 0;
+          color: #93c5fd;
+          font-weight: 900;
+          letter-spacing: .04em;
+          text-transform: uppercase;
+          font-size: 12px;
+        }
+
+        h1 {
+          font-size: clamp(32px, 5vw, 54px);
+          margin: 8px 0;
+          letter-spacing: -0.05em;
+        }
+
+        .subtitle {
+          color: #cbd5e1;
+          max-width: 620px;
+          font-size: 16px;
+        }
+
+        .primary-link {
+          padding: 14px 18px;
+          border-radius: 18px;
+          color: white;
+          text-decoration: none;
+          font-weight: 950;
+          background: linear-gradient(135deg, #2563eb, #7c3aed);
+          box-shadow: 0 22px 50px rgba(37, 99, 235, .28);
+        }
+
+        .next-card {
+          display: flex;
+          justify-content: space-between;
+          gap: 18px;
+          padding: 24px;
+          border-radius: 28px;
+          margin-bottom: 20px;
+          background:
+            linear-gradient(135deg, rgba(16, 185, 129, .18), rgba(59, 130, 246, .14)),
+            rgba(255,255,255,.08);
+          border: 1px solid rgba(255,255,255,.14);
+          box-shadow: 0 24px 70px rgba(0,0,0,.25);
+        }
+
+        .next-card h2 {
+          margin: 8px 0;
+          font-size: 26px;
+        }
+
+        .next-card p {
+          color: #dbeafe;
+          margin: 0;
+        }
+
+        .next-meta {
+          text-align: right;
+          display: grid;
+          gap: 8px;
+          align-content: center;
+        }
+
+        .next-meta strong {
+          font-size: 18px;
+        }
+
+        .next-meta span {
+          padding: 8px 12px;
+          border-radius: 999px;
+          background: rgba(255,255,255,.12);
+          font-weight: 900;
+        }
+
+        .calendar-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+          gap: 16px;
+        }
+
+        .event-card {
+          padding: 18px;
+          border-radius: 24px;
+          background:
+            linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.045));
+          border: 1px solid rgba(255,255,255,.12);
+          box-shadow: 0 20px 55px rgba(0,0,0,.22);
+        }
+
+        .event-top {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: flex-start;
+        }
+
+        .pill {
+          display: inline-flex;
+          padding: 6px 10px;
+          border-radius: 999px;
+          background: rgba(59, 130, 246, .18);
+          border: 1px solid rgba(59, 130, 246, .28);
+          font-size: 12px;
+          font-weight: 950;
+          color: #bfdbfe;
+        }
+
+        .event-card h3 {
+          margin: 10px 0 0;
+          font-size: 22px;
+        }
+
+        .days-badge {
+          white-space: nowrap;
+          padding: 7px 10px;
+          border-radius: 999px;
+          background: rgba(16,185,129,.16);
+          color: #bbf7d0;
+          font-weight: 900;
+          font-size: 12px;
+        }
+
+        .event-topic {
+          color: #cbd5e1;
+          min-height: 42px;
+        }
+
+        .event-info {
+          display: grid;
+          gap: 8px;
+          color: #e2e8f0;
+          font-weight: 750;
+          margin: 16px 0;
+        }
+
+        .event-actions a {
+          display: inline-flex;
+          width: 100%;
+          justify-content: center;
+          padding: 12px 14px;
+          border-radius: 16px;
+          color: #ecfeff;
+          text-decoration: none;
+          font-weight: 950;
+          background: rgba(14,165,233,.18);
+          border: 1px solid rgba(14,165,233,.28);
+        }
+
+        .empty,
+        .empty-card {
+          padding: 22px;
+          border-radius: 22px;
+          background: rgba(255,255,255,.07);
+          border: 1px solid rgba(255,255,255,.12);
+        }
+
+        @media (max-width: 760px) {
+          .calendar-page {
+            padding: 18px;
+          }
+
+          .calendar-hero,
+          .next-card {
+            flex-direction: column;
+          }
+
+          .next-meta {
+            text-align: left;
+          }
+
+          .primary-link {
+            width: 100%;
+            text-align: center;
+          }
+        }
+      `}</style>
+    </main>
   )
-}
-
-function Stat({ label, value }: { label: string; value: string | number }) {
-  return (
-    <div style={statCard}>
-      <div style={statLabel}>{label}</div>
-      <div style={statValue}>{value}</div>
-    </div>
-  )
-}
-
-const container: React.CSSProperties = {
-  display: 'grid',
-  gap: '18px',
-  padding: '20px',
-  color: 'white',
-}
-
-const topBar: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  gap: '14px',
-  alignItems: 'flex-start',
-  flexWrap: 'wrap',
-}
-
-const title: React.CSSProperties = {
-  margin: 0,
-}
-
-const subtitle: React.CSSProperties = {
-  opacity: 0.75,
-  lineHeight: 1.5,
-}
-
-const controls: React.CSSProperties = {
-  display: 'flex',
-  gap: '8px',
-}
-
-const toggleButton: React.CSSProperties = {
-  padding: '10px 12px',
-  borderRadius: '10px',
-  border: '1px solid rgba(255,255,255,0.10)',
-  background: 'rgba(255,255,255,0.06)',
-  color: 'white',
-  cursor: 'pointer',
-}
-
-const activeToggleButton: React.CSSProperties = {
-  ...toggleButton,
-  background: '#2563eb',
-}
-
-const statsGrid: React.CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-  gap: '12px',
-}
-
-const statCard: React.CSSProperties = {
-  padding: '16px',
-  borderRadius: '16px',
-  background: 'rgba(255,255,255,0.05)',
-  border: '1px solid rgba(255,255,255,0.10)',
-}
-
-const statLabel: React.CSSProperties = {
-  opacity: 0.72,
-  fontSize: '0.9rem',
-}
-
-const statValue: React.CSSProperties = {
-  marginTop: '8px',
-  fontSize: '1.3rem',
-  fontWeight: 900,
-}
-
-const layout: React.CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: '1.4fr 0.8fr',
-  gap: '18px',
-}
-
-const mainColumn: React.CSSProperties = {
-  display: 'grid',
-  gap: '18px',
-}
-
-const sideColumn: React.CSSProperties = {
-  display: 'grid',
-  gap: '18px',
-}
-
-const card: React.CSSProperties = {
-  padding: '18px',
-  borderRadius: '18px',
-  background: 'rgba(255,255,255,0.05)',
-  border: '1px solid rgba(255,255,255,0.10)',
-}
-
-const sectionTitle: React.CSSProperties = {
-  marginTop: 0,
-}
-
-const textarea: React.CSSProperties = {
-  width: '100%',
-  minHeight: '140px',
-  padding: '12px',
-  borderRadius: '12px',
-  border: '1px solid rgba(255,255,255,0.12)',
-  background: 'rgba(255,255,255,0.06)',
-  color: 'white',
-}
-
-const actions: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'flex-end',
-  marginTop: '12px',
-}
-
-const button: React.CSSProperties = {
-  padding: '12px 14px',
-  borderRadius: '12px',
-  border: 'none',
-  background: '#2563eb',
-  color: 'white',
-  cursor: 'pointer',
-}
-
-const emptyText: React.CSSProperties = {
-  opacity: 0.75,
-}
-
-const list: React.CSSProperties = {
-  display: 'grid',
-  gap: '10px',
-}
-
-const listItem: React.CSSProperties = {
-  padding: '12px',
-  borderRadius: '12px',
-  background: 'rgba(255,255,255,0.04)',
-}
-
-const listTop: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  gap: '12px',
-  alignItems: 'center',
-  flexWrap: 'wrap',
-}
-
-const listTitle: React.CSSProperties = {
-  fontWeight: 800,
-}
-
-const listMeta: React.CSSProperties = {
-  marginTop: '6px',
-  opacity: 0.78,
-  lineHeight: 1.45,
-}
-
-const rowActions: React.CSSProperties = {
-  display: 'flex',
-  gap: '8px',
-}
-
-const editButton: React.CSSProperties = {
-  padding: '8px 10px',
-  borderRadius: '10px',
-  border: 'none',
-  background: 'rgba(59,130,246,0.18)',
-  color: 'white',
-  cursor: 'pointer',
-}
-
-const deleteButton: React.CSSProperties = {
-  padding: '8px 10px',
-  borderRadius: '10px',
-  border: 'none',
-  background: 'rgba(239,68,68,0.18)',
-  color: 'white',
-  cursor: 'pointer',
-}
-
-const summaryItem: React.CSSProperties = {
-  padding: '12px',
-  borderRadius: '12px',
-  background: 'rgba(255,255,255,0.04)',
-  marginBottom: '10px',
-}
-
-const summaryTop: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  gap: '10px',
-  alignItems: 'center',
-}
-
-const summaryTitle: React.CSSProperties = {
-  fontWeight: 800,
-}
-
-const summaryBadge: React.CSSProperties = {
-  padding: '6px 10px',
-  borderRadius: '999px',
-  background: 'rgba(59,130,246,0.18)',
-  fontSize: '0.8rem',
-  textTransform: 'capitalize',
-}
-
-const summaryMeta: React.CSSProperties = {
-  marginTop: '6px',
-  opacity: 0.82,
-}
-
-const summaryHint: React.CSSProperties = {
-  marginTop: '10px',
-  padding: '10px',
-  borderRadius: '10px',
-  background: 'rgba(255,255,255,0.04)',
-}
-
-const coachSummaryBox: React.CSSProperties = {
-  whiteSpace: 'pre-wrap',
-  lineHeight: 1.55,
-  opacity: 0.95,
 }
