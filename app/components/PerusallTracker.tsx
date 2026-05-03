@@ -1,6 +1,5 @@
 'use client'
 
-
 import { useEffect, useMemo, useState } from "react"
 import { ACADEMIC_EVENTS, SUBJECT_THEMES } from "@/lib/academic-calendar-data"
 

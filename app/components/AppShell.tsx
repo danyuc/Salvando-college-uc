@@ -1,7 +1,8 @@
 'use client'
 
 import { usePathname, useRouter } from 'next/navigation'
-import { useState, type CSSProperties } from 'react'
+import { useEffect, useState, type CSSProperties } from 'react'
+import { getLocalUser } from '@/lib/local-user'
 
 const links = [
   { path: '/', label: 'Home', icon: '🏠' },
@@ -22,6 +23,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
+  const [localUser, setLocalUser] = useState<{ username: string; email: string } | null>(null)
+
+  useEffect(() => {
+    setLocalUser(getLocalUser())
+  }, [pathname])
 
   const isLogin = pathname === '/login' || pathname.startsWith('/auth')
 
@@ -44,7 +50,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <div style={logo}>UC</div>
           <div>
             <strong>Salvando College</strong>
-            <div style={small}>Panel académico</div>
+            <div style={small}>{localUser ? `Hola, ${localUser.username}` : 'Panel académico'}</div>
           </div>
         </div>
 

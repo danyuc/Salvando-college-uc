@@ -1,171 +1,98 @@
 'use client'
 
-import { useEffect, useState, type CSSProperties } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { supabase } from "@/lib/supabase"
+import { getUsernameFromEmail, isValidUcEmail, saveLocalUser } from "@/lib/local-user"
 
 export default function LoginPage() {
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [checking, setChecking] = useState(true)
+  const [email, setEmail] = useState("")
   const [error, setError] = useState("")
 
-  useEffect(() => {
-    async function checkSession() {
-      const { data } = await supabase.auth.getUser()
-      if (data.user) {
-        router.replace("/")
-        return
-      }
-      setChecking(false)
+  function login() {
+    setError("")
+
+    if (!isValidUcEmail(email)) {
+      setError("Debes ingresar un correo institucional UC válido.")
+      return
     }
 
-    checkSession()
-  }, [router])
-
-  async function loginWithGoogle() {
-    try {
-      setLoading(true)
-      setError("")
-
-      const siteUrl =
-        process.env.NEXT_PUBLIC_SITE_URL ||
-        process.env.NEXT_PUBLIC_VERCEL_URL ||
-        window.location.origin
-
-      const cleanSiteUrl = siteUrl.startsWith("http")
-        ? siteUrl
-        : `https://${siteUrl}`
-
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${cleanSiteUrl}/auth/callback`,
-          queryParams: {
-            access_type: "offline",
-            prompt: "select_account",
-          },
-        },
-      })
-
-      if (error) setError(error.message)
-    } catch (err) {
-      console.error(err)
-      setError("No se pudo iniciar sesión con Google.")
-    } finally {
-      setLoading(false)
-    }
+    saveLocalUser(email)
+    router.push("/")
   }
 
-  if (checking) {
-    return (
-      <main style={mainStyle}>
-        <section style={cardStyle}>Verificando sesión...</section>
-      </main>
-    )
-  }
+  const preview = email.includes("@") ? getUsernameFromEmail(email) : ""
 
   return (
-    <main style={mainStyle}>
-      <section style={cardStyle}>
-        <div style={pillStyle}>Salvando College UC</div>
-
-        <h1 style={titleStyle}>Inicia sesión</h1>
-
-        <p style={subtitleStyle}>
-          Accede al banco de preguntas, práctica inteligente, ranking y herramientas de estudio.
+    <main className="page">
+      <section className="card">
+        <p className="eyebrow">Salvando College UC</p>
+        <h1>Ingresa con tu correo UC</h1>
+        <p className="sub">
+          Por ahora no enviaremos código de verificación. Tu usuario será el texto antes del arroba.
         </p>
 
-        {error && <div style={errorStyle}>{error}</div>}
+        <input
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="usuario@uc.cl"
+          autoCapitalize="none"
+        />
 
-        <button
-          onClick={loginWithGoogle}
-          disabled={loading}
-          style={{
-            ...buttonStyle,
-            opacity: loading ? 0.7 : 1,
-            cursor: loading ? "not-allowed" : "pointer",
-          }}
-        >
-          {loading ? "Conectando..." : "Continuar con Google"}
-        </button>
+        {preview && <p className="preview">Tu usuario será: <strong>{preview}</strong></p>}
+        {error && <p className="error">{error}</p>}
 
-        <p style={hintStyle}>
-          Si Vercel no redirige, revisa en Supabase que la URL pública esté agregada en Auth Redirect URLs.
-        </p>
+        <button onClick={login}>Entrar</button>
       </section>
+
+      <style jsx>{`
+        .page {
+          min-height:100vh;
+          display:grid;
+          place-items:center;
+          padding:24px;
+          color:white;
+          background:
+            radial-gradient(circle at 20% 0%, rgba(37,99,235,.35), transparent 34%),
+            linear-gradient(180deg,#020617,#0f172a);
+        }
+        .card {
+          width:min(520px,100%);
+          padding:32px;
+          border-radius:32px;
+          background:rgba(255,255,255,.08);
+          border:1px solid rgba(255,255,255,.14);
+          box-shadow:0 30px 90px rgba(0,0,0,.32);
+        }
+        .eyebrow { color:#93c5fd; font-weight:950; text-transform:uppercase; margin:0; }
+        h1 { font-size:42px; letter-spacing:-.05em; margin:10px 0; }
+        .sub { color:#cbd5e1; }
+        input {
+          width:100%;
+          min-height:58px;
+          border-radius:18px;
+          border:1px solid rgba(255,255,255,.14);
+          background:rgba(15,23,42,.78);
+          color:white;
+          padding:0 16px;
+          font-size:17px;
+          font-weight:900;
+          box-sizing:border-box;
+        }
+        .preview { color:#bbf7d0; }
+        .error { color:#fecaca; font-weight:900; }
+        button {
+          width:100%;
+          min-height:56px;
+          margin-top:14px;
+          border-radius:18px;
+          border:0;
+          background:linear-gradient(135deg,#2563eb,#7c3aed);
+          color:white;
+          font-weight:950;
+          font-size:16px;
+        }
+      `}</style>
     </main>
   )
-}
-
-const mainStyle: CSSProperties = {
-  minHeight: "100vh",
-  display: "grid",
-  placeItems: "center",
-  background:
-    "radial-gradient(circle at top left, rgba(37,99,235,.25), transparent 34%), linear-gradient(180deg,#07111f,#111827)",
-  color: "white",
-  padding: 20,
-  fontFamily: "Arial, sans-serif",
-}
-
-const cardStyle: CSSProperties = {
-  width: "100%",
-  maxWidth: 430,
-  padding: 28,
-  borderRadius: 28,
-  background: "rgba(255,255,255,.075)",
-  border: "1px solid rgba(255,255,255,.14)",
-  boxShadow: "0 24px 70px rgba(0,0,0,.35)",
-  backdropFilter: "blur(18px)",
-}
-
-const pillStyle: CSSProperties = {
-  display: "inline-block",
-  padding: "8px 14px",
-  borderRadius: 999,
-  background: "rgba(59,130,246,.22)",
-  color: "#bfdbfe",
-  fontWeight: 800,
-  marginBottom: 14,
-}
-
-const titleStyle: CSSProperties = {
-  margin: 0,
-  fontSize: "2.1rem",
-  lineHeight: 1.1,
-}
-
-const subtitleStyle: CSSProperties = {
-  marginTop: 12,
-  color: "#cbd5e1",
-  lineHeight: 1.6,
-}
-
-const buttonStyle: CSSProperties = {
-  width: "100%",
-  marginTop: 20,
-  padding: 15,
-  borderRadius: 16,
-  border: "none",
-  background: "white",
-  color: "#0f172a",
-  fontWeight: 900,
-  fontSize: 16,
-}
-
-const hintStyle: CSSProperties = {
-  marginTop: 14,
-  color: "#94a3b8",
-  fontSize: 14,
-  lineHeight: 1.5,
-}
-
-const errorStyle: CSSProperties = {
-  marginTop: 14,
-  padding: 13,
-  borderRadius: 14,
-  background: "rgba(239,68,68,.16)",
-  border: "1px solid rgba(239,68,68,.35)",
-  color: "#fecaca",
 }
