@@ -1,14 +1,5 @@
-'use client'
-
 // ===== PARTE 1/3 =====
-
-
-import dynamic from 'next/dynamic'
-const PrecalculoVisual = dynamic(() => import('./PrecalculoVisual'), { ssr: false })
-const PrecalculoSteps = dynamic(() => import('./PrecalculoSteps'), { ssr: false })
-
-import { generatePracticeSet } from '@/lib/precalculo-engine'
-import { generarDiagnostico } from '@/lib/precalculo-diagnostico'
+'use client'
 
 import {getSubjectName, getSubjectMeta} from '../../lib/subjects'
 import {
@@ -50,10 +41,6 @@ type Question = {
   referencia_autor: string | null
   error_comun: string | null
   fuente: string | null
-  pasos?: any[]
-  animaciones?: any[]
-  operacion_visual?: any[]
-  visualizacion?: any
 }
 
 type Attempt = {
@@ -166,7 +153,6 @@ export default function PracticeView() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
   const [answerState, setAnswerState] = useState<AnswerState>('idle')
-  const [diagnostico, setDiagnostico] = useState<any>(null)
   const [attempts, setAttempts] = useState<Attempt[]>([])
   const [weakTopics, setWeakTopics] = useState<string[]>([])
   const [guidedFocus, setGuidedFocus] = useState<string | null>(null)
@@ -190,63 +176,6 @@ export default function PracticeView() {
   const isGuidedMode = mode === 'practica' || mode === 'adaptativo' || mode === 'simulacion'
   const subjectMeta = useMemo(() => getSubjectMeta(selectedSubject), [selectedSubject])
   const isExamMode = mode === 'simulacion'
-
-
-  useEffect(() => {
-    if (selectedSubject !== "MAT1000") return
-
-    const lastFails = attempts.slice(-3).filter(a => !a.correct).length
-
-    const dificultadFinal =
-      (diagnostico?.siguiente_practica?.dificultad ||
-        (lastFails >= 2
-          ? "baja"
-          : lastFails === 1
-            ? "media"
-            : adaptiveDifficulty === "alta"
-              ? "alta"
-              : adaptiveDifficulty === "facil"
-                ? "baja"
-                : "media")) as "baja" | "media" | "alta"
-
-    const generated = generatePracticeSet({
-      modulo: "modulo_1",
-      subtema: diagnostico?.siguiente_practica?.subtema || "Distancia entre puntos",
-      cantidad: selectedLimit,
-      dificultad: dificultadFinal,
-    })
-
-    const mapped = generated.map((q, index) => ({
-      id: `precalculo-${index}-${Date.now()}`,
-      asignatura: "MAT1000",
-      tema: q.tema,
-      subtema: q.subtema,
-      tipo: "seleccion_multiple" as const,
-      dificultad: q.dificultad === "baja" ? "facil" as const : q.dificultad,
-      pregunta: q.pregunta,
-      opciones: q.opciones,
-      respuesta_correcta: ["A", "B", "C", "D"][q.opciones.indexOf(q.respuesta_correcta)] as "A" | "B" | "C" | "D",
-      explicacion: q.explanation,
-      respuesta_esperada: null,
-      criterios_evaluacion: null,
-      nivel_cognitivo: "adaptativo",
-      referencia_autor: "Motor Precálculo MAT1000",
-      error_comun: q.error_comun,
-      fuente: q.origen,
-      visualizacion: q.visualizacion,
-    }))
-
-    setQuestions(mapped)
-    setCurrentIndex(0)
-    setFinished(false)
-    setQuestionStart(Date.now())
-  }, [selectedSubject, adaptiveDifficulty, selectedLimit, diagnostico, attempts])
-
-  useEffect(() => {
-    if (selectedSubject === "MAT1000" && attempts.length > 5) {
-      setDiagnostico(generarDiagnostico(attempts))
-    }
-  }, [selectedSubject, attempts])
 
   const modeInfo = {
     practica: {
@@ -759,16 +688,7 @@ setQuestions(prioritized.slice(0, limit))
               router.push(
                 `/diagnostico?subject=${selectedSubject}&next=${encodeURIComponent(
                   `/practica?subject=${selectedSubject}`
-                )}
-
-        {selectedSubject === "MAT1000" &&
-          Array.isArray((currentQuestion as any)?.pasos) && (
-            <PrecalculoSteps
-              pasos={(currentQuestion as any).pasos}
-              animaciones={(currentQuestion as any).animaciones || []}
-            />
-          )}
-`
+                )}`
               )
             }
           >
@@ -1069,22 +989,7 @@ setQuestions(prioritized.slice(0, limit))
             />
           </div>
 
-          <h2 style={questionTitle}>{currentQuestion.pregunta}
-
-        {selectedSubject === "MAT1000" &&
-          Array.isArray((currentQuestion as any)?.visualizacion?.parametros?.puntos) && (
-            <PrecalculoVisual
-              puntos={(currentQuestion as any).visualizacion.parametros.puntos}
-            />
-          )}
-
-
-        {selectedSubject === "MAT1000" && currentQuestion?.visualizacion?.parametros?.puntos && (
-          <PrecalculoVisual
-            puntos={currentQuestion.visualizacion.parametros.puntos}
-          />
-        )}
-</h2>
+          <h2 style={questionTitle}>{currentQuestion.pregunta}</h2>
 
           {currentQuestion.tipo === 'seleccion_multiple' ? (
             <div style={options}>
