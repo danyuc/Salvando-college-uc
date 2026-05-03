@@ -218,15 +218,27 @@ export default function PracticeView() {
     const moduleLabel = modules.includes(selectedAuthor as any) ? selectedAuthor : "Todos"
 
     const subtemas = getMat1000SubtemasForModule(moduleLabel, evaluation)
-    const subtema = subtemas.includes(selectedClassSource as any) ? selectedClassSource : "Todos"
 
     setTopics(evaluaciones)
     setAuthors(modules)
     setClassSources(subtemas)
 
-    if (selectedTopic !== evaluation) setSelectedTopic(evaluation)
-    if (selectedAuthor !== moduleLabel) setSelectedAuthor(moduleLabel)
-    if (selectedClassSource !== subtema) setSelectedClassSource(subtema)
+    if (selectedTopic !== evaluation) {
+      setSelectedTopic(evaluation)
+      setSelectedAuthor("Todos")
+      setSelectedClassSource("Todos")
+      return
+    }
+
+    if (selectedAuthor !== moduleLabel) {
+      setSelectedAuthor(moduleLabel)
+      setSelectedClassSource("Todos")
+      return
+    }
+
+    if (!subtemas.includes(selectedClassSource as any)) {
+      setSelectedClassSource("Todos")
+    }
   }, [selectedSubject, selectedTopic, selectedAuthor, selectedClassSource])
 
 
@@ -956,7 +968,7 @@ setQuestions(prioritized.slice(0, limit))
             onClick={loadQuestions}
            
           >
-            {sessionLoading ? 'Cargando...' : 'Comenzar práctica'}
+            {sessionLoading ? 'Cargando...' : 'Comenzar práctica práctica'}
           </button>
 
           <button style={secondaryButton} onClick={restartSession}>
@@ -995,7 +1007,7 @@ setQuestions(prioritized.slice(0, limit))
         <section style={card}>
           <h2>Banco conectado ✅</h2>
           <p style={muted}>
-            Selecciona asignatura, modo y presiona “Comenzar práctica”.
+            Selecciona asignatura, modo y presiona “Comenzar práctica práctica”.
           </p>
         </section>
       )}
