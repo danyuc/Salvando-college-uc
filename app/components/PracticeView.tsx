@@ -28,6 +28,10 @@ export default function PracticeView() {
 
   const modules = useMemo(() => getMat1000ModulesForEvaluation(evaluation), [evaluation])
   const subtemas = useMemo(() => getMat1000SubtemasForModule(moduleLabel, evaluation), [moduleLabel, evaluation])
+  const diagnosticKey = `mat1000-diagnostic-${evaluation}`
+  const diagnosticDone = typeof window !== 'undefined' && Boolean(localStorage.getItem(diagnosticKey))
+  const diagnosticRequired = !diagnosticDone
+
   const current = questions[index]
 
   const correctCount = answers.filter(a => a.correct).length
@@ -103,6 +107,16 @@ export default function PracticeView() {
           <span>Foco actual: {subtema === 'Todos' ? evaluation : subtema}</span>
         </section>
 
+        {diagnosticRequired && (
+          <section className="mode-card" style={{ borderColor: 'rgba(239,68,68,.45)', background: 'rgba(127,29,29,.32)' }}>
+            <h3>🔒 Diagnóstico obligatorio</h3>
+            <p>Antes de practicar {evaluation}, debes completar el diagnóstico correspondiente.</p>
+            <a href={`/diagnostico?evaluation=${evaluation}`} style={{ color: '#fecaca', fontWeight: 900 }}>
+              Hacer diagnóstico ahora
+            </a>
+          </section>
+        )}
+
         <section className="filters-card">
           <label>
             Asignatura
@@ -151,7 +165,7 @@ export default function PracticeView() {
           </label>
 
           <div className="actions">
-            <button onClick={start}>Comenzar sesión</button>
+            <button disabled={diagnosticRequired} onClick={start}>Comenzar sesión</button>
             <button className="secondary" onClick={reset}>Reiniciar</button>
           </div>
         </section>

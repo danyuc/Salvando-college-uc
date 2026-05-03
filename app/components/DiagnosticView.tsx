@@ -1,180 +1,138 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { getCurrentUser } from '../../lib/auth'
-import { getDiagnosticBySubject, upsertDiagnostic } from '../../lib/diagnostics'
-import { createPracticeAttempts } from '../../lib/practice-attempts'
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { generateMat1000ForceQuestions } from '@/lib/mat1000-force-questions'
+import PrecalculoVisual from './PrecalculoVisual'
+import PrecalculoSteps from './PrecalculoSteps'
 
-type Subject = {
-  code: string
-  name: string
+function getEvaluationFromUrl() {
+  if (typeof window === 'undefined') return 'I1'
+  const value = new URLSearchParams(window.location.search).get('evaluation')
+  return value === 'I2' || value === 'I3' || value === 'EXAMEN' ? value : 'I1'
 }
 
-const SUBJECTS: Subject[] = [
-  { code: 'SOL500', name: 'Sociología' },
-  { code: 'MAT1000', name: 'Matemática' },
-  { code: 'PSI1101', name: 'Psicología' },
-  { code: 'IHI0204', name: 'Taller de fuentes I' },
-]
-
 export default function DiagnosticView() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-
-  const subjectParam = searchParams.get('subject')
-  const next = searchParams.get('next') || '/home'
-
-  const [userId, setUserId] = useState<string | null>(null)
-  const [selectedSubject, setSelectedSubject] = useState(subjectParam || '')
-  const [checking, setChecking] = useState(false)
+  const [evaluation, setEvaluation] = useState('I1')
+  const [questions, setQuestions] = useState<any[]>([])
+  const [index, setIndex] = useState(0)
+  const [selected, setSelected] = useState('')
+  const [answers, setAnswers] = useState<any[]>([])
+  const [showSteps, setShowSteps] = useState(false)
+  const [done, setDone] = useState(false)
 
   useEffect(() => {
-    async function load() {
-      const user = await getCurrentUser()
+    const ev = getEvaluationFromUrl()
+    setEvaluation(ev)
+    setQuestions(generateMat1000ForceQuestions({
+      evaluation: ev,
+      mode: 'diagnostico',
+      moduleLabel: 'Todos',
+      subtema: 'Todos',
+      cantidad: 12,
+    }))
+  }, [])
 
-      if (!user) {
-        router.replace('/login')
-        return
+  const q = questions[index]
+  const correct = answers.filter(a => a.correct).length
+  const accuracy = answers.length ? Math.round((correct / answers.length) * 100) : 0
+  const weak = [...new Set(answers.filter(a => !a.correct).map(a => a.subtema))]
+
+  function answer(op: string) {
+    if (!q || selected) return
+    const isCorrect = op === q.respuesta_correcta
+    setSelected(op)
+    setAnswers(prev => [...prev, { subtema: q.subtema, correct: isCorrect }])
+  }
+
+  function next() {
+    if (index >= questions.length - 1) {
+      const result = {
+        evaluation,
+        completedAt: new Date().toISOString(),
+        accuracy,
+        weak,
       }
 
-      setUserId(user.id)
-    }
-
-    load()
-  }, [router])
-
-  async function continueSubject(subject: string) {
-    if (!userId) return
-
-    setChecking(true)
-
-    const existing = await getDiagnosticBySubject(userId, subject)
-
-    if (existing?.completed) {
-      router.push(next)
+      localStorage.setItem(`mat1000-diagnostic-${evaluation}`, JSON.stringify(result))
+      setDone(true)
       return
     }
 
-    router.push(`/diagnostico/examen?subject=${subject}&next=${next}`)
+    setIndex(i => i + 1)
+    setSelected('')
+    setShowSteps(false)
   }
 
   return (
-    <main style={main}>
-      <section style={card}>
-        <p style={pill}>Diagnóstico obligatorio</p>
+    <main style={{ minHeight: '100vh', padding: 28, color: 'white', background: 'linear-gradient(180deg,#020617,#0f172a)' }}>
+      <section style={{ maxWidth: 1050, margin: '0 auto', display: 'grid', gap: 18 }}>
+        <section style={{ padding: 26, borderRadius: 28, background: 'rgba(255,255,255,.08)', border: '1px solid rgba(255,255,255,.13)' }}>
+          <p style={{ color: '#93c5fd', fontWeight: 900 }}>MAT1000 · Diagnóstico obligatorio · {evaluation}</p>
+          <h1 style={{ fontSize: 42, margin: '8px 0' }}>Diagnóstico práctico de Precálculo</h1>
+          <p style={{ color: '#cbd5e1' }}>Este diagnóstico libera la práctica de {evaluation}. Solo incluye contenidos de esa evaluación.</p>
+        </section>
 
-        <h1 style={title}>¿Qué asignatura quieres estudiar?</h1>
+        {done && (
+          <section style={{ padding: 24, borderRadius: 26, background: 'rgba(16,185,129,.14)', border: '1px solid rgba(16,185,129,.32)' }}>
+            <h2>Diagnóstico finalizado</h2>
+            <p>Precisión: <strong>{accuracy}%</strong></p>
+            {weak.length ? <p>Estás débil en: <strong>{weak.join(', ')}</strong>.</p> : <p>No se detectaron debilidades críticas.</p>}
+            <Link href={`/practica?subject=MAT1000&evaluation=${evaluation}&mode=practica`} style={{ color: '#bbf7d0', fontWeight: 900 }}>
+              Ir a practicar {evaluation}
+            </Link>
+          </section>
+        )}
 
-        <p style={warning}>
-          TIENES QUE HACER EL DIAGNÓSTICO AHORA PARA CONTINUAR Y DARTE LA MEJOR EXPERIENCIA.
-        </p>
+        {!done && q && (
+          <section style={{ padding: 24, borderRadius: 26, background: 'rgba(255,255,255,.075)', border: '1px solid rgba(255,255,255,.13)' }}>
+            <p style={{ color: '#bfdbfe', fontWeight: 900 }}>Pregunta {index + 1} de {questions.length} · {q.subtema}</p>
+            <h2>{q.pregunta}</h2>
 
-        <div style={grid}>
-          {SUBJECTS.map((subject) => (
-            <button
-              key={subject.code}
-              style={
-                selectedSubject === subject.code
-                  ? selectedButton
-                  : subjectButton
-              }
-              onClick={() => setSelectedSubject(subject.code)}
-            >
-              <strong>{subject.name}</strong>
-              <span>{subject.code}</span>
-            </button>
-          ))}
-        </div>
+            {Array.isArray(q.visualizacion?.parametros?.puntos) && (
+              <PrecalculoVisual puntos={q.visualizacion.parametros.puntos} />
+            )}
 
-        <button
-          style={primaryButton}
-          disabled={!selectedSubject || checking}
-          onClick={() => continueSubject(selectedSubject)}
-        >
-          {checking ? 'Revisando diagnóstico...' : 'Hacer diagnóstico ahora'}
-        </button>
+            <div style={{ display: 'grid', gap: 10, marginTop: 18 }}>
+              {q.opciones.map((op: string) => (
+                <button
+                  key={op}
+                  onClick={() => answer(op)}
+                  style={{
+                    minHeight: 54,
+                    borderRadius: 16,
+                    border: selected
+                      ? op === q.respuesta_correcta
+                        ? '1px solid #22c55e'
+                        : selected === op
+                          ? '1px solid #ef4444'
+                          : '1px solid rgba(255,255,255,.13)'
+                      : '1px solid rgba(255,255,255,.13)',
+                    background: 'rgba(255,255,255,.07)',
+                    color: 'white',
+                    fontWeight: 900,
+                    textAlign: 'left',
+                    padding: '0 16px',
+                  }}
+                >
+                  {op}
+                </button>
+              ))}
+            </div>
+
+            {selected && (
+              <section style={{ marginTop: 18, padding: 16, borderRadius: 18, background: 'rgba(15,23,42,.75)' }}>
+                <p><strong>Respuesta correcta:</strong> {q.respuesta_correcta}</p>
+                <p>{q.explicacion || q.explanation}</p>
+                <button onClick={() => setShowSteps(v => !v)}>Ver paso a paso</button>
+                {showSteps && <PrecalculoSteps pasos={q.pasos || []} animaciones={q.animaciones || []} />}
+                <br />
+                <button onClick={next} style={{ marginTop: 12 }}>Siguiente</button>
+              </section>
+            )}
+          </section>
+        )}
       </section>
     </main>
   )
-}
-
-const main: React.CSSProperties = {
-  minHeight: '100vh',
-  padding: 24,
-  display: 'grid',
-  placeItems: 'center',
-  background: 'linear-gradient(180deg,#020617,#0f172a)',
-  color: 'white',
-}
-
-const card: React.CSSProperties = {
-  width: '100%',
-  maxWidth: 780,
-  padding: 28,
-  borderRadius: 28,
-  background: 'rgba(255,255,255,0.06)',
-  border: '1px solid rgba(255,255,255,0.12)',
-}
-
-const pill: React.CSSProperties = {
-  display: 'inline-block',
-  padding: '7px 12px',
-  borderRadius: 999,
-  background: 'rgba(239,68,68,0.18)',
-  color: '#fecaca',
-  fontWeight: 900,
-  textTransform: 'uppercase',
-  fontSize: 12,
-}
-
-const title: React.CSSProperties = {
-  fontSize: 34,
-  fontWeight: 950,
-}
-
-const warning: React.CSSProperties = {
-  padding: 16,
-  borderRadius: 18,
-  background: 'rgba(239,68,68,0.16)',
-  border: '1px solid rgba(239,68,68,0.35)',
-  color: '#fecaca',
-  fontWeight: 900,
-}
-
-const grid: React.CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-  gap: 12,
-  marginTop: 18,
-}
-
-const subjectButton: React.CSSProperties = {
-  padding: 18,
-  borderRadius: 18,
-  border: '1px solid rgba(255,255,255,0.12)',
-  background: 'rgba(15,23,42,0.9)',
-  color: 'white',
-  display: 'grid',
-  gap: 5,
-  textAlign: 'left',
-  cursor: 'pointer',
-}
-
-const selectedButton: React.CSSProperties = {
-  ...subjectButton,
-  background: 'rgba(37,99,235,0.35)',
-  border: '1px solid rgba(96,165,250,0.65)',
-}
-
-const primaryButton: React.CSSProperties = {
-  marginTop: 20,
-  width: '100%',
-  padding: 16,
-  borderRadius: 18,
-  border: 'none',
-  background: '#2563eb',
-  color: 'white',
-  fontWeight: 950,
-  cursor: 'pointer',
 }
