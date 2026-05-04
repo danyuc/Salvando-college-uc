@@ -3,14 +3,11 @@
 import { useEffect, useMemo, useState } from "react"
 
 import MathLessonEngine from "./MathLessonEngine"
-import InteractiveGraphCanvas from "./InteractiveGraphCanvas"
-import PracticeTimerPro from "./PracticeTimerPro"
 import PrecalculoVisual from "./PrecalculoVisual"
-import PrecalculoSteps from "./PrecalculoSteps"
+import ProMaxUCPanel from "./ProMaxUCPanel"
 
 import { lessonForQuestion } from "@/lib/math-lessons"
 import { useUser } from "@/lib/useUser"
-import { getLocalUser } from "@/lib/local-user"
 import { SUBJECT_THEMES, type SubjectCode } from "@/lib/academic-calendar-data"
 import { generateMat1000ForceQuestions } from "@/lib/mat1000-force-questions"
 import {
@@ -39,82 +36,77 @@ function formatTime(seconds: number) {
   return `${m}:${String(s).padStart(2, "0")}`
 }
 
-function getWeaknesses(evaluation: string) {
-  if (typeof window === "undefined") return []
-  const raw = localStorage.getItem(`mat1000-weaknesses-${evaluation}`)
-  if (!raw) return []
-  try {
-    return JSON.parse(raw) as string[]
-  } catch {
-    return []
-  }
+function getDiagnosticDone(subject: SubjectCode, evaluation: string) {
+  if (typeof window === "undefined") return false
+  return Boolean(localStorage.getItem(`diagnostic-${subject}-${evaluation}`))
 }
 
 function saveWeakness(evaluation: string, subtema: string) {
-  const prev = getWeaknesses(evaluation)
+  if (typeof window === "undefined") return
+  const key = `mat1000-weaknesses-${evaluation}`
+  const raw = localStorage.getItem(key)
+  const prev = raw ? JSON.parse(raw) : []
   const next = Array.from(new Set([...prev, subtema]))
-  localStorage.setItem(`mat1000-weaknesses-${evaluation}`, JSON.stringify(next))
+  localStorage.setItem(key, JSON.stringify(next))
 }
 
-function saveEase(subtema: string, value: "facil" | "medio" | "dificil") {
-  const raw = localStorage.getItem("mat1000-ease-map")
-  const map = raw ? JSON.parse(raw) : {}
-  map[subtema] = value
-  localStorage.setItem("mat1000-ease-map", JSON.stringify(map))
+function buildGenericQuestions(subject: SubjectCode) {
+  const theme = SUBJECT_THEMES[subject]
+  return [
+    {
+      tipo: "desarrollo",
+      subtema: "Conceptos base",
+      pregunta: `Explica el concepto central más importante de ${theme.name} con un ejemplo.`,
+      respuesta_correcta: "Respuesta abierta",
+      explicacion: "La idea es verificar comprensión conceptual, no memorizar una frase.",
+      opciones: null,
+    },
+  ]
 }
 
 function enrichQuestions(base: any[], kind: QuestionKind, mode: Mode) {
   const extras = [
     {
-      id: "dev-distancia-1",
+      id: "dev-lineal-1",
       tipo: "desarrollo",
-      subtema: "Distancia entre puntos",
-      pregunta: "Desarrollo: Dados A(-2, 5) y B(4, -3), calcula la distancia AB mostrando Δx, Δy y el resultado final.",
+      subtema: "Ecuación lineal",
+      pregunta: "Desarrollo: resuelve 10 + 2x = 30 mostrando cada paso.",
       opciones: null,
-      respuesta_correcta: "√100 = 10",
-      explicacion: "Δx=4-(-2)=6, Δy=-3-5=-8. Entonces d=√(6²+(-8)²)=√(36+64)=√100=10.",
-      error_comun: "No explicar de dónde salen Δx y Δy.",
+      respuesta_correcta: "x = 10",
+      explicacion: "Se resta 10 a ambos lados y luego se divide por 2.",
       pasos: [
-        { orden: 1, titulo: "Identificar coordenadas", explicacion: "A es el primer punto y B el segundo.", expresion: "A(x₁,y₁)=(-2,5), B(x₂,y₂)=(4,-3)" },
-        { orden: 2, titulo: "Cambio horizontal", explicacion: "Restamos x₂-x₁.", expresion: "Δx=4-(-2)=6" },
-        { orden: 3, titulo: "Cambio vertical", explicacion: "Restamos y₂-y₁.", expresion: "Δy=-3-5=-8" },
-        { orden: 4, titulo: "Pitágoras", explicacion: "La distancia es la hipotenusa.", expresion: "d=√(6²+(-8)²)=10" },
+        { orden: 1, titulo: "Identificar", explicacion: "El 10 está sumando.", expresion: "10 + 2x = 30" },
+        { orden: 2, titulo: "Restar 10", explicacion: "Restamos 10 a ambos lados.", expresion: "2x = 30 - 10" },
+        { orden: 3, titulo: "Simplificar", explicacion: "30 - 10 = 20.", expresion: "2x = 20" },
+        { orden: 4, titulo: "Dividir por 2", explicacion: "El 2 multiplica a x, por eso dividimos.", expresion: "x = 10" },
       ],
-      visualizacion: { parametros: { puntos: [{ etiqueta: "A", x: -2, y: 5 }, { etiqueta: "B", x: 4, y: -3 }] } },
     },
     {
       id: "mod-funciones-1",
       tipo: "modelamiento",
       subtema: "Modelamiento",
-      pregunta: "Modelamiento: El costo de producir x unidades está dado por C(x)=2x+15. Si el ingreso es I(x)=5x, modela la utilidad y determina desde qué cantidad hay ganancia.",
+      pregunta: "Modelamiento: Si C(x)=2x+15 e I(x)=5x, modela la utilidad y determina cuándo hay ganancia.",
       opciones: null,
       respuesta_correcta: "U(x)=3x-15; hay ganancia si x>5",
-      explicacion: "La utilidad es ingreso menos costo: U(x)=I(x)-C(x)=5x-(2x+15)=3x-15. Hay ganancia cuando U(x)>0, entonces 3x-15>0, x>5.",
-      error_comun: "Confundir costo con utilidad o no plantear la desigualdad.",
+      explicacion: "La utilidad es ingreso menos costo: U(x)=5x-(2x+15)=3x-15. Hay ganancia cuando U(x)>0.",
       pasos: [
-        { orden: 1, titulo: "Definir utilidad", explicacion: "La utilidad siempre se modela como ingreso menos costo.", expresion: "U(x)=I(x)-C(x)" },
-        { orden: 2, titulo: "Sustituir funciones", explicacion: "Reemplazamos I(x)=5x y C(x)=2x+15.", expresion: "U(x)=5x-(2x+15)" },
-        { orden: 3, titulo: "Simplificar", explicacion: "Distribuimos el signo negativo.", expresion: "U(x)=5x-2x-15=3x-15" },
-        { orden: 4, titulo: "Condición de ganancia", explicacion: "Hay ganancia cuando la utilidad es positiva.", expresion: "3x-15>0 ⇒ x>5" },
+        { orden: 1, titulo: "Definir utilidad", explicacion: "Utilidad = ingreso - costo.", expresion: "U(x)=I(x)-C(x)" },
+        { orden: 2, titulo: "Sustituir", explicacion: "Reemplazamos las funciones dadas.", expresion: "U(x)=5x-(2x+15)" },
+        { orden: 3, titulo: "Simplificar", explicacion: "Distribuimos el signo negativo.", expresion: "U(x)=3x-15" },
+        { orden: 4, titulo: "Ganancia", explicacion: "Pedimos utilidad positiva.", expresion: "3x-15>0 ⇒ x>5" },
       ],
     },
   ]
 
-  let output = [...base]
-
-  if (kind === "desarrollo") output = extras.filter(q => q.tipo === "desarrollo")
-  if (kind === "modelamiento") output = extras.filter(q => q.tipo === "modelamiento")
-  if (kind === "mixtas") output = [...base, ...extras]
-
-  if (mode === "intensivo") {
-    output = [...extras, ...base, ...base.slice(0, 5)]
-  }
-
-  return output
+  if (kind === "desarrollo") return extras.filter(q => q.tipo === "desarrollo")
+  if (kind === "modelamiento") return extras.filter(q => q.tipo === "modelamiento")
+  if (kind === "mixtas" || mode === "intensivo") return [...base, ...extras]
+  return base
 }
 
 export default function PracticeView() {
   const { name: userName } = useUser()
+
   const [subject, setSubject] = useState<SubjectCode>("MAT1000")
   const [evaluation, setEvaluation] = useState("I1")
   const [moduleLabel, setModuleLabel] = useState("Todos")
@@ -131,39 +123,42 @@ export default function PracticeView() {
   const [showSteps, setShowSteps] = useState(false)
   const [answers, setAnswers] = useState<any[]>([])
   const [finished, setFinished] = useState(false)
-  const [visualStep, setVisualStep] = useState(0)
-  const [startedAt, setStartedAt] = useState<number | null>(null)
-  const [remaining, setRemaining] = useState(minutes * 60)
+  const [remaining, setRemaining] = useState(120 * 60)
   const [timerStarted, setTimerStarted] = useState(false)
+  const [visualStep] = useState(0)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     setSubject(normalizeSubject(params.get("subject")))
     setEvaluation(normalizeEvaluation(params.get("evaluation")))
-    const user = getLocalUser()
-    if (user) {
-      // usuario ya viene desde useUser; no se requiere set local
+    const urlMode = params.get("mode")
+    if (urlMode === "practica" || urlMode === "diagnostico" || urlMode === "simulacion" || urlMode === "intensivo") {
+      setMode(urlMode)
     }
   }, [])
 
   useEffect(() => {
-    setRemaining(mode === "simulacion" ? 120 * 60 : minutes * 60)
-    setStartedAt(Date.now())
-  }, [minutes])
+    if (!timerStarted || finished || questions.length === 0) return
 
-  useEffect(() => {
-    if (!questions.length || finished) return
-    const timer = setInterval(() => {
-      setRemaining(prev => Math.max(0, prev - 1))
+    const interval = window.setInterval(() => {
+      setRemaining(prev => {
+        if (prev <= 1) {
+          window.clearInterval(interval)
+          setFinished(true)
+          return 0
+        }
+        return prev - 1
+      })
     }, 1000)
-    return () => clearInterval(timer)
-  }, [questions.length, finished])
+
+    return () => window.clearInterval(interval)
+  }, [timerStarted, finished, questions.length])
 
   const theme = SUBJECT_THEMES[subject]
   const isMath = subject === "MAT1000"
 
   const modules = useMemo(() => {
-    if (!isMath) return ["Lecturas", "Conceptos", "Evaluaciones"]
+    if (!isMath) return ["Todos", "Lecturas", "Conceptos", "Evaluaciones"]
     return getMat1000ModulesForEvaluation(evaluation)
   }, [isMath, evaluation])
 
@@ -172,17 +167,16 @@ export default function PracticeView() {
     return getMat1000SubtemasForModule(moduleLabel, evaluation)
   }, [isMath, moduleLabel, evaluation])
 
-  const sessionTotalSeconds = mode === "simulacion" ? 120 * 60 : minutes * 60
   const current = questions[index]
   const currentLesson = current ? lessonForQuestion(current) : null
   const correctCount = answers.filter(a => a.correct).length
   const accuracy = answers.length ? Math.round((correctCount / answers.length) * 100) : 0
-  const weak = [...new Set(answers.filter(a => !a.correct).map(a => a.subtema))]
-  const diagnosticDone = typeof window !== "undefined" && Boolean(localStorage.getItem(`mat1000-diagnostic-${evaluation}`))
+  const weak = Array.from(new Set(answers.filter(a => !a.correct).map(a => a.subtema)))
+  const diagnosticDone = getDiagnosticDone(subject, evaluation)
   const diagnosticRequired = !diagnosticDone
-  const avgPerQuestion = questions.length ? Math.floor((minutes * 60) / questions.length) : 0
-  const elapsedForCurrent = questions.length ? (minutes * 60 - remaining) - index * avgPerQuestion : 0
-  const timeWarning = avgPerQuestion > 0 && elapsedForCurrent > avgPerQuestion * 0.8
+  const totalSeconds = mode === "simulacion" ? 120 * 60 : minutes * 60
+  const avgSeconds = questions.length ? Math.floor(totalSeconds / questions.length) : 0
+  const timePercent = totalSeconds > 0 ? Math.max(0, Math.min(100, (remaining / totalSeconds) * 100)) : 100
 
   function reset() {
     setQuestions([])
@@ -190,72 +184,57 @@ export default function PracticeView() {
     setSelected("")
     setWritten("")
     setShowSteps(false)
-    setVisualStep(0)
     setAnswers([])
     setFinished(false)
     setRemaining(mode === "simulacion" ? 120 * 60 : minutes * 60)
-    setTimerStarted(true)
+    setTimerStarted(false)
   }
 
   function start() {
     if (diagnosticRequired) return
 
-    if (!isMath) {
-      setQuestions([
-        {
-          tipo: "desarrollo",
-          subtema,
-          pregunta: `Explica con tus palabras el tema "${subtema}" en ${theme.name}.`,
-          respuesta_correcta: "Respuesta abierta",
-          explicacion: "Compara tu respuesta con apuntes, lecturas y rúbrica del ramo.",
-          pasos: [
-            { orden: 1, titulo: "Definir concepto", explicacion: "Parte por definir el concepto central.", expresion: "Concepto → definición clara" },
-            { orden: 2, titulo: "Aplicar", explicacion: "Agrega un ejemplo de clase o lectura.", expresion: "Definición + ejemplo" },
-            { orden: 3, titulo: "Cerrar", explicacion: "Explica por qué importa para la evaluación.", expresion: "Idea central + relevancia" },
-          ],
-        },
-      ])
-      return
+    let finalQuestions: any[] = []
+
+    if (isMath) {
+      const base = generateMat1000ForceQuestions({
+        evaluation,
+        mode,
+        moduleLabel,
+        subtema,
+        cantidad: mode === "simulacion" ? 13 : amount,
+      })
+
+      finalQuestions = enrichQuestions(base, kind, mode)
+        .slice(0, mode === "simulacion" ? 13 : amount)
+    } else {
+      finalQuestions = buildGenericQuestions(subject)
     }
 
-    const base = generateMat1000ForceQuestions({
-      evaluation,
-      mode,
-      moduleLabel,
-      subtema,
-      cantidad: mode === "simulacion" ? 13 : amount,
-    })
-
-    const enriched = enrichQuestions(base, kind, mode).slice(0, mode === "simulacion" ? 13 : amount)
-
-    setQuestions(enriched)
+    setQuestions(finalQuestions)
     setIndex(0)
     setSelected("")
     setWritten("")
     setShowSteps(false)
     setAnswers([])
     setFinished(false)
-    setRemaining(minutes * 60)
+    setRemaining(mode === "simulacion" ? 120 * 60 : minutes * 60)
+    setTimerStarted(true)
   }
 
   function answer(option: string) {
     if (!current || selected) return
+
     const correct = option === current.respuesta_correcta
     setSelected(option)
-    setAnswers(prev => [...prev, { subtema: current.subtema, correct }])
-    if (!correct) saveWeakness(evaluation, current.subtema)
+    setAnswers(prev => [...prev, { subtema: current.subtema || "general", correct }])
+
+    if (!correct) saveWeakness(evaluation, current.subtema || "general")
   }
 
   function submitWritten() {
     if (!current || selected) return
     setSelected("respuesta_abierta")
-    setAnswers(prev => [...prev, { subtema: current.subtema, correct: true, written }])
-  }
-
-  function markEase(value: "facil" | "medio" | "dificil") {
-    if (!current) return
-    saveEase(current.subtema, value)
-    if (value === "dificil") saveWeakness(evaluation, current.subtema)
+    setAnswers(prev => [...prev, { subtema: current.subtema || "desarrollo", correct: true, written }])
   }
 
   function next() {
@@ -263,11 +242,11 @@ export default function PracticeView() {
       setFinished(true)
       return
     }
+
     setIndex(i => i + 1)
     setSelected("")
     setWritten("")
     setShowSteps(false)
-    setVisualStep(0)
   }
 
   return (
@@ -277,31 +256,38 @@ export default function PracticeView() {
           <div>
             <span className="badge">{theme.icon} {theme.short}</span>
             <h1>Hola, {userName}</h1>
-            <p>Práctica inteligente con tiempo, dificultad, modo intensivo, desarrollo y modelamiento.</p>
+            <p>Práctica Pro Max UC: personalizada, visual, explicativa y orientada a prueba real.</p>
           </div>
+
           <div className="timer">
             <strong>{formatTime(remaining)}</strong>
             <span>tiempo restante</span>
+            <div className="timerbar"><i style={{ width: `${timePercent}%` }} /></div>
           </div>
         </section>
 
         <section className="mode-card">
-          <h3>{diagnosticRequired ? "🔒 Diagnóstico obligatorio" : mode === "intensivo" ? "🔥 Modo intensivo pre-prueba" : "🧠 Modo guiado activo"}</h3>
+          <h3>{diagnosticRequired ? "🔒 Diagnóstico obligatorio" : "🧠 Sistema inteligente activo"}</h3>
           <p>
             {diagnosticRequired
-              ? `Antes de practicar ${evaluation}, completa el diagnóstico.`
-              : mode === "intensivo"
-                ? "Mezcla debilidades, preguntas fáciles, trampas típicas y ejercicios de alta repetición."
-                : `Foco actual: ${theme.name} · ${subtema}`}
+              ? `Antes de practicar ${theme.name} ${evaluation}, completa el diagnóstico.`
+              : `Modo ${mode} · foco ${subtema} · explicación adaptativa.`}
           </p>
-          {diagnosticRequired && <a className="diagnostic-cta" href={`/diagnostico?subject=${subject}&evaluation=${evaluation}`}>Hacer diagnóstico ahora</a>}
+
+          {diagnosticRequired && (
+            <a className="diagnostic-cta" href={`/diagnostico?subject=${subject}&evaluation=${evaluation}`}>
+              Hacer diagnóstico ahora
+            </a>
+          )}
         </section>
 
         <section className="filters-card">
           <label>
             Asignatura
             <select value={subject} onChange={(e) => { setSubject(e.target.value as SubjectCode); reset() }}>
-              {(Object.entries(SUBJECT_THEMES) as [SubjectCode, any][]).map(([code, t]) => <option key={code} value={code}>{t.icon} {t.name}</option>)}
+              {(Object.entries(SUBJECT_THEMES) as [SubjectCode, any][]).map(([code, t]) => (
+                <option key={code} value={code}>{t.icon} {t.name}</option>
+              ))}
             </select>
           </label>
 
@@ -368,27 +354,21 @@ export default function PracticeView() {
           <div><span>Preguntas</span><strong>{questions.length}</strong></div>
           <div><span>Respondidas</span><strong>{answers.length}</strong></div>
           <div><span>Precisión</span><strong>{accuracy}%</strong></div>
-          <div><span>Promedio/pregunta</span><strong>{avgPerQuestion ? formatTime(avgPerQuestion) : "—"}</strong></div>
+          <div><span>Promedio/pregunta</span><strong>{avgSeconds ? formatTime(avgSeconds) : "—"}</strong></div>
           <div><span>Débiles</span><strong>{weak.length}</strong></div>
         </section>
-
-        {timeWarning && current && (
-          <section className="warning">
-            ⚠️ Estás llegando al tiempo promedio de esta pregunta. Si estás en modo prueba, marca una alternativa razonable y sigue.
-          </section>
-        )}
 
         {finished && (
           <section className="result-card">
             <h2>Sesión finalizada</h2>
             <p>Precisión: <strong>{accuracy}%</strong></p>
-            {weak.length > 0 ? <p>Refuerza: <strong>{weak.join(", ")}</strong>.</p> : <p>No se detectaron debilidades críticas.</p>}
+            {weak.length > 0 ? (
+              <p>Refuerza: <strong>{weak.join(", ")}</strong>.</p>
+            ) : (
+              <p>No se detectaron debilidades críticas.</p>
+            )}
             <button onClick={start}>Repetir sesión</button>
           </section>
-        )}
-
-        {questions.length > 0 && !finished && (
-          <PracticeTimerPro totalSeconds={mode === "simulacion" ? 7200 : minutes * 60} />
         )}
 
         {!finished && current && (
@@ -396,13 +376,21 @@ export default function PracticeView() {
             <div className="chips">
               <span>{theme.short}</span>
               <span>{current.tipo || "selección"}</span>
-              <span>{current.subtema}</span>
+              <span>{current.subtema || "general"}</span>
               <span>{index + 1}/{questions.length}</span>
             </div>
 
             <h2>{current.pregunta}</h2>
 
-            {Array.isArray(current.visualizacion?.parametros?.puntos) && <PrecalculoVisual puntos={current.visualizacion.parametros.puntos} activeStep={visualStep} />}
+            <ProMaxUCPanel
+              question={current}
+              answered={!!selected}
+              correct={selected === current.respuesta_correcta || selected === "respuesta_abierta"}
+            />
+
+            {Array.isArray(current.visualizacion?.parametros?.puntos) && (
+              <PrecalculoVisual puntos={current.visualizacion.parametros.puntos} activeStep={visualStep} />
+            )}
 
             {current.opciones ? (
               <div className="options">
@@ -410,8 +398,13 @@ export default function PracticeView() {
                   const answered = !!selected
                   const correct = op === current.respuesta_correcta
                   const chosen = op === selected
+
                   return (
-                    <button key={op} onClick={() => answer(op)} className={`option ${answered && mode !== "simulacion" && correct ? "correct" : ""} ${answered && mode !== "simulacion" && chosen && !correct ? "wrong" : ""}`}>
+                    <button
+                      key={op}
+                      onClick={() => answer(op)}
+                      className={`option ${answered && mode !== "simulacion" && correct ? "correct" : ""} ${answered && mode !== "simulacion" && chosen && !correct ? "wrong" : ""}`}
+                    >
                       {op}
                     </button>
                   )
@@ -433,28 +426,23 @@ export default function PracticeView() {
                   </>
                 ) : (
                   <>
-                    <h3>{selected === current.respuesta_correcta || !current.opciones ? "✅ Revisemos" : "❌ Incorrecta"}</h3>
+                    <h3>{selected === current.respuesta_correcta || selected === "respuesta_abierta" ? "✅ Revisemos" : "❌ Incorrecta"}</h3>
                     <p><strong>Respuesta esperada:</strong> {current.respuesta_correcta}</p>
                     <p>{current.explicacion || current.explanation}</p>
 
-                    <div className="ease">
-                      <span>¿Cómo se sintió?</span>
-                      <button onClick={() => markEase("facil")}>Fácil</button>
-                      <button onClick={() => markEase("medio")}>Medio</button>
-                      <button onClick={() => markEase("dificil")}>Me costó</button>
-                    </div>
-
-                    {current.error_comun && <div className="note">Trampa típica UC: {current.error_comun}</div>}
+                    {current.error_comun && (
+                      <div className="note">Trampa típica UC: {current.error_comun}</div>
+                    )}
 
                     <div className="feedback-actions">
-                      <button onClick={() => setShowSteps(v => !v)}>{showSteps ? "Ocultar explicación" : "Ver explicación paso a paso"}</button>
+                      <button onClick={() => setShowSteps(v => !v)}>
+                        {showSteps ? "Ocultar explicación" : "Ver explicación paso a paso"}
+                      </button>
                       <button onClick={next}>Siguiente</button>
                     </div>
 
-                    {currentLesson && (
-                      <>
-                        {currentLesson && <MathLessonEngine title={currentLesson.title} steps={currentLesson.steps as any} />}
-                      </>
+                    {showSteps && currentLesson && (
+                      <MathLessonEngine title={currentLesson.title} steps={currentLesson.steps as any} />
                     )}
                   </>
                 )}
@@ -466,152 +454,291 @@ export default function PracticeView() {
 
       <style jsx>{`
         .practice-page {
-          min-height:100vh;
-          padding:28px;
-          color:white;
+          min-height: 100vh;
+          padding: 28px;
+          color: white;
           background:
             radial-gradient(circle at 18% 10%, var(--a), transparent 34%),
             linear-gradient(180deg,#020617,#0f172a);
         }
-        .shell { max-width:1180px; margin:0 auto; display:grid; gap:18px; }
-        .hero-card,.mode-card,.filters-card,.question-card,.result-card {
-          border:1px solid rgba(148,163,184,.20);
-          background:linear-gradient(135deg,rgba(30,41,59,.82),rgba(15,23,42,.86));
-          border-radius:28px;
-          box-shadow:0 28px 80px rgba(0,0,0,.28);
+
+        .shell {
+          max-width: 1180px;
+          margin: 0 auto;
+          display: grid;
+          gap: 18px;
         }
+
+        .hero-card,
+        .mode-card,
+        .filters-card,
+        .question-card,
+        .result-card {
+          border: 1px solid rgba(148,163,184,.20);
+          background: linear-gradient(135deg,rgba(30,41,59,.82),rgba(15,23,42,.86));
+          border-radius: 28px;
+          box-shadow: 0 28px 80px rgba(0,0,0,.28);
+        }
+
         .hero-card {
-          padding:28px;
-          display:flex;
-          justify-content:space-between;
-          align-items:center;
-          border-color:var(--c);
-          box-shadow:0 0 0 1px var(--c),0 30px 90px rgba(0,0,0,.35);
+          padding: 28px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          border-color: var(--c);
+          box-shadow: 0 0 0 1px var(--c),0 30px 90px rgba(0,0,0,.35);
         }
-        .badge,.chips span {
-          display:inline-flex;
-          padding:7px 11px;
-          border-radius:999px;
-          background:var(--a);
-          font-weight:950;
-          font-size:12px;
+
+        .badge,
+        .chips span {
+          display: inline-flex;
+          padding: 7px 11px;
+          border-radius: 999px;
+          background: var(--a);
+          font-weight: 950;
+          font-size: 12px;
         }
-        h1 { font-size:clamp(34px,5vw,56px); margin:12px 0 8px; letter-spacing:-.05em; }
-        .hero-card p,.mode-card p { color:#cbd5e1; }
+
+        h1 {
+          font-size: clamp(34px,5vw,56px);
+          margin: 12px 0 8px;
+          letter-spacing: -.05em;
+        }
+
+        .hero-card p,
+        .mode-card p {
+          color: #cbd5e1;
+        }
+
         .timer {
-          width:150px;
-          height:110px;
-          border-radius:24px;
-          background:rgba(2,6,23,.55);
-          display:grid;
-          place-items:center;
-          text-align:center;
+          width: 170px;
+          padding: 15px;
+          border-radius: 24px;
+          background: rgba(2,6,23,.55);
+          text-align: center;
         }
-        .timer strong { font-size:30px; }
-        .timer span { color:#cbd5e1; font-size:13px; }
-        .mode-card { padding:20px; border-color:color-mix(in srgb,var(--c) 60%,transparent); }
-        .mode-card a { color:white; font-weight:950; }
+
+        .timer strong {
+          font-size: 30px;
+          display: block;
+        }
+
+        .timer span {
+          color: #cbd5e1;
+          font-size: 13px;
+        }
+
+        .timerbar {
+          height: 8px;
+          margin-top: 10px;
+          border-radius: 999px;
+          background: rgba(255,255,255,.10);
+          overflow: hidden;
+        }
+
+        .timerbar i {
+          display: block;
+          height: 100%;
+          border-radius: 999px;
+          background: linear-gradient(90deg,#22c55e,#3b82f6,#f97316);
+          transition: width .35s linear;
+        }
+
+        .mode-card {
+          padding: 20px;
+          border-color: color-mix(in srgb,var(--c) 60%,transparent);
+        }
+
         .diagnostic-cta {
-          display:inline-flex;
-          margin-top:10px;
-          padding:12px 16px;
-          border-radius:16px;
-          background:linear-gradient(135deg,#ef4444,#f97316);
-          color:white;
-          text-decoration:none;
-          box-shadow:0 16px 40px rgba(239,68,68,.28);
+          display: inline-flex;
+          margin-top: 10px;
+          padding: 12px 16px;
+          border-radius: 16px;
+          background: linear-gradient(135deg,#ef4444,#f97316);
+          color: white;
+          text-decoration: none;
+          font-weight: 950;
         }
-        .filters-card { padding:22px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
-        label { display:grid; gap:8px; color:#e2e8f0; font-weight:900; }
-        select,input {
-          min-height:56px;
-          border-radius:18px;
-          border:1px solid rgba(148,163,184,.24);
-          background:rgba(15,23,42,.88);
-          color:white;
-          padding:0 16px;
-          font-weight:900;
-          font-size:15px;
+
+        .filters-card {
+          padding: 22px;
+          display: grid;
+          grid-template-columns: repeat(3,minmax(0,1fr));
+          gap: 16px;
         }
-        .actions { display:flex; gap:10px; align-items:end; }
+
+        label {
+          display: grid;
+          gap: 8px;
+          color: #e2e8f0;
+          font-weight: 900;
+        }
+
+        select,
+        input {
+          min-height: 56px;
+          border-radius: 18px;
+          border: 1px solid rgba(148,163,184,.24);
+          background: rgba(15,23,42,.88);
+          color: white;
+          padding: 0 16px;
+          font-weight: 900;
+          font-size: 15px;
+        }
+
+        option {
+          color: #0f172a;
+        }
+
+        .actions {
+          display: flex;
+          gap: 10px;
+          align-items: end;
+        }
+
         button {
-          min-height:52px;
-          border-radius:17px;
-          border:1px solid rgba(255,255,255,.14);
-          background:linear-gradient(135deg,var(--c),#2563eb);
-          color:white;
-          padding:0 18px;
-          font-weight:950;
-          cursor:pointer;
+          min-height: 52px;
+          border-radius: 17px;
+          border: 1px solid rgba(255,255,255,.14);
+          background: linear-gradient(135deg,var(--c),#2563eb);
+          color: white;
+          padding: 0 18px;
+          font-weight: 950;
+          cursor: pointer;
         }
-        button.secondary { background:rgba(255,255,255,.08); }
-        button:disabled { opacity:.45; cursor:not-allowed; }
-        .stats { display:grid; grid-template-columns:repeat(5,1fr); gap:14px; }
+
+        button.secondary {
+          background: rgba(255,255,255,.08);
+        }
+
+        button:disabled {
+          opacity: .45;
+          cursor: not-allowed;
+        }
+
+        .stats {
+          display: grid;
+          grid-template-columns: repeat(5,1fr);
+          gap: 14px;
+        }
+
         .stats div {
-          padding:18px;
-          border-radius:20px;
-          background:rgba(255,255,255,.06);
-          border:1px solid rgba(255,255,255,.10);
+          padding: 18px;
+          border-radius: 20px;
+          background: rgba(255,255,255,.06);
+          border: 1px solid rgba(255,255,255,.10);
         }
-        .stats span { color:#cbd5e1; display:block; margin-bottom:8px; }
-        .stats strong { font-size:22px; }
-        .warning {
-          padding:16px;
-          border-radius:20px;
-          background:rgba(245,158,11,.16);
-          border:1px solid rgba(245,158,11,.35);
-          color:#fde68a;
-          font-weight:900;
+
+        .stats span {
+          color: #cbd5e1;
+          display: block;
+          margin-bottom: 8px;
         }
-        .question-card,.result-card {
-          padding:24px;
-          border-color:var(--c);
-          box-shadow:0 0 0 1px var(--c),0 0 34px color-mix(in srgb,var(--c) 45%,transparent),0 30px 90px rgba(0,0,0,.35);
+
+        .stats strong {
+          font-size: 22px;
         }
-        .chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
-        .question-card h2 { font-size:24px; line-height:1.35; }
-        .options { display:grid; gap:11px; margin-top:18px; }
+
+        .question-card,
+        .result-card {
+          padding: 24px;
+          border-color: var(--c);
+          box-shadow: 0 0 0 1px var(--c),0 0 34px color-mix(in srgb,var(--c) 45%,transparent),0 30px 90px rgba(0,0,0,.35);
+        }
+
+        .chips {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-bottom: 16px;
+        }
+
+        .question-card h2 {
+          font-size: 24px;
+          line-height: 1.35;
+        }
+
+        .options {
+          display: grid;
+          gap: 11px;
+          margin-top: 18px;
+        }
+
         .option {
-          text-align:left;
-          background:rgba(255,255,255,.06);
-          border:1px solid rgba(255,255,255,.12);
-          transition:.18s ease;
+          text-align: left;
+          background: rgba(255,255,255,.06);
+          border: 1px solid rgba(255,255,255,.12);
+          transition: .18s ease;
         }
-        .option:hover { transform:translateX(4px); background:rgba(255,255,255,.11); }
-        .option.correct { background:rgba(34,197,94,.20); border-color:rgba(34,197,94,.65); }
-        .option.wrong { background:rgba(239,68,68,.20); border-color:rgba(239,68,68,.65); }
-        .written { display:grid; gap:12px; margin-top:18px; }
+
+        .option:hover {
+          transform: translateX(4px);
+          background: rgba(255,255,255,.11);
+        }
+
+        .option.correct {
+          background: rgba(34,197,94,.20);
+          border-color: rgba(34,197,94,.65);
+        }
+
+        .option.wrong {
+          background: rgba(239,68,68,.20);
+          border-color: rgba(239,68,68,.65);
+        }
+
+        .written {
+          display: grid;
+          gap: 12px;
+          margin-top: 18px;
+        }
+
         textarea {
-          min-height:150px;
-          border-radius:18px;
-          border:1px solid rgba(255,255,255,.14);
-          background:rgba(15,23,42,.70);
-          color:white;
-          padding:14px;
-          font-weight:800;
+          min-height: 150px;
+          border-radius: 18px;
+          border: 1px solid rgba(255,255,255,.14);
+          background: rgba(15,23,42,.70);
+          color: white;
+          padding: 14px;
+          font-weight: 800;
         }
+
         .feedback {
-          margin-top:18px;
-          padding:18px;
-          border-radius:22px;
-          background:rgba(15,23,42,.78);
-          border:1px solid rgba(255,255,255,.12);
+          margin-top: 18px;
+          padding: 18px;
+          border-radius: 22px;
+          background: rgba(15,23,42,.78);
+          border: 1px solid rgba(255,255,255,.12);
         }
-        .ease { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:14px 0; }
-        .ease span { color:#cbd5e1; font-weight:900; }
+
         .note {
-          margin-top:12px;
-          padding:12px;
-          border-radius:14px;
-          background:rgba(245,158,11,.16);
-          border:1px solid rgba(245,158,11,.30);
-          color:#fde68a;
+          margin-top: 12px;
+          padding: 12px;
+          border-radius: 14px;
+          background: rgba(245,158,11,.16);
+          border: 1px solid rgba(245,158,11,.30);
+          color: #fde68a;
         }
-        .feedback-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
-        @media(max-width:900px){
-          .filters-card { grid-template-columns:1fr; }
-          .stats { grid-template-columns:repeat(2,1fr); }
-          .hero-card { flex-direction:column; align-items:flex-start; }
+
+        .feedback-actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          margin-top: 14px;
+        }
+
+        @media(max-width:900px) {
+          .filters-card {
+            grid-template-columns: 1fr;
+          }
+
+          .stats {
+            grid-template-columns: repeat(2,1fr);
+          }
+
+          .hero-card {
+            flex-direction: column;
+            align-items: flex-start;
+          }
         }
       `}</style>
     </main>
