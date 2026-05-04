@@ -8,6 +8,7 @@ import PrecalculoVisual from "./PrecalculoVisual"
 import ProMaxUCPanel from "./ProMaxUCPanel"
 
 import { lessonForQuestion } from "@/lib/math-lessons"
+import { hasUserDiagnostic } from "@/lib/user-diagnostics"
 import { registerPracticeResult } from "@/lib/precalculo-god-mode"
 import { useUser } from "@/lib/useUser"
 import { SUBJECT_THEMES, type SubjectCode } from "@/lib/academic-calendar-data"
@@ -171,6 +172,7 @@ export default function PracticeView() {
   const [finished, setFinished] = useState(false)
   const [remaining, setRemaining] = useState(120 * 60)
   const [timerStarted, setTimerStarted] = useState(false)
+  const [diagnosticDone, setDiagnosticDone] = useState(false)
   const [visualStep, setVisualStep] = useState(0)
   const [questionStartedAt, setQuestionStartedAt] = useState(Date.now())
 
@@ -219,7 +221,11 @@ export default function PracticeView() {
   const correctCount = answers.filter(a => a.correct).length
   const accuracy = answers.length ? Math.round((correctCount / answers.length) * 100) : 0
   const weak = Array.from(new Set(answers.filter(a => !a.correct).map(a => a.subtema)))
-  const diagnosticDone = getDiagnosticDone(subject, evaluation)
+  useEffect(() => {
+    hasUserDiagnostic(subject, evaluation).then(setDiagnosticDone)
+  }, [subject, evaluation])
+
+  // diagnosticDone ahora se sincroniza con Supabase
   const diagnosticRequired = !diagnosticDone
   const totalSeconds = mode === "simulacion" ? 120 * 60 : minutes * 60
   const avgSeconds = questions.length ? Math.floor(totalSeconds / questions.length) : 0

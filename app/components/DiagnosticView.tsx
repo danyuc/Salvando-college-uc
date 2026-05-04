@@ -6,6 +6,7 @@ import { generateMat1000ForceQuestions } from "@/lib/mat1000-force-questions"
 import { SUBJECT_THEMES, type SubjectCode } from "@/lib/academic-calendar-data"
 import PrecalculoVisual from "./PrecalculoVisual"
 import PrecalculoSteps from "./PrecalculoSteps"
+import { saveUserDiagnostic } from "@/lib/user-diagnostics"
 
 function normalizeSubject(value: string | null): SubjectCode {
   if (value === "PSI1101" || value === "SOL500" || value === "CLG0000" || value === "IHI0204") return value
@@ -83,14 +84,22 @@ export default function DiagnosticView() {
     setAnswers(prev => [...prev, { subtema: q.subtema, correct }])
   }
 
-  function next() {
+  async function next() {
     if (index >= questions.length - 1) {
-      localStorage.setItem(`diagnostic-${subject}-${evaluation}`, JSON.stringify({
-        subject,
+      const correctCount = answers.filter((a: any) => a.correct).length
+      const score = questions.length ? Math.round((correctCount / questions.length) * 100) : 0
+      const weaknesses = Array.from(new Set(answers.filter((a: any) => !a.correct).map((a: any) => a.subtema || "general")))
+      const strengths = Array.from(new Set(answers.filter((a: any) => a.correct).map((a: any) => a.subtema || "general")))
+
+      await saveUserDiagnostic({
+        subject_code: subject,
         evaluation,
-        completedAt: new Date().toISOString(),
+        score,
+        weaknesses,
+        strengths,
         answers,
-      }))
+      })
+
       setDone(true)
       return
     }
