@@ -8,7 +8,6 @@ import { getLocalUser } from "@/lib/local-user"
 import { useUser } from "@/lib/useUser"
 import PrecalculoVisual from "./PrecalculoVisual"
 import PrecalculoSteps from "./PrecalculoSteps"
-import PracticeTimerPro from "./PracticeTimerPro"
 
 type Mode = "practica" | "diagnostico" | "simulacion" | "intensivo"
 type QuestionKind = "seleccion_multiple" | "desarrollo" | "modelamiento" | "mixtas"
@@ -358,16 +357,6 @@ export default function PracticeView() {
           <div><span>Promedio/pregunta</span><strong>{avgPerQuestion ? formatTime(avgPerQuestion) : "—"}</strong></div>
           <div><span>Débiles</span><strong>{weak.length}</strong></div>
         </section>
-
-        {questions.length > 0 && !finished && (
-          <PracticeTimerPro
-            remaining={remaining}
-            total={sessionTotalSeconds}
-            currentIndex={index}
-            totalQuestions={questions.length}
-            mode={mode}
-          />
-        )}
 
         {timeWarning && current && (
           <section className="warning">
