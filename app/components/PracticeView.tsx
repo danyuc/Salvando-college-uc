@@ -480,7 +480,10 @@ export default function PracticeView() {
                     )}
 
                     <div className="feedback-actions">
-                      <button onClick={() => setShowSteps(v => !v)}>
+                      <button onClick={() => {
+                        setShowSteps(v => !v)
+                        setVisualStep(0)
+                      }}>
                         {showSteps ? "Ocultar explicación" : "Ver explicación paso a paso"}
                       </button>
                       <button onClick={next}>Siguiente</button>
@@ -639,7 +642,17 @@ export default function PracticeView() {
         }
 
         option {
-          color: #0f172a;
+          background: #0f172a;
+          color: #ffffff;
+          font-weight: 900;
+        }
+
+        select:focus,
+        input:focus,
+        textarea:focus {
+          outline: none;
+          border-color: var(--c);
+          box-shadow: 0 0 0 3px color-mix(in srgb,var(--c) 30%,transparent);
         }
 
         .actions {
