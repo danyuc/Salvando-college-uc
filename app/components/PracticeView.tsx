@@ -8,6 +8,7 @@ import { getLocalUser } from "@/lib/local-user"
 import { useUser } from "@/lib/useUser"
 import PrecalculoVisual from "./PrecalculoVisual"
 import PrecalculoSteps from "./PrecalculoSteps"
+import PracticeTimerPro from "./PracticeTimerPro"
 
 type Mode = "practica" | "diagnostico" | "simulacion" | "intensivo"
 type QuestionKind = "seleccion_multiple" | "desarrollo" | "modelamiento" | "mixtas"
@@ -125,6 +126,7 @@ export default function PracticeView() {
   const [visualStep, setVisualStep] = useState(0)
   const [startedAt, setStartedAt] = useState<number | null>(null)
   const [remaining, setRemaining] = useState(minutes * 60)
+  const [timerStarted, setTimerStarted] = useState(false)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -158,6 +160,7 @@ export default function PracticeView() {
     return getMat1000SubtemasForModule(moduleLabel, evaluation)
   }, [isMath, moduleLabel, evaluation])
 
+  const sessionTotalSeconds = mode === "simulacion" ? 120 * 60 : minutes * 60
   const current = questions[index]
   const correctCount = answers.filter(a => a.correct).length
   const accuracy = answers.length ? Math.round((correctCount / answers.length) * 100) : 0
@@ -177,7 +180,8 @@ export default function PracticeView() {
     setVisualStep(0)
     setAnswers([])
     setFinished(false)
-    setRemaining(minutes * 60)
+    setRemaining(mode === "simulacion" ? 120 * 60 : minutes * 60)
+    setTimerStarted(true)
   }
 
   function start() {
@@ -250,6 +254,7 @@ export default function PracticeView() {
     setSelected("")
     setWritten("")
     setShowSteps(false)
+    setVisualStep(0)
   }
 
   return (
@@ -353,6 +358,16 @@ export default function PracticeView() {
           <div><span>Promedio/pregunta</span><strong>{avgPerQuestion ? formatTime(avgPerQuestion) : "—"}</strong></div>
           <div><span>Débiles</span><strong>{weak.length}</strong></div>
         </section>
+
+        {questions.length > 0 && !finished && (
+          <PracticeTimerPro
+            remaining={remaining}
+            total={sessionTotalSeconds}
+            currentIndex={index}
+            totalQuestions={questions.length}
+            mode={mode}
+          />
+        )}
 
         {timeWarning && current && (
           <section className="warning">
