@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import { getLocalUser } from "@/lib/local-user"
-import { supabase } from "@/lib/supabase"
 
 export function useUser() {
   const [name, setName] = useState("usuario")
@@ -10,28 +9,21 @@ export function useUser() {
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
-    async function load() {
+    function load() {
       const local = getLocalUser()
-
-      if (local) {
-        setName(local.username)
-        setEmail(local.email)
-      }
-
-      try {
-        const { data } = await supabase.auth.getUser()
-        const googleEmail = data.user?.email || null
-
-        if (googleEmail && !local) {
-          setName(googleEmail.split("@")[0])
-          setEmail(googleEmail)
-        }
-      } catch {}
-
+      setName(local?.username || "usuario")
+      setEmail(local?.email || null)
       setLoaded(true)
     }
 
     load()
+    window.addEventListener("storage", load)
+    window.addEventListener("focus", load)
+
+    return () => {
+      window.removeEventListener("storage", load)
+      window.removeEventListener("focus", load)
+    }
   }, [])
 
   return { name, email, loaded }

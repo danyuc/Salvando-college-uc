@@ -5,6 +5,7 @@ import { generateMat1000ForceQuestions } from "@/lib/mat1000-force-questions"
 import { getMat1000ModulesForEvaluation, getMat1000SubtemasForModule } from "@/lib/precalculo-ui-options"
 import { SUBJECT_THEMES, type SubjectCode } from "@/lib/academic-calendar-data"
 import { getLocalUser } from "@/lib/local-user"
+import { useUser } from "@/lib/useUser"
 import PrecalculoVisual from "./PrecalculoVisual"
 import PrecalculoSteps from "./PrecalculoSteps"
 
@@ -104,7 +105,7 @@ function enrichQuestions(base: any[], kind: QuestionKind, mode: Mode) {
 }
 
 export default function PracticeView() {
-  const [userName, setUserName] = useState("usuario")
+  const { name: userName } = useUser()
   const [subject, setSubject] = useState<SubjectCode>("MAT1000")
   const [evaluation, setEvaluation] = useState("I1")
   const [moduleLabel, setModuleLabel] = useState("Todos")
@@ -121,18 +122,19 @@ export default function PracticeView() {
   const [showSteps, setShowSteps] = useState(false)
   const [answers, setAnswers] = useState<any[]>([])
   const [finished, setFinished] = useState(false)
+  const [visualStep, setVisualStep] = useState(0)
+  const [startedAt, setStartedAt] = useState<number | null>(null)
   const [remaining, setRemaining] = useState(minutes * 60)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     setSubject(normalizeSubject(params.get("subject")))
     setEvaluation(normalizeEvaluation(params.get("evaluation")))
-    const user = getLocalUser()
-    if (user) setUserName(user.username)
-  }, [])
+    const user = getLocalUser()}, [])
 
   useEffect(() => {
-    setRemaining(minutes * 60)
+    setRemaining(mode === "simulacion" ? 120 * 60 : minutes * 60)
+    setStartedAt(Date.now())
   }, [minutes])
 
   useEffect(() => {
@@ -161,7 +163,7 @@ export default function PracticeView() {
   const accuracy = answers.length ? Math.round((correctCount / answers.length) * 100) : 0
   const weak = [...new Set(answers.filter(a => !a.correct).map(a => a.subtema))]
   const diagnosticDone = typeof window !== "undefined" && Boolean(localStorage.getItem(`mat1000-diagnostic-${evaluation}`))
-  const diagnosticRequired = isMath && !diagnosticDone
+  const diagnosticRequired = !diagnosticDone
   const avgPerQuestion = questions.length ? Math.floor((minutes * 60) / questions.length) : 0
   const elapsedForCurrent = questions.length ? (minutes * 60 - remaining) - index * avgPerQuestion : 0
   const timeWarning = avgPerQuestion > 0 && elapsedForCurrent > avgPerQuestion * 0.8
@@ -172,6 +174,7 @@ export default function PracticeView() {
     setSelected("")
     setWritten("")
     setShowSteps(false)
+    setVisualStep(0)
     setAnswers([])
     setFinished(false)
     setRemaining(minutes * 60)
@@ -273,7 +276,7 @@ export default function PracticeView() {
                 ? "Mezcla debilidades, preguntas fáciles, trampas típicas y ejercicios de alta repetición."
                 : `Foco actual: ${theme.name} · ${subtema}`}
           </p>
-          {diagnosticRequired && <a href={`/diagnostico?evaluation=${evaluation}`}>Hacer diagnóstico ahora</a>}
+          {diagnosticRequired && <a className="diagnostic-cta" href={`/diagnostico?subject=${subject}&evaluation=${evaluation}`}>Hacer diagnóstico ahora</a>}
         </section>
 
         <section className="filters-card">
@@ -377,7 +380,7 @@ export default function PracticeView() {
 
             <h2>{current.pregunta}</h2>
 
-            {Array.isArray(current.visualizacion?.parametros?.puntos) && <PrecalculoVisual puntos={current.visualizacion.parametros.puntos} />}
+            {Array.isArray(current.visualizacion?.parametros?.puntos) && <PrecalculoVisual puntos={current.visualizacion.parametros.puntos} activeStep={visualStep} />}
 
             {current.opciones ? (
               <div className="options">
@@ -426,7 +429,7 @@ export default function PracticeView() {
                       <button onClick={next}>Siguiente</button>
                     </div>
 
-                    {showSteps && <PrecalculoSteps pasos={current.pasos || []} animaciones={current.animaciones || []} />}
+                    {showSteps && <PrecalculoSteps pasos={current.pasos || []} animaciones={current.animaciones || []} onStepChange={setVisualStep} />}
                   </>
                 )}
               </section>
@@ -482,6 +485,16 @@ export default function PracticeView() {
         .timer span { color:#cbd5e1; font-size:13px; }
         .mode-card { padding:20px; border-color:color-mix(in srgb,var(--c) 60%,transparent); }
         .mode-card a { color:white; font-weight:950; }
+        .diagnostic-cta {
+          display:inline-flex;
+          margin-top:10px;
+          padding:12px 16px;
+          border-radius:16px;
+          background:linear-gradient(135deg,#ef4444,#f97316);
+          color:white;
+          text-decoration:none;
+          box-shadow:0 16px 40px rgba(239,68,68,.28);
+        }
         .filters-card { padding:22px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
         label { display:grid; gap:8px; color:#e2e8f0; font-weight:900; }
         select,input {

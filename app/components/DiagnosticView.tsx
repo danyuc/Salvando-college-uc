@@ -1,140 +1,204 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { generateMat1000ForceQuestions } from '@/lib/mat1000-force-questions'
-import PrecalculoVisual from './PrecalculoVisual'
-import PrecalculoSteps from './PrecalculoSteps'
-import { analyzeMat1000Diagnostic } from '@/lib/mat1000-diagnostic-engine'
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import { generateMat1000ForceQuestions } from "@/lib/mat1000-force-questions"
+import { SUBJECT_THEMES, type SubjectCode } from "@/lib/academic-calendar-data"
+import PrecalculoVisual from "./PrecalculoVisual"
+import PrecalculoSteps from "./PrecalculoSteps"
 
-function getEvaluationFromUrl() {
-  if (typeof window === 'undefined') return 'I1'
-  const value = new URLSearchParams(window.location.search).get('evaluation')
-  return value === 'I2' || value === 'I3' || value === 'EXAMEN' ? value : 'I1'
+function normalizeSubject(value: string | null): SubjectCode {
+  if (value === "PSI1101" || value === "SOL500" || value === "CLG0000" || value === "IHI0204") return value
+  return "MAT1000"
+}
+
+function normalizeEvaluation(value: string | null) {
+  if (value === "I1" || value === "I2" || value === "I3" || value === "EXAMEN") return value
+  return "GENERAL"
+}
+
+function buildGenericQuestions(subject: SubjectCode) {
+  const theme = SUBJECT_THEMES[subject]
+  return [
+    {
+      pregunta: `Diagnóstico ${theme.name}: explica el concepto central más importante que has visto hasta ahora.`,
+      subtema: "Conceptos base",
+      opciones: ["Lo domino", "Lo entiendo a medias", "Me cuesta", "No lo he estudiado"],
+      respuesta_correcta: "Lo domino",
+      explicacion: "Este diagnóstico inicial mide seguridad conceptual para organizar tu práctica.",
+      pasos: [
+        { orden: 1, titulo: "Definir", explicacion: "Debes poder definir el concepto sin copiar.", expresion: "Concepto → definición propia" },
+        { orden: 2, titulo: "Aplicar", explicacion: "Debes poder usarlo en un ejemplo.", expresion: "Concepto + ejemplo" },
+      ],
+    },
+    {
+      pregunta: `¿Qué tan preparado/a te sientes para la próxima evaluación de ${theme.name}?`,
+      subtema: "Preparación general",
+      opciones: ["Muy preparado", "Medianamente", "Poco", "Nada"],
+      respuesta_correcta: "Muy preparado",
+      explicacion: "Si respondes bajo, el sistema priorizará repaso guiado y lectura activa.",
+      pasos: [],
+    },
+  ]
 }
 
 export default function DiagnosticView() {
-  const [evaluation, setEvaluation] = useState('I1')
+  const [subject, setSubject] = useState<SubjectCode>("MAT1000")
+  const [evaluation, setEvaluation] = useState("I1")
   const [questions, setQuestions] = useState<any[]>([])
   const [index, setIndex] = useState(0)
-  const [selected, setSelected] = useState('')
+  const [selected, setSelected] = useState("")
   const [answers, setAnswers] = useState<any[]>([])
-  const [showSteps, setShowSteps] = useState(false)
   const [done, setDone] = useState(false)
+  const [showSteps, setShowSteps] = useState(false)
+  const [visualStep, setVisualStep] = useState(0)
 
   useEffect(() => {
-    const ev = getEvaluationFromUrl()
+    const params = new URLSearchParams(window.location.search)
+    const sub = normalizeSubject(params.get("subject"))
+    const ev = normalizeEvaluation(params.get("evaluation"))
+    setSubject(sub)
     setEvaluation(ev)
-    setQuestions(generateMat1000ForceQuestions({
-      evaluation: ev,
-      mode: 'diagnostico',
-      moduleLabel: 'Todos',
-      subtema: 'Todos',
-      cantidad: 12,
-    }))
+
+    if (sub === "MAT1000") {
+      setQuestions(generateMat1000ForceQuestions({
+        evaluation: ev === "GENERAL" ? "I1" : ev,
+        mode: "diagnostico",
+        moduleLabel: "Todos",
+        subtema: "Todos",
+        cantidad: 12,
+      }))
+    } else {
+      setQuestions(buildGenericQuestions(sub))
+    }
   }, [])
 
+  const theme = SUBJECT_THEMES[subject]
   const q = questions[index]
-  const correct = answers.filter(a => a.correct).length
-  const accuracy = answers.length ? Math.round((correct / answers.length) * 100) : 0
-  const weak = [...new Set(answers.filter(a => !a.correct).map(a => a.subtema))]
 
   function answer(op: string) {
     if (!q || selected) return
-    const isCorrect = op === q.respuesta_correcta
+    const correct = op === q.respuesta_correcta
     setSelected(op)
-    setAnswers(prev => [...prev, { subtema: q.subtema, correct: isCorrect }])
+    setAnswers(prev => [...prev, { subtema: q.subtema, correct }])
   }
 
   function next() {
     if (index >= questions.length - 1) {
-      const result = {
-        ...analyzeMat1000Diagnostic(
-          answers.map(a => ({ subtema: a.subtema, correct: a.correct })),
-          evaluation
-        ),
+      localStorage.setItem(`diagnostic-${subject}-${evaluation}`, JSON.stringify({
+        subject,
+        evaluation,
         completedAt: new Date().toISOString(),
-      }
-
-      localStorage.setItem(`mat1000-diagnostic-${evaluation}`, JSON.stringify(result))
+        answers,
+      }))
       setDone(true)
       return
     }
-
     setIndex(i => i + 1)
-    setSelected('')
+    setSelected("")
     setShowSteps(false)
+    setVisualStep(0)
   }
 
   return (
-    <main style={{ minHeight: '100vh', padding: 28, color: 'white', background: 'linear-gradient(180deg,#020617,#0f172a)' }}>
-      <section style={{ maxWidth: 1050, margin: '0 auto', display: 'grid', gap: 18 }}>
-        <section style={{ padding: 26, borderRadius: 28, background: 'rgba(255,255,255,.08)', border: '1px solid rgba(255,255,255,.13)' }}>
-          <p style={{ color: '#93c5fd', fontWeight: 900 }}>MAT1000 · Diagnóstico obligatorio · {evaluation}</p>
-          <h1 style={{ fontSize: 42, margin: '8px 0' }}>Diagnóstico práctico de Precálculo</h1>
-          <p style={{ color: '#cbd5e1' }}>Este diagnóstico libera la práctica de {evaluation}. Solo incluye contenidos de esa evaluación.</p>
+    <main className="page" style={{ "--c": theme.color, "--a": theme.accent, "--g": theme.gradient } as any}>
+      <section className="shell">
+        <section className="hero">
+          <p>Diagnóstico obligatorio</p>
+          <h1>{theme.icon} {theme.name}</h1>
+          <span>{evaluation}</span>
         </section>
 
         {done && (
-          <section style={{ padding: 24, borderRadius: 26, background: 'rgba(16,185,129,.14)', border: '1px solid rgba(16,185,129,.32)' }}>
+          <section className="card">
             <h2>Diagnóstico finalizado</h2>
-            <p>Precisión: <strong>{accuracy}%</strong></p>
-            {weak.length ? <p>Estás débil en: <strong>{weak.join(', ')}</strong>.</p> : <p>No se detectaron debilidades críticas.</p>}
-            <Link href={`/practica?subject=MAT1000&evaluation=${evaluation}&mode=practica`} style={{ color: '#bbf7d0', fontWeight: 900 }}>
-              Ir a practicar {evaluation}
+            <p>Ya puedes practicar con una ruta personalizada.</p>
+            <Link href={`/practica?subject=${subject}&evaluation=${evaluation}&mode=practica`}>
+              Ir a práctica
             </Link>
           </section>
         )}
 
         {!done && q && (
-          <section style={{ padding: 24, borderRadius: 26, background: 'rgba(255,255,255,.075)', border: '1px solid rgba(255,255,255,.13)' }}>
-            <p style={{ color: '#bfdbfe', fontWeight: 900 }}>Pregunta {index + 1} de {questions.length} · {q.subtema}</p>
+          <section className="card">
+            <p className="counter">Pregunta {index + 1} de {questions.length}</p>
             <h2>{q.pregunta}</h2>
 
             {Array.isArray(q.visualizacion?.parametros?.puntos) && (
-              <PrecalculoVisual puntos={q.visualizacion.parametros.puntos} />
+              <PrecalculoVisual puntos={q.visualizacion.parametros.puntos} activeStep={visualStep} />
             )}
 
-            <div style={{ display: 'grid', gap: 10, marginTop: 18 }}>
-              {q.opciones.map((op: string) => (
-                <button
-                  key={op}
-                  onClick={() => answer(op)}
-                  style={{
-                    minHeight: 54,
-                    borderRadius: 16,
-                    border: selected
-                      ? op === q.respuesta_correcta
-                        ? '1px solid #22c55e'
-                        : selected === op
-                          ? '1px solid #ef4444'
-                          : '1px solid rgba(255,255,255,.13)'
-                      : '1px solid rgba(255,255,255,.13)',
-                    background: 'rgba(255,255,255,.07)',
-                    color: 'white',
-                    fontWeight: 900,
-                    textAlign: 'left',
-                    padding: '0 16px',
-                  }}
-                >
+            <div className="options">
+              {q.opciones?.map((op: string) => (
+                <button key={op} onClick={() => answer(op)} className={selected === op ? "selected" : ""}>
                   {op}
                 </button>
               ))}
             </div>
 
             {selected && (
-              <section style={{ marginTop: 18, padding: 16, borderRadius: 18, background: 'rgba(15,23,42,.75)' }}>
-                <p><strong>Respuesta correcta:</strong> {q.respuesta_correcta}</p>
-                <p>{q.explicacion || q.explanation}</p>
-                <button onClick={() => setShowSteps(v => !v)}>Ver paso a paso</button>
-                {showSteps && <PrecalculoSteps pasos={q.pasos || []} animaciones={q.animaciones || []} />}
-                <br />
-                <button onClick={next} style={{ marginTop: 12 }}>Siguiente</button>
+              <section className="feedback">
+                <p>{q.explicacion}</p>
+                <button onClick={() => setShowSteps(v => !v)}>
+                  {showSteps ? "Ocultar explicación" : "Ver explicación"}
+                </button>
+                <button onClick={next}>Siguiente</button>
+                {showSteps && <PrecalculoSteps pasos={q.pasos || []} onStepChange={setVisualStep} />}
               </section>
             )}
           </section>
         )}
       </section>
+
+      <style jsx>{`
+        .page {
+          min-height: 100vh;
+          padding: 28px;
+          color: white;
+          background:
+            radial-gradient(circle at 18% 0%, var(--a), transparent 34%),
+            linear-gradient(180deg,#020617,#0f172a);
+        }
+        .shell { max-width: 1000px; margin: 0 auto; display: grid; gap: 18px; }
+        .hero, .card {
+          padding: 26px;
+          border-radius: 30px;
+          background: rgba(255,255,255,.08);
+          border: 1px solid var(--c);
+          box-shadow: 0 0 0 1px var(--c), 0 30px 90px rgba(0,0,0,.35);
+        }
+        .hero p { color: #bfdbfe; font-weight: 950; text-transform: uppercase; margin: 0; }
+        h1 { font-size: clamp(40px,6vw,64px); margin: 8px 0; letter-spacing: -.06em; }
+        h2 { font-size: 26px; }
+        .counter { color: #cbd5e1; font-weight: 900; }
+        .options { display: grid; gap: 10px; margin-top: 18px; }
+        button, a {
+          min-height: 52px;
+          border-radius: 17px;
+          border: 1px solid rgba(255,255,255,.14);
+          background: rgba(255,255,255,.08);
+          color: white;
+          padding: 0 16px;
+          font-weight: 950;
+          text-decoration: none;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+        }
+        button.selected {
+          border-color: var(--c);
+          background: var(--a);
+        }
+        .feedback {
+          margin-top: 18px;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          align-items: center;
+        }
+        .feedback p { width: 100%; color: #e2e8f0; }
+      `}</style>
     </main>
   )
 }

@@ -1,42 +1,54 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from "react"
 
-type Point = {
-  etiqueta: string
-  x: number
-  y: number
-}
+type Point = { etiqueta: string; x: number; y: number }
 
-export default function PrecalculoVisual({ puntos = [] }: { puntos?: Point[] }) {
-  const [zoom, setZoom] = useState(1)
+export default function PrecalculoVisual({
+  puntos = [],
+  activeStep = 0,
+}: {
+  puntos?: Point[]
+  activeStep?: number
+}) {
+  const [pulse, setPulse] = useState(false)
 
-  if (!Array.isArray(puntos) || puntos.length === 0) return null
+  useEffect(() => {
+    setPulse(true)
+    const t = setTimeout(() => setPulse(false), 900)
+    return () => clearTimeout(t)
+  }, [activeStep])
 
-  const axis = [-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6]
-  const scale = 6 / zoom
+  if (!Array.isArray(puntos) || puntos.length < 2) return null
+
+  const [a, b] = puntos
+  const mid = { x: b.x, y: a.y }
+
+  const axis = [-6,-5,-4,-3,-2,-1,1,2,3,4,5,6]
 
   function left(x: number) {
-    return `${50 + (x / scale) * 42}%`
+    return `${50 + (x / 6) * 42}%`
   }
 
   function top(y: number) {
-    return `${50 - (y / scale) * 42}%`
+    return `${50 - (y / 6) * 42}%`
   }
+
+  const showPoints = activeStep >= 0
+  const showDx = activeStep >= 1
+  const showDy = activeStep >= 2
+  const showTriangle = activeStep >= 3
 
   return (
     <section className="visual-card">
-      <div className="visual-head">
-        <div>
-          <strong>Plano cartesiano</strong>
-          <p>Visualización estilo Desmos con ejes y puntos reales.</p>
-        </div>
-
-        <div className="zoom">
-          <button onClick={() => setZoom(z => Math.max(0.7, Number((z - 0.2).toFixed(1))))}>−</button>
-          <span>{zoom.toFixed(1)}x</span>
-          <button onClick={() => setZoom(z => Math.min(1.8, Number((z + 0.2).toFixed(1))))}>+</button>
-        </div>
+      <div className="head">
+        <strong>Visualización paso a paso</strong>
+        <span>
+          {activeStep === 0 && "Ubicando puntos"}
+          {activeStep === 1 && "Dibujando Δx"}
+          {activeStep === 2 && "Dibujando Δy"}
+          {activeStep >= 3 && "Formando triángulo"}
+        </span>
       </div>
 
       <div className="plane">
@@ -46,19 +58,50 @@ export default function PrecalculoVisual({ puntos = [] }: { puntos?: Point[] }) 
         <span className="axis-name y-name">y</span>
         <span className="origin">0</span>
 
-        {axis.map(n => (
-          <span key={`x-${n}`} className="tick-label x-label" style={{ left: left(n) }}>{n}</span>
-        ))}
+        {axis.map(n => <span key={`x-${n}`} className="tick x" style={{ left: left(n) }}>{n}</span>)}
+        {axis.map(n => <span key={`y-${n}`} className="tick y" style={{ top: top(n) }}>{n}</span>)}
 
-        {axis.map(n => (
-          <span key={`y-${n}`} className="tick-label y-label" style={{ top: top(n) }}>{n}</span>
-        ))}
+        {showTriangle && (
+          <svg className="svg">
+            <line x1={left(a.x)} y1={top(a.y)} x2={left(b.x)} y2={top(b.y)} className="hyp" />
+          </svg>
+        )}
 
-        {puntos.map(p => (
-          <div key={`${p.etiqueta}-${p.x}-${p.y}`} className="point" style={{ left: left(p.x), top: top(p.y) }}>
+        {showDx && (
+          <div
+            className={`dx ${pulse ? "pulse" : ""}`}
+            style={{
+              left: left(Math.min(a.x, b.x)),
+              top: top(a.y),
+              width: `calc(${Math.abs(b.x - a.x) / 6 * 42}% )`,
+            }}
+          >
+            Δx = {b.x - a.x}
+          </div>
+        )}
+
+        {showDy && (
+          <div
+            className={`dy ${pulse ? "pulse" : ""}`}
+            style={{
+              left: left(b.x),
+              top: top(Math.max(a.y, b.y)),
+              height: `calc(${Math.abs(b.y - a.y) / 6 * 42}% )`,
+            }}
+          >
+            Δy = {b.y - a.y}
+          </div>
+        )}
+
+        {showPoints && puntos.map(p => (
+          <div key={p.etiqueta} className={`point ${pulse ? "pulse" : ""}`} style={{ left: left(p.x), top: top(p.y) }}>
             <span>{p.etiqueta}({p.x}, {p.y})</span>
           </div>
         ))}
+
+        {showTriangle && (
+          <div className="corner" style={{ left: left(mid.x), top: top(mid.y) }} />
+        )}
       </div>
 
       <style jsx>{`
@@ -66,128 +109,55 @@ export default function PrecalculoVisual({ puntos = [] }: { puntos?: Point[] }) 
           margin-top: 16px;
           padding: 16px;
           border-radius: 24px;
-          background:
-            radial-gradient(circle at top left, rgba(14,165,233,.22), transparent 38%),
-            rgba(15,23,42,.72);
-          border: 1px solid rgba(255,255,255,.12);
+          background: rgba(15,23,42,.72);
+          border: 1px solid rgba(255,255,255,.13);
         }
-
-        .visual-head {
+        .head {
           display: flex;
           justify-content: space-between;
-          gap: 14px;
-          align-items: center;
+          gap: 12px;
           margin-bottom: 12px;
         }
-
-        .visual-head p {
-          margin: 4px 0 0;
-          color: #cbd5e1;
-          font-size: 13px;
-        }
-
-        .zoom {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .zoom button {
-          width: 34px;
-          height: 34px;
-          border-radius: 12px;
-          border: 1px solid rgba(255,255,255,.14);
-          background: rgba(255,255,255,.08);
-          color: white;
-          font-weight: 900;
-        }
-
-        .zoom span {
-          color: #bfdbfe;
-          font-weight: 900;
-        }
-
+        .head span { color: #93c5fd; font-weight: 900; }
         .plane {
           position: relative;
-          height: 310px;
+          height: 330px;
           overflow: hidden;
           border-radius: 20px;
           background:
-            linear-gradient(rgba(148,163,184,.13) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(148,163,184,.13) 1px, transparent 1px),
+            linear-gradient(rgba(148,163,184,.14) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(148,163,184,.14) 1px, transparent 1px),
             radial-gradient(circle at center, rgba(59,130,246,.14), transparent 58%);
-          background-size: 28px 28px, 28px 28px, 100% 100%;
+          background-size: 28px 28px;
           border: 1px solid rgba(255,255,255,.12);
         }
-
-        .axis {
-          position: absolute;
-          background: rgba(248,250,252,.75);
-          z-index: 2;
-        }
-
-        .x-axis {
-          left: 4%;
-          right: 4%;
-          top: 50%;
-          height: 2px;
-        }
-
-        .y-axis {
-          top: 4%;
-          bottom: 4%;
-          left: 50%;
-          width: 2px;
-        }
-
-        .axis-name,
-        .origin,
-        .tick-label {
+        .axis { position: absolute; background: rgba(248,250,252,.75); z-index: 2; }
+        .x-axis { left: 4%; right: 4%; top: 50%; height: 2px; }
+        .y-axis { top: 4%; bottom: 4%; left: 50%; width: 2px; }
+        .axis-name, .origin, .tick {
           position: absolute;
           z-index: 3;
-          color: #f8fafc;
+          color: white;
           font-size: 12px;
           font-weight: 950;
           text-shadow: 0 2px 8px rgba(0,0,0,.9);
         }
-
-        .x-name {
-          right: 14px;
-          top: calc(50% + 9px);
-        }
-
-        .y-name {
-          left: calc(50% + 10px);
-          top: 10px;
-        }
-
-        .origin {
-          left: calc(50% + 7px);
-          top: calc(50% + 7px);
-        }
-
-        .x-label {
-          top: calc(50% + 10px);
-          transform: translateX(-50%);
-        }
-
-        .y-label {
-          left: calc(50% + 10px);
-          transform: translateY(-50%);
-        }
-
+        .x-name { right: 14px; top: calc(50% + 9px); }
+        .y-name { left: calc(50% + 10px); top: 10px; }
+        .origin { left: calc(50% + 7px); top: calc(50% + 7px); }
+        .tick.x { top: calc(50% + 10px); transform: translateX(-50%); }
+        .tick.y { left: calc(50% + 10px); transform: translateY(-50%); }
         .point {
           position: absolute;
-          z-index: 5;
-          width: 15px;
-          height: 15px;
+          z-index: 8;
+          width: 16px;
+          height: 16px;
           border-radius: 999px;
-          transform: translate(-50%, -50%);
+          transform: translate(-50%,-50%);
           background: #38bdf8;
           border: 2px solid #e0f2fe;
           box-shadow: 0 0 24px rgba(56,189,248,.85);
         }
-
         .point span {
           position: absolute;
           left: 20px;
@@ -196,8 +166,66 @@ export default function PrecalculoVisual({ puntos = [] }: { puntos?: Point[] }) 
           color: white;
           font-size: 12px;
           font-weight: 950;
-          text-shadow: 0 2px 10px rgba(0,0,0,.9);
         }
+        .dx {
+          position: absolute;
+          z-index: 6;
+          height: 4px;
+          background: #22c55e;
+          transform: translateY(-50%);
+          box-shadow: 0 0 22px rgba(34,197,94,.8);
+          animation: drawX .7s ease both;
+          color: #bbf7d0;
+          font-size: 12px;
+          font-weight: 950;
+          padding-top: 6px;
+        }
+        .dy {
+          position: absolute;
+          z-index: 6;
+          width: 4px;
+          background: #f59e0b;
+          transform: translateX(-50%);
+          box-shadow: 0 0 22px rgba(245,158,11,.8);
+          animation: drawY .7s ease both;
+          color: #fde68a;
+          font-size: 12px;
+          font-weight: 950;
+          padding-left: 8px;
+        }
+        .svg {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 5;
+          pointer-events: none;
+        }
+        .hyp {
+          stroke: #818cf8;
+          stroke-width: 4;
+          stroke-linecap: round;
+          filter: drop-shadow(0 0 12px rgba(129,140,248,.9));
+          animation: drawLine .8s ease both;
+        }
+        .corner {
+          position: absolute;
+          z-index: 7;
+          width: 18px;
+          height: 18px;
+          border-left: 3px solid white;
+          border-bottom: 3px solid white;
+          transform: translate(-2px,-16px);
+        }
+        .pulse { animation: pulse .8s ease; }
+        @keyframes pulse {
+          0% { filter: brightness(1); transform: translate(-50%,-50%) scale(1); }
+          50% { filter: brightness(1.6); transform: translate(-50%,-50%) scale(1.25); }
+          100% { filter: brightness(1); transform: translate(-50%,-50%) scale(1); }
+        }
+        @keyframes drawX { from { width: 0; opacity: 0; } to { opacity: 1; } }
+        @keyframes drawY { from { height: 0; opacity: 0; } to { opacity: 1; } }
+        @keyframes drawLine { from { stroke-dasharray: 500; stroke-dashoffset: 500; } to { stroke-dasharray: 500; stroke-dashoffset: 0; } }
       `}</style>
     </section>
   )
