@@ -8,6 +8,7 @@ import PrecalculoVisual from "./PrecalculoVisual"
 import ProMaxUCPanel from "./ProMaxUCPanel"
 
 import { lessonForQuestion } from "@/lib/math-lessons"
+import { registerPracticeResult } from "@/lib/precalculo-god-mode"
 import { useUser } from "@/lib/useUser"
 import { SUBJECT_THEMES, type SubjectCode } from "@/lib/academic-calendar-data"
 import { generateMat1000ForceQuestions } from "@/lib/mat1000-force-questions"
@@ -163,6 +164,7 @@ export default function PracticeView() {
   const [questions, setQuestions] = useState<any[]>([])
   const [index, setIndex] = useState(0)
   const [selected, setSelected] = useState("")
+  const [feeling, setFeeling] = useState<"facil" | "medio" | "dificil" | null>(null)
   const [written, setWritten] = useState("")
   const [showSteps, setShowSteps] = useState(false)
   const [answers, setAnswers] = useState<any[]>([])
@@ -170,6 +172,7 @@ export default function PracticeView() {
   const [remaining, setRemaining] = useState(120 * 60)
   const [timerStarted, setTimerStarted] = useState(false)
   const [visualStep, setVisualStep] = useState(0)
+  const [questionStartedAt, setQuestionStartedAt] = useState(Date.now())
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -226,6 +229,8 @@ export default function PracticeView() {
     setQuestions([])
     setIndex(0)
     setSelected("")
+    setFeeling(null)
+    setQuestionStartedAt(Date.now())
     setWritten("")
     setShowSteps(false)
     setAnswers([])
@@ -257,6 +262,8 @@ export default function PracticeView() {
     setQuestions(finalQuestions)
     setIndex(0)
     setSelected("")
+    setFeeling(null)
+    setQuestionStartedAt(Date.now())
     setWritten("")
     setShowSteps(false)
     setAnswers([])
@@ -289,9 +296,32 @@ export default function PracticeView() {
 
     setIndex(i => i + 1)
     setSelected("")
+    setFeeling(null)
+    setQuestionStartedAt(Date.now())
     setWritten("")
     setShowSteps(false)
     setVisualStep(0)
+  }
+
+  function handleFeeling(value: "facil" | "medio" | "dificil") {
+    if (!current || !selected) return
+
+    setFeeling(value)
+
+    const confidence =
+      value === "facil" ? "alta" :
+      value === "dificil" ? "baja" :
+      "media"
+
+    const seconds = Math.max(1, Math.round((Date.now() - questionStartedAt) / 1000))
+    const correct = selected === "respuesta_abierta" || isCorrectOption?.(current, selected) || selected === current.respuesta_correcta
+
+    registerPracticeResult({
+      subtema: current.subtema || "general",
+      correct,
+      seconds,
+      confidence,
+    })
   }
 
   return (
@@ -444,7 +474,28 @@ export default function PracticeView() {
                   const correct = isCorrectOption(current, op)
                   const chosen = op === selected
 
-                  return (
+                  function handleFeeling(value: "facil" | "medio" | "dificil") {
+    if (!current || !selected) return
+
+    setFeeling(value)
+
+    const confidence =
+      value === "facil" ? "alta" :
+      value === "dificil" ? "baja" :
+      "media"
+
+    const seconds = Math.max(1, Math.round((Date.now() - questionStartedAt) / 1000))
+    const correct = selected === "respuesta_abierta" || isCorrectOption?.(current, selected) || selected === current.respuesta_correcta
+
+    registerPracticeResult({
+      subtema: current.subtema || "general",
+      correct,
+      seconds,
+      confidence,
+    })
+  }
+
+  return (
                     <button
                       key={op}
                       onClick={() => answer(op)}
@@ -478,6 +529,18 @@ export default function PracticeView() {
                     {current.error_comun && (
                       <div className="note">Trampa típica UC: {current.error_comun}</div>
                     )}
+
+                    
+                    <div className="feelingBox">
+                      <p>¿Cómo se te hizo?</p>
+                      <div className="feelingBtns">
+                        <button onClick={() => handleFeeling("facil")} className={feeling === "facil" ? "active easy" : ""}>Fácil</button>
+                        <button onClick={() => handleFeeling("medio")} className={feeling === "medio" ? "active mid" : ""}>Normal</button>
+                        <button onClick={() => handleFeeling("dificil")} className={feeling === "dificil" ? "active hard" : ""}>Difícil</button>
+                      </div>
+                      {feeling && <small>Guardado. La próxima sesión se adaptará a esto.</small>}
+                    </div>
+
 
                     <div className="feedback-actions">
                       <button onClick={() => {
@@ -791,6 +854,53 @@ export default function PracticeView() {
           margin-top: 14px;
         }
 
+
+        .feelingBox {
+          margin-top: 14px;
+          padding: 15px;
+          border-radius: 20px;
+          background: rgba(255,255,255,.06);
+          border: 1px solid rgba(255,255,255,.12);
+        }
+
+        .feelingBox p {
+          margin: 0 0 10px;
+          font-weight: 950;
+          color: #e2e8f0;
+        }
+
+        .feelingBox small {
+          display: block;
+          margin-top: 9px;
+          color: #bfdbfe;
+          font-weight: 800;
+        }
+
+        .feelingBtns {
+          display: grid;
+          grid-template-columns: repeat(3,1fr);
+          gap: 10px;
+        }
+
+        .feelingBtns button {
+          background: rgba(255,255,255,.08);
+        }
+
+        .feelingBtns button.active.easy {
+          background: linear-gradient(135deg,#22c55e,#86efac);
+          color: #052e16;
+        }
+
+        .feelingBtns button.active.mid {
+          background: linear-gradient(135deg,#3b82f6,#93c5fd);
+          color: #082f49;
+        }
+
+        .feelingBtns button.active.hard {
+          background: linear-gradient(135deg,#f97316,#facc15);
+          color: #431407;
+        }
+
         @media(max-width:900px) {
           .filters-card {
             grid-template-columns: 1fr;
@@ -805,7 +915,9 @@ export default function PracticeView() {
             align-items: flex-start;
           }
         }
-      `}</style>
+      `}
+</style>
+        
     </main>
   )
 }
