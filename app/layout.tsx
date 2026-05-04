@@ -8,10 +8,12 @@ export const metadata: Metadata = {
   description: 'Plataforma de estudio UC',
 }
 
+import { inter } from './fonts'
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
-      <body style={{ margin: 0 }}>
+      <body className={inter.variable} style={{ margin: 0, fontFamily: 'var(--font-inter)' }}>
         <AppShell>
           <CommandPalette />
           {children}

@@ -1,13 +1,22 @@
 'use client'
 
 import { useEffect, useMemo, useState } from "react"
-import { generateMat1000ForceQuestions } from "@/lib/mat1000-force-questions"
-import { getMat1000ModulesForEvaluation, getMat1000SubtemasForModule } from "@/lib/precalculo-ui-options"
-import { SUBJECT_THEMES, type SubjectCode } from "@/lib/academic-calendar-data"
-import { getLocalUser } from "@/lib/local-user"
-import { useUser } from "@/lib/useUser"
+
+import MathLessonEngine from "./MathLessonEngine"
+import InteractiveGraphCanvas from "./InteractiveGraphCanvas"
+import PracticeTimerPro from "./PracticeTimerPro"
 import PrecalculoVisual from "./PrecalculoVisual"
 import PrecalculoSteps from "./PrecalculoSteps"
+
+import { lessonForQuestion } from "@/lib/math-lessons"
+import { useUser } from "@/lib/useUser"
+import { getLocalUser } from "@/lib/local-user"
+import { SUBJECT_THEMES, type SubjectCode } from "@/lib/academic-calendar-data"
+import { generateMat1000ForceQuestions } from "@/lib/mat1000-force-questions"
+import {
+  getMat1000ModulesForEvaluation,
+  getMat1000SubtemasForModule,
+} from "@/lib/precalculo-ui-options"
 
 type Mode = "practica" | "diagnostico" | "simulacion" | "intensivo"
 type QuestionKind = "seleccion_multiple" | "desarrollo" | "modelamiento" | "mixtas"
@@ -131,7 +140,11 @@ export default function PracticeView() {
     const params = new URLSearchParams(window.location.search)
     setSubject(normalizeSubject(params.get("subject")))
     setEvaluation(normalizeEvaluation(params.get("evaluation")))
-    const user = getLocalUser()}, [])
+    const user = getLocalUser()
+    if (user) {
+      // usuario ya viene desde useUser; no se requiere set local
+    }
+  }, [])
 
   useEffect(() => {
     setRemaining(mode === "simulacion" ? 120 * 60 : minutes * 60)
@@ -161,6 +174,7 @@ export default function PracticeView() {
 
   const sessionTotalSeconds = mode === "simulacion" ? 120 * 60 : minutes * 60
   const current = questions[index]
+  const currentLesson = current ? lessonForQuestion(current) : null
   const correctCount = answers.filter(a => a.correct).length
   const accuracy = answers.length ? Math.round((correctCount / answers.length) * 100) : 0
   const weak = [...new Set(answers.filter(a => !a.correct).map(a => a.subtema))]
@@ -287,7 +301,7 @@ export default function PracticeView() {
           <label>
             Asignatura
             <select value={subject} onChange={(e) => { setSubject(e.target.value as SubjectCode); reset() }}>
-              {Object.entries(SUBJECT_THEMES).map(([code, t]) => <option key={code} value={code}>{t.icon} {t.name}</option>)}
+              {(Object.entries(SUBJECT_THEMES) as [SubjectCode, any][]).map(([code, t]) => <option key={code} value={code}>{t.icon} {t.name}</option>)}
             </select>
           </label>
 
@@ -373,6 +387,10 @@ export default function PracticeView() {
           </section>
         )}
 
+        {questions.length > 0 && !finished && (
+          <PracticeTimerPro totalSeconds={mode === "simulacion" ? 7200 : minutes * 60} />
+        )}
+
         {!finished && current && (
           <section className="question-card">
             <div className="chips">
@@ -433,7 +451,11 @@ export default function PracticeView() {
                       <button onClick={next}>Siguiente</button>
                     </div>
 
-                    {showSteps && <PrecalculoSteps pasos={current.pasos || []} animaciones={current.animaciones || []} onStepChange={setVisualStep} />}
+                    {currentLesson && (
+                      <>
+                        {currentLesson && <MathLessonEngine title={currentLesson.title} steps={currentLesson.steps as any} />}
+                      </>
+                    )}
                   </>
                 )}
               </section>
