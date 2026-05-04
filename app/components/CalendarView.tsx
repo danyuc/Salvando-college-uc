@@ -43,22 +43,58 @@ function eventGradeToSeven(event: AcademicEvent, raw: number) {
 }
 
 function calculate(events: AcademicEvent[], grades: GradeMap) {
-  const totalWeight = events.reduce((a, e) => a + e.weight, 0)
+  const subject = events[0]?.subjectCode
+  const totalWeight = 100
 
   let earnedWeighted = 0
   let completedWeight = 0
 
-  for (const event of events) {
-    const record = grades[event.id]
-    if (!record) continue
+  function addBlock(grade: number | null, weight: number) {
+    if (grade === null) return
+    earnedWeighted += grade * weight
+    completedWeight += weight
+  }
 
-    const grade7 = eventGradeToSeven(event, record.value)
-    earnedWeighted += grade7 * event.weight
-    completedWeight += event.weight
+  if (subject === "PSI1101") {
+    for (const event of events.filter(e => e.type !== "perusall")) {
+      const record = grades[event.id]
+      if (record) addBlock(eventGradeToSeven(event, record.value), event.weight)
+    }
+
+    const perusalls = events.filter(e => e.type === "perusall")
+    const points = perusalls.reduce((acc, e) => acc + (grades[e.id]?.value ?? 0), 0)
+    const hasAny = perusalls.some(e => grades[e.id])
+    if (hasAny) {
+      const validPoints = Math.min(points, 40)
+      const grade = 1 + (validPoints / 40) * 6
+      addBlock(grade, 30)
+    }
+  } else if (subject === "CLG0000") {
+    for (const event of events.filter(e => !e.id.startsWith("clg-act-"))) {
+      const record = grades[event.id]
+      if (record) addBlock(eventGradeToSeven(event, record.value), event.weight)
+    }
+
+    const activities = events
+      .filter(e => e.id.startsWith("clg-act-"))
+      .map(e => grades[e.id]?.value)
+      .filter((v): v is number => typeof v === "number")
+      .sort((a, b) => b - a)
+      .slice(0, 4)
+
+    if (activities.length > 0) {
+      const avg = activities.reduce((a, b) => a + b, 0) / activities.length
+      addBlock(avg, 20)
+    }
+  } else {
+    for (const event of events) {
+      const record = grades[event.id]
+      if (!record || event.weight <= 0) continue
+      addBlock(eventGradeToSeven(event, record.value), event.weight)
+    }
   }
 
   const pendingWeight = Math.max(0, totalWeight - completedWeight)
-
   const currentAverage = completedWeight > 0 ? earnedWeighted / completedWeight : null
   const projectedFinal = totalWeight > 0 ? earnedWeighted / totalWeight : null
 
