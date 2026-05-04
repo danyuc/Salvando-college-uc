@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react"
 
 import MathLessonEngine from "./MathLessonEngine"
+import PrecalculoSteps from "./PrecalculoSteps"
 import PrecalculoVisual from "./PrecalculoVisual"
 import ProMaxUCPanel from "./ProMaxUCPanel"
 
@@ -34,6 +35,49 @@ function formatTime(seconds: number) {
   const m = Math.floor(seconds / 60)
   const s = seconds % 60
   return `${m}:${String(s).padStart(2, "0")}`
+}
+
+
+function normalizeMathAnswer(value: any) {
+  return String(value ?? "")
+    .toLowerCase()
+    .replaceAll("√", "sqrt")
+    .replaceAll("raíz", "sqrt")
+    .replaceAll("raiz", "sqrt")
+    .replace(/\s+/g, "")
+    .replace(/[.$]/g, "")
+}
+
+function getCorrectOptionText(question: any) {
+  const raw =
+    question?.respuesta_correcta ??
+    question?.correcta ??
+    question?.correctAnswer ??
+    question?.answer
+
+  const options = question?.opciones || []
+
+  if (typeof raw === "string") {
+    const key = raw.trim().toUpperCase()
+    const letterIndex = ["A", "B", "C", "D", "E"].indexOf(key)
+
+    if (letterIndex >= 0 && options[letterIndex]) {
+      return options[letterIndex]
+    }
+
+    return raw
+  }
+
+  if (typeof raw === "number" && options[raw]) {
+    return options[raw]
+  }
+
+  return raw
+}
+
+function isCorrectOption(question: any, option: string) {
+  const correctText = getCorrectOptionText(question)
+  return normalizeMathAnswer(option) === normalizeMathAnswer(correctText)
 }
 
 function getDiagnosticDone(subject: SubjectCode, evaluation: string) {
@@ -125,7 +169,7 @@ export default function PracticeView() {
   const [finished, setFinished] = useState(false)
   const [remaining, setRemaining] = useState(120 * 60)
   const [timerStarted, setTimerStarted] = useState(false)
-  const [visualStep] = useState(0)
+  const [visualStep, setVisualStep] = useState(0)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -224,7 +268,7 @@ export default function PracticeView() {
   function answer(option: string) {
     if (!current || selected) return
 
-    const correct = option === current.respuesta_correcta
+    const correct = isCorrectOption(current, option)
     setSelected(option)
     setAnswers(prev => [...prev, { subtema: current.subtema || "general", correct }])
 
@@ -247,6 +291,7 @@ export default function PracticeView() {
     setSelected("")
     setWritten("")
     setShowSteps(false)
+    setVisualStep(0)
   }
 
   return (
@@ -385,7 +430,7 @@ export default function PracticeView() {
             <ProMaxUCPanel
               question={current}
               answered={!!selected}
-              correct={selected === current.respuesta_correcta || selected === "respuesta_abierta"}
+              correct={isCorrectOption(current, selected) || selected === "respuesta_abierta"}
             />
 
             {Array.isArray(current.visualizacion?.parametros?.puntos) && (
@@ -396,7 +441,7 @@ export default function PracticeView() {
               <div className="options">
                 {(current.opciones || []).map((op: string) => {
                   const answered = !!selected
-                  const correct = op === current.respuesta_correcta
+                  const correct = isCorrectOption(current, op)
                   const chosen = op === selected
 
                   return (
@@ -419,7 +464,7 @@ export default function PracticeView() {
 
             {selected && (
               <section className="feedback">
-                {mode === "simulacion" ? (
+                {mode === "simulacion" || mode === "diagnostico" ? (
                   <>
                     <p>Respuesta guardada. En Prueba UC real se corrige al final.</p>
                     <button onClick={next}>Siguiente</button>
@@ -427,7 +472,7 @@ export default function PracticeView() {
                 ) : (
                   <>
                     <h3>{selected === current.respuesta_correcta || selected === "respuesta_abierta" ? "✅ Revisemos" : "❌ Incorrecta"}</h3>
-                    <p><strong>Respuesta esperada:</strong> {current.respuesta_correcta}</p>
+                    <p><strong>Respuesta esperada:</strong> {String(getCorrectOptionText(current))}</p>
                     <p>{current.explicacion || current.explanation}</p>
 
                     {current.error_comun && (
@@ -442,7 +487,14 @@ export default function PracticeView() {
                     </div>
 
                     {showSteps && currentLesson && (
-                      <MathLessonEngine title={currentLesson.title} steps={currentLesson.steps as any} />
+                      <>
+                        <MathLessonEngine title={currentLesson.title} steps={currentLesson.steps as any} />
+                        {Array.isArray(current.pasos) && (
+                          <div style={{ marginTop: 16 }}>
+                            <PrecalculoSteps pasos={current.pasos || []} onStepChange={setVisualStep} />
+                          </div>
+                        )}
+                      </>
                     )}
                   </>
                 )}

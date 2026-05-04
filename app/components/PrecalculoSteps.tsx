@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 
 export default function PrecalculoSteps({
   pasos = [],
+  animaciones = [],
   onStepChange,
 }: {
   pasos?: any[]
@@ -18,58 +19,51 @@ export default function PrecalculoSteps({
   }, [active, onStepChange])
 
   useEffect(() => {
-    if (!auto || !Array.isArray(pasos) || pasos.length === 0) return
+    if (!auto || !pasos.length) return
 
     const timer = window.setTimeout(() => {
-      setActive((prev) => {
-        if (prev >= pasos.length - 1) {
+      setActive(prev => {
+        if (prev >= Math.max(5, pasos.length - 1)) {
           setAuto(false)
           return prev
         }
         return prev + 1
       })
-    }, 1700)
+    }, 1350)
 
     return () => window.clearTimeout(timer)
-  }, [auto, active, pasos])
+  }, [auto, active, pasos.length])
 
-  if (!Array.isArray(pasos) || pasos.length === 0) return null
-
-  const paso = pasos[active]
+  const maxStep = Math.max(5, pasos.length - 1)
+  const paso = pasos[Math.min(active, pasos.length - 1)]
 
   return (
-    <section className="steps-card">
-      <div className="steps-head">
+    <section className="steps">
+      <div className="head">
         <div>
-          <strong>Paso a paso animado</strong>
-          <p>La explicación avanza junto con el gráfico.</p>
+          <p>Guía visual</p>
+          <h3>{paso?.titulo || "Construcción paso a paso"}</h3>
         </div>
-
-        <div className="counter">
-          {active + 1}/{pasos.length}
-        </div>
+        <span>{active + 1}/{maxStep + 1}</span>
       </div>
 
-      <article className="step-box">
-        <p className="step-title">Paso {paso.orden}: {paso.titulo}</p>
-        <p className="step-text">{paso.explicacion}</p>
-        <code>{paso.expresion}</code>
+      <div className="progress">
+        <i style={{ width: `${((active + 1) / (maxStep + 1)) * 100}%` }} />
+      </div>
+
+      <article className="box">
+        <p>{paso?.explicacion || "Observa cómo el gráfico se construye por partes."}</p>
+        {paso?.expresion && <code>{paso.expresion}</code>}
       </article>
 
       <div className="actions">
-        <button onClick={() => setActive((a) => Math.max(0, a - 1))}>
-          Anterior
-        </button>
-        <button onClick={() => setAuto((v) => !v)}>
-          {auto ? "Pausar animación" : "Reproducir animación"}
-        </button>
-        <button onClick={() => setActive((a) => Math.min(pasos.length - 1, a + 1))}>
-          Siguiente paso
-        </button>
+        <button onClick={() => setActive(s => Math.max(0, s - 1))}>Anterior</button>
+        <button onClick={() => setAuto(v => !v)}>{auto ? "Pausar" : "Reproducir animación"}</button>
+        <button onClick={() => setActive(s => Math.min(maxStep, s + 1))}>Siguiente</button>
       </div>
 
       <style jsx>{`
-        .steps-card {
+        .steps {
           margin-top: 16px;
           padding: 16px;
           border-radius: 24px;
@@ -77,53 +71,72 @@ export default function PrecalculoSteps({
           border: 1px solid rgba(255,255,255,.12);
         }
 
-        .steps-head {
+        .head {
           display: flex;
           justify-content: space-between;
           gap: 12px;
           align-items: center;
-          margin-bottom: 12px;
         }
 
-        .steps-head p {
+        .head p {
+          margin: 0;
+          color: #93c5fd;
+          font-size: 12px;
+          font-weight: 950;
+          letter-spacing: .08em;
+          text-transform: uppercase;
+        }
+
+        .head h3 {
           margin: 4px 0 0;
-          color: #cbd5e1;
-          font-size: 13px;
+          font-size: 19px;
         }
 
-        .counter {
-          padding: 8px 11px;
+        .head span {
+          padding: 7px 11px;
           border-radius: 999px;
           background: rgba(59,130,246,.18);
           color: #bfdbfe;
           font-weight: 950;
         }
 
-        .step-box {
-          padding: 15px;
+        .progress {
+          height: 8px;
+          border-radius: 999px;
+          overflow: hidden;
+          background: rgba(255,255,255,.09);
+          margin: 14px 0;
+        }
+
+        .progress i {
+          display: block;
+          height: 100%;
+          border-radius: 999px;
+          background: linear-gradient(90deg,#38bdf8,#22c55e,#facc15,#818cf8);
+          transition: width .35s ease;
+        }
+
+        .box {
+          padding: 14px;
           border-radius: 18px;
-          background: rgba(15,23,42,.72);
-          border: 1px solid rgba(255,255,255,.1);
+          background: rgba(15,23,42,.70);
+          border: 1px solid rgba(255,255,255,.10);
         }
 
-        .step-title {
-          margin: 0 0 8px;
-          font-weight: 950;
-          color: #bfdbfe;
-        }
-
-        .step-text {
+        .box p {
           color: #e2e8f0;
-          line-height: 1.55;
+          line-height: 1.6;
+          margin: 0;
         }
 
         code {
           display: block;
-          padding: 12px;
+          margin-top: 10px;
+          padding: 11px;
           border-radius: 14px;
-          background: rgba(0,0,0,.26);
+          background: rgba(0,0,0,.28);
           color: #fef3c7;
-          font-size: 15px;
+          font-weight: 900;
           overflow-x: auto;
         }
 
@@ -131,7 +144,7 @@ export default function PrecalculoSteps({
           display: flex;
           flex-wrap: wrap;
           gap: 10px;
-          margin-top: 12px;
+          margin-top: 13px;
         }
 
         button {
@@ -141,7 +154,7 @@ export default function PrecalculoSteps({
           border: 1px solid rgba(255,255,255,.14);
           background: rgba(255,255,255,.08);
           color: white;
-          font-weight: 900;
+          font-weight: 950;
           cursor: pointer;
         }
       `}</style>
