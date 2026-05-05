@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
+import { loadUserGrades, saveUserGrade, deleteUserGrade } from "@/lib/user-grades"
 import {
   ACADEMIC_EVENTS,
   SUBJECT_THEMES,
@@ -129,31 +130,55 @@ export default function CalendarView() {
   const [target, setTarget] = useState(4)
 
   useEffect(() => {
-    const loaded: GradeMap = {}
-    const loadedDrafts: Record<string, string> = {}
+    async function loadGrades() {
+      const loaded: GradeMap = {}
+      const loadedDrafts: Record<string, string> = {}
 
-    for (const ev of ACADEMIC_EVENTS) {
-      const raw = localStorage.getItem(storageKey(ev.id))
-      if (!raw) continue
+      for (const ev of ACADEMIC_EVENTS) {
+        const raw = localStorage.getItem(storageKey(ev.id))
+        if (!raw) continue
 
-      try {
-        const parsed = JSON.parse(raw)
-        loaded[ev.id] = parsed
-        loadedDrafts[ev.id] = String(parsed.value)
-      } catch {
-        const value = Number(raw)
-        if (!Number.isNaN(value)) {
-          loaded[ev.id] = { value, savedAt: new Date().toISOString() }
-          loadedDrafts[ev.id] = String(value)
+        try {
+          const parsed = JSON.parse(raw)
+          loaded[ev.id] = parsed
+          loadedDrafts[ev.id] = String(parsed.value)
+        } catch {
+          const value = Number(raw)
+          if (!Number.isNaN(value)) {
+            loaded[ev.id] = { value, savedAt: new Date().toISOString() }
+            loadedDrafts[ev.id] = String(value)
+          }
         }
       }
+
+      const remote = await loadUserGrades()
+
+      for (const row of remote as any[]) {
+        if (!row.evaluation_id) continue
+
+        const value = Number(row.raw_value ?? row.grade)
+        if (Number.isNaN(value)) continue
+
+        loaded[row.evaluation_id] = {
+          value,
+          savedAt: row.saved_at || new Date().toISOString(),
+        }
+        loadedDrafts[row.evaluation_id] = String(value)
+
+        localStorage.setItem(
+          storageKey(row.evaluation_id),
+          JSON.stringify(loaded[row.evaluation_id])
+        )
+      }
+
+      setGrades(loaded)
+      setDrafts(loadedDrafts)
     }
 
-    setGrades(loaded)
-    setDrafts(loadedDrafts)
+    loadGrades()
   }, [])
 
-  function saveGrade(event: AcademicEvent) {
+  async function saveGrade(event: AcademicEvent) {
     const raw = Number(drafts[event.id])
     const value = event.type === "perusall" ? clamp(raw, 0, 5) : clamp(raw, 1, 7)
 
@@ -166,9 +191,19 @@ export default function CalendarView() {
     setGrades(next)
     setDrafts(prev => ({ ...prev, [event.id]: String(value) }))
     localStorage.setItem(storageKey(event.id), JSON.stringify(record))
+
+    await saveUserGrade({
+      subject_code: event.subjectCode,
+      evaluation_id: event.id,
+      evaluation_name: event.title,
+      grade: eventGradeToSeven(event, value),
+      weight: event.weight,
+      raw_value: value,
+      type: event.type,
+    })
   }
 
-  function deleteGrade(event: AcademicEvent) {
+  async function deleteGrade(event: AcademicEvent) {
     const next = { ...grades }
     delete next[event.id]
     setGrades(next)
@@ -178,6 +213,7 @@ export default function CalendarView() {
     setDrafts(nextDrafts)
 
     localStorage.removeItem(storageKey(event.id))
+    await deleteUserGrade(event.id)
   }
 
   const visibleEvents = useMemo(() => {
@@ -353,11 +389,13 @@ export default function CalendarView() {
                         </button>
                       )}
 
-                      {record && (
-                        <small>
-                          Guardada: {eventGradeToSeven(event, record.value).toFixed(2)}
+                      {record ? (
+                        <small className="savedGrade">
+                          Nota guardada: {eventGradeToSeven(event, record.value).toFixed(2)}
                           {event.type === "perusall" ? ` · ${record.value}/5 pts` : ""}
                         </small>
+                      ) : (
+                        <small className="pendingGrade">Nota no guardada</small>
                       )}
                     </div>
                   )}
@@ -663,6 +701,22 @@ export default function CalendarView() {
           grid-template-columns: 1fr auto;
           gap: 8px;
           align-items: center;
+        }
+
+        .savedGrade {
+          grid-column: 1 / -1;
+          color: #bbf7d0;
+          font-weight: 950;
+          padding: 8px 10px;
+          border-radius: 12px;
+          background: rgba(34,197,94,.12);
+          border: 1px solid rgba(34,197,94,.25);
+        }
+
+        .pendingGrade {
+          grid-column: 1 / -1;
+          color: #cbd5e1;
+          font-weight: 850;
         }
 
         .gradeBox small {
