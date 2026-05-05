@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useMemo } from "react"
 import { useUser } from "@/lib/useUser"
 import { ACADEMIC_EVENTS, SUBJECT_THEMES, daysUntil, getRisk } from "@/lib/academic-calendar-data"
+import PrivateSeminarioActivity from "./PrivateSeminarioActivity";
 
 function upcomingEvents() {
   return ACADEMIC_EVENTS
@@ -81,6 +82,9 @@ export default function HomeView() {
               <div>
                 <p className="eyebrow">Foco del día</p>
                 <h2>Plan recomendado</h2>
+
+      <PrivateSeminarioActivity />
+
               </div>
               <Link href="/calendario" className="miniBtn">Gestionar</Link>
             </div>
