@@ -11,6 +11,7 @@ import ProMaxUCPanel from "./ProMaxUCPanel"
 import { lessonForQuestion } from "@/lib/math-lessons"
 import { hasUserDiagnostic } from "@/lib/user-diagnostics"
 import { registerPracticeResult } from "@/lib/precalculo-god-mode"
+import { detectMathError } from "@/lib/precalculo-god-mode/error-detector"
 import { useUser } from "@/lib/useUser"
 import { SUBJECT_THEMES, type SubjectCode } from "@/lib/academic-calendar-data"
 import { generateMat1000ForceQuestions } from "@/lib/mat1000-force-questions"
@@ -331,6 +332,15 @@ export default function PracticeView() {
     })
   }
 
+  const errorAnalysis = current && selected
+    ? detectMathError({
+        question: current,
+        selectedAnswer: selected,
+        writtenAnswer: written,
+        correctAnswer: String(getCorrectOptionText(current)),
+      })
+    : null
+
   return (
     <main className="practice-page" style={{ "--c": theme.color, "--a": theme.accent, "--g": theme.gradient } as any}>
       <section className="shell">
@@ -532,6 +542,14 @@ export default function PracticeView() {
                     <h3>{selected === current.respuesta_correcta || selected === "respuesta_abierta" ? "✅ Revisemos" : "❌ Incorrecta"}</h3>
                     <p><strong>Respuesta esperada:</strong> {String(getCorrectOptionText(current))}</p>
                     <p>{current.explicacion || current.explanation}</p>
+
+                    {errorAnalysis && errorAnalysis.title !== "Sin error detectado" && (
+                      <div className={`errorAnalysisBox ${errorAnalysis.severity}`}>
+                        <strong>{errorAnalysis.title}</strong>
+                        <p>{errorAnalysis.message}</p>
+                        <small>{errorAnalysis.fix}</small>
+                      </div>
+                    )}
 
                     {current.error_comun && (
                       <div className="note">Trampa típica UC: {current.error_comun}</div>
@@ -919,6 +937,44 @@ export default function PracticeView() {
         .feelingBtns button.active.hard {
           background: linear-gradient(135deg,#f97316,#facc15);
           color: #431407;
+        }
+
+        .errorAnalysisBox {
+          margin-top: 14px;
+          padding: 15px;
+          border-radius: 20px;
+          background: rgba(239,68,68,.12);
+          border: 1px solid rgba(248,113,113,.28);
+        }
+
+        .errorAnalysisBox strong {
+          display: block;
+          color: #fecaca;
+          font-weight: 950;
+          margin-bottom: 6px;
+        }
+
+        .errorAnalysisBox p {
+          margin: 0;
+          color: #fee2e2;
+          line-height: 1.55;
+        }
+
+        .errorAnalysisBox small {
+          display: block;
+          margin-top: 8px;
+          color: #fde68a;
+          font-weight: 900;
+        }
+
+        .errorAnalysisBox.media {
+          background: rgba(245,158,11,.12);
+          border-color: rgba(245,158,11,.28);
+        }
+
+        .errorAnalysisBox.baja {
+          background: rgba(34,197,94,.12);
+          border-color: rgba(34,197,94,.28);
         }
 
         @media(max-width:900px) {
