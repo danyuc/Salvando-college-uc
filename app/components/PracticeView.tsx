@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react"
 
 import MathLessonEngine from "./MathLessonEngine"
+import FormulaDrawer from "./FormulaDrawer"
 import AlgebraMotionPro from "./AlgebraMotionPro"
 import PrecalculoSteps from "./PrecalculoSteps"
 import PrecalculoVisual from "./PrecalculoVisual"
@@ -12,6 +13,7 @@ import { lessonForQuestion } from "@/lib/math-lessons"
 import { hasUserDiagnostic } from "@/lib/user-diagnostics"
 import { registerPracticeResult } from "@/lib/precalculo-god-mode"
 import { detectMathError } from "@/lib/precalculo-god-mode/error-detector"
+import { getAdaptiveRecommendation } from "@/lib/precalculo-god-mode/adaptive-next"
 import { useUser } from "@/lib/useUser"
 import { SUBJECT_THEMES, type SubjectCode } from "@/lib/academic-calendar-data"
 import { generateMat1000ForceQuestions } from "@/lib/mat1000-force-questions"
@@ -341,6 +343,15 @@ export default function PracticeView() {
       })
     : null
 
+  const adaptiveRecommendation = current && selected
+    ? getAdaptiveRecommendation({
+        errorType: errorAnalysis?.type,
+        feeling,
+        subtema: current.subtema || "general",
+        correct: selected === "respuesta_abierta" || isCorrectOption(current, selected),
+      })
+    : null
+
   return (
     <main className="practice-page" style={{ "--c": theme.color, "--a": theme.accent, "--g": theme.gradient } as any}>
       <section className="shell">
@@ -474,6 +485,8 @@ export default function PracticeView() {
 
             <h2>{current.pregunta}</h2>
 
+            <FormulaDrawer question={current} />
+
             <ProMaxUCPanel
               question={current}
               answered={!!selected}
@@ -548,6 +561,13 @@ export default function PracticeView() {
                         <strong>{errorAnalysis.title}</strong>
                         <p>{errorAnalysis.message}</p>
                         <small>{errorAnalysis.fix}</small>
+                      </div>
+                    )}
+
+                    {adaptiveRecommendation && (
+                      <div className="adaptiveRecommendationBox">
+                        <strong>Próximo ajuste IA</strong>
+                        <p>{adaptiveRecommendation.message}</p>
                       </div>
                     )}
 
@@ -975,6 +995,27 @@ export default function PracticeView() {
         .errorAnalysisBox.baja {
           background: rgba(34,197,94,.12);
           border-color: rgba(34,197,94,.28);
+        }
+
+        .adaptiveRecommendationBox {
+          margin-top: 14px;
+          padding: 15px;
+          border-radius: 20px;
+          background: rgba(59,130,246,.12);
+          border: 1px solid rgba(147,197,253,.28);
+        }
+
+        .adaptiveRecommendationBox strong {
+          display: block;
+          color: #bfdbfe;
+          font-weight: 950;
+          margin-bottom: 6px;
+        }
+
+        .adaptiveRecommendationBox p {
+          margin: 0;
+          color: #e2e8f0;
+          line-height: 1.55;
         }
 
         @media(max-width:900px) {
