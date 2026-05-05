@@ -13,6 +13,9 @@ export type SensorPoint = {
   temperature: number;
   valid_session: boolean;
   cache_status: string;
+  line?: string;
+  tramo?: string;
+  tramo_type?: string;
 };
 
 function unixToIso(value: string | number) {
@@ -27,9 +30,7 @@ export function parseSensorCsv(fileText: string): SensorPoint[] {
     skipEmptyLines: true,
   });
 
-  if (parsed.errors.length > 0) {
-    throw new Error(parsed.errors[0].message);
-  }
+  if (parsed.errors.length > 0) throw new Error(parsed.errors[0].message);
 
   return parsed.data.map((row) => ({
     sample_number: Number(row["ID"]),
@@ -42,9 +43,10 @@ export function parseSensorCsv(fileText: string): SensorPoint[] {
     pm25: Number(row["PM2.5"]),
     humidity: Number(row["Humedad"]),
     temperature: Number(row["Temperatura"]),
-    valid_session:
-      row["Sesión Válida"] === "1" ||
-      row["Sesión Válida"]?.toLowerCase() === "true",
+    valid_session: row["Sesión Válida"] === "1",
     cache_status: row["Esta en Cache"] ?? "No",
+    line: "L4/L5",
+    tramo: "Sin clasificar",
+    tramo_type: "Desconocido",
   }));
 }
