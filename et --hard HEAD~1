@@ -1,0 +1,165 @@
+[33mec0f9ee[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m fix: compute error analysis before adaptive recommendation
+[33mf74035d[m fix: define errorAnalysis before PracticeView render
+[33m8b9755e[m feat: mejoras
+[33m816b707[m fix: prevent Supabase env crash while prerendering
+[33m707d01d[m feat: add real algebra motion animations to practice
+[33m8d16bb8[m feat: persist diagnostics grades and stabilize practice
+[33m4ea89c8[m fix: persist diagnostics per user in Supabase
+[33m94c9bdd[m fix: repair feeling state typing
+[33m95f5b9f[m fix: improve select contrast and synchronize visual step animations
+[33mb12e248[m fix: keep PrecalculoSteps backward compatible with animaciones prop
+[33m6a8fa47[m fix: normalize client directive
+[33m24e2adf[m fix: restore PracticeView imports and current question flow
+[33mfbc0428[m docs: add modo dios audit to avoid duplicate features
+[33m6f7a174[m fix: correct course weights for psychology sociology seminar and history
+[33m4405168[m feat: add persistent grade buttons and weighted target calculations
+[33meb67537[m fix: remove broken timer component reference
+[33m56fa5ea[m feat: add real animated math steps and pro practice timer
+[33m35b3416[m fix: remove old setUserName state after useUser migration
+[33m089d82b[m fix: support async cookies in auth callback
+[33ma669c80[m fix: restore Google login with UC onboarding fallback
+[33mb7d7545[m fix: normalize client directives
+[33ma8de87d[m feat: add premium academic calendar with subject colors trackers and practice sync
+[33m4364000[m feat: add MAT1000 pro step engine UC mode and smart diagnostics
+[33m01c0a4d[m feat: add mandatory MAT1000 diagnostics by evaluation
+[33m5e75ca8[m fix: restore original premium practice layout
+[33ma44d234[m restore: premium practice UI with MAT1000 forced engine
+[33m5fa8c14[m fix: repair AppShell layout
+[33m2923ca1[m fix: restore premium MAT1000 practice experience
+[33m6e89108[m fix: rebuild stable MAT1000 practice view
+[33m4302896[m feat: add hyper premium calendar UI
+[33mcff918e[m fix: allow optional visualizacion in MAT1000 forced questions
+[33m5252f25[m fix: update MAT1000 subtopics when module changes
+[33m50b4b37[m feat: add MAT1000 full mode by evaluation
+[33m5a5596e[m fix: force MAT1000 practice loading and enable all filters
+[33m9f1fb36[m fix: make MAT1000 practice always load and unlock filters
+[33m65ba2c3[m fix: wrap diagnostic search params in suspense
+[33m0fc6ca3[m feat: add MAT1000 UC real exam engine
+[33m0bf0eb0[m fix: add precalculo-preguntas data file
+[33m0b2fd8d[m fix: clarify MAT1000 practice filters
+[33mb41770d[m fix: resolve MAT1000 filter readonly typing
+[33m64c1e02[m feat: add pro max adaptive diagnostic engine
+[33m0d7c7d5[m feat: add academic pro mode hub
+[33mdcc8d42[m fix: restore evaluation fields and bulk create compatibility
+[33mb8ccbc4[m fix: add cartesian axes to precalculo visual
+[33me477d4d[m feat: precalculo MAT1000 adaptive engine + modo pro + visualizacion + steps
+[33m10b145e[m fix: repair practice view layout
+[33m2da0e22[m feat: add Apple-style command palette
+[33mf430b70[m fix: stabilize academic models and subject compatibility
+[33m79ff5c4[m fix: add exam timer duration and question format filters
+[33m16da054[m fix: save evaluations through server api
+[33m53be6d5[m fix: improve evaluation saving for interrogations
+[33mde9cb7d[m fix: make UC exam mode hide immediate feedback and show timer
+[33mebdba26[m fix: improve practice mode UI, timer and subject color memory
+[33m7a008e9[m feat: improve UC exam mode and dynamic mode explanations
+[33m6983753[m feat: add cognitive color, pomodoro timing and persistent prediction
+[33m99888f5[m fix: remove duplicate subjectMeta in practice view
+[33maae4fd5[m fix: make guided practice question loading robust
+[33m6710711[m fix: restore subject options in practice filters
+[33m99f5dcb[m feat: add author and class source filters to guided practice
+[33mdb7bb35[m feat: add UC tutor explanations to guided practice
+[33m9ce1e72[m feat: add guided UC practice mode
+[33me8fbf1d[m fix: fallback practice questions when difficulty filter is empty
+[33mef0f40a[m fix: allow legacy subject study modes
+[33mcbc936f[m fix: show subject names in practice and query by subject name
+[33m0736f4c[m fix: add fallback subjects to practice view
+[33mb860de6[m fix: import getSubjectName in practice view
+[33mec4a649[m feat: add interactive precalculus solver
+[33m1c780e3[m fix: use completed diagnostic subject as default
+[33ma55e9b9[m fix: unlock practice after completed diagnostic
+[33m7371a9c[m fix: persist perusall tracker and stabilize grade updates
+[33m71ce038[m fix: remove invalid create evaluation fallback
+[33mef06c46[m fix: hard redirect diagnostic completion to practice
+[33m6fe2a3f[m fix: keep diagnostic redirect on valid app route
+[33m3cebd26[m fix: replace grade save button with non-submit action
+[33mb4d633b[m fix: prevent grade save navigation and show real error
+[33mf82e81d[m fix: prevent grade save buttons from causing navigation
+[33mca2c04f[m fix: prevent diagnostic redirect to invalid route
+[33m4824f8d[m fix: remove invalid score column from diagnostic payload
+[33m496643e[m fix: save diagnostics through server api
+[33m7bd324c[m fix: stabilize diagnostic save flow
+[33m1ec3981[m fix: add explicit save button for grade updates
+[33mbb1bc84[m feat: automate precalculus controls
+[33md5c8d2a[m feat: automate precalculus controls
+[33m55da34b[m feat: add subject color system across academic views
+[33m64bb60c[m fix: map CLG0000 as seminar subject
+[33m91088cb[m fix: stabilize notes view and prevent perusall duplicates
+[33mfb85891[m feat: upgrade notes view with perusall integration
+[33m7a45d03[m fix: stabilize notes view with integrated perusall tracker
+[33m05d7120[m[33m ([m[1;31morigin/feature/nueva-feature[m[33m)[m feat: add premium adaptive practice view
+[33m712e36a[m feat: add adaptive mandatory diagnostics with fatigue detection
+[33m8da0db2[m feat: add mandatory diagnostic page with timer and persistence
+[33m3503836[m feat: diagnóstico obligatorio con vista independiente, guardado en Supabase y conexión con HomeView
+[33m6652d34[m feat: sistema de práctica adaptativa + diagnóstico + verificación de correo con Resend
+[33m7186635[m feat: guided UC practice engine with advanced filters
+[33m36378af[m fix: practice engine supports mixed question formats
+[33m69094b2[m fix: mixed practice engine with randomized answers
+[33me3afb3c[m fix: support mixed questions and randomize answers
+[33m5b2127e[m fix: default adaptive practice with automatic subject
+[33mb7359de[m fix: connect practice engine to current questions schema
+[33m93fc509[m feat: startup adaptive practice mode
+[33mca3e901[m fix: connect practice questions with supabase schema
+[33m347b341[m update: practice system full supabase integration
+[33m4503b3f[m upgrade premium home with shared evaluation engine
+[33m0faca2d[m fix study coach safe date crash
+[33m71dcf62[m fix safeDate bug
+[33m8904990[m fix practice engine with real questions table
+[33m5748fe6[m add premium app shell navigation
+[33m0c068ae[m add back button
+[33m66ce58b[m restore full navigation routes
+[33m1b2ba6d[m fix complete premium home view
+[33me8a4f18[m upgrade premium home dashboard
+[33m1886204[m fix home and riesgo imports
+[33meabc987[m fix supabase oauth callback
+[33m92d0d76[m upgrade smart practice with detailed syllabus
+[33ma580af4[m replace home with full academic dashboard
+[33m5dc130d[m new home with smart academic features
+[33md6671f3[m add smart practice risk and weekly coach
+[33meaf847a[m fix home navigation
+[33m44f4e3c[m fix login redirect
+[33mcc6abdd[m fix tsconfig final
+[33m2f2f493[m fix login + home
+[33mf360d1a[m fix login middleware
+[33m5e099b0[m fix production build
+[33m51c4832[m build fixed fully stable
+[33m90fffc9[m fix missing safeDate imports
+[33m9e4698b[m fix package json + test script
+[33m4211c11[m fix study ai safe dates
+[33md864d38[m remove deprecated baseUrl
+[33m8ac9064[m fix safeDate import position
+[33ma3793ae[m fix path alias baseUrl
+[33mebcc0f8[m fix: safeDate import
+[33m934d768[m update typescript
+[33mbcd0728[m fix: remove invalid ignoreDeprecations
+[33mf052ea8[m rebuild home view with safe dates
+[33mefc3e55[m fix study ai status type
+[33mb79eeec[m fix study ai estimated minutes compatibility
+[33maa62b35[m fix study ai evaluation compatibility
+[33ma0ea702[m remove missing prediction engine dependency
+[33m33c2a60[m fix smart scheduler clean
+[33mf6c5623[m fix riskLevel scope properly
+[33m1e62641[m fix smart scheduler reason risk
+[33m3f79b77[m fix smart scheduler grade compatibility
+[33md31cdd2[m fix riskLevel compatibility
+[33mc148197[m fix smart scheduler prediction input
+[33m812eaac[m add priorityScore to planner block
+[33mc72ae57[m fix planner block compatibility
+[33m708d1c8[m add StudySessionPlan export
+[33m98decc5[m nuevo profile
+[33md7ee016[m weakness view new
+[33m1ebc0c7[m smartplan limpio nuevo
+[33m0809968[m fix and upgrade prediction view
+[33m99b67be[m upgrade pizarra modo dios
+[33m236305e[m fix pizarra pro version
+[33m7050761[m final home view fixed
+[33m8e2532b[m fix home weaknesses attempts mapping
+[33m0ae7608[m fix: add content parser
+[33m9225517[m fix: add content parser
+[33m97bc713[m fix: add content parser
+[33m44ee80a[m fix assistant view context
+[33me924af9[m fix route.ts as valid module
+[33m087f0f0[m fix auth callback simple route
+[33m8ed8387[m install superbase auth helpers
+[33m1ce966e[m fix auth callback route
+[33m4a010ab[m first commit
+[33m7741af2[m first commit

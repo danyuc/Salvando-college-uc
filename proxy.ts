@@ -39,7 +39,7 @@ export async function proxy(req: NextRequest) {
   }
 
   if (user && path.startsWith('/login')) {
-    return NextResponse.redirect(new URL('/', req.url))
+    return NextResponse.redirect(new URL('/onboarding', req.url))
   }
 
   return res
