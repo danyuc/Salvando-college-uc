@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react"
 
 import MathLessonEngine from "./MathLessonEngine"
+import AlgebraPhysicsAnimator from "./AlgebraPhysicsAnimator"
 import AlgebraMotionPro from "./AlgebraMotionPro"
 import PrecalculoSteps from "./PrecalculoSteps"
 import PrecalculoVisual from "./PrecalculoVisual"
@@ -573,6 +574,7 @@ export default function PracticeView() {
                     )}
 
                       <>
+                        <AlgebraPhysicsAnimator variant="linear" />
                         <MathLessonEngine title={currentLesson.title} steps={currentLesson.steps as any} />
                   </>
                         {Array.isArray(current.pasos) && (

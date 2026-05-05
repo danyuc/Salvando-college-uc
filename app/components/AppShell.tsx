@@ -1,5 +1,6 @@
 'use client'
 
+import { ensureSession } from "@/lib/auth-fix"
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState, type CSSProperties } from 'react'
 import { getLocalUser } from '@/lib/local-user'
@@ -26,6 +27,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [localUser, setLocalUser] = useState<{ username: string; email: string } | null>(null)
 
   useEffect(() => {
+  ensureSession()
     setLocalUser(getLocalUser())
   }, [pathname])
 
