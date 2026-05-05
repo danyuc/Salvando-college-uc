@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react"
 
 import MathLessonEngine from "./MathLessonEngine"
+import AlgebraMotionPro from "./AlgebraMotionPro"
 import PrecalculoSteps from "./PrecalculoSteps"
 import PrecalculoVisual from "./PrecalculoVisual"
 import ProMaxUCPanel from "./ProMaxUCPanel"
@@ -559,8 +560,21 @@ export default function PracticeView() {
                     </div>
 
                     {showSteps && currentLesson && (
+                  <>
+
+                    {currentLesson?.steps?.length > 0 && (
+                      <AlgebraMotionPro
+                        steps={currentLesson.steps.map((st: any) => ({
+                          equation: st.equation || st.expresion || st.title,
+                          explanation: st.explanation || st.explicacion || "",
+                          operation: st.action || st.titulo || "",
+                        }))}
+                      />
+                    )}
+
                       <>
                         <MathLessonEngine title={currentLesson.title} steps={currentLesson.steps as any} />
+                  </>
                         {Array.isArray(current.pasos) && (
                           <div style={{ marginTop: 16 }}>
                             <PrecalculoSteps pasos={current.pasos || []} onStepChange={setVisualStep} />
