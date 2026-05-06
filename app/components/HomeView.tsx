@@ -86,7 +86,7 @@ export default function HomeView() {
       <PrivateSeminarioActivity />
 
               </div>
-              <Link href="/calendario" className="miniBtn">Gestionar</Link>
+              <Link href="/seminario-admin" className="miniBtn">Gestionar</Link>
             </div>
 
             <div className="plan">
@@ -182,7 +182,7 @@ export default function HomeView() {
         }
 
         .shell {
-          max-width: 1240px;
+          max-width: 100%;
           margin: 0 auto;
           display: grid;
           gap: 18px;
@@ -190,7 +190,7 @@ export default function HomeView() {
 
         .hero {
           position: relative;
-          overflow: hidden;
+          overflow-x: auto;
           min-height: 330px;
           display: grid;
           grid-template-columns: 1fr 310px;
