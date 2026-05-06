@@ -1,52 +1,5 @@
-'use client'
+import LabDashboard from "../components/lab/LabDashboard"
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import { supabase } from "@/lib/supabase"
-import LabAmbientalClient from "../components/LabAmbientalClient"
-
-export default function LabAmbientalPage() {
-  const router = useRouter()
-  const [allowed, setAllowed] = useState(false)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    async function checkAccess() {
-      const { data: sessionData } = await supabase.auth.getSession()
-      const user = sessionData.session?.user
-
-      if (!user) {
-        router.replace("/login")
-        return
-      }
-
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("is_research_member")
-        .eq("id", user.id)
-        .maybeSingle()
-
-      if (!profile?.is_research_member) {
-        router.replace("/")
-        return
-      }
-
-      setAllowed(true)
-      setLoading(false)
-    }
-
-    checkAccess()
-  }, [router])
-
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-slate-950 text-white grid place-items-center font-black">
-        Abriendo laboratorio ambiental...
-      </main>
-    )
-  }
-
-  if (!allowed) return null
-
-  return <LabAmbientalClient />
+export default function Page() {
+  return <LabDashboard />
 }

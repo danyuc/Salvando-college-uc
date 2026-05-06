@@ -12,6 +12,8 @@ export default function LoginPage() {
 
   async function loginWithGoogle() {
     setLoading(true)
+    setError("")
+
     const redirectTo = `${window.location.origin}/auth/callback`
 
     const { error } = await supabase.auth.signInWithOAuth({
@@ -25,14 +27,20 @@ export default function LoginPage() {
     }
   }
 
-  function enterTeacher() {
+  function enterTeacher(event?: React.FormEvent) {
+    event?.preventDefault()
+
     if (code.trim() !== "2890") {
       setError("Código de acceso inválido.")
       return
     }
 
-    localStorage.setItem("teacher-lab-access", "true")
-    router.push("/lab-ambiental?docente=1")
+    try {
+      localStorage.setItem("teacher-lab-access", "true")
+      localStorage.setItem("lab-demo-access", "true")
+    } catch {}
+
+    window.location.href = "/lab-ambiental?docente=1"
   }
 
   return (
@@ -52,6 +60,7 @@ export default function LoginPage() {
         <div className="mt-8">
           <p className="font-black text-white">Estudiantes</p>
           <button
+            type="button"
             onClick={loginWithGoogle}
             disabled={loading}
             className="mt-3 w-full rounded-2xl bg-white px-5 py-4 font-black text-slate-950"
@@ -62,7 +71,7 @@ export default function LoginPage() {
 
         <div className="my-8 h-px bg-white/10" />
 
-        <div>
+        <form onSubmit={enterTeacher}>
           <p className="font-black text-fuchsia-300">Docentes</p>
 
           <div className="mt-3 flex gap-3">
@@ -70,17 +79,18 @@ export default function LoginPage() {
               value={code}
               onChange={(e) => setCode(e.target.value)}
               placeholder="Código de acceso"
+              inputMode="numeric"
               className="min-w-0 flex-1 rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 font-bold outline-none"
             />
 
             <button
-              onClick={enterTeacher}
+              type="submit"
               className="rounded-2xl bg-fuchsia-500 px-5 py-3 font-black text-white"
             >
               Entrar
             </button>
           </div>
-        </div>
+        </form>
 
         {error && (
           <p className="mt-5 rounded-xl bg-red-500/15 p-3 text-sm font-bold text-red-200">
