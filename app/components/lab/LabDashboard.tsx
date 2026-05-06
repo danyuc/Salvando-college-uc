@@ -58,6 +58,7 @@ export default function LabDashboard() {
     <main className="min-h-screen overflow-hidden bg-slate-950 text-white">
       <PollutionOverlay active={peak} current={current.name} />
       <Smoke active={peak} />
+      <LabAtmosphere current={current} />
       <Shake active={shake} />
 
       <section className="relative overflow-hidden border-b border-white/10 px-6 py-12">
@@ -126,6 +127,7 @@ export default function LabDashboard() {
 
   <LeafletEnvironmentalMap
     externalIndex={index}
+    onSelectPoint={(i: number) => setIndex(i)}
     points={ROUTE_POINTS.map((p, i) => ({
       ...p,
       sample_number: i + 1,
@@ -232,6 +234,8 @@ export default function LabDashboard() {
             </BarChart>
           </Chart>
         </section>
+
+        <LabScientificStory current={current} />
 
         <section className="mt-8 grid gap-5 md:grid-cols-2">
           <Paper title="Hipótesis" text="El recorrido permite comparar condiciones ambientales entre tramos subterráneos, elevados, de transición y caminata, considerando PM2.5, humedad, temperatura, ruido y bacterias/UFC." />
