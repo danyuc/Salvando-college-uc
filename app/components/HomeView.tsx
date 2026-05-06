@@ -182,7 +182,7 @@ export default function HomeView() {
         }
 
         .shell {
-          max-width: 100%;
+          max-width: min(1240px, calc(100vw - 32px));
           margin: 0 auto;
           display: grid;
           gap: 18px;
@@ -190,7 +190,7 @@ export default function HomeView() {
 
         .hero {
           position: relative;
-          overflow-x: auto;
+          overflow-x: hidden;
           min-height: 330px;
           display: grid;
           grid-template-columns: 1fr 310px;
@@ -354,7 +354,7 @@ export default function HomeView() {
 
         .metrics {
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
+          grid-template-columns: repeat(4, minmax(0, 1fr));
           gap: 14px;
         }
 
@@ -510,7 +510,7 @@ export default function HomeView() {
           background: var(--g);
         }
 
-        @media(max-width: 1000px) {
+        @media (max-width: 1000px) {
           .hero,
           .mainGrid {
             grid-template-columns: 1fr;
@@ -521,7 +521,7 @@ export default function HomeView() {
           }
         }
 
-        @media(max-width: 640px) {
+        @media (max-width: 640px) {
           .page {
             padding: 18px;
           }
