@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import dynamic from "next/dynamic"
 import {
   Area,
   AreaChart,
@@ -14,6 +15,13 @@ import {
   YAxis,
 } from "recharts"
 import { ROUTE_POINTS, pmColor, typeLabel } from "./data/metroRoute"
+
+const LeafletEnvironmentalMap = dynamic(
+  () => import("../LeafletEnvironmentalMap"),
+  {
+    ssr: false,
+  }
+)
 
 export default function LabDashboard() {
   const [index, setIndex] = useState(0)
@@ -112,7 +120,22 @@ export default function LabDashboard() {
         <Timeline index={index} setIndex={setIndex} />
 
         <section className="mt-8 grid gap-6 lg:grid-cols-[1.35fr_.65fr]">
-          <MapPanel index={index} current={current} />
+          
+<div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900 shadow-[0_0_80px_rgba(6,182,212,.08)]">
+  <div className="absolute inset-0 z-10 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(6,182,212,.08),transparent_60%)]" />
+
+  <LeafletEnvironmentalMap
+    externalIndex={index}
+    points={ROUTE_POINTS.map((p, i) => ({
+      ...p,
+      sample_number: i + 1,
+      humidity: p.humidity,
+      temperature: p.temp,
+      tramo: typeLabel(p.type),
+    }))}
+  />
+</div>
+
 
           <aside className="grid gap-6">
             <Panel title="Transición actual" color="cyan">
@@ -272,73 +295,6 @@ function Timeline({ index, setIndex }: { index: number; setIndex: (n: number) =>
         )
       })}
     </section>
-  )
-}
-
-function MapPanel({ index, current }: { index: number; current: (typeof ROUTE_POINTS)[number] }) {
-  return (
-    <div className="relative min-h-[640px] overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900 p-8 shadow-[0_0_80px_rgba(6,182,212,.08)]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(6,182,212,.18),transparent_60%)]" />
-
-      {ROUTE_POINTS.map((point, i) => (
-        <motion.div
-          key={`heat-${point.id}`}
-          className="absolute rounded-full blur-3xl"
-          style={{
-            background: pmColor(point.pm25),
-            opacity: point.pm25 >= 70 ? 0.23 : 0.12,
-            width: `${80 + point.pm25 * 2}px`,
-            height: `${80 + point.pm25 * 2}px`,
-            left: `${8 + (i * 7.5) % 82}%`,
-            top: `${25 + (i % 5) * 11}%`,
-          }}
-          animate={{ scale: [1, 1.15, 1], opacity: [0.08, 0.22, 0.1] }}
-          transition={{ repeat: Infinity, duration: 4 + i * 0.2 }}
-        />
-      ))}
-
-      <div className="relative">
-        <p className="text-sm font-black uppercase tracking-[0.25em] text-cyan-300">
-          Mapa vivo / heatmap del recorrido
-        </p>
-
-        <div className="mt-16 flex items-center gap-3 overflow-x-auto pb-8">
-          {ROUTE_POINTS.map((point, i) => (
-            <div key={point.id} className="flex items-center gap-3">
-              <motion.button
-                animate={i === index ? { scale: [1, 1.18, 1] } : {}}
-                transition={{ repeat: i === index ? Infinity : 0, duration: 1 }}
-                className={`grid h-24 w-24 shrink-0 place-items-center rounded-full border text-3xl ${
-                  i === index
-                    ? "border-cyan-300 bg-cyan-400 text-slate-950 shadow-[0_0_70px_rgba(6,182,212,.55)]"
-                    : point.pm25 >= 70
-                    ? "border-red-400 bg-red-500/20"
-                    : "border-white/10 bg-white/10"
-                }`}
-              >
-                {i === index ? "🚇" : "🚉"}
-              </motion.button>
-
-              {i < ROUTE_POINTS.length - 1 && (
-                <div className="h-2 w-16 shrink-0 rounded-full bg-cyan-400/40" />
-              )}
-            </div>
-          ))}
-        </div>
-
-        <motion.div
-          key={current.id}
-          initial={{ opacity: 0, y: 20, scale: 0.96 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          className="mt-8 rounded-[2rem] border border-white/10 bg-white/10 p-6 backdrop-blur"
-        >
-          <h2 className="text-4xl font-black">🚇 {current.name}</h2>
-          <p className="mt-3 text-slate-300">
-            {current.line} · {typeLabel(current.type)} · PM2.5 {current.pm25} µg/m³ · {current.db} dB
-          </p>
-        </motion.div>
-      </div>
-    </div>
   )
 }
 

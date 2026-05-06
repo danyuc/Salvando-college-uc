@@ -28,7 +28,13 @@ const pulseIcon = L.divIcon({
   iconAnchor: [12, 12],
 });
 
-export default function LeafletEnvironmentalMap({ points }: { points: any[] }) {
+export default function LeafletEnvironmentalMap({
+  points,
+  externalIndex,
+}: {
+  points: any[]
+  externalIndex?: number
+}) {
   const cleanPoints = useMemo(
     () =>
       points
@@ -45,7 +51,12 @@ export default function LeafletEnvironmentalMap({ points }: { points: any[] }) {
   const coords = cleanPoints.map((p) => [p.lat, p.lng]) as [number, number][];
   const center = coords[0] ?? ([-33.49664, -70.61014] as [number, number]);
 
-  const [index, setIndex] = useState(0);
+  const [internalIndex, setInternalIndex] = useState(0);
+
+const index =
+  typeof externalIndex === "number"
+    ? externalIndex
+    : internalIndex;
   const [playing, setPlaying] = useState(false);
   const [showHeat, setShowHeat] = useState(true);
 
@@ -53,7 +64,7 @@ export default function LeafletEnvironmentalMap({ points }: { points: any[] }) {
     if (!playing || cleanPoints.length === 0) return;
 
     const interval = window.setInterval(() => {
-      setIndex((current) => {
+      setInternalIndex((current) => {
         if (current >= cleanPoints.length - 1) {
           setPlaying(false);
           return current;
@@ -78,7 +89,7 @@ export default function LeafletEnvironmentalMap({ points }: { points: any[] }) {
       <div className="absolute left-4 top-4 z-[1000] flex flex-wrap gap-2">
         <button onClick={() => setPlaying(true)} className="rounded-full bg-white px-4 py-2 text-sm font-black text-slate-950">Animar</button>
         <button onClick={() => setPlaying(false)} className="rounded-full bg-slate-950/80 px-4 py-2 text-sm font-black text-white">Pausar</button>
-        <button onClick={() => { setPlaying(false); setIndex(0); }} className="rounded-full bg-slate-950/80 px-4 py-2 text-sm font-black text-white">Reiniciar</button>
+        <button onClick={() => { setPlaying(false); setInternalIndex(0); }} className="rounded-full bg-slate-950/80 px-4 py-2 text-sm font-black text-white">Reiniciar</button>
         <button onClick={() => setShowHeat((v) => !v)} className="rounded-full bg-slate-950/80 px-4 py-2 text-sm font-black text-white">Heatmap</button>
       </div>
 
