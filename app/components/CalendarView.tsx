@@ -204,7 +204,7 @@ export default function CalendarView() {
         <section className="hero">
           <div>
             <p className="eyebrow">Calendario + Notas</p>
-            <h1>Panel académico premium</h1>
+            <h1>Panel académico</h1>
             <p>
               Registra notas, elimina notas, calcula ponderaciones reales y revisa cuánto necesitas para llegar a tu meta.
             </p>
