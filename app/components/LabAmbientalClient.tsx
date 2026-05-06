@@ -1,11 +1,27 @@
 'use client'
 
+import dynamic from "next/dynamic"
 import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts"
 import { supabase } from "@/lib/supabase"
 import { parseSensorCsv, type SensorPoint } from "./parseSensorCsv"
+import { SEMINARIO_SEGMENTS, segmentLabel } from "./seminario/seminarioRoute"
+import { autoSegmentByOrder, buildPaperText, buildSegmentAnalysis, avg, max } from "./seminario/seminarioAnalysis"
 
-type Tab = "pm25" | "ruido" | "bacterias" | "tramos" | "paper"
+const LeafletEnvironmentalMap = dynamic(() => import("./LeafletEnvironmentalMap"), { ssr: false })
+
+type Tab = "pm25" | "ruido" | "bacterias" | "tramos" | "analisis" | "paper"
 
 type SessionRow = {
   id: string
@@ -18,10 +34,14 @@ type EnvironmentalPoint = SensorPoint & {
   id?: string
   session_id?: string
   owner_id?: string
+  segment_id?: string | null
+  direction?: string | null
 }
 
 type DecibelSample = {
   id: string
+  segment_id: string | null
+  direction: string | null
   line: string | null
   station_origin: string | null
   station_destination: string | null
@@ -35,6 +55,8 @@ type DecibelSample = {
 
 type BacteriaSample = {
   id: string
+  segment_id: string | null
+  direction: string | null
   sample_code: string | null
   line: string | null
   station_origin: string | null
@@ -46,8 +68,10 @@ type BacteriaSample = {
   notes: string | null
 }
 
-type MetroSegment = {
+type MetroSegmentRow = {
   id: string
+  segment_id: string | null
+  direction: string | null
   line: string | null
   station_origin: string | null
   station_destination: string | null
@@ -56,10 +80,7 @@ type MetroSegment = {
 }
 
 const emptyDb = {
-  line: "",
-  station_origin: "",
-  station_destination: "",
-  segment_type: "Subterráneo",
+  segment_id: "sj-vv",
   db_exit: "",
   db_mid: "",
   db_arrival: "",
@@ -68,11 +89,8 @@ const emptyDb = {
 }
 
 const emptyBacteria = {
+  segment_id: "sj-vv",
   sample_code: "",
-  line: "",
-  station_origin: "",
-  station_destination: "",
-  segment_type: "Subterráneo",
   sample_place: "Vagón",
   exposure_minutes: "",
   cfu_count: "",
@@ -80,28 +98,17 @@ const emptyBacteria = {
 }
 
 const emptySegment = {
-  line: "",
-  station_origin: "",
-  station_destination: "",
-  segment_type: "Subterráneo",
+  segment_id: "sj-vv",
   notes: "",
-}
-
-function avg(values: Array<number | null | undefined>) {
-  const clean = values.filter((v): v is number => typeof v === "number" && Number.isFinite(v))
-  if (!clean.length) return null
-  return clean.reduce((a, b) => a + b, 0) / clean.length
-}
-
-function max(values: Array<number | null | undefined>) {
-  const clean = values.filter((v): v is number => typeof v === "number" && Number.isFinite(v))
-  if (!clean.length) return null
-  return Math.max(...clean)
 }
 
 function n(value: string) {
   const number = Number(String(value).replace(",", "."))
   return Number.isFinite(number) ? number : null
+}
+
+function segmentMeta(segmentId: string) {
+  return SEMINARIO_SEGMENTS.find((segment) => segment.id === segmentId) ?? SEMINARIO_SEGMENTS[0]
 }
 
 export default function LabAmbientalClient() {
@@ -114,30 +121,28 @@ export default function LabAmbientalClient() {
   const [points, setPoints] = useState<EnvironmentalPoint[]>([])
   const [decibels, setDecibels] = useState<DecibelSample[]>([])
   const [bacteria, setBacteria] = useState<BacteriaSample[]>([])
-  const [segments, setSegments] = useState<MetroSegment[]>([])
+  const [segments, setSegments] = useState<MetroSegmentRow[]>([])
   const [dbForm, setDbForm] = useState(emptyDb)
   const [bacteriaForm, setBacteriaForm] = useState(emptyBacteria)
   const [segmentForm, setSegmentForm] = useState(emptySegment)
 
-  const metrics = useMemo(() => {
-    const pmAvg = avg(points.map((p) => p.pm25))
-    const pmPeak = max(points.map((p) => p.pm25))
-    const humidityAvg = avg(points.map((p) => p.humidity))
-    const tempAvg = avg(points.map((p) => p.temperature))
-    const dbAvg = avg(decibels.flatMap((d) => [d.db_exit, d.db_mid, d.db_arrival, d.db_peak]))
-    const dbPeak = max(decibels.map((d) => d.db_peak))
-    const bacAvg = avg(bacteria.map((b) => b.cfu_count))
-    const bacMax = max(bacteria.map((b) => b.cfu_count))
+  const segmentAnalysis = useMemo(
+    () => buildSegmentAnalysis(points, decibels, bacteria),
+    [points, decibels, bacteria]
+  )
 
+  const paper = useMemo(() => buildPaperText(segmentAnalysis), [segmentAnalysis])
+
+  const metrics = useMemo(() => {
     return {
-      pmAvg,
-      pmPeak,
-      humidityAvg,
-      tempAvg,
-      dbAvg,
-      dbPeak,
-      bacAvg,
-      bacMax,
+      pmAvg: avg(points.map((p) => p.pm25)),
+      pmPeak: max(points.map((p) => p.pm25)),
+      humidityAvg: avg(points.map((p) => p.humidity)),
+      tempAvg: avg(points.map((p) => p.temperature)),
+      dbAvg: avg(decibels.flatMap((d) => [d.db_exit, d.db_mid, d.db_arrival, d.db_peak])),
+      dbPeak: max(decibels.map((d) => d.db_peak)),
+      cfuAvg: avg(bacteria.map((b) => b.cfu_count)),
+      cfuPeak: max(bacteria.map((b) => b.cfu_count)),
     }
   }, [points, decibels, bacteria])
 
@@ -178,10 +183,7 @@ export default function LabAmbientalClient() {
     if (!currentSession) {
       const { data: created, error } = await supabase
         .from("environmental_sessions")
-        .insert({
-          owner_id: user.id,
-          title: "Laboratorio Ambiental Metro",
-        })
+        .insert({ owner_id: user.id, title: "Recorrido Seminario San Joaquín - Plaza Egaña" })
         .select("id,title,source_file_name,created_at")
         .single()
 
@@ -207,90 +209,71 @@ export default function LabAmbientalClient() {
   }
 
   async function loadPoints(sessionId: string) {
-    const { data, error } = await supabase
-      .from("environmental_points")
-      .select("*")
-      .eq("session_id", sessionId)
-      .order("sample_number", { ascending: true })
-
-    if (!error) setPoints((data ?? []) as EnvironmentalPoint[])
+    const { data } = await supabase.from("environmental_points").select("*").eq("session_id", sessionId).order("sample_number")
+    setPoints((data ?? []) as EnvironmentalPoint[])
   }
 
   async function loadDecibels(sessionId: string) {
-    const { data, error } = await supabase
-      .from("decibel_samples")
-      .select("*")
-      .eq("session_id", sessionId)
-      .order("created_at", { ascending: false })
-
-    if (!error) setDecibels((data ?? []) as DecibelSample[])
+    const { data } = await supabase.from("decibel_samples").select("*").eq("session_id", sessionId).order("created_at", { ascending: false })
+    setDecibels((data ?? []) as DecibelSample[])
   }
 
   async function loadBacteria(sessionId: string) {
-    const { data, error } = await supabase
-      .from("bacteria_samples")
-      .select("*")
-      .eq("session_id", sessionId)
-      .order("created_at", { ascending: false })
-
-    if (!error) setBacteria((data ?? []) as BacteriaSample[])
+    const { data } = await supabase.from("bacteria_samples").select("*").eq("session_id", sessionId).order("created_at", { ascending: false })
+    setBacteria((data ?? []) as BacteriaSample[])
   }
 
   async function loadSegments(sessionId: string) {
-    const { data, error } = await supabase
-      .from("metro_segments")
-      .select("*")
-      .eq("session_id", sessionId)
-      .order("created_at", { ascending: false })
-
-    if (!error) setSegments((data ?? []) as MetroSegment[])
+    const { data } = await supabase.from("metro_segments").select("*").eq("session_id", sessionId).order("created_at", { ascending: false })
+    setSegments((data ?? []) as MetroSegmentRow[])
   }
 
   async function uploadCsv(file: File) {
     if (!session || !userId) return
 
     setSaving(true)
-    setMessage("Procesando CSV...")
+    setMessage("Procesando CSV del sensor...")
 
     try {
       const parsed = await parseSensorCsv(file)
 
-      const { error: deleteError } = await supabase
-        .from("environmental_points")
-        .delete()
-        .eq("session_id", session.id)
+      await supabase.from("environmental_points").delete().eq("session_id", session.id)
 
-      if (deleteError) throw deleteError
+      const total = parsed.length || 1
 
-      const rows = parsed.map((point) => ({
-        session_id: session.id,
-        owner_id: userId,
-        sample_number: point.sample_number,
-        device_session: point.device_session,
-        raw_timestamp: point.raw_timestamp,
-        recorded_at: point.recorded_at,
-        lat: point.lat,
-        lng: point.lng,
-        battery: point.battery,
-        pm25: point.pm25,
-        humidity: point.humidity,
-        temperature: point.temperature,
-        valid_session: point.valid_session,
-        cache_status: point.cache_status,
-      }))
+      const rows = parsed.map((point, index) => {
+        const segmentId = autoSegmentByOrder(index, total)
+        const segment = segmentMeta(segmentId)
+
+        return {
+          session_id: session.id,
+          owner_id: userId,
+          segment_id: segmentId,
+          direction: segment.direction,
+          sample_number: point.sample_number,
+          device_session: point.device_session,
+          raw_timestamp: point.raw_timestamp,
+          recorded_at: point.recorded_at,
+          lat: point.lat,
+          lng: point.lng,
+          battery: point.battery,
+          pm25: point.pm25,
+          humidity: point.humidity,
+          temperature: point.temperature,
+          valid_session: point.valid_session,
+          cache_status: point.cache_status,
+        }
+      })
 
       if (rows.length > 0) {
         const { error } = await supabase.from("environmental_points").insert(rows)
         if (error) throw error
       }
 
-      await supabase
-        .from("environmental_sessions")
-        .update({ source_file_name: file.name })
-        .eq("id", session.id)
-
+      await supabase.from("environmental_sessions").update({ source_file_name: file.name }).eq("id", session.id)
       await loadPoints(session.id)
-      setMessage(`CSV guardado en la nube: ${rows.length} puntos.`)
+
+      setMessage(`CSV guardado en Supabase: ${rows.length} puntos asignados automáticamente a los 5 tramos del recorrido.`)
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "No se pudo cargar el CSV.")
     }
@@ -301,15 +284,18 @@ export default function LabAmbientalClient() {
   async function addDecibel() {
     if (!session || !userId) return
 
+    const segment = segmentMeta(dbForm.segment_id)
     setSaving(true)
 
     const { error } = await supabase.from("decibel_samples").insert({
       session_id: session.id,
       owner_id: userId,
-      line: dbForm.line,
-      station_origin: dbForm.station_origin,
-      station_destination: dbForm.station_destination,
-      segment_type: dbForm.segment_type,
+      segment_id: segment.id,
+      direction: segment.direction,
+      line: segment.line,
+      station_origin: segment.origin,
+      station_destination: segment.destination,
+      segment_type: segment.type,
       db_exit: n(dbForm.db_exit),
       db_mid: n(dbForm.db_mid),
       db_arrival: n(dbForm.db_arrival),
@@ -321,7 +307,7 @@ export default function LabAmbientalClient() {
     else {
       setDbForm(emptyDb)
       await loadDecibels(session.id)
-      setMessage("Registro de ruido guardado en la nube.")
+      setMessage("Ruido guardado en Supabase.")
     }
 
     setSaving(false)
@@ -330,16 +316,19 @@ export default function LabAmbientalClient() {
   async function addBacteria() {
     if (!session || !userId) return
 
+    const segment = segmentMeta(bacteriaForm.segment_id)
     setSaving(true)
 
     const { error } = await supabase.from("bacteria_samples").insert({
       session_id: session.id,
       owner_id: userId,
+      segment_id: segment.id,
+      direction: segment.direction,
       sample_code: bacteriaForm.sample_code,
-      line: bacteriaForm.line,
-      station_origin: bacteriaForm.station_origin,
-      station_destination: bacteriaForm.station_destination,
-      segment_type: bacteriaForm.segment_type,
+      line: segment.line,
+      station_origin: segment.origin,
+      station_destination: segment.destination,
+      segment_type: segment.type,
       sample_place: bacteriaForm.sample_place,
       exposure_minutes: n(bacteriaForm.exposure_minutes),
       cfu_count: n(bacteriaForm.cfu_count),
@@ -350,7 +339,7 @@ export default function LabAmbientalClient() {
     else {
       setBacteriaForm(emptyBacteria)
       await loadBacteria(session.id)
-      setMessage("Muestra bacteriana guardada en la nube.")
+      setMessage("Muestra bacteriana guardada en Supabase.")
     }
 
     setSaving(false)
@@ -359,15 +348,18 @@ export default function LabAmbientalClient() {
   async function addSegment() {
     if (!session || !userId) return
 
+    const segment = segmentMeta(segmentForm.segment_id)
     setSaving(true)
 
     const { error } = await supabase.from("metro_segments").insert({
       session_id: session.id,
       owner_id: userId,
-      line: segmentForm.line,
-      station_origin: segmentForm.station_origin,
-      station_destination: segmentForm.station_destination,
-      segment_type: segmentForm.segment_type,
+      segment_id: segment.id,
+      direction: segment.direction,
+      line: segment.line,
+      station_origin: segment.origin,
+      station_destination: segment.destination,
+      segment_type: segment.type,
       notes: segmentForm.notes,
     })
 
@@ -375,18 +367,14 @@ export default function LabAmbientalClient() {
     else {
       setSegmentForm(emptySegment)
       await loadSegments(session.id)
-      setMessage("Tramo guardado en la nube.")
+      setMessage("Tramo guardado en Supabase.")
     }
 
     setSaving(false)
   }
 
   if (loading) {
-    return (
-      <main className="min-h-screen bg-slate-950 text-white grid place-items-center font-black">
-        Cargando laboratorio desde Supabase...
-      </main>
-    )
+    return <main className="min-h-screen bg-slate-950 text-white grid place-items-center font-black">Cargando laboratorio desde Supabase...</main>
   }
 
   return (
@@ -395,146 +383,146 @@ export default function LabAmbientalClient() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.3em] text-cyan-300">Seminario privado</p>
-            <h1 className="text-2xl font-black">Laboratorio Ambiental Metro</h1>
-            <p className="text-xs text-slate-400">
-              Datos guardados en Supabase · {session?.source_file_name ?? "sin CSV"}
-            </p>
+            <h1 className="text-2xl font-black">Recorrido San Joaquín → Plaza Egaña → San Joaquín</h1>
+            <p className="text-xs text-slate-400">Línea 5 + Línea 4 · datos guardados en Supabase · {session?.source_file_name ?? "sin CSV"}</p>
           </div>
 
           <Link href="/" className="rounded-2xl border border-white/10 bg-white/10 px-5 py-3 text-sm font-black hover:bg-white/20">
-            ← Salir al inicio
+            ← Salir
           </Link>
         </div>
       </header>
 
       <section className="mx-auto max-w-7xl px-6 py-8">
-        <div className="rounded-[2rem] border border-cyan-300/20 bg-gradient-to-br from-cyan-500/20 via-blue-500/10 to-slate-900 p-8 shadow-2xl">
-          <p className="text-sm font-black uppercase tracking-[0.25em] text-cyan-200">Investigación aplicada</p>
+        <Hero message={message} />
 
-          <h2 className="mt-3 max-w-5xl text-4xl font-black leading-tight md:text-6xl">
-            PM2.5, humedad, temperatura, ruido, bacterias y tramos del Metro
-          </h2>
-
-          <p className="mt-5 max-w-3xl text-lg font-medium text-slate-300">
-            Todo lo que cargues o registres queda guardado en Supabase y se recupera al volver a abrir la página.
-          </p>
-
-          {message && (
-            <p className="mt-5 rounded-2xl border border-white/10 bg-white/10 p-4 text-sm font-bold text-cyan-100">
-              {message}
-            </p>
-          )}
-        </div>
-
-        <section className="mt-8 grid gap-4 md:grid-cols-5">
-          {[
-            ["pm25", "🌫️", "PM2.5", `${points.length} puntos`],
-            ["ruido", "🔊", "Ruido", `${decibels.length} registros`],
-            ["bacterias", "🦠", "Bacterias", `${bacteria.length} muestras`],
-            ["tramos", "🚇", "Tramos", `${segments.length} clasificados`],
-            ["paper", "📄", "Paper", "Resumen científico"],
-          ].map(([key, icon, title, desc]) => (
-            <button
-              key={key}
-              onClick={() => setTab(key as Tab)}
-              className={`rounded-3xl border p-5 text-left transition ${
-                tab === key ? "border-cyan-300 bg-cyan-400/20" : "border-white/10 bg-white/10 hover:bg-white/15"
-              }`}
-            >
-              <p className="text-3xl">{icon}</p>
-              <p className="mt-3 text-xl font-black">{title}</p>
-              <p className="mt-1 text-sm text-slate-300">{desc}</p>
-            </button>
-          ))}
+        <section className="mt-8 grid gap-4 md:grid-cols-6">
+          <TabButton active={tab === "pm25"} onClick={() => setTab("pm25")} icon="🌫️" title="PM2.5" desc={`${points.length} puntos`} />
+          <TabButton active={tab === "ruido"} onClick={() => setTab("ruido")} icon="🔊" title="Ruido" desc={`${decibels.length} registros`} />
+          <TabButton active={tab === "bacterias"} onClick={() => setTab("bacterias")} icon="🦠" title="Bacterias" desc={`${bacteria.length} muestras`} />
+          <TabButton active={tab === "tramos"} onClick={() => setTab("tramos")} icon="🚇" title="Tramos" desc={`${segments.length} guardados`} />
+          <TabButton active={tab === "analisis"} onClick={() => setTab("analisis")} icon="📊" title="Análisis" desc="por segmento" />
+          <TabButton active={tab === "paper"} onClick={() => setTab("paper")} icon="📄" title="Paper" desc="automático" />
         </section>
 
         <section className="mt-8 grid gap-4 md:grid-cols-4">
           <Metric title="PM2.5 promedio" value={metrics.pmAvg === null ? "—" : `${metrics.pmAvg.toFixed(1)} µg/m³`} />
           <Metric title="Peak PM2.5" value={metrics.pmPeak === null ? "—" : `${metrics.pmPeak.toFixed(1)} µg/m³`} />
-          <Metric title="Humedad promedio" value={metrics.humidityAvg === null ? "—" : `${metrics.humidityAvg.toFixed(1)} %`} />
-          <Metric title="Temperatura promedio" value={metrics.tempAvg === null ? "—" : `${metrics.tempAvg.toFixed(1)} °C`} />
           <Metric title="Ruido promedio" value={metrics.dbAvg === null ? "—" : `${metrics.dbAvg.toFixed(1)} dB`} />
-          <Metric title="Peak dB" value={metrics.dbPeak === null ? "—" : `${metrics.dbPeak.toFixed(1)} dB`} />
-          <Metric title="Bacterias promedio" value={metrics.bacAvg === null ? "—" : `${metrics.bacAvg.toFixed(1)} UFC`} />
-          <Metric title="Máx. bacterias" value={metrics.bacMax === null ? "—" : `${metrics.bacMax.toFixed(0)} UFC`} />
+          <Metric title="Máx. bacterias" value={metrics.cfuPeak === null ? "—" : `${metrics.cfuPeak.toFixed(0)} UFC`} />
         </section>
 
         <section className="mt-8 rounded-[2rem] border border-white/10 bg-white/10 p-6 shadow-xl">
           {tab === "pm25" && (
-            <Panel title="Carga de CSV del sensor">
-              <input
-                type="file"
-                accept=".csv"
-                disabled={saving}
-                onChange={(e) => {
-                  const file = e.target.files?.[0]
-                  if (file) uploadCsv(file)
-                }}
-                className="mt-4 block w-full rounded-2xl border border-white/10 bg-slate-900 p-4"
-              />
+            <Panel title="Carga del CSV del sensor y mapa del recorrido">
+              <input type="file" accept=".csv" disabled={saving} onChange={(e) => e.target.files?.[0] && uploadCsv(e.target.files[0])} className="mt-4 block w-full rounded-2xl border border-white/10 bg-slate-900 p-4" />
 
-              <DataList title="Puntos guardados" rows={points.slice(0, 8).map((p) => `${p.sample_number} · PM2.5 ${p.pm25 ?? "—"} · Humedad ${p.humidity ?? "—"} · Temp ${p.temperature ?? "—"}`)} />
+              <div className="mt-8 h-[500px] overflow-hidden rounded-[2rem] border border-white/10">
+                <LeafletEnvironmentalMap points={points} />
+              </div>
+
+              <ChartCard title="PM2.5 por muestra">
+                <LineChart data={points}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="sample_number" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="pm25" stroke="#06b6d4" strokeWidth={3} dot={false} />
+                </LineChart>
+              </ChartCard>
             </Panel>
           )}
 
           {tab === "ruido" && (
-            <Panel title="Registro manual de ruido">
+            <Panel title="Registro de ruido por tramo oficial">
               <FormGrid>
-                <Input label="Línea" value={dbForm.line} onChange={(v) => setDbForm({ ...dbForm, line: v })} />
-                <Input label="Estación origen" value={dbForm.station_origin} onChange={(v) => setDbForm({ ...dbForm, station_origin: v })} />
-                <Input label="Estación destino" value={dbForm.station_destination} onChange={(v) => setDbForm({ ...dbForm, station_destination: v })} />
-                <Select label="Tipo de tramo" value={dbForm.segment_type} onChange={(v) => setDbForm({ ...dbForm, segment_type: v })} />
+                <SegmentSelect value={dbForm.segment_id} onChange={(v) => setDbForm({ ...dbForm, segment_id: v })} />
                 <Input label="dB salida" value={dbForm.db_exit} onChange={(v) => setDbForm({ ...dbForm, db_exit: v })} />
                 <Input label="dB mitad" value={dbForm.db_mid} onChange={(v) => setDbForm({ ...dbForm, db_mid: v })} />
                 <Input label="dB llegada" value={dbForm.db_arrival} onChange={(v) => setDbForm({ ...dbForm, db_arrival: v })} />
                 <Input label="Peak dB" value={dbForm.db_peak} onChange={(v) => setDbForm({ ...dbForm, db_peak: v })} />
+                <Input label="Notas" value={dbForm.notes} onChange={(v) => setDbForm({ ...dbForm, notes: v })} />
               </FormGrid>
 
-              <PrimaryButton disabled={saving} onClick={addDecibel}>Guardar ruido en nube</PrimaryButton>
-              <DataList title="Registros guardados" rows={decibels.map((d) => `${d.line ?? ""} ${d.station_origin ?? ""} → ${d.station_destination ?? ""} · peak ${d.db_peak ?? "—"} dB`)} />
+              <PrimaryButton disabled={saving} onClick={addDecibel}>Guardar ruido</PrimaryButton>
+              <DataList title="Registros guardados" rows={decibels.map((d) => `${segmentLabel(d.segment_id ?? "")} · peak ${d.db_peak ?? "—"} dB`)} />
+
+              <ChartCard title="Peak dB por tramo">
+                <BarChart data={segmentAnalysis}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="label" hide />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="dbPeak" fill="#22d3ee" />
+                </BarChart>
+              </ChartCard>
             </Panel>
           )}
 
           {tab === "bacterias" && (
-            <Panel title="Registro manual de bacterias / hisopos">
+            <Panel title="Registro de bacterias / UFC por tramo oficial">
               <FormGrid>
+                <SegmentSelect value={bacteriaForm.segment_id} onChange={(v) => setBacteriaForm({ ...bacteriaForm, segment_id: v })} />
                 <Input label="Código muestra" value={bacteriaForm.sample_code} onChange={(v) => setBacteriaForm({ ...bacteriaForm, sample_code: v })} />
-                <Input label="Línea" value={bacteriaForm.line} onChange={(v) => setBacteriaForm({ ...bacteriaForm, line: v })} />
-                <Input label="Estación origen" value={bacteriaForm.station_origin} onChange={(v) => setBacteriaForm({ ...bacteriaForm, station_origin: v })} />
-                <Input label="Estación destino" value={bacteriaForm.station_destination} onChange={(v) => setBacteriaForm({ ...bacteriaForm, station_destination: v })} />
-                <Select label="Tipo de tramo" value={bacteriaForm.segment_type} onChange={(v) => setBacteriaForm({ ...bacteriaForm, segment_type: v })} />
                 <Input label="Lugar muestra" value={bacteriaForm.sample_place} onChange={(v) => setBacteriaForm({ ...bacteriaForm, sample_place: v })} />
                 <Input label="Minutos exposición" value={bacteriaForm.exposure_minutes} onChange={(v) => setBacteriaForm({ ...bacteriaForm, exposure_minutes: v })} />
                 <Input label="UFC / conteo" value={bacteriaForm.cfu_count} onChange={(v) => setBacteriaForm({ ...bacteriaForm, cfu_count: v })} />
+                <Input label="Notas" value={bacteriaForm.notes} onChange={(v) => setBacteriaForm({ ...bacteriaForm, notes: v })} />
               </FormGrid>
 
-              <PrimaryButton disabled={saving} onClick={addBacteria}>Guardar bacterias en nube</PrimaryButton>
-              <DataList title="Muestras guardadas" rows={bacteria.map((b) => `${b.sample_code ?? "Sin código"} · ${b.sample_place ?? ""} · ${b.cfu_count ?? "—"} UFC`)} />
+              <PrimaryButton disabled={saving} onClick={addBacteria}>Guardar bacterias</PrimaryButton>
+              <DataList title="Muestras guardadas" rows={bacteria.map((b) => `${b.sample_code ?? "Sin código"} · ${segmentLabel(b.segment_id ?? "")} · ${b.cfu_count ?? "—"} UFC`)} />
+
+              <ChartCard title="UFC por tramo">
+                <BarChart data={segmentAnalysis}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="label" hide />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="cfuPeak" fill="#a78bfa" />
+                </BarChart>
+              </ChartCard>
             </Panel>
           )}
 
           {tab === "tramos" && (
-            <Panel title="Clasificación de tramos">
+            <Panel title="Clasificación y notas por tramo oficial">
               <FormGrid>
-                <Input label="Línea" value={segmentForm.line} onChange={(v) => setSegmentForm({ ...segmentForm, line: v })} />
-                <Input label="Estación origen" value={segmentForm.station_origin} onChange={(v) => setSegmentForm({ ...segmentForm, station_origin: v })} />
-                <Input label="Estación destino" value={segmentForm.station_destination} onChange={(v) => setSegmentForm({ ...segmentForm, station_destination: v })} />
-                <Select label="Tipo" value={segmentForm.segment_type} onChange={(v) => setSegmentForm({ ...segmentForm, segment_type: v })} />
+                <SegmentSelect value={segmentForm.segment_id} onChange={(v) => setSegmentForm({ ...segmentForm, segment_id: v })} />
                 <Input label="Observación" value={segmentForm.notes} onChange={(v) => setSegmentForm({ ...segmentForm, notes: v })} />
               </FormGrid>
 
-              <PrimaryButton disabled={saving} onClick={addSegment}>Guardar tramo en nube</PrimaryButton>
-              <DataList title="Tramos guardados" rows={segments.map((s) => `${s.line ?? ""} ${s.station_origin ?? ""} → ${s.station_destination ?? ""} · ${s.segment_type ?? ""}`)} />
+              <PrimaryButton disabled={saving} onClick={addSegment}>Guardar tramo</PrimaryButton>
+              <DataList title="Tramos guardados" rows={segments.map((s) => `${segmentLabel(s.segment_id ?? "")} · ${s.segment_type ?? ""} · ${s.notes ?? ""}`)} />
+            </Panel>
+          )}
+
+          {tab === "analisis" && (
+            <Panel title="Análisis ambiental por tramo">
+              <div className="grid gap-4">
+                {segmentAnalysis.map((row) => (
+                  <article key={row.id} className="rounded-3xl border border-white/10 bg-slate-900 p-5">
+                    <p className="text-xl font-black">{row.label}</p>
+                    <p className="mt-1 text-sm font-bold text-cyan-200">{row.line} · {row.type} · {row.direction}</p>
+                    <div className="mt-4 grid gap-3 md:grid-cols-4">
+                      <Metric title="PM2.5 prom." value={row.pm25Avg === null ? "—" : `${row.pm25Avg.toFixed(1)}`} />
+                      <Metric title="Peak PM2.5" value={row.pm25Peak === null ? "—" : `${row.pm25Peak.toFixed(1)}`} />
+                      <Metric title="dB prom." value={row.dbAvg === null ? "—" : `${row.dbAvg.toFixed(1)}`} />
+                      <Metric title="UFC peak" value={row.cfuPeak === null ? "—" : `${row.cfuPeak.toFixed(0)}`} />
+                    </div>
+                  </article>
+                ))}
+              </div>
             </Panel>
           )}
 
           {tab === "paper" && (
             <Panel title="Modo paper científico">
               <div className="grid gap-4 md:grid-cols-2">
-                <PaperBlock title="Hipótesis" text="Los tramos subterráneos podrían presentar mayores concentraciones acumuladas de PM2.5 por menor ventilación relativa, mientras que ruido y bacterias pueden variar según flujo de pasajeros, tipo de estación y hora de muestreo." />
-                <PaperBlock title="Resultado preliminar" text={`Se registran ${points.length} puntos GPS/PM2.5, ${decibels.length} registros de ruido, ${bacteria.length} muestras bacterianas y ${segments.length} tramos clasificados.`} />
-                <PaperBlock title="Limitaciones" text="Los resultados deben interpretarse como exploratorios: dependen de horario, cantidad de muestras, calibración del sensor, exposición de hisopos y consistencia del recorrido." />
-                <PaperBlock title="Lectura académica" text="El módulo permite construir una matriz comparativa por tipo de tramo, integrando mediciones ambientales automáticas y registros manuales para fundamentar el análisis del seminario." />
+                <PaperBlock title="Hipótesis" text={paper.hypothesis} />
+                <PaperBlock title="Resultado preliminar" text={paper.preliminary} />
+                <PaperBlock title="Interpretación" text={paper.interpretation} />
+                <PaperBlock title="Limitaciones" text={paper.limitations} />
               </div>
             </Panel>
           )}
@@ -544,84 +532,83 @@ export default function LabAmbientalClient() {
   )
 }
 
+function Hero({ message }: { message: string }) {
+  return (
+    <div className="rounded-[2rem] border border-cyan-300/20 bg-gradient-to-br from-cyan-500/20 via-blue-500/10 to-slate-900 p-8 shadow-2xl">
+      <p className="text-sm font-black uppercase tracking-[0.25em] text-cyan-200">Recorrido oficial del estudio</p>
+      <h2 className="mt-3 max-w-5xl text-4xl font-black leading-tight md:text-6xl">
+        San Joaquín → Vicente Valdés → Trinidad → Plaza Egaña → regreso
+      </h2>
+      <p className="mt-5 max-w-3xl text-lg font-medium text-slate-300">
+        Sistema centrado en Línea 5 y Línea 4 para comparar PM2.5, humedad, temperatura, ruido y bacterias entre tramos subterráneos, elevados y de transición.
+      </p>
+      {message && <p className="mt-5 rounded-2xl border border-white/10 bg-white/10 p-4 text-sm font-bold text-cyan-100">{message}</p>}
+    </div>
+  )
+}
+
+function TabButton({ active, onClick, icon, title, desc }: { active: boolean; onClick: () => void; icon: string; title: string; desc: string }) {
+  return (
+    <button onClick={onClick} className={`rounded-3xl border p-5 text-left transition ${active ? "border-cyan-300 bg-cyan-400/20" : "border-white/10 bg-white/10 hover:bg-white/15"}`}>
+      <p className="text-3xl">{icon}</p>
+      <p className="mt-3 text-xl font-black">{title}</p>
+      <p className="mt-1 text-sm text-slate-300">{desc}</p>
+    </button>
+  )
+}
+
 function Metric({ title, value }: { title: string; value: string }) {
   return (
-    <article className="rounded-3xl border border-white/10 bg-white/10 p-5">
+    <article className="rounded-3xl border border-white/10 bg-white/10 p-4">
       <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-400">{title}</p>
-      <p className="mt-3 text-2xl font-black text-white">{value}</p>
+      <p className="mt-2 text-2xl font-black text-white">{value}</p>
     </article>
   )
 }
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <h3 className="text-3xl font-black">{title}</h3>
-      <div className="mt-5">{children}</div>
-    </div>
-  )
+  return <div><h3 className="text-3xl font-black">{title}</h3><div className="mt-5">{children}</div></div>
 }
 
 function FormGrid({ children }: { children: React.ReactNode }) {
-  return <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">{children}</div>
+  return <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">{children}</div>
+}
+
+function SegmentSelect({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  return (
+    <label className="block">
+      <span className="text-xs font-black uppercase tracking-[0.14em] text-slate-400">Tramo oficial</span>
+      <select value={value} onChange={(e) => onChange(e.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 font-bold outline-none">
+        {SEMINARIO_SEGMENTS.map((segment) => (
+          <option key={segment.id} value={segment.id}>
+            {segment.origin} → {segment.destination} · {segment.line} · {segment.type}
+          </option>
+        ))}
+      </select>
+    </label>
+  )
 }
 
 function Input({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
   return (
     <label className="block">
       <span className="text-xs font-black uppercase tracking-[0.14em] text-slate-400">{label}</span>
-      <input
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 font-bold outline-none"
-      />
-    </label>
-  )
-}
-
-function Select({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
-  return (
-    <label className="block">
-      <span className="text-xs font-black uppercase tracking-[0.14em] text-slate-400">{label}</span>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 font-bold outline-none"
-      >
-        <option>Subterráneo</option>
-        <option>Elevado</option>
-        <option>Transición</option>
-        <option>Estación</option>
-      </select>
+      <input value={value} onChange={(e) => onChange(e.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 font-bold outline-none" />
     </label>
   )
 }
 
 function PrimaryButton({ children, disabled, onClick }: { children: React.ReactNode; disabled?: boolean; onClick: () => void }) {
-  return (
-    <button
-      disabled={disabled}
-      onClick={onClick}
-      className="mt-6 rounded-2xl bg-white px-5 py-3 font-black text-slate-950 hover:bg-slate-200 disabled:opacity-60"
-    >
-      {children}
-    </button>
-  )
+  return <button disabled={disabled} onClick={onClick} className="mt-6 rounded-2xl bg-white px-5 py-3 font-black text-slate-950 hover:bg-slate-200 disabled:opacity-60">{children}</button>
 }
 
 function DataList({ title, rows }: { title: string; rows: string[] }) {
   return (
     <div className="mt-6 rounded-3xl border border-white/10 bg-slate-900 p-5">
       <p className="font-black">{title}</p>
-      {rows.length === 0 ? (
-        <p className="mt-2 text-sm text-slate-400">Sin datos guardados todavía.</p>
-      ) : (
+      {rows.length === 0 ? <p className="mt-2 text-sm text-slate-400">Sin datos guardados todavía.</p> : (
         <div className="mt-3 grid gap-2">
-          {rows.map((row, index) => (
-            <p key={`${row}-${index}`} className="rounded-2xl bg-white/5 px-4 py-3 text-sm text-slate-300">
-              {row}
-            </p>
-          ))}
+          {rows.map((row, index) => <p key={`${row}-${index}`} className="rounded-2xl bg-white/5 px-4 py-3 text-sm text-slate-300">{row}</p>)}
         </div>
       )}
     </div>
@@ -629,10 +616,16 @@ function DataList({ title, rows }: { title: string; rows: string[] }) {
 }
 
 function PaperBlock({ title, text }: { title: string; text: string }) {
+  return <article className="rounded-3xl border border-white/10 bg-slate-900 p-5"><h4 className="text-xl font-black">{title}</h4><p className="mt-3 text-sm leading-6 text-slate-300">{text}</p></article>
+}
+
+function ChartCard({ title, children }: { title: string; children: React.ReactElement }) {
   return (
-    <article className="rounded-3xl border border-white/10 bg-slate-900 p-5">
-      <h4 className="text-xl font-black">{title}</h4>
-      <p className="mt-3 text-sm leading-6 text-slate-300">{text}</p>
-    </article>
+    <div className="mt-8 rounded-[2rem] border border-white/10 bg-slate-900 p-6">
+      <h3 className="text-2xl font-black">{title}</h3>
+      <div className="mt-6 h-[320px]">
+        <ResponsiveContainer width="100%" height="100%">{children}</ResponsiveContainer>
+      </div>
+    </div>
   )
 }
