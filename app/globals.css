@@ -316,3 +316,26 @@ main {
 * {
   box-sizing: border-box;
 }
+
+.hero,
+.mainGrid,
+.metrics,
+.plan,
+.sideCard,
+.statusCard,
+.userCard {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.hero > *,
+.mainGrid > *,
+.metrics > *,
+.plan > *,
+.sideCard > * {
+  min-width: 0;
+}
+
+body {
+  overflow-x: hidden !important;
+}

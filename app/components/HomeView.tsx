@@ -193,7 +193,7 @@ export default function HomeView() {
           overflow-x: hidden;
           min-height: 330px;
           display: grid;
-          grid-template-columns: 1fr 310px;
+          grid-template-columns: minmax(0, 1fr) minmax(260px, 310px);
           gap: 22px;
           align-items: stretch;
           padding: 32px;
@@ -215,7 +215,7 @@ export default function HomeView() {
         }
 
         .orb1 {
-          width: 420px;
+          width: 100%; max-width: 420px;
           height: 420px;
           left: -140px;
           top: -150px;
@@ -223,7 +223,7 @@ export default function HomeView() {
         }
 
         .orb2 {
-          width: 360px;
+          width: 100%; max-width: 360px;
           height: 360px;
           right: -90px;
           bottom: -150px;
@@ -305,7 +305,7 @@ export default function HomeView() {
 
         .identity {
           margin-top: 24px;
-          width: fit-content;
+          width: fit-content; max-width: 100%;
           padding: 13px 15px;
           border-radius: 20px;
           background: rgba(15,23,42,.52);
@@ -386,7 +386,7 @@ export default function HomeView() {
 
         .mainGrid {
           display: grid;
-          grid-template-columns: 1.45fr .75fr;
+          grid-template-columns: minmax(0, 1.45fr) minmax(280px, .75fr);
           gap: 18px;
         }
 
@@ -517,7 +517,7 @@ export default function HomeView() {
           }
 
           .metrics {
-            grid-template-columns: repeat(2,1fr);
+            grid-template-columns: repeat(2, minmax(0, 1fr));
           }
         }
 
@@ -534,7 +534,8 @@ export default function HomeView() {
             font-size: 52px;
           }
         }
-      `}</style>
+      `}
+        </style>
     </main>
   )
 }
