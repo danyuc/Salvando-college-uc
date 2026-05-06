@@ -15,6 +15,9 @@ import {
   YAxis,
 } from "recharts"
 import LabAtmosphere from "./effects/LabAtmosphere"
+import LabAudioPanel from "./audio/LabAudioPanel"
+import LabComparativeAnalysis from "./story/LabComparativeAnalysis"
+import LabScientificStory from "./story/LabScientificStory"
 import { ROUTE_POINTS, pmColor, typeLabel } from "./data/metroRoute"
 
 const LeafletEnvironmentalMap = dynamic(
