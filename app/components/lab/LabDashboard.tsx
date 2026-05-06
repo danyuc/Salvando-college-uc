@@ -237,6 +237,10 @@ export default function LabDashboard() {
 
         <LabScientificStory current={current} />
 
+        <LabComparativeAnalysis />
+
+        <LabAudioPanel />
+
         <section className="mt-8 grid gap-5 md:grid-cols-2">
           <Paper title="Hipótesis" text="El recorrido permite comparar condiciones ambientales entre tramos subterráneos, elevados, de transición y caminata, considerando PM2.5, humedad, temperatura, ruido y bacterias/UFC." />
           <Paper title="Resultado preliminar" text={`El PM2.5 promedio de la demo es ${avgPm.toFixed(1)} µg/m³, con peak de ${maxPm} µg/m³. El mayor ruido observado alcanza ${maxDb} dB y el mayor registro microbiológico simulado alcanza ${maxCfu} UFC.`} />
