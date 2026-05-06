@@ -88,3 +88,25 @@ export const ROUTE_POINTS: RoutePoint[] = [
   { id: "san-joaquin-regreso", name: "San Joaquín", line: "L5", direction: "Regreso", lat: -33.4994, lng: -70.6158, type: "surface", pm25: 14, humidity: 38, temp: 21.3, db: 66, cfu: 300, crowd: 20 },
   { id: "camino-sala-regreso", name: "Camino a la sala", line: "Exterior", direction: "Regreso", lat: -33.4998, lng: -70.6122, type: "walking", pm25: 12, humidity: 39, temp: 21.2, db: 55, cfu: 220, crowd: 5 },
 ]
+
+export const pmLabel = (value: number) => {
+  if (value <= 12) return 'Buena'
+  if (value <= 35) return 'Moderada'
+  if (value <= 55) return 'Dañina para sensibles'
+  if (value <= 150) return 'Dañina'
+  return 'Muy dañina'
+}
+
+export const LAB_SUMMARY = {
+  hypothesis:
+    'Los tramos elevados presentan mayores variaciones ambientales y de material particulado debido a exposición vehicular, lluvia y ventilación abierta.',
+
+  result:
+    'Durante el recorrido se observaron diferencias importantes entre sectores subterráneos y elevados, especialmente durante el episodio de lluvia cercano al retorno desde Plaza Egaña.',
+
+  health:
+    'Una exposición constante a niveles elevados de PM2.5 puede provocar efectos respiratorios, irritación ocular, inflamación pulmonar y riesgos cardiovasculares a largo plazo.',
+
+  conclusion:
+    'Las condiciones ambientales externas, la ventilación del tren, la densidad de pasajeros y la lluvia influyeron directamente en las mediciones obtenidas durante el recorrido.'
+}
