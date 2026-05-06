@@ -14,6 +14,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
+import LabAtmosphere from "./effects/LabAtmosphere"
 import { ROUTE_POINTS, pmColor, typeLabel } from "./data/metroRoute"
 
 const LeafletEnvironmentalMap = dynamic(
