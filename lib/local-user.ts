@@ -1,50 +1,44 @@
 export type LocalUser = {
+  id?: string
+  name?: string
   email: string
-  username: string
-  createdAt: string
+  username?: string
+  college_track?: string
+  year?: string
 }
 
 const KEY = "salvando-local-user"
+
+export function getUsernameFromEmail(email: string) {
+  return email.split("@")[0]?.trim() ?? ""
+}
 
 export function isValidUcEmail(email: string) {
   const clean = email.trim().toLowerCase()
   return (
     clean.endsWith("@uc.cl") ||
     clean.endsWith("@estudiante.uc.cl") ||
-    clean.endsWith("@estudiantes.uc.cl")
+    clean.endsWith("@estudiantes.uc.cl") ||
+    clean.endsWith("@gmail.com")
   )
 }
 
-export function getUsernameFromEmail(email: string) {
-  return email.trim().toLowerCase().split("@")[0] || "usuario"
-}
-
-export function saveLocalUser(email: string) {
-  const user: LocalUser = {
-    email: email.trim().toLowerCase(),
-    username: getUsernameFromEmail(email),
-    createdAt: new Date().toISOString(),
-  }
-
+export function saveLocalUser(user: LocalUser) {
+  if (typeof window === "undefined") return
   localStorage.setItem(KEY, JSON.stringify(user))
-  localStorage.setItem("uc_user", JSON.stringify(user))
-  return user
 }
 
 export function getLocalUser(): LocalUser | null {
   if (typeof window === "undefined") return null
-
-  const raw = localStorage.getItem(KEY) || localStorage.getItem("uc_user")
-  if (!raw) return null
-
   try {
-    return JSON.parse(raw)
+    const raw = localStorage.getItem(KEY)
+    return raw ? JSON.parse(raw) as LocalUser : null
   } catch {
     return null
   }
 }
 
 export function clearLocalUser() {
+  if (typeof window === "undefined") return
   localStorage.removeItem(KEY)
-  localStorage.removeItem("uc_user")
 }

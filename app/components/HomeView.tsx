@@ -541,10 +541,12 @@ export default function HomeView() {
 
 function Metric({ title, value, desc }: { title: string; value: string; desc: string }) {
   return (
-    <div className="metric">
-      <span>{title}</span>
-      <strong>{value}</strong>
-      <small>{desc}</small>
+    <div className="rounded-3xl border border-white/10 bg-white/10 p-5 shadow-xl backdrop-blur">
+      <p className="text-sm font-black text-slate-300">{title}</p>
+      <div className="mt-2 flex items-end gap-2">
+        <span className="text-3xl font-black text-white">{value}</span>
+        <span className="pb-1 text-xs font-bold text-slate-400">{desc}</span>
+      </div>
     </div>
   )
 }

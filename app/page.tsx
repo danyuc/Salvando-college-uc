@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import HomeView from "./components/HomeView"
+import PrivateSeminarioActivity from "./components/PrivateSeminarioActivity"
+import LogoutButton from "./components/LogoutButton"
 import { getLocalUser } from "@/lib/local-user"
 import { supabase } from "@/lib/supabase"
 
@@ -19,9 +21,9 @@ export default function Page() {
         return
       }
 
-      const { data } = await supabase.auth.getUser()
+      const { data: sessionData } = await supabase.auth.getSession()
 
-      if (data.user) {
+      if (sessionData.session) {
         router.replace("/onboarding")
         return
       }
@@ -34,18 +36,19 @@ export default function Page() {
 
   if (!ready) {
     return (
-      <main style={{
-        minHeight: "100vh",
-        display: "grid",
-        placeItems: "center",
-        background: "#020617",
-        color: "white",
-        fontWeight: 900
-      }}>
-        Verificando perfil UC...
+      <main className="min-h-screen bg-slate-950 text-white grid place-items-center font-black">
+        Verificando sesión...
       </main>
     )
   }
 
-  return <HomeView />
+  return (
+    <>
+      <LogoutButton />
+      <HomeView />
+      <div className="mx-auto max-w-6xl px-5 pb-10">
+        <PrivateSeminarioActivity />
+      </div>
+    </>
+  )
 }

@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextRequest, NextResponse } from 'next/server'
 
-const PUBLIC_ROUTES = ['/login', '/auth']
+const PUBLIC_ROUTES = ['/login', '/auth', '/onboarding']
 
 export async function proxy(req: NextRequest) {
   let res = NextResponse.next({
@@ -27,18 +27,15 @@ export async function proxy(req: NextRequest) {
     }
   )
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
+  const { data: sessionData } = await supabase.auth.getSession()
   const path = req.nextUrl.pathname
   const isPublicRoute = PUBLIC_ROUTES.some((route) => path.startsWith(route))
 
-  if (!user && !isPublicRoute) {
+  if (!sessionData.session && !isPublicRoute) {
     return NextResponse.redirect(new URL('/login', req.url))
   }
 
-  if (user && path.startsWith('/login')) {
+  if (sessionData.session && path.startsWith('/login')) {
     return NextResponse.redirect(new URL('/onboarding', req.url))
   }
 

@@ -16,7 +16,7 @@ import {
   YAxis,
 } from "recharts";
 import { parseSensorCsv } from "./parseSensorCsv";
-import LeafletEnvironmentalMap from "./LeafletEnvironmentalMap";
+import LeafletEnvironmentalMap from "./ClientOnlyLeafletMap";
 
 type DecibelSample = {
   line: string;
