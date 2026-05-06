@@ -16,10 +16,12 @@ export default function OnboardingPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [email, setEmail] = useState("")
+  const [googleEmail, setGoogleEmail] = useState("")
+  const [institutionalEmail, setInstitutionalEmail] = useState("")
   const [userId, setUserId] = useState("")
   const [college, setCollege] = useState(colleges[0])
   const [year, setYear] = useState("1")
+  const [error, setError] = useState("")
 
   useEffect(() => {
     async function load() {
@@ -31,22 +33,21 @@ export default function OnboardingPage() {
         return
       }
 
-      const userEmail = user.email ?? ""
-      setEmail(userEmail)
       setUserId(user.id)
+      setGoogleEmail(user.email ?? "")
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("is_onboarded,college_track,year,institutional_email,username")
+        .select("username,institutional_email,college_track,career,year,is_onboarded")
         .eq("id", user.id)
         .maybeSingle()
 
       if (profile?.is_onboarded) {
         saveLocalUser({
           id: user.id,
-          email: profile.institutional_email ?? userEmail,
-          username: profile.username ?? getUsernameFromEmail(userEmail),
-          college_track: profile.college_track ?? "",
+          email: profile.institutional_email ?? user.email ?? "",
+          username: profile.username ?? getUsernameFromEmail(profile.institutional_email ?? user.email ?? ""),
+          college_track: profile.college_track ?? profile.career ?? "",
           year: String(profile.year ?? ""),
         })
 
@@ -54,6 +55,9 @@ export default function OnboardingPage() {
         return
       }
 
+      setInstitutionalEmail(profile?.institutional_email ?? "")
+      setCollege(profile?.college_track ?? profile?.career ?? colleges[0])
+      setYear(String(profile?.year ?? "1"))
       setLoading(false)
     }
 
@@ -61,14 +65,28 @@ export default function OnboardingPage() {
   }, [router])
 
   async function finishOnboarding() {
+    setError("")
+
+    const cleanEmail = institutionalEmail.trim().toLowerCase()
+
+    if (!cleanEmail) {
+      setError("Debes ingresar tu correo institucional UC.")
+      return
+    }
+
+    if (!cleanEmail.endsWith("@uc.cl") && !cleanEmail.endsWith("@estudiante.uc.cl") && !cleanEmail.endsWith("@estudiantes.uc.cl")) {
+      setError("Debes usar un correo UC válido.")
+      return
+    }
+
     setSaving(true)
 
-    const username = getUsernameFromEmail(email)
+    const username = getUsernameFromEmail(cleanEmail)
 
     const { error } = await supabase.from("profiles").upsert({
       id: userId,
       username,
-      institutional_email: email,
+      institutional_email: cleanEmail,
       institutional_email_verified: true,
       college_track: college,
       career: college,
@@ -79,14 +97,14 @@ export default function OnboardingPage() {
     })
 
     if (error) {
-      alert(error.message)
+      setError(error.message)
       setSaving(false)
       return
     }
 
     saveLocalUser({
       id: userId,
-      email,
+      email: cleanEmail,
       username,
       college_track: college,
       year,
@@ -98,21 +116,32 @@ export default function OnboardingPage() {
   if (loading) {
     return (
       <main className="min-h-screen bg-slate-950 text-white grid place-items-center font-black">
-        Preparando tu perfil...
+        Revisando perfil guardado...
       </main>
     )
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center px-6">
+    <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center px-6 py-10">
       <section className="w-full max-w-xl rounded-3xl border border-white/10 bg-white/10 p-8 shadow-2xl">
-        <p className="text-sm font-bold text-blue-300">Onboarding</p>
-        <h1 className="mt-3 text-3xl font-black">Selecciona tu College</h1>
-        <p className="mt-3 text-sm text-slate-300">
-          Sesión activa con: <b>{email}</b>
-        </p>
+        <p className="text-sm font-bold text-blue-300">Perfil UC obligatorio</p>
+        <h1 className="mt-3 text-4xl font-black">Completemos tu usuario académico</h1>
 
-        <div className="mt-6 grid gap-3">
+        <div className="mt-6 rounded-2xl border border-white/10 bg-white/10 p-4">
+          <p className="text-xs font-bold text-slate-400">Sesión Google</p>
+          <p className="mt-1 font-black">{googleEmail}</p>
+        </div>
+
+        <label className="mt-5 block text-sm font-black text-slate-300">Correo institucional UC</label>
+        <input
+          value={institutionalEmail}
+          onChange={(e) => setInstitutionalEmail(e.target.value)}
+          placeholder="usuario@estudiante.uc.cl"
+          className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-4 font-bold text-white outline-none"
+        />
+
+        <p className="mt-5 text-sm font-black text-slate-300">College</p>
+        <div className="mt-3 grid gap-3">
           {colleges.map((item) => (
             <button
               key={item}
@@ -128,13 +157,11 @@ export default function OnboardingPage() {
           ))}
         </div>
 
-        <label className="mt-6 block text-sm font-black text-slate-300">
-          Año
-        </label>
+        <label className="mt-5 block text-sm font-black text-slate-300">Año</label>
         <select
           value={year}
           onChange={(e) => setYear(e.target.value)}
-          className="mt-2 w-full rounded-2xl bg-slate-900 px-4 py-3 font-bold text-white"
+          className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-4 font-bold text-white"
         >
           <option value="1">1° año</option>
           <option value="2">2° año</option>
@@ -143,12 +170,18 @@ export default function OnboardingPage() {
           <option value="5">5° año o más</option>
         </select>
 
+        {error && (
+          <p className="mt-4 rounded-2xl bg-red-500/15 p-4 text-sm font-bold text-red-200">
+            {error}
+          </p>
+        )}
+
         <button
           onClick={finishOnboarding}
           disabled={saving}
           className="mt-8 w-full rounded-2xl bg-white px-5 py-4 font-black text-slate-950 hover:bg-slate-200 disabled:opacity-60"
         >
-          {saving ? "Guardando..." : "Entrar a Salvando College UC"}
+          {saving ? "Guardando perfil..." : "Guardar y entrar"}
         </button>
       </section>
     </main>

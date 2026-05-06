@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import HomeView from "./components/HomeView"
 import PrivateSeminarioActivity from "./components/PrivateSeminarioActivity"
 import LogoutButton from "./components/LogoutButton"
-import { getLocalUser } from "@/lib/local-user"
+import { getLocalUser, saveLocalUser } from "@/lib/local-user"
 import { supabase } from "@/lib/supabase"
 
 export default function Page() {
@@ -22,13 +22,33 @@ export default function Page() {
       }
 
       const { data: sessionData } = await supabase.auth.getSession()
+      const user = sessionData.session?.user
 
-      if (sessionData.session) {
+      if (!user) {
+        router.replace("/login")
+        return
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("username,institutional_email,college_track,career,year,is_onboarded")
+        .eq("id", user.id)
+        .maybeSingle()
+
+      if (!profile?.is_onboarded) {
         router.replace("/onboarding")
         return
       }
 
-      router.replace("/login")
+      saveLocalUser({
+        id: user.id,
+        email: profile.institutional_email ?? user.email ?? "",
+        username: profile.username ?? "",
+        college_track: profile.college_track ?? profile.career ?? "",
+        year: String(profile.year ?? ""),
+      })
+
+      setReady(true)
     }
 
     check()
@@ -37,7 +57,7 @@ export default function Page() {
   if (!ready) {
     return (
       <main className="min-h-screen bg-slate-950 text-white grid place-items-center font-black">
-        Verificando sesión...
+        Cargando perfil guardado...
       </main>
     )
   }

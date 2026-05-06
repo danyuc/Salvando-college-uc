@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
-import { getLocalUser } from "@/lib/local-user"
 import LabAmbientalClient from "../components/LabAmbientalClient"
 
 export default function LabAmbientalPage() {
@@ -13,25 +12,18 @@ export default function LabAmbientalPage() {
 
   useEffect(() => {
     async function checkAccess() {
-      const local = getLocalUser()
       const { data: sessionData } = await supabase.auth.getSession()
       const user = sessionData.session?.user
 
-      if (!user && !local?.email) {
+      if (!user) {
         router.replace("/login")
-        return
-      }
-
-      if (!user && local?.email) {
-        setAllowed(true)
-        setLoading(false)
         return
       }
 
       const { data: profile } = await supabase
         .from("profiles")
         .select("is_research_member")
-        .eq("id", user!.id)
+        .eq("id", user.id)
         .maybeSingle()
 
       if (!profile?.is_research_member) {

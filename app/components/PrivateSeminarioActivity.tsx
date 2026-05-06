@@ -15,7 +15,7 @@ type PrivateActivity = {
 
 export default function PrivateSeminarioActivity() {
   const [activity, setActivity] = useState<PrivateActivity | null>(null)
-  const [isResearchMember, setIsResearchMember] = useState(false)
+  const [allowed, setAllowed] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -34,8 +34,12 @@ export default function PrivateSeminarioActivity() {
         .eq("id", user.id)
         .maybeSingle()
 
-      const allowedByProfile = Boolean(profile?.is_research_member)
-      setIsResearchMember(allowedByProfile)
+      if (!profile?.is_research_member) {
+        setLoading(false)
+        return
+      }
+
+      setAllowed(true)
 
       const { data: activities } = await supabase
         .from("private_activities")
@@ -43,22 +47,16 @@ export default function PrivateSeminarioActivity() {
         .eq("is_active", true)
         .limit(1)
 
-      const first = activities?.[0] as PrivateActivity | undefined
-
-      if (allowedByProfile && first) {
-        setActivity(first)
-      }
-
-      if (allowedByProfile && !first) {
-        setActivity({
+      setActivity(
+        (activities?.[0] as PrivateActivity | undefined) ?? {
           id: "local-lab-ambiental",
-          title: "Laboratorio Ambiental / Seminario",
+          title: "Investigación ambiental Metro: PM2.5, bacterias y decibeles",
           subject: "seminario",
           type: "lab_ambiental",
-          topic: "PM2.5, bacterias, decibeles, GPS y recorridos Metro",
+          topic: "PM2.5 / bacterias / decibeles",
           icon: "🧪",
-        })
-      }
+        }
+      )
 
       setLoading(false)
     }
@@ -67,23 +65,24 @@ export default function PrivateSeminarioActivity() {
   }, [])
 
   if (loading) return null
-  if (!isResearchMember || !activity) return null
+  if (!allowed || !activity) return null
 
   return (
-    <section className="mt-6 rounded-3xl border border-emerald-400/20 bg-emerald-400/10 p-5 shadow-xl">
-      <p className="text-sm font-black text-emerald-200">Actividad privada</p>
-      <h2 className="mt-1 text-xl font-black text-white">
-        {activity.icon ?? "🔒"} {activity.title}
-      </h2>
-      <p className="mt-2 text-sm text-slate-300">
-        {activity.topic ?? "PM2.5, bacterias, decibeles y GPS"}
+    <section className="mt-6 rounded-3xl border border-cyan-300/30 bg-cyan-400/10 p-5 shadow-xl">
+      <p className="text-sm font-black uppercase tracking-[0.25em] text-cyan-200">
+        Seminario privado
       </p>
 
       <Link
         href="/lab-ambiental"
-        className="mt-4 inline-flex rounded-2xl bg-white px-5 py-3 font-black text-slate-950 hover:bg-slate-200"
+        className="mt-4 block rounded-3xl border border-white/10 bg-cyan-300/20 p-5 transition hover:scale-[1.01] hover:bg-cyan-300/30"
       >
-        Abrir laboratorio ambiental
+        <p className="text-xl font-black text-white">
+          {activity.icon ?? "🧪"} {activity.title}
+        </p>
+        <p className="mt-2 text-sm font-bold text-cyan-100">
+          {activity.topic ?? "PM2.5 / bacterias / decibeles"}
+        </p>
       </Link>
     </section>
   )
