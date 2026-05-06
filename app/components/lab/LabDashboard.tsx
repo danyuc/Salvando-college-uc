@@ -18,6 +18,13 @@ import LabAtmosphere from "./effects/LabAtmosphere"
 import LabAudioPanel from "./audio/LabAudioPanel"
 import LabComparativeAnalysis from "./story/LabComparativeAnalysis"
 import LabScientificStory from "./story/LabScientificStory"
+import LabLegend from "./extras/LabLegend"
+import LabKeyFindings from "./extras/LabKeyFindings"
+import LabSmogEffect from "./extras/LabSmogEffect"
+import LabPresentationMode from "./extras/LabPresentationMode"
+import LabEvidenceGallery from "./extras/LabEvidenceGallery"
+import LabLayerSelector from "./extras/LabLayerSelector"
+import LabPaperConclusion from "./extras/LabPaperConclusion"
 import { ROUTE_POINTS, pmColor, typeLabel } from "./data/metroRoute"
 
 const LeafletEnvironmentalMap = dynamic(
@@ -36,7 +43,7 @@ export default function LabDashboard() {
   const next = ROUTE_POINTS[index + 1]
   const peak = current.pm25 >= 70
   const shake = current.event === "shake" || current.db >= 88
-  const maxPm = Math.max(...ROUTE_POINTS.map((p) => p.pm25))
+  const maxPm = Math.max(...ROUTE_POINTS.map((p) => p.pmPeak ?? p.pm25))
   const maxDb = Math.max(...ROUTE_POINTS.map((p) => p.db))
   const maxCfu = Math.max(...ROUTE_POINTS.map((p) => p.cfu))
   const avgPm = ROUTE_POINTS.reduce((a, b) => a + b.pm25, 0) / ROUTE_POINTS.length
@@ -60,8 +67,10 @@ export default function LabDashboard() {
 
   return (
     <main className="min-h-screen overflow-hidden bg-slate-950 text-white">
+      <LabPresentationMode />
       <PollutionOverlay active={peak} current={current.name} />
       <Smoke active={peak} />
+      <LabSmogEffect active={peak} />
       <LabAtmosphere current={current} />
       <Shake active={shake} />
 
@@ -201,7 +210,7 @@ export default function LabDashboard() {
           <Chart title="PM2.5 durante el recorrido">
             <AreaChart data={ROUTE_POINTS}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,.1)" />
-              <XAxis dataKey="name" hide />
+              <XAxis dataKey="displayName" />
               <YAxis stroke="#94a3b8" />
               <Tooltip />
               <Area type="monotone" dataKey="pm25" stroke="#06b6d4" fill="#06b6d4" fillOpacity={0.25} />
@@ -221,7 +230,7 @@ export default function LabDashboard() {
           <Chart title="Ruido por estación">
             <AreaChart data={ROUTE_POINTS}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,.1)" />
-              <XAxis dataKey="name" hide />
+              <XAxis dataKey="displayName" />
               <YAxis stroke="#94a3b8" />
               <Tooltip />
               <Area type="monotone" dataKey="db" stroke="#d946ef" fill="#d946ef" fillOpacity={0.25} />
@@ -231,7 +240,7 @@ export default function LabDashboard() {
           <Chart title="Bacterias / UFC">
             <BarChart data={ROUTE_POINTS}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,.1)" />
-              <XAxis dataKey="name" hide />
+              <XAxis dataKey="displayName" />
               <YAxis stroke="#94a3b8" />
               <Tooltip />
               <Bar dataKey="cfu" fill="#22c55e" />
@@ -239,9 +248,19 @@ export default function LabDashboard() {
           </Chart>
         </section>
 
+        <LabKeyFindings />
+
         <LabScientificStory current={current} />
 
         <LabComparativeAnalysis />
+
+        <LabLegend />
+
+        <LabLayerSelector />
+
+        <LabEvidenceGallery />
+
+        <LabPaperConclusion />
 
         <LabAudioPanel />
 
