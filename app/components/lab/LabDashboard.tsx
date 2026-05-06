@@ -25,6 +25,7 @@ import LabPresentationMode from "./extras/LabPresentationMode"
 import LabEvidenceGallery from "./extras/LabEvidenceGallery"
 import LabLayerSelector from "./extras/LabLayerSelector"
 import LabPaperConclusion from "./extras/LabPaperConclusion"
+import PeakSoundAlert from "./extras/PeakSoundAlert"
 import { ROUTE_POINTS, pmColor, typeLabel } from "./data/metroRoute"
 
 const LeafletEnvironmentalMap = dynamic(
@@ -41,7 +42,7 @@ export default function LabDashboard() {
 
   const current = ROUTE_POINTS[index]
   const next = ROUTE_POINTS[index + 1]
-  const peak = current.pm25 >= 70
+  const peak = (current.pmPeak ?? current.pm25) >= 70
   const shake = current.event === "shake" || current.db >= 88
   const maxPm = Math.max(...ROUTE_POINTS.map((p) => p.pmPeak ?? p.pm25))
   const maxDb = Math.max(...ROUTE_POINTS.map((p) => p.db))
@@ -71,6 +72,7 @@ export default function LabDashboard() {
       <PollutionOverlay active={peak} current={current.name} />
       <Smoke active={peak} />
       <LabSmogEffect active={peak} />
+      <PeakSoundAlert active={peak} />
       <LabAtmosphere current={current} />
       <Shake active={shake} />
 
