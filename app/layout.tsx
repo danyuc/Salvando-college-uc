@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import GlobalSidebar from './components/GlobalSidebar'
 import CommandPalette from './components/CommandPalette'
 import AppShell from './components/AppShell'
 
@@ -16,7 +17,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.variable} style={{ margin: 0, fontFamily: 'var(--font-inter)' }}>
         <AppShell>
           <CommandPalette />
-          {children}
+          <GlobalSidebar />
+<div style={{marginLeft:'260px'}}>{children}</div>
         </AppShell>
       </body>
     </html>

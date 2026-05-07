@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from "react"
+import { createStudyGroup, joinStudyGroup } from "@/lib/study-groups"
 
 type Player = {
   id: string

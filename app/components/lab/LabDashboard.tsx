@@ -14,6 +14,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
+import LabPollutionPulse from "./effects/LabPollutionPulse"
 import LabAtmosphere from "./effects/LabAtmosphere"
 import LabAudioPanel from "./audio/LabAudioPanel"
 import LabComparativeAnalysis from "./story/LabComparativeAnalysis"
@@ -28,6 +29,13 @@ import LabPaperConclusion from "./extras/LabPaperConclusion"
 import PeakSoundAlert from "./extras/PeakSoundAlert"
 import LabEvidenceMedia from "./extras/LabEvidenceMedia"
 import LabContextPanel from "./extras/LabContextPanel"
+
+import LabCinematicPlayback from "./cinematic/LabCinematicPlayback"
+import LabParticles from "./cinematic/LabParticles"
+import LabRain from "./cinematic/LabRain"
+import LabReactiveAudio from "./cinematic/LabReactiveAudio"
+import LabMediaPanel from "./cinematic/LabMediaPanel"
+
 import LabSimulationDirector from "./extras/LabSimulationDirector"
 import { ROUTE_POINTS, pmColor, typeLabel } from "./data/metroRoute"
 
@@ -44,6 +52,7 @@ export default function LabDashboard() {
   const [present, setPresent] = useState(false)
 
   const current = ROUTE_POINTS[index]
+
   const next = ROUTE_POINTS[index + 1]
   const peak = current.peak === true || current.pm25 >= 24
   const shake = (current as any) === "shake" || current.db >= 88
@@ -66,16 +75,18 @@ export default function LabDashboard() {
     const id = setInterval(() => {
       setIndex((value) => (value + 1) % ROUTE_POINTS.length)
     }, present ? 2600 : 1800)
+
     return () => clearInterval(id)
   }, [playing, present])
 
   return (
-    <main className="min-h-screen overflow-hidden bg-slate-950 text-white">
+<main className="min-h-screen overflow-hidden bg-slate-950 text-white">
       <LabPresentationMode />
       <PollutionOverlay active={peak} current={current.name} />
       <Smoke active={peak} />
       <LabSmogEffect active={peak} />
       <PeakSoundAlert active={peak} />
+      <LabPollutionPulse pm25={current.pm25} />
       <LabAtmosphere current={current} />
       <Shake active={shake} />
 
@@ -294,15 +305,17 @@ export default function LabDashboard() {
           Salir presentación
         </button>
       )}
+    <LabMediaPanel current={current} />
     </main>
   )
 }
 
 function Timeline({ index, setIndex }: { index: number; setIndex: (n: number) => void }) {
   return (
-    <section className="mt-8 flex gap-4 overflow-x-auto pb-4">
+    <section className="flex gap-4 overflow-x-auto px-6 py-6">
       {ROUTE_POINTS.map((point, i) => {
         const active = i === index
+
         return (
           <motion.button
             key={point.id}
@@ -321,7 +334,9 @@ function Timeline({ index, setIndex }: { index: number; setIndex: (n: number) =>
             <p className="text-xs font-black uppercase tracking-[0.25em] text-cyan-300">
               {point.line} · {point.segment}
             </p>
+
             <h3 className="mt-3 text-2xl font-black">{point.name}</h3>
+
             <div className="mt-5 h-3 overflow-hidden rounded-full bg-slate-800">
               <motion.div
                 initial={{ width: 0 }}
@@ -330,6 +345,7 @@ function Timeline({ index, setIndex }: { index: number; setIndex: (n: number) =>
                 style={{ background: pmColor(point.pm25) }}
               />
             </div>
+
             <p className="mt-4 text-sm text-slate-300">
               PM2.5 {point.pm25} · {"👤".repeat(Math.min(point.crowd, 7))}
             </p>
@@ -348,17 +364,11 @@ function PollutionOverlay({ active, current }: { active: boolean; current: strin
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="pointer-events-none fixed inset-0 z-[9998] bg-gradient-to-br from-zinc-400/35 via-zinc-700/45 to-black/75 backdrop-blur-[4px]"
+          className="pointer-events-none fixed inset-0 z-[80] bg-red-950/20"
         >
-          <motion.div
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-            className="absolute left-1/2 top-1/2 w-[min(760px,90vw)] -translate-x-1/2 -translate-y-1/2 rounded-[2rem] border border-red-500/40 bg-black/55 px-10 py-10 text-center shadow-[0_0_140px_rgba(255,0,0,.35)]"
-          >
-            <div className="text-8xl">☁️</div>
-            <h2 className="mt-5 text-5xl font-black text-white md:text-7xl">Peak contaminación</h2>
-            <p className="mt-4 text-xl text-zinc-300">PM2.5 crítico detectado en {current}</p>
-          </motion.div>
+          <div className="absolute left-1/2 top-8 -translate-x-1/2 rounded-full border border-red-300/30 bg-red-500/20 px-5 py-3 text-sm font-black text-red-100 backdrop-blur">
+            Peak de MP2.5 detectado · {current}
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
@@ -384,7 +394,11 @@ function Smoke({ active }: { active: boolean }) {
             opacity: active ? [0.08, 0.22, 0.12] : [0.02, 0.06, 0.02],
             scale: active ? [1, 1.25, 1] : [1, 1.08, 1],
           }}
-          transition={{ duration: 7 + i * 0.2, repeat: Infinity, ease: "easeInOut" }}
+          transition={{
+            duration: 6 + i,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
         />
       ))}
     </div>
@@ -393,7 +407,7 @@ function Smoke({ active }: { active: boolean }) {
 
 function Shake({ active }: { active: boolean }) {
   return (
-    <AnimatePresence>
+<AnimatePresence>
       {active && (
         <motion.div
           className="pointer-events-none fixed inset-0 z-[9999] bg-red-500/10"
@@ -408,7 +422,7 @@ function Shake({ active }: { active: boolean }) {
 
 function SoundPanel({ db }: { db: number }) {
   return (
-    <Panel title="Sonido reactivo" color="fuchsia">
+<Panel title="Sonido reactivo" color="fuchsia">
       <h3 className="text-5xl font-black">{db} dB</h3>
       <div className="mt-6 flex h-24 items-end gap-2">
         {Array.from({ length: 16 }).map((_, i) => (
@@ -426,7 +440,7 @@ function SoundPanel({ db }: { db: number }) {
 
 function Metric({ title, value, danger }: { title: string; value: string; danger?: boolean }) {
   return (
-    <article className={`rounded-[2rem] border p-5 ${danger ? "border-red-500/30 bg-red-500/10" : "border-white/10 bg-white/10"}`}>
+<article className={`rounded-[2rem] border p-5 ${danger ? "border-red-500/30 bg-red-500/10" : "border-white/10 bg-white/10"}`}>
       <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-400">{title}</p>
       <h3 className="mt-3 text-2xl font-black">{value}</h3>
     </article>
@@ -436,7 +450,7 @@ function Metric({ title, value, danger }: { title: string; value: string; danger
 function Panel({ title, children, color }: { title: string; children: React.ReactNode; color: "cyan" | "blue" | "fuchsia" }) {
   const c = color === "cyan" ? "text-cyan-300" : color === "blue" ? "text-blue-300" : "text-fuchsia-300"
   return (
-    <div className="rounded-[2rem] border border-white/10 bg-white/10 p-6">
+<div className="rounded-[2rem] border border-white/10 bg-white/10 p-6">
       <p className={`text-xs font-black uppercase tracking-[0.25em] ${c}`}>{title}</p>
       <div className="mt-4">{children}</div>
     </div>
@@ -445,7 +459,7 @@ function Panel({ title, children, color }: { title: string; children: React.Reac
 
 function Mini({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl bg-slate-900/80 p-4">
+<div className="rounded-2xl bg-slate-900/80 p-4">
       <p className="text-xs text-slate-400">{label}</p>
       <p className="mt-1 text-xl font-black">{value}</p>
     </div>
@@ -454,7 +468,7 @@ function Mini({ label, value }: { label: string; value: string }) {
 
 function Chart({ title, children }: { title: string; children: React.ReactElement }) {
   return (
-    <div className="rounded-[2rem] border border-white/10 bg-white/10 p-6">
+<div className="rounded-[2rem] border border-white/10 bg-white/10 p-6">
       <h3 className="text-2xl font-black">{title}</h3>
       <div className="mt-6 h-[320px]">
         <ResponsiveContainer width="100%" height="100%">
@@ -467,7 +481,7 @@ function Chart({ title, children }: { title: string; children: React.ReactElemen
 
 function Paper({ title, text }: { title: string; text: string }) {
   return (
-    <article className="rounded-[2rem] border border-white/10 bg-white/10 p-6">
+<article className="rounded-[2rem] border border-white/10 bg-white/10 p-6">
       <h3 className="text-2xl font-black">{title}</h3>
       <p className="mt-3 leading-7 text-slate-300">{text}</p>
     </article>
