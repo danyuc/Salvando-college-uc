@@ -24,6 +24,7 @@ const questions: Q[] = [
 
 export default function GroupPracticeView() {
   const [step, setStep] = useState<"home" | "room">("home")
+  const [groupMode, setGroupMode] = useState<"local" | "online">("local")
   const [code, setCode] = useState("")
   const [nickname, setNickname] = useState("")
   const [players, setPlayers] = useState<Player[]>([])
@@ -134,7 +135,7 @@ export default function GroupPracticeView() {
   }
 
   useEffect(() => {
-    if (!code) return
+    if (!code || groupMode === "local") return
     const interval = setInterval(async () => {
       const [members, room] = await Promise.all([getRoomMembers(code), getRoom(code)])
       setPlayers(members.map((m:any)=>({ id:m.id, nickname:m.nickname, score:m.score })))
@@ -188,11 +189,32 @@ export default function GroupPracticeView() {
         <section className="startGrid">
           <article className="card">
             <h2>Crear sala</h2>
-            <button onClick={createNewRoom}>Crear sala</button>
+
+            <div className="modePick">
+              <button
+                className={groupMode === "local" ? "selectedMode" : ""}
+                onClick={() => setGroupMode("local")}
+              >
+                📱 Un dispositivo
+              </button>
+
+              <button
+                className={groupMode === "online" ? "selectedMode" : ""}
+                onClick={() => setGroupMode("online")}
+              >
+                🌐 En línea
+              </button>
+            </div>
+
+            <button onClick={createNewRoom}>
+              {groupMode === "local" ? "Crear sala local" : "Crear sala online"}
+            </button>
           </article>
           <article className="card">
-            <h2>Unirse</h2>
-            <input value={code} onChange={e => setCode(e.target.value.toUpperCase())} placeholder="Código" />
+            <h2>{groupMode === "local" ? "Agregar jugador" : "Unirse"}</h2>
+            {groupMode === "online" && (
+              <input value={code} onChange={e => setCode(e.target.value.toUpperCase())} placeholder="Código" />
+            )}
             <input value={nickname} onChange={e => setNickname(e.target.value)} placeholder="Tu apodo" />
             <button onClick={enterRoom}>Entrar</button>
           </article>
@@ -267,6 +289,9 @@ export default function GroupPracticeView() {
         .startGrid,.roomGrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
         input,select{width:100%;margin:8px 0;padding:14px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(2,6,23,.78);color:white;font-weight:850}
         button{border:0;padding:13px 18px;border-radius:16px;background:linear-gradient(135deg,#2563eb,#22c55e);color:white;font-weight:950;cursor:pointer}
+        .modePick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+        .modePick button{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12)}
+        .modePick .selectedMode{background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 16px 38px rgba(37,99,235,.25)}
         .topline,.meta,.rank{display:flex;justify-content:space-between;gap:12px;align-items:center}.meta{margin:10px 0;color:#bfdbfe}
         .wheel{position:relative;width:min(330px,78vw);height:min(330px,78vw);margin:18px auto;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#2563eb,#7c3aed,#06b6d4,#22c55e,#facc15,#2563eb);box-shadow:0 0 90px rgba(37,99,235,.35),inset 0 0 60px rgba(255,255,255,.14);border:12px solid rgba(255,255,255,.14)}
         .spin{animation:spin .42s linear infinite}.center{width:124px;height:124px;border-radius:50%;display:grid;place-items:center;background:#020617;border:8px solid rgba(255,255,255,.12);font-size:22px;font-weight:950;text-align:center;padding:10px}.pointer{position:absolute;top:-18px;font-size:28px;color:#fef3c7}
