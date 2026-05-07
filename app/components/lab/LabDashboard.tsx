@@ -26,6 +26,8 @@ import LabEvidenceGallery from "./extras/LabEvidenceGallery"
 import LabLayerSelector from "./extras/LabLayerSelector"
 import LabPaperConclusion from "./extras/LabPaperConclusion"
 import PeakSoundAlert from "./extras/PeakSoundAlert"
+import LabEvidenceMedia from "./extras/LabEvidenceMedia"
+import LabContextPanel from "./extras/LabContextPanel"
 import { ROUTE_POINTS, pmColor, typeLabel } from "./data/metroRoute"
 
 const LeafletEnvironmentalMap = dynamic(
@@ -257,6 +259,8 @@ export default function LabDashboard() {
         <LabScientificStory current={current} />
 
         <LabComparativeAnalysis />
+
+        <LabEvidenceMedia />
 
         <LabLegend />
 

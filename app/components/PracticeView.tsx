@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from "react"
 
 import MathLessonEngine from "./MathLessonEngine"
 import FormulaDrawer from "./FormulaDrawer"
+import DomainAnimator from "./math-animators/DomainAnimator"
+import CompositionAnimator from "./math-animators/CompositionAnimator"
 import AlgebraMotionPro from "./AlgebraMotionPro"
 import PrecalculoSteps from "./PrecalculoSteps"
 import PrecalculoVisual from "./PrecalculoVisual"
