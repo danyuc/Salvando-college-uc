@@ -15,165 +15,175 @@ const items = [
   { href: '/pizarra', label: 'Pizarra', icon: '✍️' },
 ]
 
+const fullscreenRoutes = ['/login', '/onboarding', '/lab-ambiental']
+
 export default function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname()
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
 
-  const fullscreenRoutes = [
-    '/login',
-    '/lab-ambiental',
-    '/practica-grupal/sala',
-  ]
-
-  const hideSidebar = fullscreenRoutes.some(r =>
-    pathname.startsWith(r)
-  )
+  const hideSidebar = fullscreenRoutes.some((r) => pathname.startsWith(r))
 
   if (hideSidebar) return <>{children}</>
 
   return (
-    <div className="appShell">
-      <aside className={`sidebar ${open ? 'open' : 'closed'}`}>
-        <button
-          className="toggle"
-          onClick={() => setOpen(v => !v)}
-        >
+    <div className="shell">
+      <aside className={`side ${open ? 'open' : ''}`}>
+        <button className="toggle" onClick={() => setOpen(v => !v)}>
           {open ? '←' : '☰'}
         </button>
 
         <div className="brand">
           <span>Salvando</span>
-          {open && <h1>College UC</h1>}
+          <strong>{open ? 'College UC' : 'UC'}</strong>
         </div>
 
         <nav>
-          {items.map(item => {
+          {items.map((item) => {
             const active = pathname === item.href
 
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`navItem ${active ? 'active' : ''}`}
-              >
-                <span>{item.icon}</span>
-                {open && <p>{item.label}</p>}
+              <Link key={item.href} href={item.href} className={active ? 'item active' : 'item'}>
+                <span className="emoji">{item.icon}</span>
+                {open && <span className="label">{item.label}</span>}
               </Link>
             )
           })}
         </nav>
       </aside>
 
-      <main className="content">
+      <section className="page">
         {children}
-      </main>
+      </section>
 
       <style jsx>{`
-        .appShell{
-          display:flex;
-          min-height:100vh;
-          background:#020617;
+        .shell {
+          min-height: 100vh;
+          display: flex;
+          background: #020617;
         }
 
-        .sidebar{
-          position:sticky;
-          top:0;
-          height:100vh;
-          background:rgba(2,6,23,.92);
-          backdrop-filter:blur(18px);
-          border-right:1px solid rgba(255,255,255,.08);
-          transition:.25s;
-          z-index:50;
-          overflow:hidden;
+        .side {
+          position: sticky;
+          top: 0;
+          width: 92px;
+          height: 100vh;
+          padding: 16px 12px;
+          background: linear-gradient(180deg, rgba(2,6,23,.98), rgba(15,23,42,.94));
+          border-right: 1px solid rgba(255,255,255,.09);
+          backdrop-filter: blur(18px);
+          transition: width .22s ease;
+          z-index: 50;
         }
 
-        .open{width:220px}
-        .closed{width:82px}
-
-        .toggle{
-          margin:16px;
-          width:48px;
-          height:48px;
-          border-radius:16px;
-          border:0;
-          background:rgba(255,255,255,.08);
-          color:white;
-          cursor:pointer;
-          font-size:18px;
-          font-weight:900;
+        .side.open {
+          width: 244px;
         }
 
-        .brand{
-          padding:0 18px 24px;
+        .toggle {
+          width: 52px;
+          height: 46px;
+          border: 1px solid rgba(255,255,255,.1);
+          border-radius: 16px;
+          background: rgba(255,255,255,.06);
+          color: white;
+          font-size: 18px;
+          font-weight: 950;
+          cursor: pointer;
+          margin-bottom: 18px;
         }
 
-        .brand span{
-          color:#67e8f9;
-          font-size:11px;
-          font-weight:900;
-          letter-spacing:.22em;
-          text-transform:uppercase;
+        .brand {
+          margin-bottom: 20px;
+          padding: 0 6px;
         }
 
-        .brand h1{
-          color:white;
-          margin:6px 0 0;
-          line-height:.9;
-          font-size:38px;
-          font-weight:950;
+        .brand span {
+          display: block;
+          color: #67e8f9;
+          font-size: 11px;
+          font-weight: 950;
+          letter-spacing: .18em;
+          text-transform: uppercase;
         }
 
-        nav{
-          display:flex;
-          flex-direction:column;
-          gap:10px;
-          padding:0 12px;
+        .brand strong {
+          display: block;
+          color: white;
+          font-size: ${open ? '30px' : '22px'};
+          font-weight: 950;
+          line-height: .95;
+          margin-top: 4px;
         }
 
-        .navItem{
-          display:flex;
-          align-items:center;
-          gap:14px;
-          padding:14px 16px;
-          border-radius:18px;
-          color:white;
-          text-decoration:none;
-          background:rgba(255,255,255,.04);
-          transition:.18s;
-          border:1px solid transparent;
+        nav {
+          display: flex;
+          flex-direction: column;
+          gap: 9px;
         }
 
-        .navItem:hover{
-          transform:translateY(-1px);
-          background:rgba(255,255,255,.08);
+        .item {
+          min-height: 54px;
+          display: flex;
+          align-items: center;
+          gap: 13px;
+          padding: 10px 13px;
+          border-radius: 18px;
+          color: rgba(226,232,240,.92);
+          text-decoration: none;
+          background: rgba(255,255,255,.055);
+          border: 1px solid rgba(255,255,255,.075);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+          transition: .18s ease;
         }
 
-        .active{
-          background:linear-gradient(135deg,#2563eb,#7c3aed);
-          border-color:rgba(255,255,255,.14);
+        .item:hover {
+          transform: translateY(-1px);
+          background: rgba(255,255,255,.09);
+          color: white;
         }
 
-        .navItem span{
-          font-size:24px;
-          min-width:24px;
-          text-align:center;
+        .item.active {
+          background: linear-gradient(135deg,#2563eb,#7c3aed);
+          color: white;
+          border-color: rgba(255,255,255,.18);
+          box-shadow: 0 18px 40px rgba(37,99,235,.22);
         }
 
-        .navItem p{
-          margin:0;
-          font-weight:850;
+        .emoji {
+          min-width: 28px;
+          text-align: center;
+          font-size: 23px;
+          filter: drop-shadow(0 6px 12px rgba(0,0,0,.25));
         }
 
-        .content{
-          flex:1;
-          min-width:0;
+        .label {
+          font-size: 16px;
+          font-weight: 900;
+          white-space: nowrap;
         }
 
-        @media(max-width:900px){
-          .open{width:88px}
-          .navItem p,
-          .brand h1{
-            display:none;
+        .page {
+          flex: 1;
+          min-width: 0;
+        }
+
+        @media(max-width: 900px) {
+          .side {
+            width: 78px;
+            padding: 12px 8px;
+          }
+
+          .side.open {
+            width: 210px;
+          }
+
+          .item {
+            min-height: 50px;
+            padding: 9px 10px;
+          }
+
+          .page {
+            width: calc(100vw - 78px);
           }
         }
       `}</style>
