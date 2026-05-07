@@ -66,3 +66,42 @@ export async function getGroupMembers(groupId: string) {
 
   return data || []
 }
+
+export async function createGroupSession(input: {
+  groupId: string
+  mode?: string
+  currentQuestion?: any
+}) {
+  const { data, error } = await supabase
+    .from("study_group_sessions")
+    .insert({
+      group_id: input.groupId,
+      mode: input.mode || "general",
+      current_question: input.currentQuestion || null,
+      active: true,
+    })
+    .select()
+    .single()
+
+  if (error) throw error
+  return data
+}
+
+export async function updateGroupSession(input: {
+  sessionId: string
+  selectedUser?: string
+  currentQuestion?: any
+}) {
+  const { data, error } = await supabase
+    .from("study_group_sessions")
+    .update({
+      selected_user: input.selectedUser || null,
+      current_question: input.currentQuestion || null,
+    })
+    .eq("id", input.sessionId)
+    .select()
+    .single()
+
+  if (error) throw error
+  return data
+}
