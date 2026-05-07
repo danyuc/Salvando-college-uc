@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from "react"
+import { subscribeToRoom } from "@/lib/group-room-realtime"
 import {
   createRoom,
   joinRoom,
