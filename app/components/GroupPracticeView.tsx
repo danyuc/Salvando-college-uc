@@ -206,7 +206,16 @@ export default function GroupPracticeView() {
               </button>
             </div>
 
-            <button onClick={createNewRoom}>
+            <button
+              type="button"
+              onClick={() => {
+                const localCode = Math.random().toString(36).slice(2, 8).toUpperCase()
+                setCode(localCode)
+                setHost(groupMode === "local" ? "Host local" : "Host online")
+                setStep("room")
+                setFeed(prev => [`✅ Sala creada: ${localCode}`, ...prev])
+              }}
+            >
               {groupMode === "local" ? "Crear sala local" : "Crear sala online"}
             </button>
           </article>
