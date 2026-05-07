@@ -12,7 +12,6 @@ import CompositionAnimator from "./math-animators/CompositionAnimator"
 import AlgebraMotionPro from "./AlgebraMotionPro"
 import PrecalculoSteps from "./PrecalculoSteps"
 import PrecalculoVisual from "./PrecalculoVisual"
-import ProMaxUCPanel from "./ProMaxUCPanel"
 
 import { lessonForQuestion } from "@/lib/math-lessons"
 import { hasUserDiagnostic } from "@/lib/user-diagnostics"
@@ -492,18 +491,11 @@ export default function PracticeView() {
 
             <FormulaDrawer question={current} />
 
+            <GuidedSolutionDrawer question={current} />
+
                     <GuidedSolutionDrawer question={current} />
 
-            {false && (
-              <ProMaxUCPanel
-                question={current}
-                answered={!!selected}
-                correct={
-                  isCorrectOption(current, selected) ||
-                  selected === "respuesta_abierta"
-                }
-              />
-            )}
+            
 
             {Array.isArray(current.visualizacion?.parametros?.puntos) && (
               <PrecalculoVisual puntos={current.visualizacion.parametros.puntos} activeStep={visualStep} />
