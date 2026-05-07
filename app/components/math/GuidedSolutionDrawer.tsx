@@ -1,104 +1,211 @@
 'use client'
 
-import { useState } from "react"
-import { getGuidedSolutionSteps } from "@/lib/math/uc-guided-solutions"
+import { useMemo, useState } from "react"
 
-export default function GuidedSolutionDrawer({ question }: { question: any }) {
+export default function GuidedSolutionDrawer({
+  question,
+}: {
+  question: any
+}) {
   const [open, setOpen] = useState(false)
-  const steps = getGuidedSolutionSteps(question)
+
+  const content = useMemo(() => {
+    const q = (question?.pregunta || "").toLowerCase()
+
+    // =========================
+    // DOMINIO CON RAÍZ
+    // =========================
+    if (q.includes("dominio") && q.includes("√")) {
+      return {
+        title: "Dominio de funciones con raíz",
+        theory:
+          "La expresión dentro de una raíz cuadrada debe ser mayor o igual a 0.",
+        steps: [
+          "Identificamos el interior de la raíz.",
+          "Planteamos la condición ≥ 0.",
+          "Resolviendo la inecuación obtenemos el dominio.",
+        ],
+      }
+    }
+
+    // =========================
+    // LOGARITMOS
+    // =========================
+    if (q.includes("ln(") || q.includes("log")) {
+      return {
+        title: "Logaritmos naturales",
+        theory:
+          "El argumento de un logaritmo natural debe ser estrictamente positivo.",
+        steps: [
+          "Identificamos el argumento del logaritmo.",
+          "Planteamos argumento > 0.",
+          "Resolvemos la inecuación.",
+          "Expresamos el dominio en intervalos.",
+        ],
+      }
+    }
+
+    // =========================
+    // VALOR ABSOLUTO
+    // =========================
+    if (q.includes("|")) {
+      return {
+        title: "Valor absoluto",
+        theory:
+          "El valor absoluto representa distancia respecto del cero.",
+        steps: [
+          "Separar en casos positivos y negativos.",
+          "Resolver cada ecuación.",
+          "Verificar soluciones válidas.",
+        ],
+      }
+    }
+
+    // =========================
+    // EXPONENCIALES
+    // =========================
+    if (q.includes("^")) {
+      return {
+        title: "Ecuaciones exponenciales",
+        theory:
+          "Buscamos expresar ambos lados con la misma base.",
+        steps: [
+          "Identificar potencias equivalentes.",
+          "Igualar exponentes.",
+          "Resolver la ecuación.",
+        ],
+      }
+    }
+
+    // =========================
+    // DEFAULT
+    // =========================
+    return {
+      title: "Resolución estratégica",
+      theory:
+        "Analiza cuidadosamente qué pide el ejercicio antes de operar.",
+      steps: [
+        "Identificar datos importantes.",
+        "Detectar el tipo de problema.",
+        "Aplicar la propiedad correcta.",
+      ],
+    }
+  }, [question])
 
   return (
-    <section className="drawer">
-      <button type="button" className="toggle" onClick={() => setOpen(v => !v)}>
-        {open ? "Ocultar desarrollo paso a paso" : "Ver desarrollo paso a paso"}
+    <div className="guided-wrap">
+      <button
+        className="guided-toggle"
+        onClick={() => setOpen(!open)}
+      >
+        {open ? "Ocultar ayuda estratégica" : "Ver fórmulas y tips necesarios"}
       </button>
 
       {open && (
-        <div className="panel">
-          {steps.map((step, index) => (
-            <article key={index} className="step">
-              <span>Paso {index + 1}</span>
-              <h3>{step.title}</h3>
-              <code>{step.expression}</code>
-              <p>{step.explanation}</p>
-            </article>
-          ))}
+        <div className="guided-content">
+          <div className="guided-head">
+            <span>🧠 MODO PRO MAX UC</span>
+            <h3>{content.title}</h3>
+          </div>
+
+          <div className="theory">
+            {content.theory}
+          </div>
+
+          <div className="steps">
+            {content.steps.map((s, i) => (
+              <div key={i} className="step">
+                <div className="bubble">{i + 1}</div>
+                <p>{s}</p>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
       <style jsx>{`
-        .drawer {
-          margin: 14px 0;
+        .guided-wrap{
+          margin:24px 0;
         }
 
-        .toggle {
-          width: 100%;
-          min-height: 52px;
-          border-radius: 18px;
-          border: 1px solid rgba(147,197,253,.3);
-          background: linear-gradient(135deg, rgba(37,99,235,.28), rgba(124,58,237,.24));
-          color: white;
-          font-weight: 950;
-          cursor: pointer;
+        .guided-toggle{
+          width:100%;
+          border:none;
+          cursor:pointer;
+          border-radius:18px;
+          padding:18px;
+          font-size:18px;
+          font-weight:900;
+          color:white;
+          background:linear-gradient(135deg,#2563eb,#7c3aed);
         }
 
-        .panel {
-          margin-top: 12px;
-          display: grid;
-          gap: 12px;
-          animation: open .25s ease both;
+        .guided-content{
+          margin-top:16px;
+          border-radius:24px;
+          padding:28px;
+          background:rgba(15,23,42,.92);
+          border:1px solid rgba(255,255,255,.08);
         }
 
-        .step {
-          padding: 16px;
-          border-radius: 20px;
-          background: rgba(15,23,42,.86);
-          border: 1px solid rgba(255,255,255,.12);
+        .guided-head span{
+          color:#67e8f9;
+          font-size:12px;
+          font-weight:900;
+          letter-spacing:.18em;
         }
 
-        .step span {
-          color: #67e8f9;
-          font-size: 12px;
-          font-weight: 950;
-          letter-spacing: .12em;
-          text-transform: uppercase;
+        .guided-head h3{
+          margin-top:10px;
+          font-size:32px;
+          font-weight:900;
+          color:white;
         }
 
-        .step h3 {
-          margin: 7px 0 10px;
-          color: white;
-          font-size: 18px;
+        .theory{
+          margin-top:20px;
+          padding:18px;
+          border-radius:18px;
+          background:rgba(255,255,255,.05);
+          color:#cbd5e1;
+          line-height:1.7;
+          font-size:17px;
         }
 
-        code {
-          display: block;
-          padding: 14px;
-          border-radius: 14px;
-          background: rgba(2,6,23,.9);
-          color: #fef3c7;
-          font-size: 19px;
-          font-weight: 950;
-          overflow-x: auto;
+        .steps{
+          margin-top:24px;
+          display:flex;
+          flex-direction:column;
+          gap:14px;
         }
 
-        p {
-          margin: 10px 0 0;
-          color: #dbeafe;
-          line-height: 1.55;
-          font-weight: 750;
+        .step{
+          display:flex;
+          gap:14px;
+          align-items:flex-start;
+          padding:16px;
+          border-radius:18px;
+          background:rgba(255,255,255,.04);
         }
 
-        @keyframes open {
-          from {
-            opacity: 0;
-            transform: translateY(-6px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+        .bubble{
+          min-width:34px;
+          height:34px;
+          border-radius:999px;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-weight:900;
+          background:#2563eb;
+          color:white;
+        }
+
+        .step p{
+          color:#e2e8f0;
+          line-height:1.6;
+          margin:0;
         }
       `}</style>
-    </section>
+    </div>
   )
 }
