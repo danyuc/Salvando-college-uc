@@ -9,8 +9,12 @@ export type GroupQuestion = {
   difficulty: "media" | "alta" | "uc"
 }
 
+function makeCode() {
+  return Math.random().toString(36).slice(2, 8).toUpperCase()
+}
+
 export async function createRoom(mode: string) {
-  const code = Math.random().toString(36).slice(2, 8).toUpperCase()
+  const code = makeCode()
 
   const { error } = await supabase.from("study_group_rooms").insert({
     code,
@@ -22,7 +26,11 @@ export async function createRoom(mode: string) {
     round_started: false,
   })
 
-  if (error) throw error
+  if (error) {
+    console.warn("Supabase createRoom failed, using local room:", error.message)
+    return code
+  }
+
   return code
 }
 
@@ -33,27 +41,31 @@ export async function joinRoom(input: { code: string; nickname: string }) {
     score: 0,
   })
 
-  if (error) throw error
+  if (error) {
+    console.warn("Supabase joinRoom failed:", error.message)
+  }
 }
 
 export async function getRoomMembers(code: string) {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("study_group_members")
     .select("*")
     .eq("room_code", code)
     .order("score", { ascending: false })
 
+  if (error) return []
   return data || []
 }
 
 export async function getRoom(code: string) {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("study_group_rooms")
     .select("*")
     .eq("code", code)
     .single()
 
-  return data || null
+  if (error) return null
+  return data
 }
 
 export async function updateRoomState(input: {
@@ -77,7 +89,7 @@ export async function updateRoomState(input: {
     .update(payload)
     .eq("code", input.code)
 
-  if (error) throw error
+  if (error) console.warn("updateRoomState failed:", error.message)
 }
 
 export async function updateMemberScore(input: {
@@ -89,5 +101,5 @@ export async function updateMemberScore(input: {
     .update({ score: input.score })
     .eq("id", input.memberId)
 
-  if (error) throw error
+  if (error) console.warn("updateMemberScore failed:", error.message)
 }
