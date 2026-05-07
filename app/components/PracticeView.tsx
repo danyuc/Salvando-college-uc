@@ -1,9 +1,11 @@
 'use client'
 
+import { LOG_NATURAL_BANK } from "@/lib/math/log-natural-bank"
 import { useEffect, useMemo, useState } from "react"
 
 import MathLessonEngine from "./MathLessonEngine"
 import FormulaDrawer from "./FormulaDrawer"
+import GuidedSolutionDrawer from "./math/GuidedSolutionDrawer"
 import DomainAnimator from "./math-animators/DomainAnimator"
 import CompositionAnimator from "./math-animators/CompositionAnimator"
 import AlgebraMotionPro from "./AlgebraMotionPro"
@@ -489,7 +491,9 @@ export default function PracticeView() {
 
             <FormulaDrawer question={current} />
 
-            <ProMaxUCPanel
+                    <GuidedSolutionDrawer question={current} />
+
+            {false && <ProMaxUCPanel
               question={current}
               answered={!!selected}
               correct={isCorrectOption(current, selected) || selected === "respuesta_abierta"}
@@ -1040,3 +1044,11 @@ export default function PracticeView() {
     </main>
   )
 }
+
+
+const EXTRA_PRECALCULO_TOPICS = [
+  {
+    label: "Logaritmos naturales",
+    value: "logaritmos_naturales",
+  }
+]
