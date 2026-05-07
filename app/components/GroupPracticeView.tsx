@@ -41,6 +41,7 @@ export default function GroupPracticeView() {
   const [spinning, setSpinning] = useState(false)
   const [mode, setMode] = useState<"ruleta" | "general" | "dirigida">("ruleta")
   const [status, setStatus] = useState("")
+const [scores, setScores] = useState<Record<string, number>>({})
 
   const coachText = useMemo(() => {
     if (!selected) return "Crea o únete a un grupo y gira la ruleta."
@@ -129,6 +130,12 @@ export default function GroupPracticeView() {
 
         setSelected(finalPlayer)
         setQuestion(nextQuestion)
+
+setScores(prev => ({
+  ...prev,
+  [finalPlayer.nickname]:
+    (prev[finalPlayer.nickname] || 0) + 10
+}))
         setSpinning(false)
 
         if (sessionId) {
@@ -188,7 +195,7 @@ export default function GroupPracticeView() {
             <button className={mode === "dirigida" ? "active" : ""} onClick={() => setMode("dirigida")}>Dirigida</button>
           </div>
 
-          <div className={`roulette ${spinning ? "spin" : ""}`}>
+          <div className={`rouletteWheel ${spinning ? "spin" : ""}`}>
             {selected?.nickname || "?"}
           </div>
 
@@ -203,12 +210,20 @@ export default function GroupPracticeView() {
       </section>
 
       <section className="card">
-        <h2>Participantes</h2>
+        <h2>Participantes y puntaje</h2>
         <div className="players">
           {players.map(p => (
             <div className="player" key={p.id}>
               <strong>{p.nickname}</strong>
-              <small>{p.strengths || "Sin perfil todavía"}</small>
+              <small>{p.strengths || "Perfil IA pendiente"}</small>
+
+<div style={{
+marginTop:8,
+fontWeight:900,
+color:"#67e8f9"
+}}>
+⭐ {scores[p.nickname] || 0} pts
+</div>
             </div>
           ))}
         </div>
@@ -229,7 +244,48 @@ export default function GroupPracticeView() {
         .modes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
         .modes button{background:rgba(255,255,255,.1)}
         .modes .active{background:linear-gradient(135deg,#2563eb,#7c3aed)}
-        .roulette{height:160px;border-radius:999px;display:grid;place-items:center;font-size:44px;font-weight:950;background:radial-gradient(circle,#2563eb,#020617);border:8px solid rgba(147,197,253,.3);margin-bottom:16px}
+        
+.rouletteWheel{
+position:relative;
+height:320px;
+width:320px;
+margin:auto;
+border-radius:999px;
+display:grid;
+place-items:center;
+font-size:42px;
+font-weight:950;
+background:
+conic-gradient(
+#2563eb 0deg,
+#7c3aed 90deg,
+#06b6d4 180deg,
+#22c55e 270deg,
+#2563eb 360deg
+);
+border:12px solid rgba(255,255,255,.15);
+box-shadow:
+0 0 80px rgba(37,99,235,.35),
+inset 0 0 60px rgba(255,255,255,.12);
+overflow:hidden;
+}
+
+.rouletteWheel::after{
+content:'';
+position:absolute;
+width:110px;
+height:110px;
+border-radius:999px;
+background:#020617;
+border:8px solid rgba(255,255,255,.12);
+}
+
+.rouletteWheel > *{
+position:relative;
+z-index:2;
+}
+
+height:160px;border-radius:999px;display:grid;place-items:center;font-size:44px;font-weight:950;background:radial-gradient(circle,#2563eb,#020617);border:8px solid rgba(147,197,253,.3);margin-bottom:16px}
         .spin{animation:spin .55s linear infinite}
         .question{min-height:120px;border-radius:22px;background:rgba(255,255,255,.08);padding:20px;font-size:24px;font-weight:950;line-height:1.2}
         .players{display:grid;gap:10px}
