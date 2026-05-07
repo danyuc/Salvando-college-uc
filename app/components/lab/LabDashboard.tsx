@@ -28,6 +28,7 @@ import LabPaperConclusion from "./extras/LabPaperConclusion"
 import PeakSoundAlert from "./extras/PeakSoundAlert"
 import LabEvidenceMedia from "./extras/LabEvidenceMedia"
 import LabContextPanel from "./extras/LabContextPanel"
+import LabSimulationDirector from "./extras/LabSimulationDirector"
 import { ROUTE_POINTS, pmColor, typeLabel } from "./data/metroRoute"
 
 const LeafletEnvironmentalMap = dynamic(
@@ -134,6 +135,8 @@ export default function LabDashboard() {
           <Metric title="Peak PM2.5" value={`${maxPm} µg/m³`} danger />
           <Metric title="Ruido peak" value={`${maxDb} dB`} />
         </section>
+
+        <LabSimulationDirector index={index} setIndex={setIndex} playing={playing} setPlaying={setPlaying} />
 
         <Timeline index={index} setIndex={setIndex} />
 

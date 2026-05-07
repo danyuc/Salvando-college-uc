@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 const actions = [
   { label: 'Inicio', path: '/', icon: '🏠' },
   { label: 'Práctica inteligente', path: '/practica', icon: '🧩' },
+  { label: 'Práctica grupal', path: '/practica-grupal', icon: '👥' },
   { label: 'Banco de preguntas', path: '/banco', icon: '📚' },
   { label: 'Notas', path: '/notas', icon: '📊' },
   { label: 'Calendario', path: '/calendario', icon: '📅' },
