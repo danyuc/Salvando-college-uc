@@ -493,11 +493,16 @@ export default function PracticeView() {
 
                     <GuidedSolutionDrawer question={current} />
 
-            {false && <ProMaxUCPanel
-              question={current}
-              answered={!!selected}
-              correct={isCorrectOption(current, selected) || selected === "respuesta_abierta"}
-            />
+            {false && (
+              <ProMaxUCPanel
+                question={current}
+                answered={!!selected}
+                correct={
+                  isCorrectOption(current, selected) ||
+                  selected === "respuesta_abierta"
+                }
+              />
+            )}
 
             {Array.isArray(current.visualizacion?.parametros?.puntos) && (
               <PrecalculoVisual puntos={current.visualizacion.parametros.puntos} activeStep={visualStep} />
