@@ -13,7 +13,11 @@ export function generateMat1000ForceQuestions(input: {
       ? 13
       : Number(input.cantidad || 20)
 
-  const bank = getBank(evaluation, input.subtema)
+  const focusedBank = getBank(evaluation, input.subtema)
+  const fullBank = getBank(evaluation)
+  const bank = focusedBank.length >= Math.min(cantidad, 8)
+    ? focusedBank
+    : [...focusedBank, ...fullBank.filter((q: any) => !focusedBank.some((f: any) => f.pregunta === q.pregunta))]
 
   return Array.from({ length: cantidad }).map((_, i) => {
     const q = bank[i % bank.length]

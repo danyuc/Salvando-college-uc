@@ -18,7 +18,7 @@ function color(layer: Layer, value: number) {
   if (layer === "temp") return value >= 24 ? "#ef4444" : value >= 22 ? "#f97316" : "#38bdf8"
   if (layer === "humidity") return value >= 40 ? "#38bdf8" : "#22c55e"
   if (layer === "db") return value >= 85 ? "#ef4444" : value >= 75 ? "#f97316" : "#22c55e"
-  if (layer === "crowd") return value >= 70 ? "#ef4444" : value >= 40 ? "#eab308" : "#22c55e"
+  if (layer === "crowd") return value >= 80 ? "#ef4444" : value >= 50 ? "#eab308" : "#22c55e"
   return "#22c55e"
 }
 
@@ -26,7 +26,10 @@ export default function LabLayerSelector() {
   const [layer, setLayer] = useState<Layer>("pm25")
 
   const peak = useMemo(() => {
-    return ROUTE_POINTS.reduce((best, p) => Number(p[layer]) > Number(best[layer]) ? p : best, ROUTE_POINTS[0])
+    return ROUTE_POINTS.reduce(
+      (best, p) => Number(p[layer]) > Number(best[layer]) ? p : best,
+      ROUTE_POINTS[0]
+    )
   }, [layer])
 
   return (
@@ -63,7 +66,7 @@ export default function LabLayerSelector() {
         <div className="mt-5 grid gap-2">
           {ROUTE_POINTS.map((p) => (
             <div key={`${p.id}-${layer}`} className="grid grid-cols-[150px_1fr_60px] items-center gap-3">
-              <p className="truncate text-sm text-slate-300">{p.displayName || p.name}</p>
+              <p className="truncate text-sm text-slate-300">{p.name}</p>
               <div className="h-3 overflow-hidden rounded-full bg-white/10">
                 <div
                   className="h-full rounded-full"

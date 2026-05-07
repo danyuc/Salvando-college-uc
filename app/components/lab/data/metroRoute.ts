@@ -78,6 +78,7 @@ export const LAB_SUMMARY = {
     "Aunque los niveles registrados no fueron extremos, una exposición constante en ambientes ferroviarios cerrados puede generar irritación respiratoria y aumentar molestias en personas sensibles.",
   conclusion:
     "La ventilación, la lluvia, la densidad de pasajeros y la transición superficie/subterráneo influyeron directamente en las variaciones ambientales observadas.",
+  rainStart: "tramo posterior a Plaza Egaña",
 }
 
 export const ROUTE_POINTS: RoutePoint[] = [

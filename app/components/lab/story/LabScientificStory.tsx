@@ -61,7 +61,7 @@ export default function LabScientificStory({ current }: { current: any }) {
           <Mini title="Estación/tramo" value={current.name} />
           <Mini title="Infraestructura" value={typeLabel(current.type)} />
           <Mini title="PM2.5" value={`${current.pm25} · ${pmLabel(current.pm25)}`} color={pmColor(current.pm25)} />
-          <Mini title="Peak PM2.5" value={`${current.pmPeak} µg/m³`} color={pmColor(current.pmPeak)} />
+          <Mini title="Peak PM2.5" value={`${current.pm25} µg/m³`} color={pmColor(current.pm25)} />
           <Mini title="Personas aprox." value={`${current.crowd}`} />
         </div>
 

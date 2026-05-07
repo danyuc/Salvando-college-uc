@@ -9,8 +9,8 @@ function avg(rows: any[], key: string) {
 }
 
 export default function LabComparativeAnalysis() {
-  const beforeRain = ROUTE_POINTS.filter((p) => p.weather !== "rain")
-  const rain = ROUTE_POINTS.filter((p) => p.weather === "rain")
+  const beforeRain = ROUTE_POINTS.filter((p) => p.rain !== true)
+  const rain = ROUTE_POINTS.filter((p) => p.rain === true)
 
   const elevated = ROUTE_POINTS.filter((p) => p.type === "elevated")
   const underground = ROUTE_POINTS.filter((p) => p.type === "subterranean" || p.type === "transfer")

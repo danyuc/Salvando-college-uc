@@ -8,10 +8,10 @@ const avg = (rows: any[], key: string) =>
 export default function LabKeyFindings() {
   const elevated = ROUTE_POINTS.filter((p) => p.type === "elevated")
   const underground = ROUTE_POINTS.filter((p) => p.type === "subterranean" || p.type === "transfer")
-  const rain = ROUTE_POINTS.filter((p) => p.weather === "rain")
-  const noRain = ROUTE_POINTS.filter((p) => p.weather !== "rain")
+  const rain = ROUTE_POINTS.filter((p) => p.rain === true)
+  const noRain = ROUTE_POINTS.filter((p) => p.rain !== true)
 
-  const peak = ROUTE_POINTS.reduce((best, p) => p.pmPeak > best.pmPeak ? p : best, ROUTE_POINTS[0])
+  const peak = ROUTE_POINTS.reduce((best, p) => p.pm25 > best.pm25 ? p : best, ROUTE_POINTS[0])
 
   return (
     <section className="mt-8 rounded-[2rem] border border-white/10 bg-white/10 p-6 backdrop-blur">
@@ -20,23 +20,23 @@ export default function LabKeyFindings() {
       </p>
 
       <h2 className="mt-3 text-4xl font-black">
-        La hipótesis fue parcialmente rechazada
+        La hipótesis fue parcialmente comprobada
       </h2>
 
       <p className="mt-4 max-w-5xl leading-7 text-slate-300">
-        Se esperaba que los tramos elevados concentraran más PM2.5 por exposición a calles y autopistas. Sin embargo, el recorrido mostró que combinaciones, estaciones subterráneas, alta ocupación, fricción ferroviaria y ventilación limitada también influyeron fuertemente.
+        Con los datos reales del sensor, el PM2.5 máximo fue cercano a 26 µg/m³. No hubo contaminación extrema, pero sí variaciones relevantes asociadas a tipo de tramo, ventilación, ocupación, lluvia y transición superficie/subterráneo.
       </p>
 
       <div className="mt-6 grid gap-4 md:grid-cols-4">
-        <Card title="Peak PM2.5" value={`${peak.pmPeak} µg/m³`} sub={peak.name} color={pmColor(peak.pmPeak)} />
-        <Card title="Prom. elevado" value={`${avg(elevated, "pm25").toFixed(1)} µg/m³`} sub="Tramos abiertos/elevados" />
+        <Card title="Peak PM2.5 real" value={`${peak.pm25} µg/m³`} sub={peak.name} color={pmColor(peak.pm25)} />
+        <Card title="Prom. elevado" value={`${avg(elevated, "pm25").toFixed(1)} µg/m³`} sub="Tramos exteriores/elevados" />
         <Card title="Prom. subterráneo" value={`${avg(underground, "pm25").toFixed(1)} µg/m³`} sub="Túneles/combinaciones" />
-        <Card title="Con lluvia" value={`${avg(rain, "pm25").toFixed(1)} µg/m³`} sub={`Antes: ${avg(noRain, "pm25").toFixed(1)} µg/m³`} />
+        <Card title="Con lluvia" value={`${avg(rain, "pm25").toFixed(1)} µg/m³`} sub={`Sin lluvia: ${avg(noRain, "pm25").toFixed(1)} µg/m³`} />
       </div>
 
       <div className="mt-6 rounded-2xl border border-orange-400/20 bg-orange-500/10 p-5">
         <p className="font-black text-orange-200">
-          Interpretación: el nivel máximo fue {pmLabel(peak.pmPeak)}. La lluvia durante el regreso coincidió con una baja relativa de partículas en varios tramos exteriores, mientras que zonas cerradas y de combinación mantuvieron mayor carga ambiental.
+          Interpretación: el nivel máximo fue {pmLabel(peak.pm25)}. La lluvia coincidió con una disminución relativa de PM2.5 en varios tramos exteriores, mientras que los sectores cerrados o con mayor ocupación mantuvieron valores más altos.
         </p>
       </div>
     </section>

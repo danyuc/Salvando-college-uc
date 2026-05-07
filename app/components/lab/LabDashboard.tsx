@@ -42,11 +42,11 @@ export default function LabDashboard() {
 
   const current = ROUTE_POINTS[index]
   const next = ROUTE_POINTS[index + 1]
-  const peak = (current.pmPeak ?? current.pm25) >= 70
-  const shake = current.event === "shake" || current.db >= 88
-  const maxPm = Math.max(...ROUTE_POINTS.map((p) => p.pmPeak ?? p.pm25))
+  const peak = current.peak === true || current.pm25 >= 24
+  const shake = (current as any) === "shake" || current.db >= 88
+  const maxPm = Math.max(...ROUTE_POINTS.map((p) => p.pm25))
   const maxDb = Math.max(...ROUTE_POINTS.map((p) => p.db))
-  const maxCfu = Math.max(...ROUTE_POINTS.map((p) => p.cfu))
+  const maxCfu = 0
   const avgPm = ROUTE_POINTS.reduce((a, b) => a + b.pm25, 0) / ROUTE_POINTS.length
 
   const comparison = useMemo(() => {
@@ -165,7 +165,7 @@ export default function LabDashboard() {
                 {current.name}
               </motion.h2>
               <p className="mt-2 text-slate-300">
-                {current.line} · {typeLabel(current.type)} · {current.direction}
+                {current.line} · {typeLabel(current.type)} · {current.segment}
               </p>
               <div className="mt-5 grid grid-cols-2 gap-3">
                 <Mini label="PM2.5" value={`${current.pm25}`} />
@@ -196,10 +196,12 @@ export default function LabDashboard() {
 
             <Panel title="Evento detectado" color="fuchsia">
               <h3 className="text-3xl font-black">
-                {current.event === "music" ? "🎸 Cantante ambulante" :
-                 current.event === "crowd" ? "👥 Vagón lleno" :
-                 current.event === "shake" ? "💥 Frenado fuerte" :
-                 peak ? "☁️ Peak contaminación" : "📝 Sin evento crítico"}
+                {peak ? "☁️ Peak relativo de PM2.5" :
+                 current.rain ? "🌧️ Tramo con lluvia" :
+                 current.crowd >= 80 ? "👥 Vagón con alta ocupación" :
+                 current.db >= 88 ? "🔊 Peak de ruido" :
+                 current.type === "transition" ? "🚇 Cambio superficie/subterráneo" :
+                 "📝 Sin evento crítico"}
               </h3>
               <p className="mt-3 text-slate-300">
                 {next ? `Siguiente estación: ${next.name}` : "Fin del recorrido."}
@@ -212,7 +214,7 @@ export default function LabDashboard() {
           <Chart title="PM2.5 durante el recorrido">
             <AreaChart data={ROUTE_POINTS}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,.1)" />
-              <XAxis dataKey="displayName" />
+              <XAxis dataKey="name" />
               <YAxis stroke="#94a3b8" />
               <Tooltip />
               <Area type="monotone" dataKey="pm25" stroke="#06b6d4" fill="#06b6d4" fillOpacity={0.25} />
@@ -232,20 +234,20 @@ export default function LabDashboard() {
           <Chart title="Ruido por estación">
             <AreaChart data={ROUTE_POINTS}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,.1)" />
-              <XAxis dataKey="displayName" />
+              <XAxis dataKey="name" />
               <YAxis stroke="#94a3b8" />
               <Tooltip />
               <Area type="monotone" dataKey="db" stroke="#d946ef" fill="#d946ef" fillOpacity={0.25} />
             </AreaChart>
           </Chart>
 
-          <Chart title="Bacterias / UFC">
+          <Chart title="UFC / bacterias pendiente">
             <BarChart data={ROUTE_POINTS}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,.1)" />
-              <XAxis dataKey="displayName" />
+              <XAxis dataKey="name" />
               <YAxis stroke="#94a3b8" />
               <Tooltip />
-              <Bar dataKey="cfu" fill="#22c55e" />
+              <Bar dataKey="pm25" fill="#22c55e" />
             </BarChart>
           </Chart>
         </section>
@@ -268,7 +270,7 @@ export default function LabDashboard() {
 
         <section className="mt-8 grid gap-5 md:grid-cols-2">
           <Paper title="Hipótesis" text="El recorrido permite comparar condiciones ambientales entre tramos subterráneos, elevados, de transición y caminata, considerando PM2.5, humedad, temperatura, ruido y bacterias/UFC." />
-          <Paper title="Resultado preliminar" text={`El PM2.5 promedio de la demo es ${avgPm.toFixed(1)} µg/m³, con peak de ${maxPm} µg/m³. El mayor ruido observado alcanza ${maxDb} dB y el mayor registro microbiológico simulado alcanza ${maxCfu} UFC.`} />
+          <Paper title="Resultado preliminar" text={`El PM2.5 promedio de la demo es ${avgPm.toFixed(1)} µg/m³, con peak de ${maxPm} µg/m³. El mayor ruido observado alcanza ${maxDb} dB y el registro microbiológico queda pendiente de resultados de laboratorio.`} />
           <Paper title="Interpretación" text="Los peaks pueden relacionarse con combinaciones, flujo de personas, eventos acústicos, cambios de infraestructura, ventilación y acumulación de material particulado." />
           <Paper title="Limitaciones" text="La demo usa datos simulados para la presentación. Al cargar el Excel real, el sistema puede recalcular estaciones, peaks, eventos, ruido, UFC y visualizaciones." />
         </section>
@@ -304,13 +306,13 @@ function Timeline({ index, setIndex }: { index: number; setIndex: (n: number) =>
             className={`min-w-[260px] rounded-[2rem] border p-5 text-left backdrop-blur ${
               active
                 ? "border-cyan-300 bg-cyan-400/20 shadow-[0_0_60px_rgba(6,182,212,.25)]"
-                : point.pm25 >= 70
+                : point.peak === true || point.pm25 >= 24
                 ? "border-red-500/30 bg-red-500/10"
                 : "border-white/10 bg-white/10"
             }`}
           >
             <p className="text-xs font-black uppercase tracking-[0.25em] text-cyan-300">
-              {point.line} · {point.direction}
+              {point.line} · {point.segment}
             </p>
             <h3 className="mt-3 text-2xl font-black">{point.name}</h3>
             <div className="mt-5 h-3 overflow-hidden rounded-full bg-slate-800">
