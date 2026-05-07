@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from "react"
+import KahootWheel from "./group/KahootWheel"
 import { subscribeToRoom } from "@/lib/group-room-realtime"
 import {
   createRoom,
@@ -209,10 +210,7 @@ export default function GroupPracticeView() {
                   <option>Modo examen grupal</option>
                 </select>
               </div>
-              <div className={`wheel ${spinning ? "spin" : ""}`}>
-                <div className="pointer">▼</div>
-                <div className="center">{selected?.nickname || "?"}</div>
-              </div>
+              <KahootWheel players={players} selected={selected} spinning={spinning} />
               <div className="actions">
                 <button onClick={spin}>🎡 Girar pregunta</button>
                 <button onClick={nextRound}>🔄 Siguiente ronda</button>
