@@ -196,15 +196,15 @@ export default function LabDashboard() {
 
             <Panel title="Evento detectado" color="fuchsia">
               <h3 className="text-3xl font-black">
-                {peak ? "☁️ Peak relativo de PM2.5" :
-                 current.rain ? "🌧️ Tramo con lluvia" :
-                 current.crowd >= 80 ? "👥 Vagón con alta ocupación" :
+                {current.peak ? "☁️ Peak real relativo de PM2.5" :
+                 current.rain ? "🌧️ Lluvia en el regreso" :
+                 current.crowd >= 80 ? "👥 Alta ocupación del vagón" :
                  current.db >= 88 ? "🔊 Peak de ruido" :
                  current.type === "transition" ? "🚇 Cambio superficie/subterráneo" :
-                 "📝 Sin evento crítico"}
+                 "📝 Condición estable"}
               </h3>
               <p className="mt-3 text-slate-300">
-                {next ? `Siguiente estación: ${next.name}` : "Fin del recorrido."}
+                {current.transitionLabel ? current.transitionLabel : next ? `Siguiente estación: ${next.name}` : "Fin del recorrido."}
               </p>
             </Panel>
           </aside>
