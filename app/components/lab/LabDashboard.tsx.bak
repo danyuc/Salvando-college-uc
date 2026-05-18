@@ -156,7 +156,7 @@ export default function LabDashboard() {
 <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900 shadow-[0_0_80px_rgba(6,182,212,.08)]">
   <div className="absolute inset-0 z-10 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(6,182,212,.08),transparent_60%)]" />
 
-  <LeafletEnvironmentalMap key="lab-environmental-map"
+  <LeafletEnvironmentalMap
     externalIndex={index}
     onSelectPoint={(i: number) => setIndex(i)}
     points={ROUTE_POINTS.map((p, i) => ({
