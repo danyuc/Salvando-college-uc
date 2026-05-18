@@ -1,14 +1,18 @@
 'use client'
 
 import Link from "next/link"
-import { useMemo } from "react"
+import { type CSSProperties, useMemo } from "react"
+import { motion } from "framer-motion"
+import { ArrowUpRight, CalendarClock, CheckCircle2, Sparkles } from "lucide-react"
 import { useUser } from "@/lib/useUser"
 import { ACADEMIC_EVENTS, SUBJECT_THEMES, daysUntil, getRisk } from "@/lib/academic-calendar-data"
-import PrivateSeminarioActivity from "./PrivateSeminarioActivity";
+import PrivateSeminarioActivity from "./PrivateSeminarioActivity"
+
+type ThemeStyle = CSSProperties & Record<"--c" | "--a" | "--g", string>
 
 function upcomingEvents() {
   return ACADEMIC_EVENTS
-    .filter(e => daysUntil(e.date) >= 0)
+    .filter((event) => daysUntil(event.date) >= 0)
     .sort((a, b) => daysUntil(a.date) - daysUntil(b.date))
 }
 
@@ -20,34 +24,52 @@ function formatDate(date: string) {
   })
 }
 
+const stagger = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.07,
+    },
+  },
+}
+
+const rise = {
+  hidden: { opacity: 0, y: 14 },
+  show: { opacity: 1, y: 0 },
+}
+
 export default function HomeView() {
   const { name, email } = useUser()
 
   const upcoming = useMemo(() => upcomingEvents(), [])
   const next = upcoming[0]
-  const urgent = upcoming.filter(e => ["alto", "urgente"].includes(getRisk(e)))
-  const active = upcoming.filter(e => getRisk(e) === "activo")
-  const totalWeight = upcoming.slice(0, 6).reduce((a, e) => a + e.weight, 0)
-
+  const urgent = upcoming.filter((event) => ["alto", "urgente"].includes(getRisk(event)))
+  const active = upcoming.filter((event) => getRisk(event) === "activo")
+  const totalWeight = upcoming.slice(0, 6).reduce((sum, event) => sum + event.weight, 0)
   const todayPlan = upcoming.slice(0, 3)
 
   return (
     <main className="page">
-      <section className="shell">
-        <section className="hero">
-          <div className="orb orb1" />
-          <div className="orb orb2" />
-
+      <motion.section className="shell" variants={stagger} initial="hidden" animate="show">
+        <motion.section className="hero premium-card" variants={rise}>
           <div className="heroContent">
-            <p className="eyebrow">Salvando College UC</p>
+            <div className="eyebrowRow">
+              <span className="eyebrow">Salvando College UC</span>
+              <span className="liveBadge">
+                <Sparkles size={14} />
+                Modo estudiante
+              </span>
+            </div>
+
             <h1>Hola, {name}</h1>
             <p className="subtitle">
-              Tu cockpit académico: fechas, riesgo, práctica y notas en un solo panel inteligente.
+              Tu centro de estudio inteligente para priorizar evaluaciones, practicar con foco y tomar mejores decisiones antes de que llegue la semana pesada.
             </p>
 
             <div className="actions">
               <Link href="/practica" className="primary">Practicar foco</Link>
-              <Link href="/diagnostico" className="secondary">Diagnóstico</Link>
+              <Link href="/diagnostico" className="secondary">Diagnostico</Link>
               <Link href="/calendario" className="ghost">Calendario + notas</Link>
             </div>
 
@@ -59,85 +81,87 @@ export default function HomeView() {
           </div>
 
           <aside className="status">
-            <span>Estado académico</span>
+            <span>Estado academico</span>
             <strong>{next ? "Activo" : "Sin fechas"}</strong>
             <p>
               {next
-                ? `${SUBJECT_THEMES[next.subjectCode].name}: ${next.title} en ${daysUntil(next.date)} días`
-                : "Agrega evaluaciones para activar predicción y coach."}
+                ? `${SUBJECT_THEMES[next.subjectCode].name}: ${next.title} en ${daysUntil(next.date)} dias`
+                : "Agrega evaluaciones para activar prediccion y coach."}
             </p>
+            <div className="statusLine">
+              <CheckCircle2 size={17} />
+              <small>Plan actualizado con tus fechas visibles</small>
+            </div>
           </aside>
-        </section>
+        </motion.section>
 
-        <section className="metrics">
-          <Metric title="Próximas" value={String(upcoming.length)} desc="evaluaciones vigentes" />
+        <motion.section className="metrics" variants={stagger}>
+          <Metric title="Proximas" value={String(upcoming.length)} desc="evaluaciones vigentes" />
           <Metric title="Urgentes" value={String(urgent.length)} desc="riesgo alto o cercano" />
           <Metric title="Riesgo medio" value={String(active.length)} desc="requieren seguimiento" />
-          <Metric title="Peso próximo" value={`${totalWeight.toFixed(0)}%`} desc="siguientes 6 eventos" />
-        </section>
+          <Metric title="Peso proximo" value={`${totalWeight.toFixed(0)}%`} desc="siguientes 6 eventos" />
+        </motion.section>
 
-        <section className="mainGrid">
-          <section className="panel large">
+        <motion.section className="mainGrid" variants={stagger}>
+          <motion.section className="panel large premium-card" variants={rise}>
             <div className="panelHead">
               <div>
-                <p className="eyebrow">Foco del día</p>
+                <p className="eyebrow">Foco del dia</p>
                 <h2>Plan recomendado</h2>
-
-      <PrivateSeminarioActivity />
-
+                <PrivateSeminarioActivity />
               </div>
-              <Link href="/seminario-admin" className="miniBtn">Gestionar</Link>
+              <Link href="/seminario-admin" className="miniBtn">
+                Gestionar
+                <ArrowUpRight size={15} />
+              </Link>
             </div>
 
             <div className="plan">
-              {todayPlan.length > 0 ? todayPlan.map((event, i) => {
+              {todayPlan.length > 0 ? todayPlan.map((event, index) => {
                 const theme = SUBJECT_THEMES[event.subjectCode]
                 return (
-                  <Link
-                    key={event.id}
-                    href={event.subjectCode === "MAT1000" && event.practiceEvaluation
-                      ? `/practica?subject=MAT1000&evaluation=${event.practiceEvaluation}&mode=practica`
-                      : "/calendario"}
-                    className="planRow"
-                    style={{ "--c": theme.color, "--a": theme.accent } as any}
-                  >
-                    <div className="number">{i + 1}</div>
-                    <div>
-                      <strong>{theme.icon} {theme.name} · {event.title}</strong>
-                      <span>{event.unit}</span>
-                    </div>
-                    <b>{daysUntil(event.date)} días</b>
-                  </Link>
+                  <motion.div key={event.id} variants={rise} whileHover={{ y: -3 }}>
+                    <Link
+                      href={event.subjectCode === "MAT1000" && event.practiceEvaluation
+                        ? `/practica?subject=MAT1000&evaluation=${event.practiceEvaluation}&mode=practica`
+                        : "/calendario"}
+                      className="planRow"
+                      style={{ "--c": theme.color, "--a": theme.accent, "--g": theme.gradient } as ThemeStyle}
+                    >
+                      <div className="number">{index + 1}</div>
+                      <div>
+                        <strong>{theme.icon} {theme.name} · {event.title}</strong>
+                        <span>{event.unit}</span>
+                      </div>
+                      <b>{daysUntil(event.date)} dias</b>
+                    </Link>
+                  </motion.div>
                 )
               }) : (
-                <div className="empty">
-                  <strong>Sin foco por ahora</strong>
-                  <span>Cuando agregues fechas, aparecerá un plan automático por prioridad.</span>
-                </div>
+                <EmptyState title="Sin foco por ahora" text="Cuando agregues fechas, aparecera un plan automatico por prioridad." />
               )}
             </div>
-          </section>
+          </motion.section>
 
-          <section className="panel">
-            <p className="eyebrow">Próxima evaluación</p>
+          <motion.section className="panel premium-card" variants={rise}>
+            <p className="eyebrow">Proxima evaluacion</p>
             {next ? (
               <div className="next">
-                <div className="nextIcon">{SUBJECT_THEMES[next.subjectCode].icon}</div>
+                <div className="nextIcon">
+                  <CalendarClock size={30} />
+                </div>
                 <h2>{next.title}</h2>
                 <p>{SUBJECT_THEMES[next.subjectCode].name}</p>
                 <strong>{formatDate(next.date)}</strong>
                 <span>{next.weight}% · {getRisk(next)}</span>
               </div>
             ) : (
-              <div className="empty">
-                <strong>Sin evaluaciones</strong>
-                <span>Abre calendario para registrar fechas y notas.</span>
-              </div>
+              <EmptyState title="Sin evaluaciones" text="Abre calendario para registrar fechas y notas." />
             )}
-          </section>
-        </section>
+          </motion.section>
+        </motion.section>
 
-        <section className="panel">
+        <motion.section className="panel premium-card" variants={rise}>
           <div className="panelHead">
             <div>
               <p className="eyebrow">Mapa por ramo</p>
@@ -147,26 +171,27 @@ export default function HomeView() {
 
           <div className="subjects">
             {Object.entries(SUBJECT_THEMES).map(([code, theme]) => {
-              const events = upcoming.filter(e => e.subjectCode === code)
+              const events = upcoming.filter((event) => event.subjectCode === code)
               const nearest = events[0]
               return (
-                <Link
-                  key={code}
-                  href="/calendario"
-                  className="subject"
-                  style={{ "--c": theme.color, "--a": theme.accent, "--g": theme.gradient } as any}
-                >
-                  <div>
-                    <strong>{theme.icon} {theme.name}</strong>
-                    <span>{nearest ? `${nearest.title} · ${daysUntil(nearest.date)} días` : "Sin fechas próximas"}</span>
-                  </div>
-                  <b>{events.reduce((a, e) => a + e.weight, 0).toFixed(0)}%</b>
-                </Link>
+                <motion.div key={code} whileHover={{ y: -3 }}>
+                  <Link
+                    href="/calendario"
+                    className="subject"
+                    style={{ "--c": theme.color, "--a": theme.accent, "--g": theme.gradient } as ThemeStyle}
+                  >
+                    <div>
+                      <strong>{theme.icon} {theme.name}</strong>
+                      <span>{nearest ? `${nearest.title} · ${daysUntil(nearest.date)} dias` : "Sin fechas proximas"}</span>
+                    </div>
+                    <b>{events.reduce((sum, event) => sum + event.weight, 0).toFixed(0)}%</b>
+                  </Link>
+                </motion.div>
               )
             })}
           </div>
-        </section>
-      </section>
+        </motion.section>
+      </motion.section>
 
       <style jsx>{`
         .page {
@@ -175,14 +200,13 @@ export default function HomeView() {
           color: white;
           font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
           background:
-            radial-gradient(circle at 12% 0%, rgba(37,99,235,.38), transparent 34%),
-            radial-gradient(circle at 92% 5%, rgba(168,85,247,.26), transparent 32%),
-            radial-gradient(circle at 40% 100%, rgba(34,197,94,.10), transparent 28%),
-            linear-gradient(180deg,#020617,#0f172a);
+            radial-gradient(circle at 20% 0%, rgba(59, 130, 246, .28), transparent 30%),
+            radial-gradient(circle at 90% 10%, rgba(20, 184, 166, .16), transparent 28%),
+            linear-gradient(180deg, rgba(2, 6, 23, .64), rgba(15, 23, 42, .74));
         }
 
         .shell {
-          max-width: min(1240px, calc(100vw - 32px));
+          width: min(1240px, calc(100vw - 32px));
           margin: 0 auto;
           display: grid;
           gap: 18px;
@@ -190,50 +214,37 @@ export default function HomeView() {
 
         .hero {
           position: relative;
-          overflow-x: hidden;
-          min-height: 330px;
+          overflow: hidden;
+          min-height: 340px;
           display: grid;
-          grid-template-columns: minmax(0, 1fr) minmax(260px, 310px);
+          grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
           gap: 22px;
           align-items: stretch;
-          padding: 32px;
-          border-radius: 38px;
-          border: 1px solid rgba(255,255,255,.15);
-          background:
-            linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.045)),
-            rgba(15,23,42,.72);
-          box-shadow: 0 34px 100px rgba(0,0,0,.36);
-          backdrop-filter: blur(22px);
+          padding: clamp(24px, 4vw, 38px);
+          border-radius: 34px;
         }
 
-        .orb {
+        .hero::before {
+          content: "";
           position: absolute;
-          border-radius: 999px;
-          filter: blur(6px);
-          opacity: .52;
+          inset: 0;
           pointer-events: none;
-        }
-
-        .orb1 {
-          width: 100%; max-width: 420px;
-          height: 420px;
-          left: -140px;
-          top: -150px;
-          background: radial-gradient(circle, rgba(37,99,235,.62), transparent 65%);
-        }
-
-        .orb2 {
-          width: 100%; max-width: 360px;
-          height: 360px;
-          right: -90px;
-          bottom: -150px;
-          background: radial-gradient(circle, rgba(168,85,247,.42), transparent 65%);
+          background:
+            linear-gradient(120deg, rgba(255, 255, 255, .10), transparent 34%),
+            radial-gradient(circle at 78% 20%, rgba(34, 211, 238, .16), transparent 28%);
         }
 
         .heroContent,
         .status {
           position: relative;
           z-index: 2;
+        }
+
+        .eyebrowRow {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          align-items: center;
         }
 
         .eyebrow {
@@ -245,32 +256,47 @@ export default function HomeView() {
           text-transform: uppercase;
         }
 
+        .liveBadge {
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          min-height: 28px;
+          padding: 0 10px;
+          border-radius: 999px;
+          color: #ccfbf1;
+          font-size: 12px;
+          font-weight: 900;
+          background: rgba(20, 184, 166, .14);
+          border: 1px solid rgba(94, 234, 212, .22);
+        }
+
         h1 {
-          margin: 10px 0 8px;
-          font-size: clamp(48px,8vw,84px);
+          margin: 12px 0 10px;
+          max-width: 820px;
+          font-size: clamp(46px, 7.2vw, 86px);
           line-height: .94;
-          letter-spacing: -.075em;
+          letter-spacing: -.06em;
           font-weight: 950;
         }
 
         h2 {
           margin: 6px 0 0;
-          font-size: 27px;
+          font-size: clamp(24px, 3vw, 30px);
           letter-spacing: -.035em;
         }
 
         .subtitle {
-          max-width: 650px;
+          max-width: 700px;
           color: #cbd5e1;
-          font-size: 18px;
-          line-height: 1.55;
+          font-size: clamp(16px, 1.6vw, 19px);
+          line-height: 1.62;
         }
 
         .actions {
           display: flex;
           flex-wrap: wrap;
           gap: 11px;
-          margin-top: 22px;
+          margin-top: 24px;
         }
 
         .primary,
@@ -281,35 +307,46 @@ export default function HomeView() {
           padding: 0 16px;
           border-radius: 16px;
           display: inline-flex;
+          gap: 8px;
           align-items: center;
           justify-content: center;
           text-decoration: none;
           color: white;
           font-weight: 950;
-          border: 1px solid rgba(255,255,255,.14);
+          border: 1px solid rgba(255, 255, 255, .14);
         }
 
         .primary {
-          background: linear-gradient(135deg,#2563eb,#7c3aed);
-          box-shadow: 0 18px 46px rgba(37,99,235,.32);
+          background: linear-gradient(135deg, #2563eb, #06b6d4);
+          box-shadow: 0 18px 46px rgba(37, 99, 235, .32);
         }
 
         .secondary {
-          background: rgba(255,255,255,.09);
+          background: rgba(255, 255, 255, .09);
         }
 
         .ghost {
-          color: #cbd5e1;
-          background: rgba(15,23,42,.35);
+          color: #dbeafe;
+          background: rgba(15, 23, 42, .35);
+        }
+
+        .primary:hover,
+        .secondary:hover,
+        .ghost:hover,
+        .miniBtn:hover {
+          transform: translateY(-2px);
+          border-color: rgba(255, 255, 255, .24);
         }
 
         .identity {
-          margin-top: 24px;
-          width: fit-content; max-width: 100%;
+          margin-top: 26px;
+          width: fit-content;
+          max-width: 100%;
           padding: 13px 15px;
           border-radius: 20px;
-          background: rgba(15,23,42,.52);
-          border: 1px solid rgba(255,255,255,.12);
+          background: rgba(15, 23, 42, .52);
+          border: 1px solid rgba(255, 255, 255, .12);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
         }
 
         .identity span,
@@ -328,10 +365,12 @@ export default function HomeView() {
         .status {
           padding: 22px;
           border-radius: 28px;
-          background: rgba(15,23,42,.58);
-          border: 1px solid rgba(255,255,255,.13);
+          background:
+            linear-gradient(180deg, rgba(15, 23, 42, .72), rgba(15, 23, 42, .48)),
+            rgba(15, 23, 42, .58);
+          border: 1px solid rgba(255, 255, 255, .13);
           align-self: center;
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
         }
 
         .status span {
@@ -352,6 +391,19 @@ export default function HomeView() {
           line-height: 1.5;
         }
 
+        .statusLine {
+          display: flex;
+          gap: 8px;
+          align-items: center;
+          margin-top: 16px;
+          color: #99f6e4;
+        }
+
+        .statusLine small {
+          color: #cbd5e1;
+          font-weight: 800;
+        }
+
         .metrics {
           display: grid;
           grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -361,10 +413,6 @@ export default function HomeView() {
         .metric,
         .panel {
           border-radius: 28px;
-          border: 1px solid rgba(255,255,255,.13);
-          background: rgba(255,255,255,.07);
-          box-shadow: 0 24px 70px rgba(0,0,0,.25);
-          backdrop-filter: blur(18px);
         }
 
         .metric {
@@ -397,15 +445,16 @@ export default function HomeView() {
         .panelHead {
           display: flex;
           justify-content: space-between;
-          align-items: center;
+          align-items: flex-start;
           gap: 12px;
           margin-bottom: 16px;
         }
 
         .miniBtn {
           min-height: 38px;
+          flex: 0 0 auto;
           font-size: 13px;
-          background: rgba(255,255,255,.08);
+          background: rgba(255, 255, 255, .08);
         }
 
         .plan,
@@ -422,17 +471,20 @@ export default function HomeView() {
           align-items: center;
           padding: 15px;
           border-radius: 22px;
-          background: linear-gradient(135deg,var(--a),rgba(15,23,42,.72));
-          border: 1px solid color-mix(in srgb,var(--c) 58%, transparent);
+          background:
+            linear-gradient(135deg, color-mix(in srgb, var(--c) 18%, transparent), rgba(15, 23, 42, .72)),
+            var(--a);
+          border: 1px solid color-mix(in srgb, var(--c) 52%, transparent);
           color: white;
           text-decoration: none;
-          transition: transform .18s ease, box-shadow .18s ease;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
+          transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
         }
 
         .planRow:hover,
         .subject:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 18px 45px rgba(0,0,0,.25);
+          box-shadow: 0 18px 45px rgba(0, 0, 0, .25);
+          border-color: color-mix(in srgb, var(--c) 70%, white 12%);
         }
 
         .number {
@@ -441,7 +493,7 @@ export default function HomeView() {
           display: grid;
           place-items: center;
           border-radius: 999px;
-          background: rgba(255,255,255,.12);
+          background: rgba(255, 255, 255, .12);
           font-weight: 950;
         }
 
@@ -473,9 +525,9 @@ export default function HomeView() {
           display: grid;
           place-items: center;
           border-radius: 24px;
-          background: rgba(255,255,255,.09);
-          border: 1px solid rgba(255,255,255,.12);
-          font-size: 32px;
+          color: #bae6fd;
+          background: rgba(255, 255, 255, .09);
+          border: 1px solid rgba(255, 255, 255, .12);
           margin-bottom: 10px;
         }
 
@@ -491,8 +543,8 @@ export default function HomeView() {
         .empty {
           padding: 18px;
           border-radius: 22px;
-          background: rgba(15,23,42,.45);
-          border: 1px solid rgba(255,255,255,.11);
+          background: rgba(15, 23, 42, .45);
+          border: 1px solid rgba(255, 255, 255, .11);
         }
 
         .empty span {
@@ -502,12 +554,14 @@ export default function HomeView() {
         }
 
         .subjects {
-          grid-template-columns: repeat(auto-fit,minmax(210px,1fr));
+          grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
         }
 
         .subject {
           grid-template-columns: 1fr auto;
-          background: var(--g);
+          background:
+            linear-gradient(135deg, rgba(255, 255, 255, .08), transparent),
+            var(--g);
         }
 
         @media (max-width: 1000px) {
@@ -523,31 +577,51 @@ export default function HomeView() {
 
         @media (max-width: 640px) {
           .page {
-            padding: 18px;
+            padding: 18px 14px;
           }
 
-          .metrics {
+          .shell {
+            width: 100%;
+          }
+
+          .hero,
+          .panel {
+            border-radius: 24px;
+          }
+
+          .metrics,
+          .subjects {
             grid-template-columns: 1fr;
           }
 
+          .panelHead {
+            display: grid;
+          }
+
           h1 {
-            font-size: 52px;
+            font-size: 48px;
           }
         }
-      `}
-        </style>
+      `}</style>
     </main>
   )
 }
 
 function Metric({ title, value, desc }: { title: string; value: string; desc: string }) {
   return (
-    <div className="rounded-3xl border border-white/10 bg-white/10 p-5 shadow-xl backdrop-blur">
-      <p className="text-sm font-black text-slate-300">{title}</p>
-      <div className="mt-2 flex items-end gap-2">
-        <span className="text-3xl font-black text-white">{value}</span>
-        <span className="pb-1 text-xs font-bold text-slate-400">{desc}</span>
-      </div>
+    <motion.div className="metric premium-card" variants={rise} whileHover={{ y: -3 }}>
+      <span>{title}</span>
+      <strong>{value}</strong>
+      <small>{desc}</small>
+    </motion.div>
+  )
+}
+
+function EmptyState({ title, text }: { title: string; text: string }) {
+  return (
+    <div className="empty">
+      <strong>{title}</strong>
+      <span>{text}</span>
     </div>
   )
 }

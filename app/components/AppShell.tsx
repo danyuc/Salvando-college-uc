@@ -3,16 +3,29 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ReactNode, useState } from 'react'
+import { motion } from 'framer-motion'
+import {
+  BookOpen,
+  Brain,
+  CalendarDays,
+  ChevronLeft,
+  Home,
+  Menu,
+  PenTool,
+  Puzzle,
+  Trophy,
+  Users,
+} from 'lucide-react'
 
 const items = [
-  { href: '/', label: 'Inicio', icon: '🏠' },
-  { href: '/practica', label: 'Práctica', icon: '🧩' },
-  { href: '/practica-grupal', label: 'Grupal', icon: '👥' },
-  { href: '/banco', label: 'Banco', icon: '📚' },
-  { href: '/calendario', label: 'Calendario', icon: '📅' },
-  { href: '/coach-semanal', label: 'Coach', icon: '🧠' },
-  { href: '/ranking', label: 'Ranking', icon: '🏆' },
-  { href: '/pizarra', label: 'Pizarra', icon: '✍️' },
+  { href: '/', label: 'Inicio', icon: Home },
+  { href: '/practica', label: 'Practica', icon: Puzzle },
+  { href: '/practica-grupal', label: 'Grupal', icon: Users },
+  { href: '/banco', label: 'Banco', icon: BookOpen },
+  { href: '/calendario', label: 'Calendario', icon: CalendarDays },
+  { href: '/coach-semanal', label: 'Coach', icon: Brain },
+  { href: '/ranking', label: 'Ranking', icon: Trophy },
+  { href: '/pizarra', label: 'Pizarra', icon: PenTool },
 ]
 
 const fullscreenRoutes = ['/login', '/onboarding', '/lab-ambiental']
@@ -21,45 +34,73 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
 
-  const hideSidebar = fullscreenRoutes.some((r) => pathname.startsWith(r))
+  const hideSidebar = fullscreenRoutes.some((route) => pathname.startsWith(route))
 
   if (hideSidebar) return <>{children}</>
 
   return (
     <div className="shell">
-      <aside className={`side ${open ? 'open' : ''}`}>
-        <button className="toggle" onClick={() => setOpen(v => !v)}>
-          {open ? '←' : '☰'}
+      <motion.aside
+        className={`side ${open ? 'open' : ''}`}
+        initial={false}
+        animate={{ width: open ? 252 : 92 }}
+        transition={{ type: 'spring', stiffness: 340, damping: 34 }}
+      >
+        <button className="toggle" onClick={() => setOpen((value) => !value)} aria-label="Alternar navegacion">
+          {open ? <ChevronLeft size={20} strokeWidth={2.6} /> : <Menu size={20} strokeWidth={2.6} />}
         </button>
 
         <div className="brand">
-          <span>Salvando</span>
-          <strong>{open ? 'College UC' : 'UC'}</strong>
+          <div className="mark">SC</div>
+          {open && (
+            <motion.div
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.18 }}
+            >
+              <span>Salvando</span>
+              <strong>College UC</strong>
+            </motion.div>
+          )}
         </div>
 
         <nav>
           {items.map((item) => {
             const active = pathname === item.href
+            const Icon = item.icon
 
             return (
-              <Link key={item.href} href={item.href} className={active ? 'item active' : 'item'}>
-                <span className="emoji">{item.icon}</span>
-                {open && <span className="label">{item.label}</span>}
-              </Link>
+              <motion.div key={item.href} whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
+                <Link href={item.href} className={active ? 'item active' : 'item'} title={item.label}>
+                  <span className="icon">
+                    <Icon size={20} strokeWidth={2.4} />
+                  </span>
+                  {open && <span className="label">{item.label}</span>}
+                  {active && <motion.span layoutId="active-pill" className="activeGlow" />}
+                </Link>
+              </motion.div>
             )
           })}
         </nav>
-      </aside>
+      </motion.aside>
 
-      <section className="page">
+      <motion.section
+        className="page"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.28, ease: 'easeOut' }}
+      >
         {children}
-      </section>
+      </motion.section>
 
       <style jsx>{`
         .shell {
           min-height: 100vh;
           display: flex;
-          background: #020617;
+          background:
+            radial-gradient(circle at 18% 0%, rgba(59, 130, 246, .20), transparent 30%),
+            radial-gradient(circle at 100% 18%, rgba(20, 184, 166, .12), transparent 28%),
+            linear-gradient(180deg, #020617 0%, #08111f 48%, #020617 100%);
         }
 
         .side {
@@ -67,52 +108,77 @@ export default function AppShell({ children }: { children: ReactNode }) {
           top: 0;
           width: 92px;
           height: 100vh;
-          padding: 16px 12px;
-          background: linear-gradient(180deg, rgba(2,6,23,.98), rgba(15,23,42,.94));
-          border-right: 1px solid rgba(255,255,255,.09);
-          backdrop-filter: blur(18px);
-          transition: width .22s ease;
+          padding: 16px 12px 18px;
+          background:
+            linear-gradient(180deg, rgba(2, 6, 23, .86), rgba(15, 23, 42, .72)),
+            rgba(2, 6, 23, .72);
+          border-right: 1px solid rgba(255, 255, 255, .10);
+          backdrop-filter: blur(24px) saturate(140%);
+          box-shadow: 22px 0 70px rgba(0, 0, 0, .20);
           z-index: 50;
         }
 
         .side.open {
-          width: 244px;
+          width: 252px;
         }
 
         .toggle {
           width: 52px;
           height: 46px;
-          border: 1px solid rgba(255,255,255,.1);
+          display: grid;
+          place-items: center;
+          border: 1px solid rgba(255, 255, 255, .12);
           border-radius: 16px;
-          background: rgba(255,255,255,.06);
+          background: linear-gradient(180deg, rgba(255, 255, 255, .10), rgba(255, 255, 255, .055));
           color: white;
-          font-size: 18px;
-          font-weight: 950;
           cursor: pointer;
           margin-bottom: 18px;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, .10), 0 14px 30px rgba(0, 0, 0, .18);
         }
 
         .brand {
-          margin-bottom: 20px;
-          padding: 0 6px;
+          min-height: 64px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 18px;
+          padding: 0 4px;
+        }
+
+        .mark {
+          width: 52px;
+          height: 52px;
+          display: grid;
+          place-items: center;
+          flex: 0 0 auto;
+          border-radius: 18px;
+          color: white;
+          font-size: 15px;
+          font-weight: 950;
+          letter-spacing: -.03em;
+          background:
+            linear-gradient(135deg, rgba(59, 130, 246, .96), rgba(20, 184, 166, .88)),
+            #2563eb;
+          box-shadow: 0 20px 42px rgba(37, 99, 235, .24);
         }
 
         .brand span {
           display: block;
-          color: #67e8f9;
+          color: #8bd3ff;
           font-size: 11px;
           font-weight: 950;
-          letter-spacing: .18em;
+          letter-spacing: .16em;
           text-transform: uppercase;
         }
 
         .brand strong {
           display: block;
           color: white;
-          font-size: ${open ? '30px' : '22px'};
+          font-size: 24px;
           font-weight: 950;
-          line-height: .95;
+          line-height: 1;
           margin-top: 4px;
+          letter-spacing: -.04em;
         }
 
         nav {
@@ -126,40 +192,55 @@ export default function AppShell({ children }: { children: ReactNode }) {
           display: flex;
           align-items: center;
           gap: 13px;
+          position: relative;
+          overflow: hidden;
           padding: 10px 13px;
           border-radius: 18px;
-          color: rgba(226,232,240,.92);
+          color: rgba(226, 232, 240, .92);
           text-decoration: none;
-          background: rgba(255,255,255,.055);
-          border: 1px solid rgba(255,255,255,.075);
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
-          transition: .18s ease;
+          background: rgba(255, 255, 255, .045);
+          border: 1px solid rgba(255, 255, 255, .075);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04);
+          transition: background .18s ease, border-color .18s ease, color .18s ease;
         }
 
         .item:hover {
-          transform: translateY(-1px);
-          background: rgba(255,255,255,.09);
+          background: rgba(255, 255, 255, .085);
+          border-color: rgba(255, 255, 255, .14);
           color: white;
         }
 
         .item.active {
-          background: linear-gradient(135deg,#2563eb,#7c3aed);
+          background: linear-gradient(135deg, rgba(37, 99, 235, .96), rgba(14, 165, 233, .78));
           color: white;
-          border-color: rgba(255,255,255,.18);
-          box-shadow: 0 18px 40px rgba(37,99,235,.22);
+          border-color: rgba(255, 255, 255, .18);
+          box-shadow: 0 18px 42px rgba(37, 99, 235, .24);
         }
 
-        .emoji {
-          min-width: 28px;
-          text-align: center;
-          font-size: 23px;
-          filter: drop-shadow(0 6px 12px rgba(0,0,0,.25));
+        .icon {
+          width: 28px;
+          height: 28px;
+          display: grid;
+          place-items: center;
+          flex: 0 0 auto;
+          filter: drop-shadow(0 8px 16px rgba(0, 0, 0, .20));
         }
 
         .label {
           font-size: 16px;
           font-weight: 900;
           white-space: nowrap;
+          position: relative;
+          z-index: 2;
+        }
+
+        .activeGlow {
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          border-radius: inherit;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18);
+          pointer-events: none;
         }
 
         .page {
@@ -168,22 +249,53 @@ export default function AppShell({ children }: { children: ReactNode }) {
         }
 
         @media(max-width: 900px) {
+          .shell {
+            display: block;
+            padding-bottom: 74px;
+          }
+
           .side {
-            width: 78px;
-            padding: 12px 8px;
+            position: fixed;
+            inset: auto 10px 10px;
+            width: auto !important;
+            height: 64px;
+            padding: 8px;
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: 24px;
+            overflow-x: auto;
+            box-shadow: 0 18px 70px rgba(0, 0, 0, .34);
           }
 
           .side.open {
-            width: 210px;
+            width: auto;
+          }
+
+          .toggle,
+          .brand {
+            display: none;
+          }
+
+          nav {
+            height: 100%;
+            flex-direction: row;
+            align-items: center;
+            gap: 8px;
           }
 
           .item {
-            min-height: 50px;
-            padding: 9px 10px;
+            min-width: 48px;
+            min-height: 48px;
+            justify-content: center;
+            padding: 9px 12px;
+            border-radius: 17px;
+          }
+
+          .label {
+            display: none;
           }
 
           .page {
-            width: calc(100vw - 78px);
+            width: 100%;
           }
         }
       `}</style>
