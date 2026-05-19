@@ -108,7 +108,7 @@ export default function PrecalculoFullClient() {
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.24),transparent_32%),linear-gradient(135deg,#f8fafc,#eef2ff_45%,#ecfeff)] px-4 py-8 text-slate-950">
       <section className="mx-auto max-w-7xl">
-        <div className="rounded-[2rem] border border-white/70 bg-white/85 p-6 shadow-2xl shadow-slate-200/70 backdrop-blur-xl md:p-10">
+        <div className="rounded-[2rem] border border-blue-100 bg-white/95 p-6 shadow-2xl shadow-slate-200/70 backdrop-blur-xl md:p-10">
           <p className="text-xs font-black uppercase tracking-[0.35em] text-blue-600">
             Asignatura exclusiva
           </p>
@@ -145,8 +145,8 @@ export default function PrecalculoFullClient() {
                 className={cx(
                   "rounded-3xl border p-5 text-left transition hover:-translate-y-1 hover:shadow-xl",
                   activeExam === item.id
-                    ? "border-blue-500 bg-blue-600 text-white shadow-xl shadow-blue-200"
-                    : "border-slate-200 bg-white text-slate-800"
+                    ? "border-blue-500 bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-2xl shadow-blue-300/50"
+                    : "border-slate-200 bg-gradient-to-br from-white to-blue-50 text-slate-800"
                 )}
               >
                 <p className="text-xs font-black uppercase tracking-[0.22em] opacity-70">
@@ -160,7 +160,7 @@ export default function PrecalculoFullClient() {
         </div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[0.8fr_1.5fr]">
-          <aside className="rounded-[2rem] border border-white/70 bg-white/85 p-5 shadow-xl backdrop-blur-xl">
+          <aside className="rounded-[2rem] border border-blue-100 bg-white/95 p-5 shadow-xl backdrop-blur-xl">
             <p className="text-xs font-black uppercase tracking-[0.28em] text-slate-500">
               Temáticas visibles
             </p>
@@ -191,7 +191,7 @@ export default function PrecalculoFullClient() {
             </div>
           </aside>
 
-          <section className="rounded-[2rem] border border-white/70 bg-white/85 p-6 shadow-xl backdrop-blur-xl">
+          <section className="rounded-[2rem] border border-blue-100 bg-white/95 p-6 shadow-xl backdrop-blur-xl">
             <p className="text-xs font-black uppercase tracking-[0.28em] text-blue-600">
               Ver fórmulas y tips necesarios
             </p>
@@ -253,7 +253,7 @@ export default function PrecalculoFullClient() {
         </div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          <section className="rounded-[2rem] border border-white/70 bg-white/85 p-6 shadow-xl backdrop-blur-xl">
+          <section className="rounded-[2rem] border border-blue-100 bg-white/95 p-6 shadow-xl backdrop-blur-xl">
             <p className="text-xs font-black uppercase tracking-[0.28em] text-rose-600">
               Pregunta contextualizada
             </p>
@@ -315,7 +315,7 @@ export default function PrecalculoFullClient() {
             )}
           </section>
 
-          <section className="rounded-[2rem] border border-white/70 bg-white/85 p-6 shadow-xl backdrop-blur-xl">
+          <section className="rounded-[2rem] border border-blue-100 bg-white/95 p-6 shadow-xl backdrop-blur-xl">
             <p className="text-xs font-black uppercase tracking-[0.28em] text-violet-600">
               Tutor IA de Pre Cálculo
             </p>
@@ -367,7 +367,7 @@ export default function PrecalculoFullClient() {
           </section>
         </div>
 
-        <section className="mt-8 rounded-[2rem] border border-white/70 bg-white/85 p-6 shadow-xl backdrop-blur-xl">
+        <section className="mt-8 rounded-[2rem] border border-blue-100 bg-white/95 p-6 shadow-xl backdrop-blur-xl">
           <p className="text-xs font-black uppercase tracking-[0.28em] text-violet-600">
             Visualizador trigonométrico
           </p>
@@ -441,3 +441,4 @@ export default function PrecalculoFullClient() {
     </main>
   );
 }
+

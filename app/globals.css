@@ -450,40 +450,43 @@ body {
 }
 
 /* PREMIUM SIDEBAR CONTRAST FIX START */
-aside a,
-aside button,
-aside a span,
-aside button span,
-aside svg,
-aside p,
-aside h1,
-aside h2 {
-  color: rgb(248 250 252) !important;
+[data-app-sidebar],
+[data-app-sidebar] * {
   opacity: 1 !important;
 }
 
-aside a:hover,
-aside button:hover,
-aside a:hover span,
-aside button:hover span,
-aside a:hover svg,
-aside button:hover svg {
+[data-app-sidebar] a,
+[data-app-sidebar] button,
+[data-app-sidebar] a *,
+[data-app-sidebar] button *,
+[data-app-sidebar] svg,
+[data-app-sidebar] span,
+[data-app-sidebar] p,
+[data-app-sidebar] h1,
+[data-app-sidebar] h2 {
+  color: rgb(248 250 252) !important;
+}
+
+[data-app-sidebar] a:hover,
+[data-app-sidebar] button:hover,
+[data-app-sidebar] a:hover *,
+[data-app-sidebar] button:hover *,
+[data-app-sidebar] a:hover svg,
+[data-app-sidebar] button:hover svg {
   color: rgb(255 255 255) !important;
-  opacity: 1 !important;
 }
 
-aside [class*="text-slate-900"],
-aside [class*="text-slate-800"],
-aside [class*="text-slate-700"],
-aside [class*="text-slate-600"],
-aside [class*="text-slate-500"],
-aside [class*="text-zinc-900"],
-aside [class*="text-zinc-800"],
-aside [class*="text-zinc-700"],
-aside [class*="text-neutral-900"],
-aside [class*="text-neutral-800"],
-aside [class*="text-neutral-700"] {
-  color: rgb(248 250 252) !important;
-  opacity: 1 !important;
+[data-app-sidebar] a[class*="bg-white"],
+[data-app-sidebar] a[class*="bg-white"] *,
+[data-app-sidebar] a[class*="bg-cyan"],
+[data-app-sidebar] a[class*="bg-cyan"] *,
+[data-app-sidebar] a[class*="bg-sky"],
+[data-app-sidebar] a[class*="bg-sky"] * {
+  color: rgb(15 23 42) !important;
+}
+
+[data-app-sidebar] [aria-current="page"],
+[data-app-sidebar] [aria-current="page"] * {
+  color: rgb(15 23 42) !important;
 }
 /* PREMIUM SIDEBAR CONTRAST FIX END */
