@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { ACCESS_CODES, ACCESS_STORAGE_KEYS } from "@/lib/access-control"
+import { saveLocalUser } from "@/lib/local-user"
 import { supabase } from "@/lib/supabase"
 
 export default function LoginPage() {
@@ -30,29 +32,57 @@ export default function LoginPage() {
   function enterTeacher(event?: React.FormEvent) {
     event?.preventDefault()
 
-    if (code.trim() !== "2890") {
-      setError("Código de acceso inválido.")
+    const cleanCode = code.trim().toUpperCase()
+
+    if (cleanCode === ACCESS_CODES.docenteLab) {
+      try {
+        localStorage.setItem(ACCESS_STORAGE_KEYS.teacherLab, "true")
+        localStorage.setItem("lab-demo-access", "true")
+      } catch {}
+
+      window.location.href = "/lab-ambiental?docente=1"
       return
     }
 
-    try {
-      localStorage.setItem("teacher-lab-access", "true")
-      localStorage.setItem("lab-demo-access", "true")
-    } catch {}
+    if (cleanCode === ACCESS_CODES.crshTeacher) {
+      try {
+        localStorage.setItem(ACCESS_STORAGE_KEYS.crshTeacher, "true")
+      } catch {}
 
-    window.location.href = "/lab-ambiental?docente=1"
+      router.push("/cardenal-respira/docentes")
+      return
+    }
+
+    if (cleanCode === ACCESS_CODES.docenciaReview) {
+      try {
+        localStorage.setItem(ACCESS_STORAGE_KEYS.docenciaReview, "true")
+        document.cookie = `${ACCESS_STORAGE_KEYS.docenciaReview}=true; path=/; max-age=28800; SameSite=Lax`
+        saveLocalUser({
+          id: "docencia-review-local",
+          email: "docencia-review@demo.local",
+          username: "Revisión docente",
+          college_track: "Modo revisión docente",
+          year: "2026",
+        })
+      } catch {}
+
+      router.push("/")
+      return
+    }
+
+    setError("Código de acceso inválido.")
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center px-6">
-      <section className="w-full max-w-md rounded-[2rem] border border-white/10 bg-white/10 p-8 backdrop-blur-xl shadow-2xl">
+    <main className="flex min-h-screen items-center justify-center bg-slate-950 px-6 text-white">
+      <section className="w-full max-w-md rounded-[2rem] border border-white/10 bg-white/10 p-8 shadow-2xl backdrop-blur-xl">
         <p className="text-xs font-black uppercase tracking-[0.25em] text-cyan-300">
           Salvando College UC
         </p>
 
         <h1 className="mt-4 text-4xl font-black">Inicia sesión</h1>
 
-        <p className="mt-3 text-sm text-slate-300">
+        <p className="mt-3 text-sm leading-6 text-slate-300">
           Si eres estudiante, ingresa con tu cuenta de Google. Si eres docente,
           ingresa el código de acceso a la actividad.
         </p>
@@ -72,14 +102,14 @@ export default function LoginPage() {
         <div className="my-8 h-px bg-white/10" />
 
         <form onSubmit={enterTeacher}>
-          <p className="font-black text-fuchsia-300">Docentes</p>
+          <p className="font-black text-fuchsia-300">Docentes y revisión</p>
 
-          <div className="mt-3 flex gap-3">
+          <div className="mt-3 grid gap-3 sm:flex">
             <input
               value={code}
-              onChange={(e) => setCode(e.target.value)}
+              onChange={(event) => setCode(event.target.value)}
               placeholder="Código de acceso"
-              inputMode="numeric"
+              inputMode="text"
               className="min-w-0 flex-1 rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 font-bold outline-none"
             />
 
@@ -91,6 +121,10 @@ export default function LoginPage() {
             </button>
           </div>
         </form>
+
+        <div className="mt-4 rounded-2xl border border-white/10 bg-slate-900/70 p-3 text-xs font-semibold leading-5 text-slate-400">
+          Códigos locales: 2890 mantiene el laboratorio ambiental; CRSH abre Cardenal Respira; DOCENCIA-REVIEW activa revisión demo.
+        </div>
 
         {error && (
           <p className="mt-5 rounded-xl bg-red-500/15 p-3 text-sm font-bold text-red-200">

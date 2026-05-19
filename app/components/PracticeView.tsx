@@ -1,6 +1,7 @@
 ﻿'use client'
 
 import { useEffect, useMemo, useState } from "react"
+import { useRouter } from "next/navigation"
 
 import MathLessonEngine from "./MathLessonEngine"
 import FormulaDrawer from "./FormulaDrawer"
@@ -23,6 +24,8 @@ import {
   getMat1000ModulesForEvaluation,
   getMat1000SubtemasForModule,
 } from "@/lib/precalculo-ui-options"
+import { canAccessRoute, getClientAccessContext } from "@/lib/access-control"
+import { getLocalUser } from "@/lib/local-user"
 
 type Mode = "practica" | "diagnostico" | "simulacion" | "intensivo"
 type QuestionKind = "seleccion_multiple" | "desarrollo" | "modelamiento" | "mixtas"
@@ -49,8 +52,8 @@ function formatTime(seconds: number) {
 function normalizeMathAnswer(value: any) {
   return String(value ?? "")
     .toLowerCase()
-    .replaceAll("âˆš", "sqrt")
-    .replaceAll("raÃ­z", "sqrt")
+    .replaceAll("√", "sqrt")
+    .replaceAll("raíz", "sqrt")
     .replaceAll("raiz", "sqrt")
     .replace(/\s+/g, "")
     .replace(/[.$]/g, "")
@@ -108,9 +111,9 @@ function buildGenericQuestions(subject: SubjectCode) {
     {
       tipo: "desarrollo",
       subtema: "Conceptos base",
-      pregunta: `Explica el concepto central mÃ¡s importante de ${theme.name} con un ejemplo.`,
+      pregunta: `Explica el concepto central más importante de ${theme.name} con un ejemplo.`,
       respuesta_correcta: "Respuesta abierta",
-      explicacion: "La idea es verificar comprensiÃ³n conceptual, no memorizar una frase.",
+      explicacion: "La idea es verificar comprensión conceptual, no memorizar una frase.",
       opciones: null,
     },
   ]
@@ -121,13 +124,13 @@ function enrichQuestions(base: any[], kind: QuestionKind, mode: Mode) {
     {
       id: "dev-lineal-1",
       tipo: "desarrollo",
-      subtema: "EcuaciÃ³n lineal",
+      subtema: "Ecuación lineal",
       pregunta: "Desarrollo: resuelve 10 + 2x = 30 mostrando cada paso.",
       opciones: null,
       respuesta_correcta: "x = 10",
       explicacion: "Se resta 10 a ambos lados y luego se divide por 2.",
       pasos: [
-        { orden: 1, titulo: "Identificar", explicacion: "El 10 estÃ¡ sumando.", expresion: "10 + 2x = 30" },
+        { orden: 1, titulo: "Identificar", explicacion: "El 10 está sumando.", expresion: "10 + 2x = 30" },
         { orden: 2, titulo: "Restar 10", explicacion: "Restamos 10 a ambos lados.", expresion: "2x = 30 - 10" },
         { orden: 3, titulo: "Simplificar", explicacion: "30 - 10 = 20.", expresion: "2x = 20" },
         { orden: 4, titulo: "Dividir por 2", explicacion: "El 2 multiplica a x, por eso dividimos.", expresion: "x = 10" },
@@ -137,7 +140,7 @@ function enrichQuestions(base: any[], kind: QuestionKind, mode: Mode) {
       id: "mod-funciones-1",
       tipo: "modelamiento",
       subtema: "Modelamiento",
-      pregunta: "Modelamiento: Si C(x)=2x+15 e I(x)=5x, modela la utilidad y determina cuÃ¡ndo hay ganancia.",
+      pregunta: "Modelamiento: Si C(x)=2x+15 e I(x)=5x, modela la utilidad y determina cuándo hay ganancia.",
       opciones: null,
       respuesta_correcta: "U(x)=3x-15; hay ganancia si x>5",
       explicacion: "La utilidad es ingreso menos costo: U(x)=5x-(2x+15)=3x-15. Hay ganancia cuando U(x)>0.",
@@ -145,7 +148,7 @@ function enrichQuestions(base: any[], kind: QuestionKind, mode: Mode) {
         { orden: 1, titulo: "Definir utilidad", explicacion: "Utilidad = ingreso - costo.", expresion: "U(x)=I(x)-C(x)" },
         { orden: 2, titulo: "Sustituir", explicacion: "Reemplazamos las funciones dadas.", expresion: "U(x)=5x-(2x+15)" },
         { orden: 3, titulo: "Simplificar", explicacion: "Distribuimos el signo negativo.", expresion: "U(x)=3x-15" },
-        { orden: 4, titulo: "Ganancia", explicacion: "Pedimos utilidad positiva.", expresion: "3x-15>0 â‡’ x>5" },
+        { orden: 4, titulo: "Ganancia", explicacion: "Pedimos utilidad positiva.", expresion: "3x-15>0 ⇒ x>5" },
       ],
     },
   ]
@@ -157,9 +160,10 @@ function enrichQuestions(base: any[], kind: QuestionKind, mode: Mode) {
 }
 
 export default function PracticeView() {
+  const router = useRouter()
   const { name: userName } = useUser()
 
-  const [subject, setSubject] = useState<SubjectCode>("MAT1000")
+  const [subject, setSubject] = useState<SubjectCode>("SOL500")
   const [evaluation, setEvaluation] = useState("I1")
   const [moduleLabel, setModuleLabel] = useState("Todos")
   const [subtema, setSubtema] = useState("Todos")
@@ -190,19 +194,23 @@ export default function PracticeView() {
       window.location.replace("/precalculo-full")
       return
     }
-    const rawSubject = params.get("subject")
+    const context = getClientAccessContext(getLocalUser())
 
-    if (rawSubject === "MAT1000") {
-      window.location.href = "/precalculo-full"
+    if (!canAccessRoute("/practica", context)) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("Perfil restringido: /practica redirige a /precalculo-full.")
+      }
+      router.replace("/precalculo-full?restricted=practice")
       return
     }
+
     setSubject(normalizeSubject(params.get("subject")))
     setEvaluation(normalizeEvaluation(params.get("evaluation")))
     const urlMode = params.get("mode")
     if (urlMode === "practica" || urlMode === "diagnostico" || urlMode === "simulacion" || urlMode === "intensivo") {
       setMode(urlMode)
     }
-  }, [])
+  }, [router])
 
   useEffect(() => {
     if (!timerStarted || finished || questions.length === 0) return
@@ -230,7 +238,7 @@ export default function PracticeView() {
   }, [isMath, evaluation])
 
   const subtemas = useMemo(() => {
-    if (!isMath) return ["Todos", "Lecturas", "Conceptos", "AplicaciÃ³n"]
+    if (!isMath) return ["Todos", "Lecturas", "Conceptos", "Aplicación"]
     return getMat1000SubtemasForModule(moduleLabel, evaluation)
   }, [isMath, moduleLabel, evaluation])
 
@@ -370,10 +378,18 @@ export default function PracticeView() {
     <main className="practice-page" style={{ "--c": theme.color, "--a": theme.accent, "--g": theme.gradient } as any}>
       <section className="shell">
         <section className="hero-card">
+          <div className="math-bg" aria-hidden="true">
+            <span>∑</span>
+            <span>π</span>
+            <span>f(x)</span>
+            <span>x²</span>
+            <span>λ</span>
+            <span>√</span>
+          </div>
           <div>
             <span className="badge">{theme.icon} {theme.short}</span>
             <h1>Hola, {userName}</h1>
-            <p>PrÃ¡ctica Pro Max UC: personalizada, visual, explicativa y orientada a prueba real.</p>
+            <p>Práctica inteligente: entrena por ramo, detecta errores y mejora antes de tu evaluación.</p>
           </div>
 
           <div className="timer">
@@ -384,16 +400,16 @@ export default function PracticeView() {
         </section>
 
         <section className="mode-card">
-          <h3>{diagnosticRequired ? "ðŸ”’ DiagnÃ³stico obligatorio" : "ðŸ§  Sistema inteligente activo"}</h3>
+          <h3>{diagnosticRequired ? "Diagnóstico obligatorio" : "Sistema inteligente activo"}</h3>
           <p>
             {diagnosticRequired
-              ? `Antes de practicar ${theme.name} ${evaluation}, completa el diagnÃ³stico.`
-              : `Modo ${mode} Â· foco ${subtema} Â· explicaciÃ³n adaptativa.`}
+              ? `Antes de practicar ${theme.name} ${evaluation}, completa el diagnóstico. Esto permite orientar la sesión sin práctica a ciegas.`
+              : `Modo ${mode} · foco ${subtema} · explicación adaptativa.`}
           </p>
 
           {diagnosticRequired && (
             <a className="diagnostic-cta" href={`/diagnostico?subject=${subject}&evaluation=${evaluation}`}>
-              Hacer diagnÃ³stico ahora
+              Hacer diagnóstico ahora
             </a>
           )}
         </section>
@@ -410,7 +426,7 @@ export default function PracticeView() {
 
           {isMath && (
             <label>
-              EvaluaciÃ³n
+              Evaluación
               <select value={evaluation} onChange={(e) => { setEvaluation(e.target.value); setModuleLabel("Todos"); setSubtema("Todos"); reset() }}>
                 {evaluations.map(ev => <option key={ev}>{ev}</option>)}
               </select>
@@ -418,7 +434,7 @@ export default function PracticeView() {
           )}
 
           <label>
-            MÃ³dulo
+            Módulo
             <select value={moduleLabel} onChange={(e) => { setModuleLabel(e.target.value); setSubtema("Todos"); reset() }}>
               {modules.map(m => <option key={m}>{m}</option>)}
             </select>
@@ -434,8 +450,8 @@ export default function PracticeView() {
           <label>
             Modo
             <select value={mode} onChange={(e) => { setMode(e.target.value as Mode); reset() }}>
-              <option value="practica">PrÃ¡ctica guiada</option>
-              <option value="diagnostico">DiagnÃ³stico</option>
+              <option value="practica">Práctica guiada</option>
+              <option value="diagnostico">Diagnóstico</option>
               <option value="simulacion">Prueba UC real</option>
               <option value="intensivo">Intensivo pre-prueba</option>
             </select>
@@ -445,7 +461,7 @@ export default function PracticeView() {
             Tipo
             <select value={kind} onChange={(e) => setKind(e.target.value as QuestionKind)}>
               <option value="mixtas">Mixtas</option>
-              <option value="seleccion_multiple">SelecciÃ³n mÃºltiple</option>
+              <option value="seleccion_multiple">Selección múltiple</option>
               <option value="desarrollo">Desarrollo</option>
               <option value="modelamiento">Modelamiento</option>
             </select>
@@ -462,7 +478,7 @@ export default function PracticeView() {
           </label>
 
           <div className="actions">
-            <button disabled={diagnosticRequired} onClick={start}>Comenzar sesiÃ³n</button>
+            <button disabled={diagnosticRequired} onClick={start}>Comenzar sesión</button>
             <button className="secondary" onClick={reset}>Reiniciar</button>
           </div>
         </section>
@@ -470,21 +486,21 @@ export default function PracticeView() {
         <section className="stats">
           <div><span>Preguntas</span><strong>{questions.length}</strong></div>
           <div><span>Respondidas</span><strong>{answers.length}</strong></div>
-          <div><span>PrecisiÃ³n</span><strong>{accuracy}%</strong></div>
-          <div><span>Promedio/pregunta</span><strong>{avgSeconds ? formatTime(avgSeconds) : "â€”"}</strong></div>
-          <div><span>DÃ©biles</span><strong>{weak.length}</strong></div>
+          <div><span>Precisión</span><strong>{accuracy}%</strong></div>
+          <div><span>Promedio/pregunta</span><strong>{avgSeconds ? formatTime(avgSeconds) : "—"}</strong></div>
+          <div><span>Débiles</span><strong>{weak.length}</strong></div>
         </section>
 
         {finished && (
           <section className="result-card">
-            <h2>SesiÃ³n finalizada</h2>
-            <p>PrecisiÃ³n: <strong>{accuracy}%</strong></p>
+            <h2>Sesión finalizada</h2>
+            <p>Precisión: <strong>{accuracy}%</strong></p>
             {weak.length > 0 ? (
               <p>Refuerza: <strong>{weak.join(", ")}</strong>.</p>
             ) : (
-              <p>No se detectaron debilidades crÃ­ticas.</p>
+              <p>No se detectaron debilidades críticas.</p>
             )}
-            <button onClick={start}>Repetir sesiÃ³n</button>
+            <button onClick={start}>Repetir sesión</button>
           </section>
         )}
 
@@ -492,7 +508,7 @@ export default function PracticeView() {
           <section className="question-card">
             <div className="chips">
               <span>{theme.short}</span>
-              <span>{current.tipo || "selecciÃ³n"}</span>
+              <span>{current.tipo || "selección"}</span>
               <span>{current.subtema || "general"}</span>
               <span>{index + 1}/{questions.length}</span>
             </div>
@@ -552,7 +568,7 @@ export default function PracticeView() {
               </div>
             ) : (
               <div className="written">
-                <textarea value={written} onChange={(e) => setWritten(e.target.value)} placeholder="Escribe tu desarrollo aquÃ­..." />
+                <textarea value={written} onChange={(e) => setWritten(e.target.value)} placeholder="Escribe tu desarrollo aquí..." />
                 <button onClick={submitWritten}>Guardar desarrollo</button>
               </div>
             )}
@@ -566,7 +582,7 @@ export default function PracticeView() {
                   </>
                 ) : (
                   <>
-                    <h3>{selected === current.respuesta_correcta || selected === "respuesta_abierta" ? "âœ… Revisemos" : "âŒ Incorrecta"}</h3>
+                    <h3>{selected === current.respuesta_correcta || selected === "respuesta_abierta" ? "Revisemos" : "Incorrecta"}</h3>
                     <p><strong>Respuesta esperada:</strong> {String(getCorrectOptionText(current))}</p>
                     <p>{current.explicacion || current.explanation}</p>
 
@@ -580,24 +596,24 @@ export default function PracticeView() {
 
                     {adaptiveRecommendation && (
                       <div className="adaptiveRecommendationBox">
-                        <strong>PrÃ³ximo ajuste IA</strong>
+                        <strong>Próximo ajuste IA</strong>
                         <p>{adaptiveRecommendation.message}</p>
                       </div>
                     )}
 
                     {current.error_comun && (
-                      <div className="note">Trampa tÃ­pica UC: {current.error_comun}</div>
+                      <div className="note">Trampa típica UC: {current.error_comun}</div>
                     )}
 
                     
                     <div className="feelingBox">
-                      <p>Â¿CÃ³mo se te hizo?</p>
+                      <p>¿Cómo se te hizo?</p>
                       <div className="feelingBtns">
-                        <button onClick={() => handleFeeling("facil")} className={feeling === "facil" ? "active easy" : ""}>FÃ¡cil</button>
+                        <button onClick={() => handleFeeling("facil")} className={feeling === "facil" ? "active easy" : ""}>Fácil</button>
                         <button onClick={() => handleFeeling("medio")} className={feeling === "medio" ? "active mid" : ""}>Normal</button>
-                        <button onClick={() => handleFeeling("dificil")} className={feeling === "dificil" ? "active hard" : ""}>DifÃ­cil</button>
+                        <button onClick={() => handleFeeling("dificil")} className={feeling === "dificil" ? "active hard" : ""}>Difícil</button>
                       </div>
-                      {feeling && <small>Guardado. La prÃ³xima sesiÃ³n se adaptarÃ¡ a esto.</small>}
+                      {feeling && <small>Guardado. La próxima sesión se adaptará a esto.</small>}
                     </div>
 
 
@@ -606,7 +622,7 @@ export default function PracticeView() {
                         setShowSteps(v => !v)
                         setVisualStep(0)
                       }}>
-                        {showSteps ? "Ocultar explicaciÃ³n" : "Ver explicaciÃ³n paso a paso"}
+                        {showSteps ? "Ocultar explicación" : "Ver explicación paso a paso"}
                       </button>
                       <button onClick={next}>Siguiente</button>
                     </div>
@@ -648,8 +664,12 @@ export default function PracticeView() {
           padding: 28px;
           color: white;
           background:
+            linear-gradient(rgba(148,163,184,.045) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(148,163,184,.045) 1px, transparent 1px),
             radial-gradient(circle at 18% 10%, var(--a), transparent 34%),
+            radial-gradient(circle at 88% 8%, rgba(34,211,238,.14), transparent 28%),
             linear-gradient(180deg,#020617,#0f172a);
+          background-size: 34px 34px, 34px 34px, 100% 100%, 100% 100%, 100% 100%;
         }
 
         .shell {
@@ -671,6 +691,8 @@ export default function PracticeView() {
         }
 
         .hero-card {
+          position: relative;
+          overflow: hidden;
           padding: 28px;
           display: flex;
           justify-content: space-between;
@@ -678,6 +700,28 @@ export default function PracticeView() {
           border-color: var(--c);
           box-shadow: 0 0 0 1px var(--c),0 30px 90px rgba(0,0,0,.35);
         }
+
+        .math-bg {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          opacity: .18;
+          font-weight: 950;
+          color: white;
+        }
+
+        .math-bg span {
+          position: absolute;
+          font-size: clamp(28px, 6vw, 78px);
+          filter: blur(.2px);
+        }
+
+        .math-bg span:nth-child(1) { left: 10%; top: 12%; }
+        .math-bg span:nth-child(2) { left: 38%; top: 6%; }
+        .math-bg span:nth-child(3) { right: 24%; top: 18%; }
+        .math-bg span:nth-child(4) { right: 8%; bottom: 12%; }
+        .math-bg span:nth-child(5) { left: 24%; bottom: 8%; }
+        .math-bg span:nth-child(6) { right: 38%; bottom: 18%; }
 
         .badge,
         .chips span {

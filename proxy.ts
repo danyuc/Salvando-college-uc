@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextRequest, NextResponse } from 'next/server'
 
-const PUBLIC_ROUTES = ['/login', '/auth', '/onboarding', '/lab-ambiental']
+const PUBLIC_ROUTES = ['/login', '/auth', '/onboarding', '/lab-ambiental', '/cardenal-respira', '/precalculo-full']
 
 export async function proxy(req: NextRequest) {
   let res = NextResponse.next({
@@ -47,6 +47,16 @@ export async function proxy(req: NextRequest) {
 
   const path = req.nextUrl.pathname
   const isPublicRoute = PUBLIC_ROUTES.some((route) => path.startsWith(route))
+  const isDocenciaReview =
+    req.cookies.get('salvando-docencia-review-access')?.value === 'true'
+  const isReviewableStudentRoute =
+    path.startsWith('/practica') ||
+    path.startsWith('/precalculo-full') ||
+    path.startsWith('/calendario')
+
+  if (!user && isDocenciaReview && isReviewableStudentRoute) {
+    return res
+  }
 
   if (!user && !isPublicRoute) {
     return NextResponse.redirect(new URL('/login', req.url))

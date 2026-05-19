@@ -1,8 +1,10 @@
 ﻿"use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useUser } from "@/lib/useUser";
+import { getLocalUser } from "@/lib/local-user";
+import { getClientAccessContext } from "@/lib/access-control";
 import {
   ACADEMIC_EVENTS,
   SUBJECT_THEMES,
@@ -47,6 +49,8 @@ function MetricCard({
 
 export default function HomeView() {
   const { name, email } = useUser();
+  const [canUseGenericPractice, setCanUseGenericPractice] = useState(true);
+  const [reviewMode, setReviewMode] = useState(false);
 
   const upcoming = useMemo(() => upcomingEvents(), []);
   const next = upcoming[0];
@@ -56,6 +60,12 @@ export default function HomeView() {
   const follow = upcoming.filter((event) => { const risk = getRisk(event); return risk === "activo" || risk === "estable"; });
   const totalWeight = upcoming.slice(0, 6).reduce((acc, event) => acc + event.weight, 0);
   const todayPlan = upcoming.slice(0, 3);
+
+  useEffect(() => {
+    const context = getClientAccessContext(getLocalUser());
+    setCanUseGenericPractice(!context.isCollegeCiencias || context.isDocenciaReview);
+    setReviewMode(context.isDocenciaReview);
+  }, []);
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.28),transparent_32%),radial-gradient(circle_at_top_right,rgba(124,58,237,0.22),transparent_34%),linear-gradient(135deg,#071025,#0b1020_48%,#07111f)] px-6 py-8 text-white md:px-10">
@@ -74,8 +84,14 @@ export default function HomeView() {
               </h1>
 
               <p className="mt-5 max-w-3xl text-lg font-semibold leading-8 text-slate-300 md:text-xl">
-                Tu cockpit académico: fechas, riesgo, práctica y notas en un solo panel inteligente.
+                Tu cockpit académico: fechas, riesgo, rutas de aprendizaje y notas en un solo panel inteligente.
               </p>
+
+              {reviewMode && (
+                <div className="mt-5 w-fit rounded-full border border-amber-300/30 bg-amber-300/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-amber-100">
+                  Modo revisión docente
+                </div>
+              )}
 
               <div className="mt-7 flex flex-wrap gap-3">
                 <Link
@@ -85,12 +101,14 @@ export default function HomeView() {
                   Pre Cálculo MAT1000
                 </Link>
 
-                <Link
-                  href="/practica"
-                  className="rounded-full border border-white/15 bg-white/10 px-5 py-3 text-sm font-black text-white transition hover:bg-white/15"
-                >
-                  Practicar foco
-                </Link>
+                {canUseGenericPractice && (
+                  <Link
+                    href="/practica"
+                    className="rounded-full border border-white/15 bg-white/10 px-5 py-3 text-sm font-black text-white transition hover:bg-white/15"
+                  >
+                    Práctica inteligente
+                  </Link>
+                )}
 
                 <Link
                   href="/diagnostico"
