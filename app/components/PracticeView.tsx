@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useMemo, useState } from "react"
 
@@ -31,7 +31,7 @@ const evaluations = ["I1", "I2", "I3", "EXAMEN"]
 
 function normalizeSubject(value: string | null): SubjectCode {
   if (value === "PSI1101" || value === "SOL500" || value === "CLG0000" || value === "IHI0204") return value
-  return "MAT1000"
+  return "SOL500"
 }
 
 function normalizeEvaluation(value: string | null) {
@@ -49,8 +49,8 @@ function formatTime(seconds: number) {
 function normalizeMathAnswer(value: any) {
   return String(value ?? "")
     .toLowerCase()
-    .replaceAll("√", "sqrt")
-    .replaceAll("raíz", "sqrt")
+    .replaceAll("âˆš", "sqrt")
+    .replaceAll("raÃ­z", "sqrt")
     .replaceAll("raiz", "sqrt")
     .replace(/\s+/g, "")
     .replace(/[.$]/g, "")
@@ -108,9 +108,9 @@ function buildGenericQuestions(subject: SubjectCode) {
     {
       tipo: "desarrollo",
       subtema: "Conceptos base",
-      pregunta: `Explica el concepto central más importante de ${theme.name} con un ejemplo.`,
+      pregunta: `Explica el concepto central mÃ¡s importante de ${theme.name} con un ejemplo.`,
       respuesta_correcta: "Respuesta abierta",
-      explicacion: "La idea es verificar comprensión conceptual, no memorizar una frase.",
+      explicacion: "La idea es verificar comprensiÃ³n conceptual, no memorizar una frase.",
       opciones: null,
     },
   ]
@@ -121,13 +121,13 @@ function enrichQuestions(base: any[], kind: QuestionKind, mode: Mode) {
     {
       id: "dev-lineal-1",
       tipo: "desarrollo",
-      subtema: "Ecuación lineal",
+      subtema: "EcuaciÃ³n lineal",
       pregunta: "Desarrollo: resuelve 10 + 2x = 30 mostrando cada paso.",
       opciones: null,
       respuesta_correcta: "x = 10",
       explicacion: "Se resta 10 a ambos lados y luego se divide por 2.",
       pasos: [
-        { orden: 1, titulo: "Identificar", explicacion: "El 10 está sumando.", expresion: "10 + 2x = 30" },
+        { orden: 1, titulo: "Identificar", explicacion: "El 10 estÃ¡ sumando.", expresion: "10 + 2x = 30" },
         { orden: 2, titulo: "Restar 10", explicacion: "Restamos 10 a ambos lados.", expresion: "2x = 30 - 10" },
         { orden: 3, titulo: "Simplificar", explicacion: "30 - 10 = 20.", expresion: "2x = 20" },
         { orden: 4, titulo: "Dividir por 2", explicacion: "El 2 multiplica a x, por eso dividimos.", expresion: "x = 10" },
@@ -137,7 +137,7 @@ function enrichQuestions(base: any[], kind: QuestionKind, mode: Mode) {
       id: "mod-funciones-1",
       tipo: "modelamiento",
       subtema: "Modelamiento",
-      pregunta: "Modelamiento: Si C(x)=2x+15 e I(x)=5x, modela la utilidad y determina cuándo hay ganancia.",
+      pregunta: "Modelamiento: Si C(x)=2x+15 e I(x)=5x, modela la utilidad y determina cuÃ¡ndo hay ganancia.",
       opciones: null,
       respuesta_correcta: "U(x)=3x-15; hay ganancia si x>5",
       explicacion: "La utilidad es ingreso menos costo: U(x)=5x-(2x+15)=3x-15. Hay ganancia cuando U(x)>0.",
@@ -145,7 +145,7 @@ function enrichQuestions(base: any[], kind: QuestionKind, mode: Mode) {
         { orden: 1, titulo: "Definir utilidad", explicacion: "Utilidad = ingreso - costo.", expresion: "U(x)=I(x)-C(x)" },
         { orden: 2, titulo: "Sustituir", explicacion: "Reemplazamos las funciones dadas.", expresion: "U(x)=5x-(2x+15)" },
         { orden: 3, titulo: "Simplificar", explicacion: "Distribuimos el signo negativo.", expresion: "U(x)=3x-15" },
-        { orden: 4, titulo: "Ganancia", explicacion: "Pedimos utilidad positiva.", expresion: "3x-15>0 ⇒ x>5" },
+        { orden: 4, titulo: "Ganancia", explicacion: "Pedimos utilidad positiva.", expresion: "3x-15>0 â‡’ x>5" },
       ],
     },
   ]
@@ -184,6 +184,12 @@ export default function PracticeView() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
+    const rawSubject = params.get("subject")
+
+    if (rawSubject === "MAT1000") {
+      window.location.href = "/precalculo-full"
+      return
+    }
     setSubject(normalizeSubject(params.get("subject")))
     setEvaluation(normalizeEvaluation(params.get("evaluation")))
     const urlMode = params.get("mode")
@@ -218,7 +224,7 @@ export default function PracticeView() {
   }, [isMath, evaluation])
 
   const subtemas = useMemo(() => {
-    if (!isMath) return ["Todos", "Lecturas", "Conceptos", "Aplicación"]
+    if (!isMath) return ["Todos", "Lecturas", "Conceptos", "AplicaciÃ³n"]
     return getMat1000SubtemasForModule(moduleLabel, evaluation)
   }, [isMath, moduleLabel, evaluation])
 
@@ -361,7 +367,7 @@ export default function PracticeView() {
           <div>
             <span className="badge">{theme.icon} {theme.short}</span>
             <h1>Hola, {userName}</h1>
-            <p>Práctica Pro Max UC: personalizada, visual, explicativa y orientada a prueba real.</p>
+            <p>PrÃ¡ctica Pro Max UC: personalizada, visual, explicativa y orientada a prueba real.</p>
           </div>
 
           <div className="timer">
@@ -372,16 +378,16 @@ export default function PracticeView() {
         </section>
 
         <section className="mode-card">
-          <h3>{diagnosticRequired ? "🔒 Diagnóstico obligatorio" : "🧠 Sistema inteligente activo"}</h3>
+          <h3>{diagnosticRequired ? "ðŸ”’ DiagnÃ³stico obligatorio" : "ðŸ§  Sistema inteligente activo"}</h3>
           <p>
             {diagnosticRequired
-              ? `Antes de practicar ${theme.name} ${evaluation}, completa el diagnóstico.`
-              : `Modo ${mode} · foco ${subtema} · explicación adaptativa.`}
+              ? `Antes de practicar ${theme.name} ${evaluation}, completa el diagnÃ³stico.`
+              : `Modo ${mode} Â· foco ${subtema} Â· explicaciÃ³n adaptativa.`}
           </p>
 
           {diagnosticRequired && (
             <a className="diagnostic-cta" href={`/diagnostico?subject=${subject}&evaluation=${evaluation}`}>
-              Hacer diagnóstico ahora
+              Hacer diagnÃ³stico ahora
             </a>
           )}
         </section>
@@ -390,7 +396,7 @@ export default function PracticeView() {
           <label>
             Asignatura
             <select value={subject} onChange={(e) => { setSubject(e.target.value as SubjectCode); reset() }}>
-              {(Object.entries(SUBJECT_THEMES) as [SubjectCode, any][]).map(([code, t]) => (
+              {(Object.entries(SUBJECT_THEMES) as [SubjectCode, any][]).filter(([code]) => code !== "MAT1000").map(([code, t]) => (
                 <option key={code} value={code}>{t.icon} {t.name}</option>
               ))}
             </select>
@@ -398,7 +404,7 @@ export default function PracticeView() {
 
           {isMath && (
             <label>
-              Evaluación
+              EvaluaciÃ³n
               <select value={evaluation} onChange={(e) => { setEvaluation(e.target.value); setModuleLabel("Todos"); setSubtema("Todos"); reset() }}>
                 {evaluations.map(ev => <option key={ev}>{ev}</option>)}
               </select>
@@ -406,7 +412,7 @@ export default function PracticeView() {
           )}
 
           <label>
-            Módulo
+            MÃ³dulo
             <select value={moduleLabel} onChange={(e) => { setModuleLabel(e.target.value); setSubtema("Todos"); reset() }}>
               {modules.map(m => <option key={m}>{m}</option>)}
             </select>
@@ -422,8 +428,8 @@ export default function PracticeView() {
           <label>
             Modo
             <select value={mode} onChange={(e) => { setMode(e.target.value as Mode); reset() }}>
-              <option value="practica">Práctica guiada</option>
-              <option value="diagnostico">Diagnóstico</option>
+              <option value="practica">PrÃ¡ctica guiada</option>
+              <option value="diagnostico">DiagnÃ³stico</option>
               <option value="simulacion">Prueba UC real</option>
               <option value="intensivo">Intensivo pre-prueba</option>
             </select>
@@ -433,7 +439,7 @@ export default function PracticeView() {
             Tipo
             <select value={kind} onChange={(e) => setKind(e.target.value as QuestionKind)}>
               <option value="mixtas">Mixtas</option>
-              <option value="seleccion_multiple">Selección múltiple</option>
+              <option value="seleccion_multiple">SelecciÃ³n mÃºltiple</option>
               <option value="desarrollo">Desarrollo</option>
               <option value="modelamiento">Modelamiento</option>
             </select>
@@ -450,7 +456,7 @@ export default function PracticeView() {
           </label>
 
           <div className="actions">
-            <button disabled={diagnosticRequired} onClick={start}>Comenzar sesión</button>
+            <button disabled={diagnosticRequired} onClick={start}>Comenzar sesiÃ³n</button>
             <button className="secondary" onClick={reset}>Reiniciar</button>
           </div>
         </section>
@@ -458,21 +464,21 @@ export default function PracticeView() {
         <section className="stats">
           <div><span>Preguntas</span><strong>{questions.length}</strong></div>
           <div><span>Respondidas</span><strong>{answers.length}</strong></div>
-          <div><span>Precisión</span><strong>{accuracy}%</strong></div>
-          <div><span>Promedio/pregunta</span><strong>{avgSeconds ? formatTime(avgSeconds) : "—"}</strong></div>
-          <div><span>Débiles</span><strong>{weak.length}</strong></div>
+          <div><span>PrecisiÃ³n</span><strong>{accuracy}%</strong></div>
+          <div><span>Promedio/pregunta</span><strong>{avgSeconds ? formatTime(avgSeconds) : "â€”"}</strong></div>
+          <div><span>DÃ©biles</span><strong>{weak.length}</strong></div>
         </section>
 
         {finished && (
           <section className="result-card">
-            <h2>Sesión finalizada</h2>
-            <p>Precisión: <strong>{accuracy}%</strong></p>
+            <h2>SesiÃ³n finalizada</h2>
+            <p>PrecisiÃ³n: <strong>{accuracy}%</strong></p>
             {weak.length > 0 ? (
               <p>Refuerza: <strong>{weak.join(", ")}</strong>.</p>
             ) : (
-              <p>No se detectaron debilidades críticas.</p>
+              <p>No se detectaron debilidades crÃ­ticas.</p>
             )}
-            <button onClick={start}>Repetir sesión</button>
+            <button onClick={start}>Repetir sesiÃ³n</button>
           </section>
         )}
 
@@ -480,7 +486,7 @@ export default function PracticeView() {
           <section className="question-card">
             <div className="chips">
               <span>{theme.short}</span>
-              <span>{current.tipo || "selección"}</span>
+              <span>{current.tipo || "selecciÃ³n"}</span>
               <span>{current.subtema || "general"}</span>
               <span>{index + 1}/{questions.length}</span>
             </div>
@@ -540,7 +546,7 @@ export default function PracticeView() {
               </div>
             ) : (
               <div className="written">
-                <textarea value={written} onChange={(e) => setWritten(e.target.value)} placeholder="Escribe tu desarrollo aquí..." />
+                <textarea value={written} onChange={(e) => setWritten(e.target.value)} placeholder="Escribe tu desarrollo aquÃ­..." />
                 <button onClick={submitWritten}>Guardar desarrollo</button>
               </div>
             )}
@@ -554,7 +560,7 @@ export default function PracticeView() {
                   </>
                 ) : (
                   <>
-                    <h3>{selected === current.respuesta_correcta || selected === "respuesta_abierta" ? "✅ Revisemos" : "❌ Incorrecta"}</h3>
+                    <h3>{selected === current.respuesta_correcta || selected === "respuesta_abierta" ? "âœ… Revisemos" : "âŒ Incorrecta"}</h3>
                     <p><strong>Respuesta esperada:</strong> {String(getCorrectOptionText(current))}</p>
                     <p>{current.explicacion || current.explanation}</p>
 
@@ -568,24 +574,24 @@ export default function PracticeView() {
 
                     {adaptiveRecommendation && (
                       <div className="adaptiveRecommendationBox">
-                        <strong>Próximo ajuste IA</strong>
+                        <strong>PrÃ³ximo ajuste IA</strong>
                         <p>{adaptiveRecommendation.message}</p>
                       </div>
                     )}
 
                     {current.error_comun && (
-                      <div className="note">Trampa típica UC: {current.error_comun}</div>
+                      <div className="note">Trampa tÃ­pica UC: {current.error_comun}</div>
                     )}
 
                     
                     <div className="feelingBox">
-                      <p>¿Cómo se te hizo?</p>
+                      <p>Â¿CÃ³mo se te hizo?</p>
                       <div className="feelingBtns">
-                        <button onClick={() => handleFeeling("facil")} className={feeling === "facil" ? "active easy" : ""}>Fácil</button>
+                        <button onClick={() => handleFeeling("facil")} className={feeling === "facil" ? "active easy" : ""}>FÃ¡cil</button>
                         <button onClick={() => handleFeeling("medio")} className={feeling === "medio" ? "active mid" : ""}>Normal</button>
-                        <button onClick={() => handleFeeling("dificil")} className={feeling === "dificil" ? "active hard" : ""}>Difícil</button>
+                        <button onClick={() => handleFeeling("dificil")} className={feeling === "dificil" ? "active hard" : ""}>DifÃ­cil</button>
                       </div>
-                      {feeling && <small>Guardado. La próxima sesión se adaptará a esto.</small>}
+                      {feeling && <small>Guardado. La prÃ³xima sesiÃ³n se adaptarÃ¡ a esto.</small>}
                     </div>
 
 
@@ -594,7 +600,7 @@ export default function PracticeView() {
                         setShowSteps(v => !v)
                         setVisualStep(0)
                       }}>
-                        {showSteps ? "Ocultar explicación" : "Ver explicación paso a paso"}
+                        {showSteps ? "Ocultar explicaciÃ³n" : "Ver explicaciÃ³n paso a paso"}
                       </button>
                       <button onClick={next}>Siguiente</button>
                     </div>
@@ -1040,3 +1046,4 @@ export default function PracticeView() {
     </main>
   )
 }
+

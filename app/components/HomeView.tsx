@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Link from "next/link"
 import { type CSSProperties, useMemo } from "react"
@@ -123,14 +123,14 @@ export default function HomeView() {
                   <motion.div key={event.id} variants={rise} whileHover={{ y: -3 }}>
                     <Link
                       href={event.subjectCode === "MAT1000" && event.practiceEvaluation
-                        ? `/practica?subject=MAT1000&evaluation=${event.practiceEvaluation}&mode=practica`
+                        ? `/precalculo-full&evaluation=${event.practiceEvaluation}&mode=practica`
                         : "/calendario"}
                       className="planRow"
                       style={{ "--c": theme.color, "--a": theme.accent, "--g": theme.gradient } as ThemeStyle}
                     >
                       <div className="number">{index + 1}</div>
                       <div>
-                        <strong>{theme.icon} {theme.name} · {event.title}</strong>
+                        <strong>{theme.icon} {theme.name} Â· {event.title}</strong>
                         <span>{event.unit}</span>
                       </div>
                       <b>{daysUntil(event.date)} dias</b>
@@ -153,7 +153,7 @@ export default function HomeView() {
                 <h2>{next.title}</h2>
                 <p>{SUBJECT_THEMES[next.subjectCode].name}</p>
                 <strong>{formatDate(next.date)}</strong>
-                <span>{next.weight}% · {getRisk(next)}</span>
+                <span>{next.weight}% Â· {getRisk(next)}</span>
               </div>
             ) : (
               <EmptyState title="Sin evaluaciones" text="Abre calendario para registrar fechas y notas." />
@@ -182,7 +182,7 @@ export default function HomeView() {
                   >
                     <div>
                       <strong>{theme.icon} {theme.name}</strong>
-                      <span>{nearest ? `${nearest.title} · ${daysUntil(nearest.date)} dias` : "Sin fechas proximas"}</span>
+                      <span>{nearest ? `${nearest.title} Â· ${daysUntil(nearest.date)} dias` : "Sin fechas proximas"}</span>
                     </div>
                     <b>{events.reduce((sum, event) => sum + event.weight, 0).toFixed(0)}%</b>
                   </Link>
@@ -625,3 +625,4 @@ function EmptyState({ title, text }: { title: string; text: string }) {
     </div>
   )
 }
+

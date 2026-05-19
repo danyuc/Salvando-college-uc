@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -20,6 +20,7 @@ import {
 const items = [
   { href: '/', label: 'Inicio', icon: Home },
   { href: '/practica', label: 'Practica', icon: Puzzle },
+  { href: '/precalculo-full', label: 'Pre Cálculo', icon: BookOpen },
   { href: '/practica-grupal', label: 'Grupal', icon: Users },
   { href: '/banco', label: 'Banco', icon: BookOpen },
   { href: '/calendario', label: 'Calendario', icon: CalendarDays },
@@ -302,3 +303,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
     </div>
   )
 }
+
+
+
+
