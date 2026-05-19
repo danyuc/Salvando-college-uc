@@ -1,4 +1,4 @@
-@import "leaflet/dist/leaflet.css";
+﻿@import "leaflet/dist/leaflet.css";
 @import "tailwindcss";
 
 :root {
@@ -350,7 +350,7 @@ div:has(> select) {
   max-width: 100% !important;
 }
 
-/* Evitar overflow horizontal en práctica */
+/* Evitar overflow horizontal en prÃ¡ctica */
 main,
 section,
 div {
@@ -448,3 +448,66 @@ body {
   height: 100%;
   border-radius: 24px;
 }
+
+/* SIDEBAR CONTRAST FIX START */
+aside,
+aside *,
+nav,
+nav * {
+  opacity: 1 !important;
+}
+
+aside a,
+aside button,
+aside a *,
+aside button *,
+nav a,
+nav button,
+nav a *,
+nav button * {
+  color: rgb(226 232 240) !important;
+}
+
+aside a:hover,
+aside button:hover,
+aside a:hover *,
+aside button:hover *,
+nav a:hover,
+nav button:hover,
+nav a:hover *,
+nav button:hover * {
+  color: rgb(255 255 255) !important;
+}
+
+aside [aria-current="page"],
+aside [aria-current="page"] *,
+nav [aria-current="page"],
+nav [aria-current="page"] * {
+  color: rgb(255 255 255) !important;
+}
+
+aside .text-slate-900,
+aside .text-slate-800,
+aside .text-slate-700,
+aside .text-slate-600,
+aside .text-slate-500,
+aside .text-zinc-900,
+aside .text-zinc-800,
+aside .text-zinc-700,
+aside .text-neutral-900,
+aside .text-neutral-800,
+aside .text-neutral-700,
+nav .text-slate-900,
+nav .text-slate-800,
+nav .text-slate-700,
+nav .text-slate-600,
+nav .text-slate-500,
+nav .text-zinc-900,
+nav .text-zinc-800,
+nav .text-zinc-700,
+nav .text-neutral-900,
+nav .text-neutral-800,
+nav .text-neutral-700 {
+  color: rgb(226 232 240) !important;
+}
+/* SIDEBAR CONTRAST FIX END */
