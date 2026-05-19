@@ -1,30 +1,63 @@
-export type FormulaItem = {
-  title: string
-  formula: string
-  tip: string
-}
+﻿export type FormulaItem = {
+  title: string;
+  formula: string;
+  tip: string;
+};
 
 export function getFormulasForQuestion(question: any): FormulaItem[] {
-  const text = `${question?.pregunta || ""} ${question?.subtema || ""}`.toLowerCase()
+  const text = `${question?.pregunta || ""} ${question?.tema || ""} ${question?.subtema || ""}`.toLowerCase();
+
+  if (
+    text.includes("sen") ||
+    text.includes("seno") ||
+    text.includes("cos") ||
+    text.includes("tan") ||
+    text.includes("tangente") ||
+    text.includes("cuadrante") ||
+    text.includes("trig")
+  ) {
+    return [
+      {
+        title: "Signos por cuadrante",
+        formula: "QI: + + + · QII: sen + · QIII: tan + · QIV: cos +",
+        tip: "Ejemplo: si t está en QIII, entonces sen(t)<0, cos(t)<0 y tan(t)>0.",
+      },
+      {
+        title: "Identidad pitagórica",
+        formula: "sen²(t) + cos²(t) = 1",
+        tip: "Si sen(t)=-12/13, entonces cos²(t)=1-144/169=25/169, por eso |cos(t)|=5/13.",
+      },
+      {
+        title: "Tangente",
+        formula: "tan(t) = sen(t) / cos(t)",
+        tip: "En QIII: tan(t)=(-12/13)/(-5/13)=12/5.",
+      },
+      {
+        title: "Triángulos típicos",
+        formula: "3-4-5 · 5-12-13 · 8-15-17",
+        tip: "Si ves 12/13, casi siempre aparece el 5. Si ves 8/17, aparece el 15.",
+      },
+    ];
+  }
 
   if (text.includes("distancia") || text.includes("punto") || text.includes("coordenada")) {
     return [
       {
         title: "Distancia entre dos puntos",
         formula: "d = √((x₂ - x₁)² + (y₂ - y₁)²)",
-        tip: "Calcula primero Δx y Δy. Después eleva ambos al cuadrado y recién ahí suma.",
+        tip: "Ejemplo: A(2,3), B(6,6). x1=2, y1=3, x2=6, y2=6. d=√(4²+3²)=5.",
       },
       {
         title: "Cambio horizontal",
         formula: "Δx = x₂ - x₁",
-        tip: "Respeta el orden de los puntos. Si te equivocas en signos, al cuadrado se corrige, pero el desarrollo puede confundirte.",
+        tip: "No mezcles x con y. Primero resta las x.",
       },
       {
         title: "Cambio vertical",
         formula: "Δy = y₂ - y₁",
-        tip: "No mezcles coordenadas x con coordenadas y.",
+        tip: "Después resta las y. Luego recién elevas al cuadrado.",
       },
-    ]
+    ];
   }
 
   if (text.includes("recta") || text.includes("pendiente") || text.includes("lineal")) {
@@ -32,74 +65,39 @@ export function getFormulasForQuestion(question: any): FormulaItem[] {
       {
         title: "Pendiente",
         formula: "m = (y₂ - y₁) / (x₂ - x₁)",
-        tip: "La pendiente mide cuánto cambia y por cada cambio en x.",
+        tip: "Ejemplo: A(1,4), B(5,12). m=(12-4)/(5-1)=8/4=2.",
       },
       {
         title: "Ecuación de la recta",
         formula: "y = mx + b",
-        tip: "m es la pendiente y b es donde la recta corta el eje y.",
+        tip: "m es la pendiente y b es el corte con el eje y.",
       },
       {
         title: "Forma punto-pendiente",
         formula: "y - y₁ = m(x - x₁)",
         tip: "Úsala cuando te dan un punto y la pendiente.",
       },
-    ]
+    ];
   }
 
-  if (text.includes("cuadrática") || text.includes("cuadratica") || text.includes("parábola") || text.includes("parabola")) {
+  if (text.includes("log")) {
     return [
       {
-        title: "Fórmula general cuadrática",
-        formula: "x = (-b ± √(b² - 4ac)) / 2a",
-        tip: "Primero identifica a, b y c. El error típico es olvidar el signo de b.",
+        title: "Definición de logaritmo",
+        formula: "log_b(a)=c ⇔ b^c=a",
+        tip: "Ejemplo: log₂(32)=5 porque 2⁵=32.",
       },
       {
-        title: "Discriminante",
-        formula: "Δ = b² - 4ac",
-        tip: "Si Δ > 0 hay dos soluciones reales; si Δ = 0 hay una; si Δ < 0 no hay reales.",
+        title: "Producto",
+        formula: "log(ab)=log(a)+log(b)",
+        tip: "Ojo: log(a+b) NO se separa.",
       },
       {
-        title: "Vértice",
-        formula: "xᵥ = -b / 2a",
-        tip: "Sirve para ubicar el mínimo o máximo de la parábola.",
+        title: "Potencia",
+        formula: "log(aⁿ)=nlog(a)",
+        tip: "Sirve para bajar exponentes.",
       },
-    ]
-  }
-
-  if (text.includes("factor") || text.includes("trinomio") || text.includes("producto notable")) {
-    return [
-      {
-        title: "Cuadrado de binomio",
-        formula: "(a + b)² = a² + 2ab + b²",
-        tip: "No olvides el término del medio: 2ab.",
-      },
-      {
-        title: "Diferencia de cuadrados",
-        formula: "a² - b² = (a - b)(a + b)",
-        tip: "Solo funciona si hay resta entre dos cuadrados.",
-      },
-      {
-        title: "Trinomio simple",
-        formula: "x² + bx + c = (x + m)(x + n)",
-        tip: "Busca m y n tales que m·n = c y m+n = b.",
-      },
-    ]
-  }
-
-  if (text.includes("inecu") || text.includes("intervalo") || text.includes("signo")) {
-    return [
-      {
-        title: "Tabla de signos",
-        formula: "puntos críticos → intervalos → signos → solución",
-        tip: "No incluyas valores que anulan el denominador.",
-      },
-      {
-        title: "Regla de extremos",
-        formula: "corchete [ ] incluye · paréntesis ( ) excluye",
-        tip: "Si hay denominador cero, siempre se excluye.",
-      },
-    ]
+    ];
   }
 
   if (text.includes("función") || text.includes("funcion") || text.includes("dominio") || text.includes("recorrido")) {
@@ -110,23 +108,18 @@ export function getFormulasForQuestion(question: any): FormulaItem[] {
         tip: "Revisa raíces pares, denominadores y logaritmos.",
       },
       {
-        title: "Recorrido",
-        formula: "valores posibles de y",
-        tip: "Mira la gráfica o transforma la función para ver mínimos y máximos.",
-      },
-      {
         title: "Composición",
         formula: "(f ∘ g)(x) = f(g(x))",
-        tip: "Primero resuelve g(x), después mete ese resultado dentro de f.",
+        tip: "Primero resuelve g(x), después metes ese resultado en f.",
       },
-    ]
+    ];
   }
 
   return [
     {
       title: "Operaciones inversas",
       formula: "sumar ↔ restar · multiplicar ↔ dividir",
-      tip: "Para despejar, siempre aplica la operación contraria en ambos lados.",
+      tip: "Para despejar, aplica la operación contraria en ambos lados.",
     },
-  ]
+  ];
 }
