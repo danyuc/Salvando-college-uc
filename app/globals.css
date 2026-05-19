@@ -449,65 +449,41 @@ body {
   border-radius: 24px;
 }
 
-/* SIDEBAR CONTRAST FIX START */
-aside,
-aside *,
-nav,
-nav * {
-  opacity: 1 !important;
-}
-
+/* PREMIUM SIDEBAR CONTRAST FIX START */
 aside a,
 aside button,
-aside a *,
-aside button *,
-nav a,
-nav button,
-nav a *,
-nav button * {
-  color: rgb(226 232 240) !important;
+aside a span,
+aside button span,
+aside svg,
+aside p,
+aside h1,
+aside h2 {
+  color: rgb(248 250 252) !important;
+  opacity: 1 !important;
 }
 
 aside a:hover,
 aside button:hover,
-aside a:hover *,
-aside button:hover *,
-nav a:hover,
-nav button:hover,
-nav a:hover *,
-nav button:hover * {
+aside a:hover span,
+aside button:hover span,
+aside a:hover svg,
+aside button:hover svg {
   color: rgb(255 255 255) !important;
+  opacity: 1 !important;
 }
 
-aside [aria-current="page"],
-aside [aria-current="page"] *,
-nav [aria-current="page"],
-nav [aria-current="page"] * {
-  color: rgb(255 255 255) !important;
+aside [class*="text-slate-900"],
+aside [class*="text-slate-800"],
+aside [class*="text-slate-700"],
+aside [class*="text-slate-600"],
+aside [class*="text-slate-500"],
+aside [class*="text-zinc-900"],
+aside [class*="text-zinc-800"],
+aside [class*="text-zinc-700"],
+aside [class*="text-neutral-900"],
+aside [class*="text-neutral-800"],
+aside [class*="text-neutral-700"] {
+  color: rgb(248 250 252) !important;
+  opacity: 1 !important;
 }
-
-aside .text-slate-900,
-aside .text-slate-800,
-aside .text-slate-700,
-aside .text-slate-600,
-aside .text-slate-500,
-aside .text-zinc-900,
-aside .text-zinc-800,
-aside .text-zinc-700,
-aside .text-neutral-900,
-aside .text-neutral-800,
-aside .text-neutral-700,
-nav .text-slate-900,
-nav .text-slate-800,
-nav .text-slate-700,
-nav .text-slate-600,
-nav .text-slate-500,
-nav .text-zinc-900,
-nav .text-zinc-800,
-nav .text-zinc-700,
-nav .text-neutral-900,
-nav .text-neutral-800,
-nav .text-neutral-700 {
-  color: rgb(226 232 240) !important;
-}
-/* SIDEBAR CONTRAST FIX END */
+/* PREMIUM SIDEBAR CONTRAST FIX END */
