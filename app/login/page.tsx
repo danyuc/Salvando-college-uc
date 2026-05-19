@@ -70,7 +70,7 @@ export default function LoginPage() {
       return
     }
 
-    setError("Código de acceso inválido.")
+    setError("Código no reconocido. Verifica con el equipo responsable.")
   }
 
   return (
@@ -84,7 +84,7 @@ export default function LoginPage() {
 
         <p className="mt-3 text-sm leading-6 text-slate-300">
           Si eres estudiante, ingresa con tu cuenta de Google. Si eres docente,
-          ingresa el código de acceso a la actividad.
+          ingresa tu código institucional.
         </p>
 
         <div className="mt-8">
@@ -102,13 +102,13 @@ export default function LoginPage() {
         <div className="my-8 h-px bg-white/10" />
 
         <form onSubmit={enterTeacher}>
-          <p className="font-black text-fuchsia-300">Docentes y revisión</p>
+          <p className="font-black text-fuchsia-300">Acceso institucional</p>
 
           <div className="mt-3 grid gap-3 sm:flex">
             <input
               value={code}
               onChange={(event) => setCode(event.target.value)}
-              placeholder="Código de acceso"
+              placeholder="Código institucional"
               inputMode="text"
               className="min-w-0 flex-1 rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 font-bold outline-none"
             />
@@ -123,7 +123,7 @@ export default function LoginPage() {
         </form>
 
         <div className="mt-4 rounded-2xl border border-white/10 bg-slate-900/70 p-3 text-xs font-semibold leading-5 text-slate-400">
-          Códigos locales: 2890 mantiene el laboratorio ambiental; CRSH abre Cardenal Respira; DOCENCIA-REVIEW activa revisión demo.
+          Solicita tu código al equipo responsable del proyecto.
         </div>
 
         {error && (

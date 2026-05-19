@@ -350,7 +350,7 @@ div:has(> select) {
   max-width: 100% !important;
 }
 
-/* Evitar overflow horizontal en prÃ¡ctica */
+/* Evitar overflow horizontal en práctica */
 main,
 section,
 div {

@@ -1,0 +1,24 @@
+
+> salvando-college-uc@0.1.0 dev
+> next dev --hostname 127.0.0.1 --port 3001
+
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://127.0.0.1:3001
+- Network:       http://127.0.0.1:3001
+- Environments: .env.local, .env
+✓ Ready in 1469ms
+Creating turbopack project { dir: 'C:\\Users\\Dany\\Desktop\\Salvando-college', testMode: true }
+
+○ Compiling /login ...
+ HEAD /login 200 in 9.9s (next.js: 8.6s, proxy.ts: 579ms, application-code: 734ms)
+○ Compiling /lab-ambiental ...
+ HEAD /lab-ambiental 200 in 4.8s (next.js: 4.2s, proxy.ts: 13ms, application-code: 520ms)
+ HEAD /lab-ambiental?docente=1 200 in 300ms (next.js: 11ms, proxy.ts: 18ms, application-code: 270ms)
+ HEAD /cardenal-respira 200 in 2.3s (next.js: 1893ms, proxy.ts: 10ms, application-code: 416ms)
+ HEAD /cardenal-respira/docentes 200 in 1919ms (next.js: 1591ms, proxy.ts: 12ms, application-code: 317ms)
+ HEAD /cardenal-respira/presentacion 200 in 1128ms (next.js: 994ms, proxy.ts: 17ms, application-code: 117ms)
+ HEAD /cardenal-respira/retos 200 in 1051ms (next.js: 945ms, proxy.ts: 9ms, application-code: 97ms)
+ HEAD /precalculo-full 200 in 1315ms (next.js: 1145ms, proxy.ts: 9ms, application-code: 161ms)
+○ Compiling /practica ...
+ HEAD /practica 200 in 6.7s (next.js: 5.7s, proxy.ts: 720ms, application-code: 323ms)
+ HEAD /practica?subject=MAT1000&evaluation=I3 200 in 236ms (next.js: 17ms, proxy.ts: 21ms, application-code: 198ms)

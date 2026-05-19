@@ -11,7 +11,6 @@ import {
   CalendarDays,
   ChevronLeft,
   Home,
-  Leaf,
   Menu,
   PenTool,
   Pi,
@@ -43,10 +42,9 @@ const items: NavItem[] = [
   { href: "/coach-semanal", label: "Coach", icon: Brain },
   { href: "/ranking", label: "Ranking", icon: Trophy },
   { href: "/pizarra", label: "Pizarra", icon: PenTool },
-  { href: "/cardenal-respira", label: "Cardenal Respira", icon: Leaf },
 ];
 
-const fullscreenRoutes = ["/login", "/onboarding", "/lab-ambiental"];
+const fullscreenRoutes = ["/login", "/onboarding", "/lab-ambiental", "/cardenal-respira"];
 const fallbackContext: AccessContext = {
   role: "default_student",
   isCollegeCiencias: false,

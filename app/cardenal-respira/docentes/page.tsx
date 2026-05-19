@@ -1,34 +1,27 @@
 "use client"
 
-import { FormEvent, useEffect, useState } from "react"
+import { FormEvent, useState } from "react"
 import { ACCESS_STORAGE_KEYS } from "@/lib/access-control"
 import { CARDENAL_RESPIRA_ACCESS_CODE } from "@/lib/cardenal-respira"
 import TeacherPanel from "../../components/cardenal-respira/TeacherPanel"
 
 export default function Page() {
-  const [ready, setReady] = useState(false)
-  const [allowed, setAllowed] = useState(false)
+  const [allowed, setAllowed] = useState(() =>
+    typeof window !== "undefined" &&
+    localStorage.getItem(ACCESS_STORAGE_KEYS.crshTeacher) === "true"
+  )
   const [code, setCode] = useState("")
   const [error, setError] = useState("")
-
-  useEffect(() => {
-    setAllowed(localStorage.getItem(ACCESS_STORAGE_KEYS.crshTeacher) === "true")
-    setReady(true)
-  }, [])
 
   function unlock(event: FormEvent) {
     event.preventDefault()
     if (code.trim().toUpperCase() !== CARDENAL_RESPIRA_ACCESS_CODE) {
-      setError("Código incorrecto. Usa el código institucional entregado al equipo docente.")
+      setError("Código no reconocido. Verifica con el equipo responsable.")
       return
     }
     localStorage.setItem(ACCESS_STORAGE_KEYS.crshTeacher, "true")
     setAllowed(true)
     setError("")
-  }
-
-  if (!ready) {
-    return <main className="grid min-h-screen place-items-center bg-slate-950 text-white">Cargando acceso docente...</main>
   }
 
   if (allowed) return <TeacherPanel />
@@ -39,12 +32,12 @@ export default function Page() {
         <p className="text-xs font-black uppercase tracking-[0.28em] text-cyan-300">Cardenal Respira</p>
         <h1 className="mt-4 text-4xl font-black">Acceso docente</h1>
         <p className="mt-3 text-sm font-semibold leading-6 text-slate-300">
-          Ingresa el código CRSH para abrir el panel docente local. Esta no es autenticación productiva.
+          Ingresa tu código institucional para abrir el panel docente local.
         </p>
         <input
           value={code}
           onChange={(event) => setCode(event.target.value)}
-          placeholder="Código CRSH"
+          placeholder="Código institucional"
           className="mt-6 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-4 font-bold outline-none"
         />
         <button className="mt-4 w-full rounded-2xl bg-cyan-300 px-5 py-4 font-black text-slate-950">

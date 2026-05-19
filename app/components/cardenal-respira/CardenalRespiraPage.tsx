@@ -10,12 +10,16 @@ import {
   CARDENAL_RESPIRA_PROJECT,
   CRSH_SENSORS,
   CURRICULAR_LINKS,
+  buildDemoReading,
 } from "@/lib/cardenal-respira"
 import AnimatedAirParticles from "./AnimatedAirParticles"
 import AirQualityTrafficLight from "./AirQualityTrafficLight"
 import SensorDashboardCard from "./SensorDashboardCard"
 
 export default function CardenalRespiraPage() {
+  const heroSensor = CRSH_SENSORS[0]
+  const heroReading = buildDemoReading(heroSensor, 2)
+
   return (
     <main className="min-h-screen overflow-hidden bg-slate-950 text-white">
       <section className="relative px-6 py-16 md:px-10">
@@ -45,7 +49,7 @@ export default function CardenalRespiraPage() {
             </div>
           </motion.div>
 
-          <AirQualityTrafficLight point={AIR_QUALITY_DEMO_DATA[2]} />
+          <AirQualityTrafficLight reading={heroReading} />
         </div>
       </section>
 
@@ -121,11 +125,11 @@ export default function CardenalRespiraPage() {
           </div>
         </section>
 
-        <SensorDashboardCard sensor={CRSH_SENSORS[0]} preview={false} />
+        <SensorDashboardCard sensor={heroSensor} preview={false} />
 
         <section className="rounded-[2rem] border border-cyan-300/20 bg-cyan-300/10 p-8 text-center shadow-2xl">
           <h2 className="text-4xl font-black">Con un primer sí, se abren muchas puertas.</h2>
-          <div className="mt-6 flex justify-center gap-3">
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link href="/cardenal-respira/docentes" className="rounded-full bg-white px-5 py-3 text-sm font-black text-slate-950">
               Acceso docentes
             </Link>
