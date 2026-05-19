@@ -184,6 +184,12 @@ export default function PracticeView() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
+    const requestedSubject = params.get("subject")
+
+    if (requestedSubject === "MAT1000") {
+      window.location.replace("/precalculo-full")
+      return
+    }
     const rawSubject = params.get("subject")
 
     if (rawSubject === "MAT1000") {
@@ -1046,4 +1052,5 @@ export default function PracticeView() {
     </main>
   )
 }
+
 
