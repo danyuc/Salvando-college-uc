@@ -53,6 +53,15 @@ export default function LoginPage() {
       return
     }
 
+    if (cleanCode === ACCESS_CODES.ipre2Teacher) {
+      try {
+        localStorage.setItem(ACCESS_STORAGE_KEYS.ipre2Teacher, "true")
+      } catch {}
+
+      router.push("/ipre2")
+      return
+    }
+
     if (cleanCode === ACCESS_CODES.docenciaReview) {
       try {
         localStorage.setItem(ACCESS_STORAGE_KEYS.docenciaReview, "true")

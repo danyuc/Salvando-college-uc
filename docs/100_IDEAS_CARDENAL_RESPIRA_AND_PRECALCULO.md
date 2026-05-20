@@ -115,7 +115,7 @@
 99. Institutional polish pass.
 100. Final director demo script.
 
-## F. Retos ambientales, datos live y gamificación docente
+## F. Explora IPRE2, datos live y gamificación docente
 
 101. Live Sensor 71 challenge mode.
 102. Manual semáforo challenge mode.

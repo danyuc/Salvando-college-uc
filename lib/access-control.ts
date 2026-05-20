@@ -5,6 +5,7 @@ export type AccessRole =
   | "college_ciencias_naturales_matematicas"
   | "docente"
   | "crsh_teacher"
+  | "ipre2_teacher"
   | "docencia_review"
 
 export type AccessContext = {
@@ -12,16 +13,19 @@ export type AccessContext = {
   isCollegeCiencias: boolean
   isDocenciaReview: boolean
   isCrshTeacher: boolean
+  isIpre2Teacher: boolean
 }
 
 export const ACCESS_CODES = {
   docenteLab: "2890",
   crshTeacher: "CRSH",
+  ipre2Teacher: "UC",
   docenciaReview: "DOCENCIA-REVIEW",
 } as const
 
 export const ACCESS_STORAGE_KEYS = {
   crshTeacher: "cardenal-respira-teacher-access",
+  ipre2Teacher: "ipre2-teacher-access",
   docenciaReview: "salvando-docencia-review-access",
   teacherLab: "teacher-lab-access",
 } as const
@@ -53,6 +57,9 @@ export function getClientAccessContext(user: LocalUser | null): AccessContext {
   const isCrsh =
     typeof window !== "undefined" &&
     localStorage.getItem(ACCESS_STORAGE_KEYS.crshTeacher) === "true"
+  const isIpre2 =
+    typeof window !== "undefined" &&
+    localStorage.getItem(ACCESS_STORAGE_KEYS.ipre2Teacher) === "true"
   const isDocente =
     typeof window !== "undefined" &&
     localStorage.getItem(ACCESS_STORAGE_KEYS.teacherLab) === "true"
@@ -64,6 +71,17 @@ export function getClientAccessContext(user: LocalUser | null): AccessContext {
       isCollegeCiencias,
       isDocenciaReview: true,
       isCrshTeacher: isCrsh,
+      isIpre2Teacher: isIpre2,
+    }
+  }
+
+  if (isIpre2) {
+    return {
+      role: "ipre2_teacher",
+      isCollegeCiencias,
+      isDocenciaReview: false,
+      isCrshTeacher: isCrsh,
+      isIpre2Teacher: true,
     }
   }
 
@@ -73,6 +91,7 @@ export function getClientAccessContext(user: LocalUser | null): AccessContext {
       isCollegeCiencias,
       isDocenciaReview: false,
       isCrshTeacher: true,
+      isIpre2Teacher: false,
     }
   }
 
@@ -82,6 +101,7 @@ export function getClientAccessContext(user: LocalUser | null): AccessContext {
       isCollegeCiencias,
       isDocenciaReview: false,
       isCrshTeacher: false,
+      isIpre2Teacher: false,
     }
   }
 
@@ -91,6 +111,7 @@ export function getClientAccessContext(user: LocalUser | null): AccessContext {
       isCollegeCiencias: true,
       isDocenciaReview: false,
       isCrshTeacher: false,
+      isIpre2Teacher: false,
     }
   }
 
@@ -99,6 +120,7 @@ export function getClientAccessContext(user: LocalUser | null): AccessContext {
     isCollegeCiencias: false,
     isDocenciaReview: false,
     isCrshTeacher: false,
+    isIpre2Teacher: false,
   }
 }
 

@@ -44,12 +44,13 @@ const items: NavItem[] = [
   { href: "/pizarra", label: "Pizarra", icon: PenTool },
 ];
 
-const fullscreenRoutes = ["/login", "/onboarding", "/lab-ambiental", "/cardenal-respira"];
+const fullscreenRoutes = ["/login", "/onboarding", "/lab-ambiental", "/cardenal-respira", "/ipre2"];
 const fallbackContext: AccessContext = {
   role: "default_student",
   isCollegeCiencias: false,
   isDocenciaReview: false,
   isCrshTeacher: false,
+  isIpre2Teacher: false,
 };
 
 export default function AppShell({ children }: { children: ReactNode }) {

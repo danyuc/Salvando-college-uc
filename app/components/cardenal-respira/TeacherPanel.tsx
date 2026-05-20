@@ -54,7 +54,7 @@ export default function TeacherPanel() {
           <p className="text-xs font-black uppercase tracking-[0.32em] text-cyan-300">Panel docente</p>
           <h1 className="mt-3 text-4xl font-black md:text-6xl">Cardenal Respira</h1>
           <p className="mt-4 max-w-3xl text-base font-semibold leading-8 text-slate-300">
-            Selecciona sensor, revisa semáforo, interpreta datos demo/manuales y activa retos de participación ambiental.
+            Selecciona sensor, revisa semáforo e interpreta datos demo/manuales con foco institucional.
           </p>
           <p className="mt-4 w-fit rounded-full border border-amber-300/25 bg-amber-300/10 px-4 py-2 text-xs font-black text-amber-100">
             Datos demostrativos hasta conectar fuente live validada.
@@ -85,9 +85,9 @@ export default function TeacherPanel() {
               >
                 {manualMode ? "Usar demo" : "Modo manual"}
               </button>
-              <Link href="/cardenal-respira/retos" className="inline-flex items-center gap-2 rounded-full bg-cyan-300 px-5 py-3 text-sm font-black text-slate-950">
+              <Link href="/ipre2" className="inline-flex items-center gap-2 rounded-full bg-cyan-300 px-5 py-3 text-sm font-black text-slate-950">
                 <Gamepad2 size={16} />
-                Iniciar reto ambiental
+                Abrir Explora IPRE2
               </Link>
             </div>
           </div>

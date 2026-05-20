@@ -22,9 +22,9 @@ const slides = [
   { eyebrow: "Por qué importa", title: "Lo invisible se vuelve observable", text: "PM2.5 y PM10 permiten desarrollar lectura de datos, pensamiento crítico y cuidado escolar sin alarmismo." },
   { eyebrow: "Del dato a la decisión", title: "Sensor → Dashboard → Semáforo → Pregunta → Acción", text: "La tecnología vale cuando se transforma en preguntas educativas y acciones de clase." },
   { eyebrow: "Historia", title: "Tal día pasó esto", text: "Tal día el semáforo estuvo moderado. El curso comparó ventilación, horario y entorno." },
-  { eyebrow: "Docente mañana", title: "Qué puede hacer un docente mañana", text: "15 minutos de semáforo, 45 minutos PM2.5 vs PM10 o un desafío TP de alerta/dashboard." },
-  { eyebrow: "Reto en vivo", title: "Reto ambiental en vivo", text: "Levanten la mano quienes creen que es A. La clase vota, aprende y suma puntos ambientales." },
-  { eyebrow: "Ranking", title: "Ranking de cursos", text: "Curso 7A: 1000 puntos · Curso 8B: 800 puntos · Curso 6A: 650 puntos." },
+  { eyebrow: "Docente mañana", title: "Qué puede hacer un docente mañana", text: "15 minutos de semáforo, 45 minutos PM2.5 vs PM10 o una conversación guiada con datos del dashboard." },
+  { eyebrow: "Línea educativa", title: "Puente con Explora IPRE2", text: "Las cápsulas, sesiones, puntos y ranking pertenecen a Explora IPRE2; Cardenal Respira conserva el foco institucional y ambiental." },
+  { eyebrow: "Datos y escuela", title: "Del sensor a la comunidad", text: "El dashboard permite observar, interpretar y comunicar condiciones ambientales sin mezclarlo con las sesiones IPRE2." },
   { eyebrow: "Dirección", title: "Director dashboard", text: "Estado del sensor, uso educativo, participación docente, proyectos y decisiones informadas." },
   { eyebrow: "El proyecto real", title: "El sensor no es el proyecto", text: "El sensor es el inicio; el proyecto real es lo que estudiantes y docentes construyen con los datos." },
   { eyebrow: "Cierre", title: "Con un primer sí, se abren muchas puertas.", text: "Autorizar un punto seguro de instalación puede activar aprendizaje, prevención e innovación." },
@@ -63,8 +63,8 @@ export default function CardenalPresentation() {
     if (index === 3) return <StatusBadges />
     if (index === 5) return <DecisionFlow />
     if (index === 6) return <AirQualityTrafficLight reading={reading} />
-    if (index === 8) return <LiveChallengeMock />
-    if (index === 9) return <RankingMock />
+    if (index === 8) return <Ipre2Bridge />
+    if (index === 9) return <SensorDashboardCard sensor={sensor} preview={false} />
     if (index === 10) return <DirectorMock />
     if (index === 12) return <SensorDashboardCard sensor={sensor} preview={false} />
     return <SensorFlow />
@@ -196,34 +196,17 @@ function DecisionFlow() {
   )
 }
 
-function LiveChallengeMock() {
-  return (
-    <GlassCard>
-      <p className="text-xs font-black uppercase tracking-[0.25em] text-cyan-300">Reto en vivo</p>
-      <h3 className="mt-3 text-3xl font-black">¿Qué mide PM2.5?</h3>
-      {["A · Partículas finas", "B · Temperatura", "C · Internet", "D · Asistencia"].map((item, index) => (
-        <div key={item} className="mt-3 rounded-2xl bg-white/10 p-4 font-black">
-          {item}
-          <div className="mt-3 h-2 rounded-full bg-white/10">
-            <div className="h-full rounded-full bg-cyan-300" style={{ width: `${[72, 12, 8, 8][index]}%` }} />
-          </div>
-        </div>
-      ))}
-    </GlassCard>
-  )
-}
-
-function RankingMock() {
+function Ipre2Bridge() {
   return (
     <GlassCard>
       {[
-        ["Curso 7A", "1000 puntos"],
-        ["Curso 8B", "800 puntos"],
-        ["Curso 6A", "650 puntos"],
-      ].map(([course, score], index) => (
-        <div key={course} className="mb-3 flex items-center justify-between rounded-3xl bg-slate-950/60 p-5 last:mb-0">
-          <span className="text-2xl font-black">#{index + 1} {course}</span>
-          <span className="text-xl font-black text-cyan-200">{score}</span>
+        ["Cardenal Respira", "sensores, semáforo y dashboard institucional"],
+        ["Explora IPRE2", "cápsulas, sesiones de aula, puntos y ranking"],
+        ["Conexión", "Sensor 71 como disparador de preguntas educativas"],
+      ].map(([title, text]) => (
+        <div key={title} className="mb-3 rounded-3xl bg-slate-950/60 p-5 last:mb-0">
+          <span className="text-2xl font-black">{title}</span>
+          <p className="mt-2 text-sm font-bold text-cyan-100">{text}</p>
         </div>
       ))}
     </GlassCard>
