@@ -36,6 +36,7 @@ const items: NavItem[] = [
   { href: "/", label: "Inicio", icon: Home },
   { href: "/precalculo-full", label: "Pre Cálculo", icon: Pi },
   { href: "/practica", label: "Práctica", icon: Puzzle },
+  { href: "/practica/psicologia", label: "Psicología", icon: Brain },
   { href: "/practica-grupal", label: "Grupal", icon: Users },
   { href: "/banco", label: "Banco", icon: BookOpen },
   { href: "/calendario", label: "Calendario", icon: CalendarDays },
@@ -134,7 +135,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
             {visibleItems.map((item) => {
               const active =
                 pathname === item.href ||
-                (item.href !== "/" && pathname.startsWith(item.href));
+                (item.href !== "/" && item.href !== "/practica" && pathname.startsWith(item.href));
               const Icon = item.icon;
 
               return (
@@ -142,6 +143,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
                   <Link
                     href={item.href}
                     title={item.label}
+                    aria-current={active ? "page" : undefined}
                     className={[
                       "group relative flex min-h-12 items-center gap-3 overflow-hidden rounded-2xl px-3 py-3 transition-all duration-200",
                       active

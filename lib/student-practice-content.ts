@@ -18,4 +18,4 @@ export type StudentPracticeContentPack = {
 export const STUDENT_PRACTICE_CONTENT_PACKS: StudentPracticeContentPack[] = []
 
 export const FUTURE_PSYCHOLOGY_CONTENT_NOTE =
-  "Psychology student practice content will be added later from real class materials."
+  "Additional Psychology student practice content should be added only from real class materials."
