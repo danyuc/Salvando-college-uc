@@ -1,0 +1,263 @@
+# Estado de soluciones MAT1000 UC
+
+- requiere solución: 251
+- oficial: 4
+
+## Ejercicios con solución oficial detectada
+- mat1000-i2-2024-forma-b-ej12 - página 12
+- mat1000-i2-2024-forma-a-ej12 - página 20
+- mat1000-i2-2026-forma-a-ej12 - página 28
+- mat1000-i2-2026-forma-b-ej12 - página 42
+
+## Ejercicios que requieren solución oficial/propuesta
+- mat1000-i1-2025-forma-a-ej01 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2025-forma-a-ej02 - Rectas, pendientes e intersecciones
+- mat1000-i1-2025-forma-a-ej03 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2025-forma-a-ej04 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2025-forma-a-ej05 - Rectas, pendientes e intersecciones
+- mat1000-i1-2025-forma-a-ej06 - Rectas, pendientes e intersecciones
+- mat1000-i1-2025-forma-a-ej07 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2025-forma-a-ej08 - Inecuaciones y análisis de signos
+- mat1000-i1-2025-forma-a-ej09 - Inecuaciones y análisis de signos
+- mat1000-i1-2025-forma-a-ej10 - Inecuación con valor absoluto
+- mat1000-i1-2025-forma-a-ej11 - Rectas, pendientes e intersecciones
+- mat1000-i1-2025-forma-a-ej12 - Polinomios: resto, factores y raíces
+- mat1000-i1-2025-forma-a-ej13 - Modelamiento cuadrático y optimización
+- mat1000-i1-2026-forma-b-ej01 - Rectas, pendientes e intersecciones
+- mat1000-i1-2026-forma-b-ej02 - Rectas, pendientes e intersecciones
+- mat1000-i1-2026-forma-b-ej03 - Rectas, pendientes e intersecciones
+- mat1000-i1-2026-forma-b-ej04 - Rectas, pendientes e intersecciones
+- mat1000-i1-2026-forma-b-ej05 - Rectas, pendientes e intersecciones
+- mat1000-i1-2026-forma-b-ej06 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2026-forma-b-ej07 - Rectas, pendientes e intersecciones
+- mat1000-i1-2026-forma-b-ej08 - Inecuaciones y análisis de signos
+- mat1000-i1-2026-forma-b-ej09 - Inecuaciones y análisis de signos
+- mat1000-i1-2026-forma-b-ej10 - Inecuación con valor absoluto
+- mat1000-i1-2026-forma-b-ej11 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i1-2026-forma-b-ej12 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i1-2026-forma-b-ej13 - Modelamiento cuadrático y optimización
+- mat1000-i1-2024-forma-a-ej01 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2024-forma-a-ej02 - Rectas, pendientes e intersecciones
+- mat1000-i1-2024-forma-a-ej03 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2024-forma-a-ej04 - Rectas, pendientes e intersecciones
+- mat1000-i1-2024-forma-a-ej05 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2024-forma-a-ej06 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2024-forma-a-ej07 - Inecuaciones y análisis de signos
+- mat1000-i1-2024-forma-a-ej08 - Inecuaciones y análisis de signos
+- mat1000-i1-2024-forma-a-ej09 - Inecuación con valor absoluto
+- mat1000-i1-2024-forma-a-ej10 - Inecuación con valor absoluto
+- mat1000-i1-2024-forma-a-ej11 - Rectas, pendientes e intersecciones
+- mat1000-i1-2024-forma-a-ej12 - Polinomios: resto, factores y raíces
+- mat1000-i1-2024-forma-a-ej13 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2024-forma-a-ej14 - Inecuaciones y análisis de signos
+- mat1000-i1-2025-forma-b-ej01 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2025-forma-b-ej02 - Rectas, pendientes e intersecciones
+- mat1000-i1-2025-forma-b-ej03 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2025-forma-b-ej04 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2025-forma-b-ej05 - Rectas, pendientes e intersecciones
+- mat1000-i1-2025-forma-b-ej06 - Rectas, pendientes e intersecciones
+- mat1000-i1-2025-forma-b-ej07 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2025-forma-b-ej08 - Inecuaciones y análisis de signos
+- mat1000-i1-2025-forma-b-ej09 - Inecuaciones y análisis de signos
+- mat1000-i1-2025-forma-b-ej10 - Inecuación con valor absoluto
+- mat1000-i1-2025-forma-b-ej11 - Rectas, pendientes e intersecciones
+- mat1000-i1-2025-forma-b-ej12 - Polinomios: resto, factores y raíces
+- mat1000-i1-2025-forma-b-ej13 - Modelamiento cuadrático y optimización
+- mat1000-i1-2024-forma-b-ej01 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2024-forma-b-ej02 - Rectas, pendientes e intersecciones
+- mat1000-i1-2024-forma-b-ej03 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2024-forma-b-ej04 - Rectas, pendientes e intersecciones
+- mat1000-i1-2024-forma-b-ej05 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2024-forma-b-ej06 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2024-forma-b-ej07 - Inecuaciones y análisis de signos
+- mat1000-i1-2024-forma-b-ej08 - Inecuaciones y análisis de signos
+- mat1000-i1-2024-forma-b-ej09 - Inecuación con valor absoluto
+- mat1000-i1-2024-forma-b-ej10 - Inecuación con valor absoluto
+- mat1000-i1-2024-forma-b-ej11 - Rectas, pendientes e intersecciones
+- mat1000-i1-2024-forma-b-ej12 - Polinomios: resto, factores y raíces
+- mat1000-i1-2024-forma-b-ej13 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2024-forma-b-ej14 - Inecuaciones y análisis de signos
+- mat1000-i1-2026-forma-a-ej01 - Rectas, pendientes e intersecciones
+- mat1000-i1-2026-forma-a-ej02 - Rectas, pendientes e intersecciones
+- mat1000-i1-2026-forma-a-ej03 - Rectas, pendientes e intersecciones
+- mat1000-i1-2026-forma-a-ej04 - Rectas, pendientes e intersecciones
+- mat1000-i1-2026-forma-a-ej05 - Rectas, pendientes e intersecciones
+- mat1000-i1-2026-forma-a-ej06 - Parábola: vértice, gráfica y modelo
+- mat1000-i1-2026-forma-a-ej07 - Rectas, pendientes e intersecciones
+- mat1000-i1-2026-forma-a-ej08 - Inecuaciones y análisis de signos
+- mat1000-i1-2026-forma-a-ej09 - Inecuaciones y análisis de signos
+- mat1000-i1-2026-forma-a-ej10 - Inecuación con valor absoluto
+- mat1000-i1-2026-forma-a-ej11 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i1-2026-forma-a-ej12 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i1-2026-forma-a-ej13 - Modelamiento cuadrático y optimización
+- mat1000-i2-2025-forma-b-ej01 - Dominio raíz/racional
+- mat1000-i2-2025-forma-b-ej02 - Rectas, pendientes e intersecciones
+- mat1000-i2-2025-forma-b-ej03 - Composición y operaciones de funciones
+- mat1000-i2-2025-forma-b-ej04 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i2-2025-forma-b-ej05 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i2-2025-forma-b-ej06 - Función inversa racional o por tramos
+- mat1000-i2-2025-forma-b-ej07 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i2-2025-forma-b-ej08 - Exponencial con cambio de variable o crecimiento
+- mat1000-i2-2025-forma-b-ej09 - Logaritmos con restricciones y propiedades
+- mat1000-i2-2025-forma-b-ej10 - Exponencial con cambio de variable o crecimiento
+- mat1000-i2-2025-forma-b-ej11 - Función por tramos: gráfico, recorrido e inyectividad
+- mat1000-i2-2025-forma-b-ej12 - Polinomios: resto, factores y raíces
+- mat1000-i2-2025-forma-b-ej13 - Modelamiento cuadrático y optimización
+- mat1000-i2-2024-forma-b-ej01 - Lectura de gráfico de función
+- mat1000-i2-2024-forma-b-ej02 - Exponencial con cambio de variable o crecimiento
+- mat1000-i2-2024-forma-b-ej03 - Logaritmos con restricciones y propiedades
+- mat1000-i2-2024-forma-b-ej04 - Logaritmos con restricciones y propiedades
+- mat1000-i2-2024-forma-b-ej05 - Logaritmos con restricciones y propiedades
+- mat1000-i2-2024-forma-b-ej06 - Rectas, pendientes e intersecciones
+- mat1000-i2-2024-forma-b-ej07 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i2-2024-forma-b-ej08 - Logaritmos con restricciones y propiedades
+- mat1000-i2-2024-forma-b-ej09 - Logaritmos con restricciones y propiedades
+- mat1000-i2-2024-forma-b-ej10 - Función inversa racional o por tramos
+- mat1000-i2-2024-forma-b-ej11 - Función por tramos: gráfico, recorrido e inyectividad
+- mat1000-i2-2024-forma-b-ej13 - Composición y operaciones de funciones
+- mat1000-i2-2024-forma-b-ej14 - Modelamiento aplicado UC
+- mat1000-i2-2024-forma-a-ej01 - Lectura de gráfico de función
+- mat1000-i2-2024-forma-a-ej02 - Exponencial con cambio de variable o crecimiento
+- mat1000-i2-2024-forma-a-ej03 - Logaritmos con restricciones y propiedades
+- mat1000-i2-2024-forma-a-ej04 - Logaritmos con restricciones y propiedades
+- mat1000-i2-2024-forma-a-ej05 - Logaritmos con restricciones y propiedades
+- mat1000-i2-2024-forma-a-ej06 - Rectas, pendientes e intersecciones
+- mat1000-i2-2024-forma-a-ej07 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i2-2024-forma-a-ej08 - Logaritmos con restricciones y propiedades
+- mat1000-i2-2024-forma-a-ej09 - Logaritmos con restricciones y propiedades
+- mat1000-i2-2024-forma-a-ej10 - Función inversa racional o por tramos
+- mat1000-i2-2024-forma-a-ej11 - Función por tramos: gráfico, recorrido e inyectividad
+- mat1000-i2-2024-forma-a-ej13 - Composición y operaciones de funciones
+- mat1000-i2-2024-forma-a-ej14 - Modelamiento aplicado UC
+- mat1000-i2-2026-forma-a-ej01 - Dominio raíz/racional
+- mat1000-i2-2026-forma-a-ej02 - Rectas, pendientes e intersecciones
+- mat1000-i2-2026-forma-a-ej03 - Dominio con restricciones algebraicas
+- mat1000-i2-2026-forma-a-ej04 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i2-2026-forma-a-ej05 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i2-2026-forma-a-ej06 - Función inversa racional o por tramos
+- mat1000-i2-2026-forma-a-ej07 - Función inversa racional o por tramos
+- mat1000-i2-2026-forma-a-ej08 - Exponencial con cambio de variable o crecimiento
+- mat1000-i2-2026-forma-a-ej09 - Logaritmos con restricciones y propiedades
+- mat1000-i2-2026-forma-a-ej10 - Logaritmos con restricciones y propiedades
+- mat1000-i2-2026-forma-a-ej11 - Función por tramos: gráfico, recorrido e inyectividad
+- mat1000-i2-2026-forma-a-ej13 - Modelamiento aplicado UC
+- mat1000-i2-2025-forma-a-ej01 - Dominio raíz/racional
+- mat1000-i2-2025-forma-a-ej02 - Rectas, pendientes e intersecciones
+- mat1000-i2-2025-forma-a-ej03 - Composición y operaciones de funciones
+- mat1000-i2-2025-forma-a-ej04 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i2-2025-forma-a-ej05 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i2-2025-forma-a-ej06 - Función inversa racional o por tramos
+- mat1000-i2-2025-forma-a-ej07 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i2-2025-forma-a-ej08 - Exponencial con cambio de variable o crecimiento
+- mat1000-i2-2025-forma-a-ej09 - Logaritmos con restricciones y propiedades
+- mat1000-i2-2025-forma-a-ej10 - Exponencial con cambio de variable o crecimiento
+- mat1000-i2-2025-forma-a-ej11 - Función por tramos: gráfico, recorrido e inyectividad
+- mat1000-i2-2025-forma-a-ej12 - Polinomios: resto, factores y raíces
+- mat1000-i2-2025-forma-a-ej13 - Modelamiento cuadrático y optimización
+- mat1000-i2-2026-forma-b-ej01 - Dominio raíz/racional
+- mat1000-i2-2026-forma-b-ej02 - Rectas, pendientes e intersecciones
+- mat1000-i2-2026-forma-b-ej03 - Dominio con restricciones algebraicas
+- mat1000-i2-2026-forma-b-ej04 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i2-2026-forma-b-ej05 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i2-2026-forma-b-ej06 - Función inversa racional o por tramos
+- mat1000-i2-2026-forma-b-ej07 - Función inversa racional o por tramos
+- mat1000-i2-2026-forma-b-ej08 - Exponencial con cambio de variable o crecimiento
+- mat1000-i2-2026-forma-b-ej09 - Logaritmos con restricciones y propiedades
+- mat1000-i2-2026-forma-b-ej10 - Logaritmos con restricciones y propiedades
+- mat1000-i2-2026-forma-b-ej11 - Función por tramos: gráfico, recorrido e inyectividad
+- mat1000-i2-2026-forma-b-ej13 - Modelamiento aplicado UC
+- mat1000-i3-2024-forma-b-ej01 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2024-forma-b-ej02 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2024-forma-b-ej03 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2024-forma-b-ej04 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2024-forma-b-ej05 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2024-forma-b-ej06 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2024-forma-b-ej07 - Polinomios: resto, factores y raíces
+- mat1000-i3-2024-forma-b-ej08 - Polinomios: resto, factores y raíces
+- mat1000-i3-2024-forma-b-ej09 - Polinomios: resto, factores y raíces
+- mat1000-i3-2024-forma-b-ej10 - Polinomios: resto, factores y raíces
+- mat1000-i3-2024-forma-b-ej11 - Polinomios: resto, factores y raíces
+- mat1000-i3-2024-forma-b-ej12 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2024-forma-b-ej13 - Modelamiento aplicado UC
+- mat1000-i3-2024-forma-b-ej14 - Modelamiento aplicado UC
+- mat1000-i3-2025-forma-a-ej01 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-a-ej02 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-a-ej03 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-a-ej04 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-a-ej05 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-a-ej06 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-a-ej07 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-a-ej08 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-a-ej09 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-a-ej10 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-a-ej11 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-a-ej12 - Función sinusoidal: amplitud, período y desfase
+- mat1000-i3-2025-forma-a-ej13 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-b-ej01 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-b-ej02 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-b-ej03 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-b-ej04 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-b-ej05 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-b-ej06 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-b-ej07 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-b-ej08 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-b-ej09 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-b-ej10 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-b-ej11 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2025-forma-b-ej12 - Función sinusoidal: amplitud, período y desfase
+- mat1000-i3-2025-forma-b-ej13 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2024-forma-a-ej01 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2024-forma-a-ej02 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2024-forma-a-ej03 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2024-forma-a-ej04 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2024-forma-a-ej05 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2024-forma-a-ej06 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2024-forma-a-ej07 - Polinomios: resto, factores y raíces
+- mat1000-i3-2024-forma-a-ej08 - Polinomios: resto, factores y raíces
+- mat1000-i3-2024-forma-a-ej09 - Polinomios: resto, factores y raíces
+- mat1000-i3-2024-forma-a-ej10 - Polinomios: resto, factores y raíces
+- mat1000-i3-2024-forma-a-ej11 - Polinomios: resto, factores y raíces
+- mat1000-i3-2024-forma-a-ej12 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-i3-2024-forma-a-ej13 - Modelamiento aplicado UC
+- mat1000-i3-2024-forma-a-ej14 - Modelamiento aplicado UC
+- mat1000-examen-2024-forma-b-ej01 - Función inversa racional o por tramos
+- mat1000-examen-2024-forma-b-ej02 - Rectas, pendientes e intersecciones
+- mat1000-examen-2024-forma-b-ej03 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-examen-2024-forma-b-ej04 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-examen-2024-forma-b-ej05 - Polinomios: resto, factores y raíces
+- mat1000-examen-2024-forma-b-ej06 - Polinomios: resto, factores y raíces
+- mat1000-examen-2024-forma-b-ej07 - Sucesiones y patrones figurales
+- mat1000-examen-2024-forma-b-ej08 - Sucesiones y patrones figurales
+- mat1000-examen-2024-forma-b-ej09 - Sucesiones y patrones figurales
+- mat1000-examen-2024-forma-b-ej10 - Sucesiones y patrones figurales
+- mat1000-examen-2024-forma-b-ej11 - Polinomios: resto, factores y raíces
+- mat1000-examen-2024-forma-b-ej12 - Polinomios: resto, factores y raíces
+- mat1000-examen-2024-forma-b-ej13 - Modelamiento con sucesiones
+- mat1000-examen-2024-forma-b-ej14 - Función sinusoidal: amplitud, período y desfase
+- mat1000-examen-2024-forma-a-ej01 - Función inversa racional o por tramos
+- mat1000-examen-2024-forma-a-ej02 - Rectas, pendientes e intersecciones
+- mat1000-examen-2024-forma-a-ej03 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-examen-2024-forma-a-ej04 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-examen-2024-forma-a-ej05 - Polinomios: resto, factores y raíces
+- mat1000-examen-2024-forma-a-ej06 - Polinomios: resto, factores y raíces
+- mat1000-examen-2024-forma-a-ej07 - Sucesiones y patrones figurales
+- mat1000-examen-2024-forma-a-ej08 - Sucesiones y patrones figurales
+- mat1000-examen-2024-forma-a-ej09 - Sucesiones y patrones figurales
+- mat1000-examen-2024-forma-a-ej10 - Sucesiones y patrones figurales
+- mat1000-examen-2024-forma-a-ej11 - Polinomios: resto, factores y raíces
+- mat1000-examen-2024-forma-a-ej12 - Polinomios: resto, factores y raíces
+- mat1000-examen-2024-forma-a-ej13 - Modelamiento con sucesiones
+- mat1000-examen-2024-forma-a-ej14 - Función sinusoidal: amplitud, período y desfase
+- mat1000-examen-2025-forma-a-ej01 - Logaritmos con restricciones y propiedades
+- mat1000-examen-2025-forma-a-ej02 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-examen-2025-forma-a-ej03 - Trigonometría UC: identidades, cuadrantes y ángulos
+- mat1000-examen-2025-forma-a-ej04 - Polinomios: resto, factores y raíces
+- mat1000-examen-2025-forma-a-ej05 - Polinomios: resto, factores y raíces
+- mat1000-examen-2025-forma-a-ej06 - Sucesiones y patrones figurales
+- mat1000-examen-2025-forma-a-ej07 - Sucesiones y patrones figurales
+- mat1000-examen-2025-forma-a-ej08 - Polinomios: resto, factores y raíces
+- mat1000-examen-2025-forma-a-ej09 - Rectas, pendientes e intersecciones
+- mat1000-examen-2025-forma-a-ej10 - Sucesiones y patrones figurales
+- mat1000-examen-2025-forma-a-ej11 - Polinomios: resto, factores y raíces
+- mat1000-examen-2025-forma-a-ej12 - Inecuaciones y análisis de signos
+- mat1000-examen-2025-forma-a-ej13 - Sucesiones y patrones figurales

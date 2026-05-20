@@ -1,0 +1,2890 @@
+[
+  {
+    "id": "gen-i3-001",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Cuadrantes",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si t está en el tercer cuadrante y cos(t)=-3/5, determine tan(t).",
+    "options": [],
+    "correctAnswer": "4/3",
+    "explanation": "En QIII, seno y coseno son negativos, tangente positiva. | sen(t)=-4/5. | tan=sen/cos=4/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En QIII, seno y coseno son negativos, tangente positiva.",
+      "sen(t)=-4/5.",
+      "tan=sen/cos=4/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-002",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Identidades",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Simplifique tan(theta)sen(theta)+cos(theta).",
+    "options": [],
+    "correctAnswer": "sec(theta)",
+    "explanation": "tan=sen/cos. | sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan=sen/cos.",
+      "sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-003",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Ángulo doble",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En un triángulo rectángulo, tan(theta)=3/4. Determine tan(2theta).",
+    "options": [],
+    "correctAnswer": "24/7",
+    "explanation": "tan(2t)=2tan(t)/(1-tan^2(t)). | 2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(2t)=2tan(t)/(1-tan^2(t)).",
+      "2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-004",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Inversa trigonométrica",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Determine arctan(sqrt(3)).",
+    "options": [],
+    "correctAnswer": "pi/3",
+    "explanation": "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-005",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Teorema del resto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si P(x)=2x^3-5x^2+x-k, determine k para que el resto al dividir por x-2 sea cero.",
+    "options": [],
+    "correctAnswer": "k=-2",
+    "explanation": "P(2)=0. | 16-20+2-k=0 => -2-k=0 => k=-2.",
+    "distractorExplanations": [],
+    "steps": [
+      "P(2)=0.",
+      "16-20+2-k=0 => -2-k=0 => k=-2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-006",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Resto",
+    "difficulty": "baja",
+    "type": "numeric",
+    "prompt": "Determine el resto al dividir P(x)=x^3+2x+1 por x-1.",
+    "options": [],
+    "correctAnswer": "4",
+    "explanation": "Por teorema del resto, resto=P(1)=1+2+1=4.",
+    "distractorExplanations": [],
+    "steps": [
+      "Por teorema del resto, resto=P(1)=1+2+1=4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-007",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Sinusoidal",
+    "difficulty": "alta",
+    "type": "graph",
+    "prompt": "Una función f(x)=Acos(k(x-B)) tiene amplitud 3, período 4pi y desfase pi/3. Determine f(x).",
+    "options": [],
+    "correctAnswer": "f(x)=3cos(1/2(x-pi/3))",
+    "explanation": "T=2pi/k=4pi => k=1/2. | A=3, B=pi/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "T=2pi/k=4pi => k=1/2.",
+      "A=3, B=pi/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Función sinusoidal: amplitud, período y desfase",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-008",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Razones en triángulo",
+    "difficulty": "media",
+    "type": "modeling",
+    "prompt": "Desde un punto se observa la cima de una torre con ángulo de elevación 30°. Si la torre mide 60 m, determine la distancia horizontal al pie.",
+    "options": [],
+    "correctAnswer": "60sqrt(3)",
+    "explanation": "tan(30)=opuesto/adyacente=60/d. | 1/sqrt(3)=60/d => d=60sqrt(3).",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(30)=opuesto/adyacente=60/d.",
+      "1/sqrt(3)=60/d => d=60sqrt(3)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-009",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Cuadrantes",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si t está en el tercer cuadrante y cos(t)=-3/5, determine tan(t).",
+    "options": [],
+    "correctAnswer": "4/3",
+    "explanation": "En QIII, seno y coseno son negativos, tangente positiva. | sen(t)=-4/5. | tan=sen/cos=4/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En QIII, seno y coseno son negativos, tangente positiva.",
+      "sen(t)=-4/5.",
+      "tan=sen/cos=4/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-010",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Identidades",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Simplifique tan(theta)sen(theta)+cos(theta).",
+    "options": [],
+    "correctAnswer": "sec(theta)",
+    "explanation": "tan=sen/cos. | sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan=sen/cos.",
+      "sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-011",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Ángulo doble",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En un triángulo rectángulo, tan(theta)=3/4. Determine tan(2theta).",
+    "options": [],
+    "correctAnswer": "24/7",
+    "explanation": "tan(2t)=2tan(t)/(1-tan^2(t)). | 2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(2t)=2tan(t)/(1-tan^2(t)).",
+      "2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-012",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Inversa trigonométrica",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Determine arctan(sqrt(3)).",
+    "options": [],
+    "correctAnswer": "pi/3",
+    "explanation": "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-013",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Teorema del resto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si P(x)=2x^3-5x^2+x-k, determine k para que el resto al dividir por x-2 sea cero.",
+    "options": [],
+    "correctAnswer": "k=-2",
+    "explanation": "P(2)=0. | 16-20+2-k=0 => -2-k=0 => k=-2.",
+    "distractorExplanations": [],
+    "steps": [
+      "P(2)=0.",
+      "16-20+2-k=0 => -2-k=0 => k=-2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-014",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Resto",
+    "difficulty": "baja",
+    "type": "numeric",
+    "prompt": "Determine el resto al dividir P(x)=x^3+2x+1 por x-1.",
+    "options": [],
+    "correctAnswer": "4",
+    "explanation": "Por teorema del resto, resto=P(1)=1+2+1=4.",
+    "distractorExplanations": [],
+    "steps": [
+      "Por teorema del resto, resto=P(1)=1+2+1=4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-015",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Sinusoidal",
+    "difficulty": "alta",
+    "type": "graph",
+    "prompt": "Una función f(x)=Acos(k(x-B)) tiene amplitud 3, período 4pi y desfase pi/3. Determine f(x).",
+    "options": [],
+    "correctAnswer": "f(x)=3cos(1/2(x-pi/3))",
+    "explanation": "T=2pi/k=4pi => k=1/2. | A=3, B=pi/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "T=2pi/k=4pi => k=1/2.",
+      "A=3, B=pi/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Función sinusoidal: amplitud, período y desfase",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-016",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Razones en triángulo",
+    "difficulty": "media",
+    "type": "modeling",
+    "prompt": "Desde un punto se observa la cima de una torre con ángulo de elevación 30°. Si la torre mide 60 m, determine la distancia horizontal al pie.",
+    "options": [],
+    "correctAnswer": "60sqrt(3)",
+    "explanation": "tan(30)=opuesto/adyacente=60/d. | 1/sqrt(3)=60/d => d=60sqrt(3).",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(30)=opuesto/adyacente=60/d.",
+      "1/sqrt(3)=60/d => d=60sqrt(3)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-017",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Cuadrantes",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si t está en el tercer cuadrante y cos(t)=-3/5, determine tan(t).",
+    "options": [],
+    "correctAnswer": "4/3",
+    "explanation": "En QIII, seno y coseno son negativos, tangente positiva. | sen(t)=-4/5. | tan=sen/cos=4/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En QIII, seno y coseno son negativos, tangente positiva.",
+      "sen(t)=-4/5.",
+      "tan=sen/cos=4/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-018",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Identidades",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Simplifique tan(theta)sen(theta)+cos(theta).",
+    "options": [],
+    "correctAnswer": "sec(theta)",
+    "explanation": "tan=sen/cos. | sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan=sen/cos.",
+      "sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-019",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Ángulo doble",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En un triángulo rectángulo, tan(theta)=3/4. Determine tan(2theta).",
+    "options": [],
+    "correctAnswer": "24/7",
+    "explanation": "tan(2t)=2tan(t)/(1-tan^2(t)). | 2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(2t)=2tan(t)/(1-tan^2(t)).",
+      "2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-020",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Inversa trigonométrica",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Determine arctan(sqrt(3)).",
+    "options": [],
+    "correctAnswer": "pi/3",
+    "explanation": "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-021",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Teorema del resto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si P(x)=2x^3-5x^2+x-k, determine k para que el resto al dividir por x-2 sea cero.",
+    "options": [],
+    "correctAnswer": "k=-2",
+    "explanation": "P(2)=0. | 16-20+2-k=0 => -2-k=0 => k=-2.",
+    "distractorExplanations": [],
+    "steps": [
+      "P(2)=0.",
+      "16-20+2-k=0 => -2-k=0 => k=-2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-022",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Resto",
+    "difficulty": "baja",
+    "type": "numeric",
+    "prompt": "Determine el resto al dividir P(x)=x^3+2x+1 por x-1.",
+    "options": [],
+    "correctAnswer": "4",
+    "explanation": "Por teorema del resto, resto=P(1)=1+2+1=4.",
+    "distractorExplanations": [],
+    "steps": [
+      "Por teorema del resto, resto=P(1)=1+2+1=4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-023",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Sinusoidal",
+    "difficulty": "alta",
+    "type": "graph",
+    "prompt": "Una función f(x)=Acos(k(x-B)) tiene amplitud 3, período 4pi y desfase pi/3. Determine f(x).",
+    "options": [],
+    "correctAnswer": "f(x)=3cos(1/2(x-pi/3))",
+    "explanation": "T=2pi/k=4pi => k=1/2. | A=3, B=pi/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "T=2pi/k=4pi => k=1/2.",
+      "A=3, B=pi/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Función sinusoidal: amplitud, período y desfase",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-024",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Razones en triángulo",
+    "difficulty": "media",
+    "type": "modeling",
+    "prompt": "Desde un punto se observa la cima de una torre con ángulo de elevación 30°. Si la torre mide 60 m, determine la distancia horizontal al pie.",
+    "options": [],
+    "correctAnswer": "60sqrt(3)",
+    "explanation": "tan(30)=opuesto/adyacente=60/d. | 1/sqrt(3)=60/d => d=60sqrt(3).",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(30)=opuesto/adyacente=60/d.",
+      "1/sqrt(3)=60/d => d=60sqrt(3)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-025",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Cuadrantes",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si t está en el tercer cuadrante y cos(t)=-3/5, determine tan(t).",
+    "options": [],
+    "correctAnswer": "4/3",
+    "explanation": "En QIII, seno y coseno son negativos, tangente positiva. | sen(t)=-4/5. | tan=sen/cos=4/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En QIII, seno y coseno son negativos, tangente positiva.",
+      "sen(t)=-4/5.",
+      "tan=sen/cos=4/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-026",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Identidades",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Simplifique tan(theta)sen(theta)+cos(theta).",
+    "options": [],
+    "correctAnswer": "sec(theta)",
+    "explanation": "tan=sen/cos. | sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan=sen/cos.",
+      "sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-027",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Ángulo doble",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En un triángulo rectángulo, tan(theta)=3/4. Determine tan(2theta).",
+    "options": [],
+    "correctAnswer": "24/7",
+    "explanation": "tan(2t)=2tan(t)/(1-tan^2(t)). | 2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(2t)=2tan(t)/(1-tan^2(t)).",
+      "2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-028",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Inversa trigonométrica",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Determine arctan(sqrt(3)).",
+    "options": [],
+    "correctAnswer": "pi/3",
+    "explanation": "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-029",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Teorema del resto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si P(x)=2x^3-5x^2+x-k, determine k para que el resto al dividir por x-2 sea cero.",
+    "options": [],
+    "correctAnswer": "k=-2",
+    "explanation": "P(2)=0. | 16-20+2-k=0 => -2-k=0 => k=-2.",
+    "distractorExplanations": [],
+    "steps": [
+      "P(2)=0.",
+      "16-20+2-k=0 => -2-k=0 => k=-2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-030",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Resto",
+    "difficulty": "baja",
+    "type": "numeric",
+    "prompt": "Determine el resto al dividir P(x)=x^3+2x+1 por x-1.",
+    "options": [],
+    "correctAnswer": "4",
+    "explanation": "Por teorema del resto, resto=P(1)=1+2+1=4.",
+    "distractorExplanations": [],
+    "steps": [
+      "Por teorema del resto, resto=P(1)=1+2+1=4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-031",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Sinusoidal",
+    "difficulty": "alta",
+    "type": "graph",
+    "prompt": "Una función f(x)=Acos(k(x-B)) tiene amplitud 3, período 4pi y desfase pi/3. Determine f(x).",
+    "options": [],
+    "correctAnswer": "f(x)=3cos(1/2(x-pi/3))",
+    "explanation": "T=2pi/k=4pi => k=1/2. | A=3, B=pi/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "T=2pi/k=4pi => k=1/2.",
+      "A=3, B=pi/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Función sinusoidal: amplitud, período y desfase",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-032",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Razones en triángulo",
+    "difficulty": "media",
+    "type": "modeling",
+    "prompt": "Desde un punto se observa la cima de una torre con ángulo de elevación 30°. Si la torre mide 60 m, determine la distancia horizontal al pie.",
+    "options": [],
+    "correctAnswer": "60sqrt(3)",
+    "explanation": "tan(30)=opuesto/adyacente=60/d. | 1/sqrt(3)=60/d => d=60sqrt(3).",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(30)=opuesto/adyacente=60/d.",
+      "1/sqrt(3)=60/d => d=60sqrt(3)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-033",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Cuadrantes",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si t está en el tercer cuadrante y cos(t)=-3/5, determine tan(t).",
+    "options": [],
+    "correctAnswer": "4/3",
+    "explanation": "En QIII, seno y coseno son negativos, tangente positiva. | sen(t)=-4/5. | tan=sen/cos=4/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En QIII, seno y coseno son negativos, tangente positiva.",
+      "sen(t)=-4/5.",
+      "tan=sen/cos=4/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-034",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Identidades",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Simplifique tan(theta)sen(theta)+cos(theta).",
+    "options": [],
+    "correctAnswer": "sec(theta)",
+    "explanation": "tan=sen/cos. | sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan=sen/cos.",
+      "sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-035",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Ángulo doble",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En un triángulo rectángulo, tan(theta)=3/4. Determine tan(2theta).",
+    "options": [],
+    "correctAnswer": "24/7",
+    "explanation": "tan(2t)=2tan(t)/(1-tan^2(t)). | 2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(2t)=2tan(t)/(1-tan^2(t)).",
+      "2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-036",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Inversa trigonométrica",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Determine arctan(sqrt(3)).",
+    "options": [],
+    "correctAnswer": "pi/3",
+    "explanation": "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-037",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Teorema del resto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si P(x)=2x^3-5x^2+x-k, determine k para que el resto al dividir por x-2 sea cero.",
+    "options": [],
+    "correctAnswer": "k=-2",
+    "explanation": "P(2)=0. | 16-20+2-k=0 => -2-k=0 => k=-2.",
+    "distractorExplanations": [],
+    "steps": [
+      "P(2)=0.",
+      "16-20+2-k=0 => -2-k=0 => k=-2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-038",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Resto",
+    "difficulty": "baja",
+    "type": "numeric",
+    "prompt": "Determine el resto al dividir P(x)=x^3+2x+1 por x-1.",
+    "options": [],
+    "correctAnswer": "4",
+    "explanation": "Por teorema del resto, resto=P(1)=1+2+1=4.",
+    "distractorExplanations": [],
+    "steps": [
+      "Por teorema del resto, resto=P(1)=1+2+1=4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-039",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Sinusoidal",
+    "difficulty": "alta",
+    "type": "graph",
+    "prompt": "Una función f(x)=Acos(k(x-B)) tiene amplitud 3, período 4pi y desfase pi/3. Determine f(x).",
+    "options": [],
+    "correctAnswer": "f(x)=3cos(1/2(x-pi/3))",
+    "explanation": "T=2pi/k=4pi => k=1/2. | A=3, B=pi/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "T=2pi/k=4pi => k=1/2.",
+      "A=3, B=pi/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Función sinusoidal: amplitud, período y desfase",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-040",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Razones en triángulo",
+    "difficulty": "media",
+    "type": "modeling",
+    "prompt": "Desde un punto se observa la cima de una torre con ángulo de elevación 30°. Si la torre mide 60 m, determine la distancia horizontal al pie.",
+    "options": [],
+    "correctAnswer": "60sqrt(3)",
+    "explanation": "tan(30)=opuesto/adyacente=60/d. | 1/sqrt(3)=60/d => d=60sqrt(3).",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(30)=opuesto/adyacente=60/d.",
+      "1/sqrt(3)=60/d => d=60sqrt(3)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-041",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Cuadrantes",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si t está en el tercer cuadrante y cos(t)=-3/5, determine tan(t).",
+    "options": [],
+    "correctAnswer": "4/3",
+    "explanation": "En QIII, seno y coseno son negativos, tangente positiva. | sen(t)=-4/5. | tan=sen/cos=4/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En QIII, seno y coseno son negativos, tangente positiva.",
+      "sen(t)=-4/5.",
+      "tan=sen/cos=4/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-042",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Identidades",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Simplifique tan(theta)sen(theta)+cos(theta).",
+    "options": [],
+    "correctAnswer": "sec(theta)",
+    "explanation": "tan=sen/cos. | sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan=sen/cos.",
+      "sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-043",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Ángulo doble",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En un triángulo rectángulo, tan(theta)=3/4. Determine tan(2theta).",
+    "options": [],
+    "correctAnswer": "24/7",
+    "explanation": "tan(2t)=2tan(t)/(1-tan^2(t)). | 2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(2t)=2tan(t)/(1-tan^2(t)).",
+      "2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-044",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Inversa trigonométrica",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Determine arctan(sqrt(3)).",
+    "options": [],
+    "correctAnswer": "pi/3",
+    "explanation": "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-045",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Teorema del resto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si P(x)=2x^3-5x^2+x-k, determine k para que el resto al dividir por x-2 sea cero.",
+    "options": [],
+    "correctAnswer": "k=-2",
+    "explanation": "P(2)=0. | 16-20+2-k=0 => -2-k=0 => k=-2.",
+    "distractorExplanations": [],
+    "steps": [
+      "P(2)=0.",
+      "16-20+2-k=0 => -2-k=0 => k=-2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-046",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Resto",
+    "difficulty": "baja",
+    "type": "numeric",
+    "prompt": "Determine el resto al dividir P(x)=x^3+2x+1 por x-1.",
+    "options": [],
+    "correctAnswer": "4",
+    "explanation": "Por teorema del resto, resto=P(1)=1+2+1=4.",
+    "distractorExplanations": [],
+    "steps": [
+      "Por teorema del resto, resto=P(1)=1+2+1=4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-047",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Sinusoidal",
+    "difficulty": "alta",
+    "type": "graph",
+    "prompt": "Una función f(x)=Acos(k(x-B)) tiene amplitud 3, período 4pi y desfase pi/3. Determine f(x).",
+    "options": [],
+    "correctAnswer": "f(x)=3cos(1/2(x-pi/3))",
+    "explanation": "T=2pi/k=4pi => k=1/2. | A=3, B=pi/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "T=2pi/k=4pi => k=1/2.",
+      "A=3, B=pi/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Función sinusoidal: amplitud, período y desfase",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-048",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Razones en triángulo",
+    "difficulty": "media",
+    "type": "modeling",
+    "prompt": "Desde un punto se observa la cima de una torre con ángulo de elevación 30°. Si la torre mide 60 m, determine la distancia horizontal al pie.",
+    "options": [],
+    "correctAnswer": "60sqrt(3)",
+    "explanation": "tan(30)=opuesto/adyacente=60/d. | 1/sqrt(3)=60/d => d=60sqrt(3).",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(30)=opuesto/adyacente=60/d.",
+      "1/sqrt(3)=60/d => d=60sqrt(3)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-049",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Cuadrantes",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si t está en el tercer cuadrante y cos(t)=-3/5, determine tan(t).",
+    "options": [],
+    "correctAnswer": "4/3",
+    "explanation": "En QIII, seno y coseno son negativos, tangente positiva. | sen(t)=-4/5. | tan=sen/cos=4/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En QIII, seno y coseno son negativos, tangente positiva.",
+      "sen(t)=-4/5.",
+      "tan=sen/cos=4/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-050",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Identidades",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Simplifique tan(theta)sen(theta)+cos(theta).",
+    "options": [],
+    "correctAnswer": "sec(theta)",
+    "explanation": "tan=sen/cos. | sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan=sen/cos.",
+      "sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-051",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Ángulo doble",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En un triángulo rectángulo, tan(theta)=3/4. Determine tan(2theta).",
+    "options": [],
+    "correctAnswer": "24/7",
+    "explanation": "tan(2t)=2tan(t)/(1-tan^2(t)). | 2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(2t)=2tan(t)/(1-tan^2(t)).",
+      "2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-052",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Inversa trigonométrica",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Determine arctan(sqrt(3)).",
+    "options": [],
+    "correctAnswer": "pi/3",
+    "explanation": "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-053",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Teorema del resto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si P(x)=2x^3-5x^2+x-k, determine k para que el resto al dividir por x-2 sea cero.",
+    "options": [],
+    "correctAnswer": "k=-2",
+    "explanation": "P(2)=0. | 16-20+2-k=0 => -2-k=0 => k=-2.",
+    "distractorExplanations": [],
+    "steps": [
+      "P(2)=0.",
+      "16-20+2-k=0 => -2-k=0 => k=-2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-054",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Resto",
+    "difficulty": "baja",
+    "type": "numeric",
+    "prompt": "Determine el resto al dividir P(x)=x^3+2x+1 por x-1.",
+    "options": [],
+    "correctAnswer": "4",
+    "explanation": "Por teorema del resto, resto=P(1)=1+2+1=4.",
+    "distractorExplanations": [],
+    "steps": [
+      "Por teorema del resto, resto=P(1)=1+2+1=4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-055",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Sinusoidal",
+    "difficulty": "alta",
+    "type": "graph",
+    "prompt": "Una función f(x)=Acos(k(x-B)) tiene amplitud 3, período 4pi y desfase pi/3. Determine f(x).",
+    "options": [],
+    "correctAnswer": "f(x)=3cos(1/2(x-pi/3))",
+    "explanation": "T=2pi/k=4pi => k=1/2. | A=3, B=pi/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "T=2pi/k=4pi => k=1/2.",
+      "A=3, B=pi/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Función sinusoidal: amplitud, período y desfase",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-056",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Razones en triángulo",
+    "difficulty": "media",
+    "type": "modeling",
+    "prompt": "Desde un punto se observa la cima de una torre con ángulo de elevación 30°. Si la torre mide 60 m, determine la distancia horizontal al pie.",
+    "options": [],
+    "correctAnswer": "60sqrt(3)",
+    "explanation": "tan(30)=opuesto/adyacente=60/d. | 1/sqrt(3)=60/d => d=60sqrt(3).",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(30)=opuesto/adyacente=60/d.",
+      "1/sqrt(3)=60/d => d=60sqrt(3)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-057",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Cuadrantes",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si t está en el tercer cuadrante y cos(t)=-3/5, determine tan(t).",
+    "options": [],
+    "correctAnswer": "4/3",
+    "explanation": "En QIII, seno y coseno son negativos, tangente positiva. | sen(t)=-4/5. | tan=sen/cos=4/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En QIII, seno y coseno son negativos, tangente positiva.",
+      "sen(t)=-4/5.",
+      "tan=sen/cos=4/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-058",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Identidades",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Simplifique tan(theta)sen(theta)+cos(theta).",
+    "options": [],
+    "correctAnswer": "sec(theta)",
+    "explanation": "tan=sen/cos. | sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan=sen/cos.",
+      "sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-059",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Ángulo doble",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En un triángulo rectángulo, tan(theta)=3/4. Determine tan(2theta).",
+    "options": [],
+    "correctAnswer": "24/7",
+    "explanation": "tan(2t)=2tan(t)/(1-tan^2(t)). | 2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(2t)=2tan(t)/(1-tan^2(t)).",
+      "2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-060",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Inversa trigonométrica",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Determine arctan(sqrt(3)).",
+    "options": [],
+    "correctAnswer": "pi/3",
+    "explanation": "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-061",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Teorema del resto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si P(x)=2x^3-5x^2+x-k, determine k para que el resto al dividir por x-2 sea cero.",
+    "options": [],
+    "correctAnswer": "k=-2",
+    "explanation": "P(2)=0. | 16-20+2-k=0 => -2-k=0 => k=-2.",
+    "distractorExplanations": [],
+    "steps": [
+      "P(2)=0.",
+      "16-20+2-k=0 => -2-k=0 => k=-2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-062",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Resto",
+    "difficulty": "baja",
+    "type": "numeric",
+    "prompt": "Determine el resto al dividir P(x)=x^3+2x+1 por x-1.",
+    "options": [],
+    "correctAnswer": "4",
+    "explanation": "Por teorema del resto, resto=P(1)=1+2+1=4.",
+    "distractorExplanations": [],
+    "steps": [
+      "Por teorema del resto, resto=P(1)=1+2+1=4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-063",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Sinusoidal",
+    "difficulty": "alta",
+    "type": "graph",
+    "prompt": "Una función f(x)=Acos(k(x-B)) tiene amplitud 3, período 4pi y desfase pi/3. Determine f(x).",
+    "options": [],
+    "correctAnswer": "f(x)=3cos(1/2(x-pi/3))",
+    "explanation": "T=2pi/k=4pi => k=1/2. | A=3, B=pi/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "T=2pi/k=4pi => k=1/2.",
+      "A=3, B=pi/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Función sinusoidal: amplitud, período y desfase",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-064",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Razones en triángulo",
+    "difficulty": "media",
+    "type": "modeling",
+    "prompt": "Desde un punto se observa la cima de una torre con ángulo de elevación 30°. Si la torre mide 60 m, determine la distancia horizontal al pie.",
+    "options": [],
+    "correctAnswer": "60sqrt(3)",
+    "explanation": "tan(30)=opuesto/adyacente=60/d. | 1/sqrt(3)=60/d => d=60sqrt(3).",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(30)=opuesto/adyacente=60/d.",
+      "1/sqrt(3)=60/d => d=60sqrt(3)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-065",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Cuadrantes",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si t está en el tercer cuadrante y cos(t)=-3/5, determine tan(t).",
+    "options": [],
+    "correctAnswer": "4/3",
+    "explanation": "En QIII, seno y coseno son negativos, tangente positiva. | sen(t)=-4/5. | tan=sen/cos=4/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En QIII, seno y coseno son negativos, tangente positiva.",
+      "sen(t)=-4/5.",
+      "tan=sen/cos=4/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-066",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Identidades",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Simplifique tan(theta)sen(theta)+cos(theta).",
+    "options": [],
+    "correctAnswer": "sec(theta)",
+    "explanation": "tan=sen/cos. | sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan=sen/cos.",
+      "sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-067",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Ángulo doble",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En un triángulo rectángulo, tan(theta)=3/4. Determine tan(2theta).",
+    "options": [],
+    "correctAnswer": "24/7",
+    "explanation": "tan(2t)=2tan(t)/(1-tan^2(t)). | 2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(2t)=2tan(t)/(1-tan^2(t)).",
+      "2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-068",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Inversa trigonométrica",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Determine arctan(sqrt(3)).",
+    "options": [],
+    "correctAnswer": "pi/3",
+    "explanation": "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-069",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Teorema del resto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si P(x)=2x^3-5x^2+x-k, determine k para que el resto al dividir por x-2 sea cero.",
+    "options": [],
+    "correctAnswer": "k=-2",
+    "explanation": "P(2)=0. | 16-20+2-k=0 => -2-k=0 => k=-2.",
+    "distractorExplanations": [],
+    "steps": [
+      "P(2)=0.",
+      "16-20+2-k=0 => -2-k=0 => k=-2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-070",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Resto",
+    "difficulty": "baja",
+    "type": "numeric",
+    "prompt": "Determine el resto al dividir P(x)=x^3+2x+1 por x-1.",
+    "options": [],
+    "correctAnswer": "4",
+    "explanation": "Por teorema del resto, resto=P(1)=1+2+1=4.",
+    "distractorExplanations": [],
+    "steps": [
+      "Por teorema del resto, resto=P(1)=1+2+1=4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-071",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Sinusoidal",
+    "difficulty": "alta",
+    "type": "graph",
+    "prompt": "Una función f(x)=Acos(k(x-B)) tiene amplitud 3, período 4pi y desfase pi/3. Determine f(x).",
+    "options": [],
+    "correctAnswer": "f(x)=3cos(1/2(x-pi/3))",
+    "explanation": "T=2pi/k=4pi => k=1/2. | A=3, B=pi/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "T=2pi/k=4pi => k=1/2.",
+      "A=3, B=pi/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Función sinusoidal: amplitud, período y desfase",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-072",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Razones en triángulo",
+    "difficulty": "media",
+    "type": "modeling",
+    "prompt": "Desde un punto se observa la cima de una torre con ángulo de elevación 30°. Si la torre mide 60 m, determine la distancia horizontal al pie.",
+    "options": [],
+    "correctAnswer": "60sqrt(3)",
+    "explanation": "tan(30)=opuesto/adyacente=60/d. | 1/sqrt(3)=60/d => d=60sqrt(3).",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(30)=opuesto/adyacente=60/d.",
+      "1/sqrt(3)=60/d => d=60sqrt(3)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-073",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Cuadrantes",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si t está en el tercer cuadrante y cos(t)=-3/5, determine tan(t).",
+    "options": [],
+    "correctAnswer": "4/3",
+    "explanation": "En QIII, seno y coseno son negativos, tangente positiva. | sen(t)=-4/5. | tan=sen/cos=4/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En QIII, seno y coseno son negativos, tangente positiva.",
+      "sen(t)=-4/5.",
+      "tan=sen/cos=4/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-074",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Identidades",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Simplifique tan(theta)sen(theta)+cos(theta).",
+    "options": [],
+    "correctAnswer": "sec(theta)",
+    "explanation": "tan=sen/cos. | sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan=sen/cos.",
+      "sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-075",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Ángulo doble",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En un triángulo rectángulo, tan(theta)=3/4. Determine tan(2theta).",
+    "options": [],
+    "correctAnswer": "24/7",
+    "explanation": "tan(2t)=2tan(t)/(1-tan^2(t)). | 2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(2t)=2tan(t)/(1-tan^2(t)).",
+      "2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-076",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Inversa trigonométrica",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Determine arctan(sqrt(3)).",
+    "options": [],
+    "correctAnswer": "pi/3",
+    "explanation": "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-077",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Teorema del resto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si P(x)=2x^3-5x^2+x-k, determine k para que el resto al dividir por x-2 sea cero.",
+    "options": [],
+    "correctAnswer": "k=-2",
+    "explanation": "P(2)=0. | 16-20+2-k=0 => -2-k=0 => k=-2.",
+    "distractorExplanations": [],
+    "steps": [
+      "P(2)=0.",
+      "16-20+2-k=0 => -2-k=0 => k=-2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-078",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Resto",
+    "difficulty": "baja",
+    "type": "numeric",
+    "prompt": "Determine el resto al dividir P(x)=x^3+2x+1 por x-1.",
+    "options": [],
+    "correctAnswer": "4",
+    "explanation": "Por teorema del resto, resto=P(1)=1+2+1=4.",
+    "distractorExplanations": [],
+    "steps": [
+      "Por teorema del resto, resto=P(1)=1+2+1=4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-079",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Sinusoidal",
+    "difficulty": "alta",
+    "type": "graph",
+    "prompt": "Una función f(x)=Acos(k(x-B)) tiene amplitud 3, período 4pi y desfase pi/3. Determine f(x).",
+    "options": [],
+    "correctAnswer": "f(x)=3cos(1/2(x-pi/3))",
+    "explanation": "T=2pi/k=4pi => k=1/2. | A=3, B=pi/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "T=2pi/k=4pi => k=1/2.",
+      "A=3, B=pi/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Función sinusoidal: amplitud, período y desfase",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-080",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Razones en triángulo",
+    "difficulty": "media",
+    "type": "modeling",
+    "prompt": "Desde un punto se observa la cima de una torre con ángulo de elevación 30°. Si la torre mide 60 m, determine la distancia horizontal al pie.",
+    "options": [],
+    "correctAnswer": "60sqrt(3)",
+    "explanation": "tan(30)=opuesto/adyacente=60/d. | 1/sqrt(3)=60/d => d=60sqrt(3).",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(30)=opuesto/adyacente=60/d.",
+      "1/sqrt(3)=60/d => d=60sqrt(3)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-081",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Cuadrantes",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si t está en el tercer cuadrante y cos(t)=-3/5, determine tan(t).",
+    "options": [],
+    "correctAnswer": "4/3",
+    "explanation": "En QIII, seno y coseno son negativos, tangente positiva. | sen(t)=-4/5. | tan=sen/cos=4/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En QIII, seno y coseno son negativos, tangente positiva.",
+      "sen(t)=-4/5.",
+      "tan=sen/cos=4/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-082",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Identidades",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Simplifique tan(theta)sen(theta)+cos(theta).",
+    "options": [],
+    "correctAnswer": "sec(theta)",
+    "explanation": "tan=sen/cos. | sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan=sen/cos.",
+      "sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-083",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Ángulo doble",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En un triángulo rectángulo, tan(theta)=3/4. Determine tan(2theta).",
+    "options": [],
+    "correctAnswer": "24/7",
+    "explanation": "tan(2t)=2tan(t)/(1-tan^2(t)). | 2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(2t)=2tan(t)/(1-tan^2(t)).",
+      "2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-084",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Inversa trigonométrica",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Determine arctan(sqrt(3)).",
+    "options": [],
+    "correctAnswer": "pi/3",
+    "explanation": "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-085",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Teorema del resto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si P(x)=2x^3-5x^2+x-k, determine k para que el resto al dividir por x-2 sea cero.",
+    "options": [],
+    "correctAnswer": "k=-2",
+    "explanation": "P(2)=0. | 16-20+2-k=0 => -2-k=0 => k=-2.",
+    "distractorExplanations": [],
+    "steps": [
+      "P(2)=0.",
+      "16-20+2-k=0 => -2-k=0 => k=-2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-086",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Resto",
+    "difficulty": "baja",
+    "type": "numeric",
+    "prompt": "Determine el resto al dividir P(x)=x^3+2x+1 por x-1.",
+    "options": [],
+    "correctAnswer": "4",
+    "explanation": "Por teorema del resto, resto=P(1)=1+2+1=4.",
+    "distractorExplanations": [],
+    "steps": [
+      "Por teorema del resto, resto=P(1)=1+2+1=4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-087",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Sinusoidal",
+    "difficulty": "alta",
+    "type": "graph",
+    "prompt": "Una función f(x)=Acos(k(x-B)) tiene amplitud 3, período 4pi y desfase pi/3. Determine f(x).",
+    "options": [],
+    "correctAnswer": "f(x)=3cos(1/2(x-pi/3))",
+    "explanation": "T=2pi/k=4pi => k=1/2. | A=3, B=pi/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "T=2pi/k=4pi => k=1/2.",
+      "A=3, B=pi/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Función sinusoidal: amplitud, período y desfase",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-088",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Razones en triángulo",
+    "difficulty": "media",
+    "type": "modeling",
+    "prompt": "Desde un punto se observa la cima de una torre con ángulo de elevación 30°. Si la torre mide 60 m, determine la distancia horizontal al pie.",
+    "options": [],
+    "correctAnswer": "60sqrt(3)",
+    "explanation": "tan(30)=opuesto/adyacente=60/d. | 1/sqrt(3)=60/d => d=60sqrt(3).",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(30)=opuesto/adyacente=60/d.",
+      "1/sqrt(3)=60/d => d=60sqrt(3)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-089",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Cuadrantes",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si t está en el tercer cuadrante y cos(t)=-3/5, determine tan(t).",
+    "options": [],
+    "correctAnswer": "4/3",
+    "explanation": "En QIII, seno y coseno son negativos, tangente positiva. | sen(t)=-4/5. | tan=sen/cos=4/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En QIII, seno y coseno son negativos, tangente positiva.",
+      "sen(t)=-4/5.",
+      "tan=sen/cos=4/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-090",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Identidades",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Simplifique tan(theta)sen(theta)+cos(theta).",
+    "options": [],
+    "correctAnswer": "sec(theta)",
+    "explanation": "tan=sen/cos. | sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan=sen/cos.",
+      "sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-091",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Ángulo doble",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En un triángulo rectángulo, tan(theta)=3/4. Determine tan(2theta).",
+    "options": [],
+    "correctAnswer": "24/7",
+    "explanation": "tan(2t)=2tan(t)/(1-tan^2(t)). | 2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(2t)=2tan(t)/(1-tan^2(t)).",
+      "2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-092",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Inversa trigonométrica",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Determine arctan(sqrt(3)).",
+    "options": [],
+    "correctAnswer": "pi/3",
+    "explanation": "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-093",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Teorema del resto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si P(x)=2x^3-5x^2+x-k, determine k para que el resto al dividir por x-2 sea cero.",
+    "options": [],
+    "correctAnswer": "k=-2",
+    "explanation": "P(2)=0. | 16-20+2-k=0 => -2-k=0 => k=-2.",
+    "distractorExplanations": [],
+    "steps": [
+      "P(2)=0.",
+      "16-20+2-k=0 => -2-k=0 => k=-2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-094",
+    "moduleId": "I3",
+    "topic": "Polinomios",
+    "subtopic": "Resto",
+    "difficulty": "baja",
+    "type": "numeric",
+    "prompt": "Determine el resto al dividir P(x)=x^3+2x+1 por x-1.",
+    "options": [],
+    "correctAnswer": "4",
+    "explanation": "Por teorema del resto, resto=P(1)=1+2+1=4.",
+    "distractorExplanations": [],
+    "steps": [
+      "Por teorema del resto, resto=P(1)=1+2+1=4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-095",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Sinusoidal",
+    "difficulty": "alta",
+    "type": "graph",
+    "prompt": "Una función f(x)=Acos(k(x-B)) tiene amplitud 3, período 4pi y desfase pi/3. Determine f(x).",
+    "options": [],
+    "correctAnswer": "f(x)=3cos(1/2(x-pi/3))",
+    "explanation": "T=2pi/k=4pi => k=1/2. | A=3, B=pi/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "T=2pi/k=4pi => k=1/2.",
+      "A=3, B=pi/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Función sinusoidal: amplitud, período y desfase",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-096",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Razones en triángulo",
+    "difficulty": "media",
+    "type": "modeling",
+    "prompt": "Desde un punto se observa la cima de una torre con ángulo de elevación 30°. Si la torre mide 60 m, determine la distancia horizontal al pie.",
+    "options": [],
+    "correctAnswer": "60sqrt(3)",
+    "explanation": "tan(30)=opuesto/adyacente=60/d. | 1/sqrt(3)=60/d => d=60sqrt(3).",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(30)=opuesto/adyacente=60/d.",
+      "1/sqrt(3)=60/d => d=60sqrt(3)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-097",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Cuadrantes",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si t está en el tercer cuadrante y cos(t)=-3/5, determine tan(t).",
+    "options": [],
+    "correctAnswer": "4/3",
+    "explanation": "En QIII, seno y coseno son negativos, tangente positiva. | sen(t)=-4/5. | tan=sen/cos=4/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En QIII, seno y coseno son negativos, tangente positiva.",
+      "sen(t)=-4/5.",
+      "tan=sen/cos=4/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-098",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Identidades",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Simplifique tan(theta)sen(theta)+cos(theta).",
+    "options": [],
+    "correctAnswer": "sec(theta)",
+    "explanation": "tan=sen/cos. | sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan=sen/cos.",
+      "sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-099",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Ángulo doble",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En un triángulo rectángulo, tan(theta)=3/4. Determine tan(2theta).",
+    "options": [],
+    "correctAnswer": "24/7",
+    "explanation": "tan(2t)=2tan(t)/(1-tan^2(t)). | 2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(2t)=2tan(t)/(1-tan^2(t)).",
+      "2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i3-100",
+    "moduleId": "I3",
+    "topic": "Trigonometría",
+    "subtopic": "Inversa trigonométrica",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Determine arctan(sqrt(3)).",
+    "options": [],
+    "correctAnswer": "pi/3",
+    "explanation": "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  }
+]

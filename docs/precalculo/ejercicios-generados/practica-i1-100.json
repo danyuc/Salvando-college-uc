@@ -1,0 +1,3135 @@
+[
+  {
+    "id": "gen-i1-001",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Distancia entre puntos",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Los puntos A(-1,-2) y B(2,1) son extremos de un segmento. ¿Cuál es la distancia AB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "6"
+      },
+      {
+        "label": "B",
+        "text": "sqrt(0)"
+      },
+      {
+        "label": "C",
+        "text": "sqrt(18)"
+      },
+      {
+        "label": "D",
+        "text": "sqrt(22)"
+      }
+    ],
+    "correctAnswer": "sqrt(18)",
+    "explanation": "Usar d=sqrt((x2-x1)^2+(y2-y1)^2). | d=sqrt(3^2+3^2)=sqrt(18).",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar d=sqrt((x2-x1)^2+(y2-y1)^2).",
+      "d=sqrt(3^2+3^2)=sqrt(18)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-002",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Ecuación de recta",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine la ecuación principal de la recta que pasa por (-3,1) y tiene pendiente 3.",
+    "options": [],
+    "correctAnswer": "y = 3x + 10",
+    "explanation": "Usar y-y0=m(x-x0). | y-1=3(x--3) => y=3x+10.",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar y-y0=m(x-x0).",
+      "y-1=3(x--3) => y=3x+10."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-003",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Vértice de parábola",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "¿Cuál es el vértice de la parábola y=2(x-(-3))^2+(-5)?",
+    "options": [],
+    "correctAnswer": "(-3,-5)",
+    "explanation": "La forma y=a(x-h)^2+k tiene vértice (h,k). | Aquí h=-3, k=-5.",
+    "distractorExplanations": [],
+    "steps": [
+      "La forma y=a(x-h)^2+k tiene vértice (h,k).",
+      "Aquí h=-3, k=-5."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-004",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Inecuación cuadrática",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva la inecuación (x-(-6))(x-(4)) <= 0.",
+    "options": [],
+    "correctAnswer": "[-6,4]",
+    "explanation": "Las raíces son -6 y 4. | Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-6,4].",
+    "distractorExplanations": [],
+    "steps": [
+      "Las raíces son -6 y 4.",
+      "Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-6,4]."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuaciones y análisis de signos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-005",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Valor absoluto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva |3x+(3)| < 4.",
+    "options": [],
+    "correctAnswer": "(-2.3333333333333335,0.3333333333333333)",
+    "explanation": "-4 < 3x+(3) < 4. | Restar 3 y dividir por 3: x in (-2.3333333333333335,0.3333333333333333).",
+    "distractorExplanations": [],
+    "steps": [
+      "-4 < 3x+(3) < 4.",
+      "Restar 3 y dividir por 3: x in (-2.3333333333333335,0.3333333333333333)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuación con valor absoluto",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-006",
+    "moduleId": "I1",
+    "topic": "Modelamiento",
+    "subtopic": "Optimización cuadrática",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Con 60 metros de malla se cerca un jardín rectangular usando una pared como uno de sus lados. Determine dimensiones que maximizan el área.",
+    "options": [],
+    "correctAnswer": "ancho 15, largo 30, área 450",
+    "explanation": "Restricción 2x+y=60. | A=x(60-2x)=-2x^2+60x. | Vértice x=60/4=15; y=60-2x=30; A=450.",
+    "distractorExplanations": [],
+    "steps": [
+      "Restricción 2x+y=60.",
+      "A=x(60-2x)=-2x^2+60x.",
+      "Vértice x=60/4=15; y=60-2x=30; A=450."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento cuadrático y optimización",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-007",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Extremo de parábola",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine el valor mínimo o máximo de y=3x^2+(4)x+(1).",
+    "options": [],
+    "correctAnswer": "valor extremo -0.33333333333333326 en x=-0.6666666666666666",
+    "explanation": "h=-b/(2a)=-(4)/(2*3)=-0.6666666666666666. | f(h)=-0.33333333333333326. Como a>0, es mínimo.",
+    "distractorExplanations": [],
+    "steps": [
+      "h=-b/(2a)=-(4)/(2*3)=-0.6666666666666666.",
+      "f(h)=-0.33333333333333326. Como a>0, es mínimo."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-008",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Rectas paralelas",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "La recta L es paralela a y=1x+(3) y pasa por (2,4). Determine L.",
+    "options": [],
+    "correctAnswer": "y=1x+2",
+    "explanation": "Rectas paralelas tienen misma pendiente m=1. | Usar (2,4): 4=1*2+b => b=2.",
+    "distractorExplanations": [],
+    "steps": [
+      "Rectas paralelas tienen misma pendiente m=1.",
+      "Usar (2,4): 4=1*2+b => b=2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-009",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Distancia entre puntos",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Los puntos A(-3,1) y B(2,4) son extremos de un segmento. ¿Cuál es la distancia AB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "8"
+      },
+      {
+        "label": "B",
+        "text": "sqrt(34)"
+      },
+      {
+        "label": "C",
+        "text": "sqrt(38)"
+      },
+      {
+        "label": "D",
+        "text": "sqrt(16)"
+      }
+    ],
+    "correctAnswer": "sqrt(34)",
+    "explanation": "Usar d=sqrt((x2-x1)^2+(y2-y1)^2). | d=sqrt(5^2+3^2)=sqrt(34).",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar d=sqrt((x2-x1)^2+(y2-y1)^2).",
+      "d=sqrt(5^2+3^2)=sqrt(34)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-010",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Ecuación de recta",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine la ecuación principal de la recta que pasa por (3,-1) y tiene pendiente -2.",
+    "options": [],
+    "correctAnswer": "y = -2x + 5",
+    "explanation": "Usar y-y0=m(x-x0). | y--1=-2(x-3) => y=-2x+5.",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar y-y0=m(x-x0).",
+      "y--1=-2(x-3) => y=-2x+5."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-011",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Vértice de parábola",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "¿Cuál es el vértice de la parábola y=1(x-(-3))^2+(1)?",
+    "options": [],
+    "correctAnswer": "(-3,1)",
+    "explanation": "La forma y=a(x-h)^2+k tiene vértice (h,k). | Aquí h=-3, k=1.",
+    "distractorExplanations": [],
+    "steps": [
+      "La forma y=a(x-h)^2+k tiene vértice (h,k).",
+      "Aquí h=-3, k=1."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-012",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Inecuación cuadrática",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva la inecuación (x-(-6))(x-(6)) <= 0.",
+    "options": [],
+    "correctAnswer": "[-6,6]",
+    "explanation": "Las raíces son -6 y 6. | Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-6,6].",
+    "distractorExplanations": [],
+    "steps": [
+      "Las raíces son -6 y 6.",
+      "Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-6,6]."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuaciones y análisis de signos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-013",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Valor absoluto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva |4x+(4)| < 8.",
+    "options": [],
+    "correctAnswer": "(-3.0,1.0)",
+    "explanation": "-8 < 4x+(4) < 8. | Restar 4 y dividir por 4: x in (-3.0,1.0).",
+    "distractorExplanations": [],
+    "steps": [
+      "-8 < 4x+(4) < 8.",
+      "Restar 4 y dividir por 4: x in (-3.0,1.0)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuación con valor absoluto",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-014",
+    "moduleId": "I1",
+    "topic": "Modelamiento",
+    "subtopic": "Optimización cuadrática",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Con 40 metros de malla se cerca un jardín rectangular usando una pared como uno de sus lados. Determine dimensiones que maximizan el área.",
+    "options": [],
+    "correctAnswer": "ancho 10, largo 20, área 200",
+    "explanation": "Restricción 2x+y=40. | A=x(40-2x)=-2x^2+40x. | Vértice x=40/4=10; y=40-2x=20; A=200.",
+    "distractorExplanations": [],
+    "steps": [
+      "Restricción 2x+y=40.",
+      "A=x(40-2x)=-2x^2+40x.",
+      "Vértice x=40/4=10; y=40-2x=20; A=200."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento cuadrático y optimización",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-015",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Extremo de parábola",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine el valor mínimo o máximo de y=3x^2+(2)x+(3).",
+    "options": [],
+    "correctAnswer": "valor extremo 2.6666666666666665 en x=-0.3333333333333333",
+    "explanation": "h=-b/(2a)=-(2)/(2*3)=-0.3333333333333333. | f(h)=2.6666666666666665. Como a>0, es mínimo.",
+    "distractorExplanations": [],
+    "steps": [
+      "h=-b/(2a)=-(2)/(2*3)=-0.3333333333333333.",
+      "f(h)=2.6666666666666665. Como a>0, es mínimo."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-016",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Rectas paralelas",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "La recta L es paralela a y=1x+(2) y pasa por (2,-4). Determine L.",
+    "options": [],
+    "correctAnswer": "y=1x+-6",
+    "explanation": "Rectas paralelas tienen misma pendiente m=1. | Usar (2,-4): -4=1*2+b => b=-6.",
+    "distractorExplanations": [],
+    "steps": [
+      "Rectas paralelas tienen misma pendiente m=1.",
+      "Usar (2,-4): -4=1*2+b => b=-6."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-017",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Distancia entre puntos",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Los puntos A(5,4) y B(13,10) son extremos de un segmento. ¿Cuál es la distancia AB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "sqrt(104)"
+      },
+      {
+        "label": "B",
+        "text": "sqrt(100)"
+      },
+      {
+        "label": "C",
+        "text": "14"
+      },
+      {
+        "label": "D",
+        "text": "sqrt(28)"
+      }
+    ],
+    "correctAnswer": "sqrt(100)",
+    "explanation": "Usar d=sqrt((x2-x1)^2+(y2-y1)^2). | d=sqrt(8^2+6^2)=sqrt(100).",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar d=sqrt((x2-x1)^2+(y2-y1)^2).",
+      "d=sqrt(8^2+6^2)=sqrt(100)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-018",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Ecuación de recta",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine la ecuación principal de la recta que pasa por (-3,2) y tiene pendiente -3.",
+    "options": [],
+    "correctAnswer": "y = -3x + -7",
+    "explanation": "Usar y-y0=m(x-x0). | y-2=-3(x--3) => y=-3x+-7.",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar y-y0=m(x-x0).",
+      "y-2=-3(x--3) => y=-3x+-7."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-019",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Vértice de parábola",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "¿Cuál es el vértice de la parábola y=1(x-(3))^2+(-1)?",
+    "options": [],
+    "correctAnswer": "(3,-1)",
+    "explanation": "La forma y=a(x-h)^2+k tiene vértice (h,k). | Aquí h=3, k=-1.",
+    "distractorExplanations": [],
+    "steps": [
+      "La forma y=a(x-h)^2+k tiene vértice (h,k).",
+      "Aquí h=3, k=-1."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-020",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Inecuación cuadrática",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva la inecuación (x-(-6))(x-(4)) <= 0.",
+    "options": [],
+    "correctAnswer": "[-6,4]",
+    "explanation": "Las raíces son -6 y 4. | Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-6,4].",
+    "distractorExplanations": [],
+    "steps": [
+      "Las raíces son -6 y 4.",
+      "Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-6,4]."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuaciones y análisis de signos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-021",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Valor absoluto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva |2x+(1)| < 8.",
+    "options": [],
+    "correctAnswer": "(-4.5,3.5)",
+    "explanation": "-8 < 2x+(1) < 8. | Restar 1 y dividir por 2: x in (-4.5,3.5).",
+    "distractorExplanations": [],
+    "steps": [
+      "-8 < 2x+(1) < 8.",
+      "Restar 1 y dividir por 2: x in (-4.5,3.5)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuación con valor absoluto",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-022",
+    "moduleId": "I1",
+    "topic": "Modelamiento",
+    "subtopic": "Optimización cuadrática",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Con 100 metros de malla se cerca un jardín rectangular usando una pared como uno de sus lados. Determine dimensiones que maximizan el área.",
+    "options": [],
+    "correctAnswer": "ancho 25, largo 50, área 1250",
+    "explanation": "Restricción 2x+y=100. | A=x(100-2x)=-2x^2+100x. | Vértice x=100/4=25; y=100-2x=50; A=1250.",
+    "distractorExplanations": [],
+    "steps": [
+      "Restricción 2x+y=100.",
+      "A=x(100-2x)=-2x^2+100x.",
+      "Vértice x=100/4=25; y=100-2x=50; A=1250."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento cuadrático y optimización",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-023",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Extremo de parábola",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine el valor mínimo o máximo de y=3x^2+(-2)x+(-3).",
+    "options": [],
+    "correctAnswer": "valor extremo -3.3333333333333335 en x=0.3333333333333333",
+    "explanation": "h=-b/(2a)=-(-2)/(2*3)=0.3333333333333333. | f(h)=-3.3333333333333335. Como a>0, es mínimo.",
+    "distractorExplanations": [],
+    "steps": [
+      "h=-b/(2a)=-(-2)/(2*3)=0.3333333333333333.",
+      "f(h)=-3.3333333333333335. Como a>0, es mínimo."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-024",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Rectas paralelas",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "La recta L es paralela a y=2x+(1) y pasa por (2,-2). Determine L.",
+    "options": [],
+    "correctAnswer": "y=2x+-6",
+    "explanation": "Rectas paralelas tienen misma pendiente m=2. | Usar (2,-2): -2=2*2+b => b=-6.",
+    "distractorExplanations": [],
+    "steps": [
+      "Rectas paralelas tienen misma pendiente m=2.",
+      "Usar (2,-2): -2=2*2+b => b=-6."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-025",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Distancia entre puntos",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Los puntos A(4,5) y B(9,8) son extremos de un segmento. ¿Cuál es la distancia AB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "8"
+      },
+      {
+        "label": "B",
+        "text": "sqrt(34)"
+      },
+      {
+        "label": "C",
+        "text": "sqrt(16)"
+      },
+      {
+        "label": "D",
+        "text": "sqrt(38)"
+      }
+    ],
+    "correctAnswer": "sqrt(34)",
+    "explanation": "Usar d=sqrt((x2-x1)^2+(y2-y1)^2). | d=sqrt(5^2+3^2)=sqrt(34).",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar d=sqrt((x2-x1)^2+(y2-y1)^2).",
+      "d=sqrt(5^2+3^2)=sqrt(34)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-026",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Ecuación de recta",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine la ecuación principal de la recta que pasa por (0,0) y tiene pendiente -2.",
+    "options": [],
+    "correctAnswer": "y = -2x + 0",
+    "explanation": "Usar y-y0=m(x-x0). | y-0=-2(x-0) => y=-2x+0.",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar y-y0=m(x-x0).",
+      "y-0=-2(x-0) => y=-2x+0."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-027",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Vértice de parábola",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "¿Cuál es el vértice de la parábola y=2(x-(2))^2+(3)?",
+    "options": [],
+    "correctAnswer": "(2,3)",
+    "explanation": "La forma y=a(x-h)^2+k tiene vértice (h,k). | Aquí h=2, k=3.",
+    "distractorExplanations": [],
+    "steps": [
+      "La forma y=a(x-h)^2+k tiene vértice (h,k).",
+      "Aquí h=2, k=3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-028",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Inecuación cuadrática",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva la inecuación (x-(-5))(x-(6)) <= 0.",
+    "options": [],
+    "correctAnswer": "[-5,6]",
+    "explanation": "Las raíces son -5 y 6. | Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-5,6].",
+    "distractorExplanations": [],
+    "steps": [
+      "Las raíces son -5 y 6.",
+      "Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-5,6]."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuaciones y análisis de signos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-029",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Valor absoluto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva |2x+(-2)| < 4.",
+    "options": [],
+    "correctAnswer": "(-1.0,3.0)",
+    "explanation": "-4 < 2x+(-2) < 4. | Restar -2 y dividir por 2: x in (-1.0,3.0).",
+    "distractorExplanations": [],
+    "steps": [
+      "-4 < 2x+(-2) < 4.",
+      "Restar -2 y dividir por 2: x in (-1.0,3.0)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuación con valor absoluto",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-030",
+    "moduleId": "I1",
+    "topic": "Modelamiento",
+    "subtopic": "Optimización cuadrática",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Con 80 metros de malla se cerca un jardín rectangular usando una pared como uno de sus lados. Determine dimensiones que maximizan el área.",
+    "options": [],
+    "correctAnswer": "ancho 20, largo 40, área 800",
+    "explanation": "Restricción 2x+y=80. | A=x(80-2x)=-2x^2+80x. | Vértice x=80/4=20; y=80-2x=40; A=800.",
+    "distractorExplanations": [],
+    "steps": [
+      "Restricción 2x+y=80.",
+      "A=x(80-2x)=-2x^2+80x.",
+      "Vértice x=80/4=20; y=80-2x=40; A=800."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento cuadrático y optimización",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-031",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Extremo de parábola",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine el valor mínimo o máximo de y=2x^2+(-2)x+(-4).",
+    "options": [],
+    "correctAnswer": "valor extremo -4.5 en x=0.5",
+    "explanation": "h=-b/(2a)=-(-2)/(2*2)=0.5. | f(h)=-4.5. Como a>0, es mínimo.",
+    "distractorExplanations": [],
+    "steps": [
+      "h=-b/(2a)=-(-2)/(2*2)=0.5.",
+      "f(h)=-4.5. Como a>0, es mínimo."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-032",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Rectas paralelas",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "La recta L es paralela a y=1x+(1) y pasa por (2,-2). Determine L.",
+    "options": [],
+    "correctAnswer": "y=1x+-4",
+    "explanation": "Rectas paralelas tienen misma pendiente m=1. | Usar (2,-2): -2=1*2+b => b=-4.",
+    "distractorExplanations": [],
+    "steps": [
+      "Rectas paralelas tienen misma pendiente m=1.",
+      "Usar (2,-2): -2=1*2+b => b=-4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-033",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Distancia entre puntos",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Los puntos A(5,2) y B(11,10) son extremos de un segmento. ¿Cuál es la distancia AB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "sqrt(28)"
+      },
+      {
+        "label": "B",
+        "text": "sqrt(100)"
+      },
+      {
+        "label": "C",
+        "text": "14"
+      },
+      {
+        "label": "D",
+        "text": "sqrt(104)"
+      }
+    ],
+    "correctAnswer": "sqrt(100)",
+    "explanation": "Usar d=sqrt((x2-x1)^2+(y2-y1)^2). | d=sqrt(6^2+8^2)=sqrt(100).",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar d=sqrt((x2-x1)^2+(y2-y1)^2).",
+      "d=sqrt(6^2+8^2)=sqrt(100)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-034",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Ecuación de recta",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine la ecuación principal de la recta que pasa por (2,1) y tiene pendiente -2.",
+    "options": [],
+    "correctAnswer": "y = -2x + 5",
+    "explanation": "Usar y-y0=m(x-x0). | y-1=-2(x-2) => y=-2x+5.",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar y-y0=m(x-x0).",
+      "y-1=-2(x-2) => y=-2x+5."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-035",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Vértice de parábola",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "¿Cuál es el vértice de la parábola y=3(x-(-1))^2+(4)?",
+    "options": [],
+    "correctAnswer": "(-1,4)",
+    "explanation": "La forma y=a(x-h)^2+k tiene vértice (h,k). | Aquí h=-1, k=4.",
+    "distractorExplanations": [],
+    "steps": [
+      "La forma y=a(x-h)^2+k tiene vértice (h,k).",
+      "Aquí h=-1, k=4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-036",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Inecuación cuadrática",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva la inecuación (x-(-3))(x-(7)) <= 0.",
+    "options": [],
+    "correctAnswer": "[-3,7]",
+    "explanation": "Las raíces son -3 y 7. | Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-3,7].",
+    "distractorExplanations": [],
+    "steps": [
+      "Las raíces son -3 y 7.",
+      "Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-3,7]."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuaciones y análisis de signos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-037",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Valor absoluto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva |4x+(-2)| < 6.",
+    "options": [],
+    "correctAnswer": "(-1.0,2.0)",
+    "explanation": "-6 < 4x+(-2) < 6. | Restar -2 y dividir por 4: x in (-1.0,2.0).",
+    "distractorExplanations": [],
+    "steps": [
+      "-6 < 4x+(-2) < 6.",
+      "Restar -2 y dividir por 4: x in (-1.0,2.0)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuación con valor absoluto",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-038",
+    "moduleId": "I1",
+    "topic": "Modelamiento",
+    "subtopic": "Optimización cuadrática",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Con 100 metros de malla se cerca un jardín rectangular usando una pared como uno de sus lados. Determine dimensiones que maximizan el área.",
+    "options": [],
+    "correctAnswer": "ancho 25, largo 50, área 1250",
+    "explanation": "Restricción 2x+y=100. | A=x(100-2x)=-2x^2+100x. | Vértice x=100/4=25; y=100-2x=50; A=1250.",
+    "distractorExplanations": [],
+    "steps": [
+      "Restricción 2x+y=100.",
+      "A=x(100-2x)=-2x^2+100x.",
+      "Vértice x=100/4=25; y=100-2x=50; A=1250."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento cuadrático y optimización",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-039",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Extremo de parábola",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine el valor mínimo o máximo de y=1x^2+(-6)x+(-4).",
+    "options": [],
+    "correctAnswer": "valor extremo -13.0 en x=3.0",
+    "explanation": "h=-b/(2a)=-(-6)/(2*1)=3.0. | f(h)=-13.0. Como a>0, es mínimo.",
+    "distractorExplanations": [],
+    "steps": [
+      "h=-b/(2a)=-(-6)/(2*1)=3.0.",
+      "f(h)=-13.0. Como a>0, es mínimo."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-040",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Rectas paralelas",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "La recta L es paralela a y=1x+(-2) y pasa por (2,5). Determine L.",
+    "options": [],
+    "correctAnswer": "y=1x+3",
+    "explanation": "Rectas paralelas tienen misma pendiente m=1. | Usar (2,5): 5=1*2+b => b=3.",
+    "distractorExplanations": [],
+    "steps": [
+      "Rectas paralelas tienen misma pendiente m=1.",
+      "Usar (2,5): 5=1*2+b => b=3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-041",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Distancia entre puntos",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Los puntos A(1,1) y B(7,4) son extremos de un segmento. ¿Cuál es la distancia AB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "sqrt(45)"
+      },
+      {
+        "label": "B",
+        "text": "sqrt(49)"
+      },
+      {
+        "label": "C",
+        "text": "sqrt(27)"
+      },
+      {
+        "label": "D",
+        "text": "9"
+      }
+    ],
+    "correctAnswer": "sqrt(45)",
+    "explanation": "Usar d=sqrt((x2-x1)^2+(y2-y1)^2). | d=sqrt(6^2+3^2)=sqrt(45).",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar d=sqrt((x2-x1)^2+(y2-y1)^2).",
+      "d=sqrt(6^2+3^2)=sqrt(45)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-042",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Ecuación de recta",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine la ecuación principal de la recta que pasa por (3,-3) y tiene pendiente 3.",
+    "options": [],
+    "correctAnswer": "y = 3x + -12",
+    "explanation": "Usar y-y0=m(x-x0). | y--3=3(x-3) => y=3x+-12.",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar y-y0=m(x-x0).",
+      "y--3=3(x-3) => y=3x+-12."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-043",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Vértice de parábola",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "¿Cuál es el vértice de la parábola y=3(x-(2))^2+(-4)?",
+    "options": [],
+    "correctAnswer": "(2,-4)",
+    "explanation": "La forma y=a(x-h)^2+k tiene vértice (h,k). | Aquí h=2, k=-4.",
+    "distractorExplanations": [],
+    "steps": [
+      "La forma y=a(x-h)^2+k tiene vértice (h,k).",
+      "Aquí h=2, k=-4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-044",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Inecuación cuadrática",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva la inecuación (x-(-1))(x-(5)) <= 0.",
+    "options": [],
+    "correctAnswer": "[-1,5]",
+    "explanation": "Las raíces son -1 y 5. | Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-1,5].",
+    "distractorExplanations": [],
+    "steps": [
+      "Las raíces son -1 y 5.",
+      "Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-1,5]."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuaciones y análisis de signos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-045",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Valor absoluto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva |4x+(-4)| < 8.",
+    "options": [],
+    "correctAnswer": "(-1.0,3.0)",
+    "explanation": "-8 < 4x+(-4) < 8. | Restar -4 y dividir por 4: x in (-1.0,3.0).",
+    "distractorExplanations": [],
+    "steps": [
+      "-8 < 4x+(-4) < 8.",
+      "Restar -4 y dividir por 4: x in (-1.0,3.0)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuación con valor absoluto",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-046",
+    "moduleId": "I1",
+    "topic": "Modelamiento",
+    "subtopic": "Optimización cuadrática",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Con 100 metros de malla se cerca un jardín rectangular usando una pared como uno de sus lados. Determine dimensiones que maximizan el área.",
+    "options": [],
+    "correctAnswer": "ancho 25, largo 50, área 1250",
+    "explanation": "Restricción 2x+y=100. | A=x(100-2x)=-2x^2+100x. | Vértice x=100/4=25; y=100-2x=50; A=1250.",
+    "distractorExplanations": [],
+    "steps": [
+      "Restricción 2x+y=100.",
+      "A=x(100-2x)=-2x^2+100x.",
+      "Vértice x=100/4=25; y=100-2x=50; A=1250."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento cuadrático y optimización",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-047",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Extremo de parábola",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine el valor mínimo o máximo de y=1x^2+(2)x+(-5).",
+    "options": [],
+    "correctAnswer": "valor extremo -6.0 en x=-1.0",
+    "explanation": "h=-b/(2a)=-(2)/(2*1)=-1.0. | f(h)=-6.0. Como a>0, es mínimo.",
+    "distractorExplanations": [],
+    "steps": [
+      "h=-b/(2a)=-(2)/(2*1)=-1.0.",
+      "f(h)=-6.0. Como a>0, es mínimo."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-048",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Rectas paralelas",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "La recta L es paralela a y=3x+(0) y pasa por (2,3). Determine L.",
+    "options": [],
+    "correctAnswer": "y=3x+-3",
+    "explanation": "Rectas paralelas tienen misma pendiente m=3. | Usar (2,3): 3=3*2+b => b=-3.",
+    "distractorExplanations": [],
+    "steps": [
+      "Rectas paralelas tienen misma pendiente m=3.",
+      "Usar (2,3): 3=3*2+b => b=-3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-049",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Distancia entre puntos",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Los puntos A(5,-1) y B(9,2) son extremos de un segmento. ¿Cuál es la distancia AB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "sqrt(7)"
+      },
+      {
+        "label": "B",
+        "text": "7"
+      },
+      {
+        "label": "C",
+        "text": "sqrt(25)"
+      },
+      {
+        "label": "D",
+        "text": "sqrt(29)"
+      }
+    ],
+    "correctAnswer": "sqrt(25)",
+    "explanation": "Usar d=sqrt((x2-x1)^2+(y2-y1)^2). | d=sqrt(4^2+3^2)=sqrt(25).",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar d=sqrt((x2-x1)^2+(y2-y1)^2).",
+      "d=sqrt(4^2+3^2)=sqrt(25)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-050",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Ecuación de recta",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine la ecuación principal de la recta que pasa por (1,3) y tiene pendiente -2.",
+    "options": [],
+    "correctAnswer": "y = -2x + 5",
+    "explanation": "Usar y-y0=m(x-x0). | y-3=-2(x-1) => y=-2x+5.",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar y-y0=m(x-x0).",
+      "y-3=-2(x-1) => y=-2x+5."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-051",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Vértice de parábola",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "¿Cuál es el vértice de la parábola y=3(x-(-3))^2+(4)?",
+    "options": [],
+    "correctAnswer": "(-3,4)",
+    "explanation": "La forma y=a(x-h)^2+k tiene vértice (h,k). | Aquí h=-3, k=4.",
+    "distractorExplanations": [],
+    "steps": [
+      "La forma y=a(x-h)^2+k tiene vértice (h,k).",
+      "Aquí h=-3, k=4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-052",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Inecuación cuadrática",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva la inecuación (x-(-4))(x-(8)) <= 0.",
+    "options": [],
+    "correctAnswer": "[-4,8]",
+    "explanation": "Las raíces son -4 y 8. | Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-4,8].",
+    "distractorExplanations": [],
+    "steps": [
+      "Las raíces son -4 y 8.",
+      "Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-4,8]."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuaciones y análisis de signos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-053",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Valor absoluto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva |2x+(-4)| < 8.",
+    "options": [],
+    "correctAnswer": "(-2.0,6.0)",
+    "explanation": "-8 < 2x+(-4) < 8. | Restar -4 y dividir por 2: x in (-2.0,6.0).",
+    "distractorExplanations": [],
+    "steps": [
+      "-8 < 2x+(-4) < 8.",
+      "Restar -4 y dividir por 2: x in (-2.0,6.0)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuación con valor absoluto",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-054",
+    "moduleId": "I1",
+    "topic": "Modelamiento",
+    "subtopic": "Optimización cuadrática",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Con 80 metros de malla se cerca un jardín rectangular usando una pared como uno de sus lados. Determine dimensiones que maximizan el área.",
+    "options": [],
+    "correctAnswer": "ancho 20, largo 40, área 800",
+    "explanation": "Restricción 2x+y=80. | A=x(80-2x)=-2x^2+80x. | Vértice x=80/4=20; y=80-2x=40; A=800.",
+    "distractorExplanations": [],
+    "steps": [
+      "Restricción 2x+y=80.",
+      "A=x(80-2x)=-2x^2+80x.",
+      "Vértice x=80/4=20; y=80-2x=40; A=800."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento cuadrático y optimización",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-055",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Extremo de parábola",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine el valor mínimo o máximo de y=1x^2+(-6)x+(-2).",
+    "options": [],
+    "correctAnswer": "valor extremo -11.0 en x=3.0",
+    "explanation": "h=-b/(2a)=-(-6)/(2*1)=3.0. | f(h)=-11.0. Como a>0, es mínimo.",
+    "distractorExplanations": [],
+    "steps": [
+      "h=-b/(2a)=-(-6)/(2*1)=3.0.",
+      "f(h)=-11.0. Como a>0, es mínimo."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-056",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Rectas paralelas",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "La recta L es paralela a y=3x+(-3) y pasa por (2,-4). Determine L.",
+    "options": [],
+    "correctAnswer": "y=3x+-10",
+    "explanation": "Rectas paralelas tienen misma pendiente m=3. | Usar (2,-4): -4=3*2+b => b=-10.",
+    "distractorExplanations": [],
+    "steps": [
+      "Rectas paralelas tienen misma pendiente m=3.",
+      "Usar (2,-4): -4=3*2+b => b=-10."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-057",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Distancia entre puntos",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Los puntos A(3,-3) y B(9,0) son extremos de un segmento. ¿Cuál es la distancia AB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "sqrt(45)"
+      },
+      {
+        "label": "B",
+        "text": "9"
+      },
+      {
+        "label": "C",
+        "text": "sqrt(27)"
+      },
+      {
+        "label": "D",
+        "text": "sqrt(49)"
+      }
+    ],
+    "correctAnswer": "sqrt(45)",
+    "explanation": "Usar d=sqrt((x2-x1)^2+(y2-y1)^2). | d=sqrt(6^2+3^2)=sqrt(45).",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar d=sqrt((x2-x1)^2+(y2-y1)^2).",
+      "d=sqrt(6^2+3^2)=sqrt(45)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-058",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Ecuación de recta",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine la ecuación principal de la recta que pasa por (-2,-1) y tiene pendiente 3.",
+    "options": [],
+    "correctAnswer": "y = 3x + 5",
+    "explanation": "Usar y-y0=m(x-x0). | y--1=3(x--2) => y=3x+5.",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar y-y0=m(x-x0).",
+      "y--1=3(x--2) => y=3x+5."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-059",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Vértice de parábola",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "¿Cuál es el vértice de la parábola y=3(x-(3))^2+(4)?",
+    "options": [],
+    "correctAnswer": "(3,4)",
+    "explanation": "La forma y=a(x-h)^2+k tiene vértice (h,k). | Aquí h=3, k=4.",
+    "distractorExplanations": [],
+    "steps": [
+      "La forma y=a(x-h)^2+k tiene vértice (h,k).",
+      "Aquí h=3, k=4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-060",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Inecuación cuadrática",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva la inecuación (x-(-3))(x-(4)) <= 0.",
+    "options": [],
+    "correctAnswer": "[-3,4]",
+    "explanation": "Las raíces son -3 y 4. | Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-3,4].",
+    "distractorExplanations": [],
+    "steps": [
+      "Las raíces son -3 y 4.",
+      "Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-3,4]."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuaciones y análisis de signos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-061",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Valor absoluto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva |3x+(-1)| < 10.",
+    "options": [],
+    "correctAnswer": "(-3.0,3.6666666666666665)",
+    "explanation": "-10 < 3x+(-1) < 10. | Restar -1 y dividir por 3: x in (-3.0,3.6666666666666665).",
+    "distractorExplanations": [],
+    "steps": [
+      "-10 < 3x+(-1) < 10.",
+      "Restar -1 y dividir por 3: x in (-3.0,3.6666666666666665)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuación con valor absoluto",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-062",
+    "moduleId": "I1",
+    "topic": "Modelamiento",
+    "subtopic": "Optimización cuadrática",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Con 80 metros de malla se cerca un jardín rectangular usando una pared como uno de sus lados. Determine dimensiones que maximizan el área.",
+    "options": [],
+    "correctAnswer": "ancho 20, largo 40, área 800",
+    "explanation": "Restricción 2x+y=80. | A=x(80-2x)=-2x^2+80x. | Vértice x=80/4=20; y=80-2x=40; A=800.",
+    "distractorExplanations": [],
+    "steps": [
+      "Restricción 2x+y=80.",
+      "A=x(80-2x)=-2x^2+80x.",
+      "Vértice x=80/4=20; y=80-2x=40; A=800."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento cuadrático y optimización",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-063",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Extremo de parábola",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine el valor mínimo o máximo de y=2x^2+(4)x+(2).",
+    "options": [],
+    "correctAnswer": "valor extremo 0.0 en x=-1.0",
+    "explanation": "h=-b/(2a)=-(4)/(2*2)=-1.0. | f(h)=0.0. Como a>0, es mínimo.",
+    "distractorExplanations": [],
+    "steps": [
+      "h=-b/(2a)=-(4)/(2*2)=-1.0.",
+      "f(h)=0.0. Como a>0, es mínimo."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-064",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Rectas paralelas",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "La recta L es paralela a y=1x+(-1) y pasa por (2,-2). Determine L.",
+    "options": [],
+    "correctAnswer": "y=1x+-4",
+    "explanation": "Rectas paralelas tienen misma pendiente m=1. | Usar (2,-2): -2=1*2+b => b=-4.",
+    "distractorExplanations": [],
+    "steps": [
+      "Rectas paralelas tienen misma pendiente m=1.",
+      "Usar (2,-2): -2=1*2+b => b=-4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-065",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Distancia entre puntos",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Los puntos A(-5,4) y B(-2,10) son extremos de un segmento. ¿Cuál es la distancia AB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "9"
+      },
+      {
+        "label": "B",
+        "text": "sqrt(45)"
+      },
+      {
+        "label": "C",
+        "text": "sqrt(27)"
+      },
+      {
+        "label": "D",
+        "text": "sqrt(49)"
+      }
+    ],
+    "correctAnswer": "sqrt(45)",
+    "explanation": "Usar d=sqrt((x2-x1)^2+(y2-y1)^2). | d=sqrt(3^2+6^2)=sqrt(45).",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar d=sqrt((x2-x1)^2+(y2-y1)^2).",
+      "d=sqrt(3^2+6^2)=sqrt(45)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-066",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Ecuación de recta",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine la ecuación principal de la recta que pasa por (-3,2) y tiene pendiente -3.",
+    "options": [],
+    "correctAnswer": "y = -3x + -7",
+    "explanation": "Usar y-y0=m(x-x0). | y-2=-3(x--3) => y=-3x+-7.",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar y-y0=m(x-x0).",
+      "y-2=-3(x--3) => y=-3x+-7."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-067",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Vértice de parábola",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "¿Cuál es el vértice de la parábola y=3(x-(-3))^2+(-2)?",
+    "options": [],
+    "correctAnswer": "(-3,-2)",
+    "explanation": "La forma y=a(x-h)^2+k tiene vértice (h,k). | Aquí h=-3, k=-2.",
+    "distractorExplanations": [],
+    "steps": [
+      "La forma y=a(x-h)^2+k tiene vértice (h,k).",
+      "Aquí h=-3, k=-2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-068",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Inecuación cuadrática",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva la inecuación (x-(-6))(x-(1)) <= 0.",
+    "options": [],
+    "correctAnswer": "[-6,1]",
+    "explanation": "Las raíces son -6 y 1. | Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-6,1].",
+    "distractorExplanations": [],
+    "steps": [
+      "Las raíces son -6 y 1.",
+      "Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-6,1]."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuaciones y análisis de signos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-069",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Valor absoluto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva |4x+(-4)| < 6.",
+    "options": [],
+    "correctAnswer": "(-0.5,2.5)",
+    "explanation": "-6 < 4x+(-4) < 6. | Restar -4 y dividir por 4: x in (-0.5,2.5).",
+    "distractorExplanations": [],
+    "steps": [
+      "-6 < 4x+(-4) < 6.",
+      "Restar -4 y dividir por 4: x in (-0.5,2.5)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuación con valor absoluto",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-070",
+    "moduleId": "I1",
+    "topic": "Modelamiento",
+    "subtopic": "Optimización cuadrática",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Con 80 metros de malla se cerca un jardín rectangular usando una pared como uno de sus lados. Determine dimensiones que maximizan el área.",
+    "options": [],
+    "correctAnswer": "ancho 20, largo 40, área 800",
+    "explanation": "Restricción 2x+y=80. | A=x(80-2x)=-2x^2+80x. | Vértice x=80/4=20; y=80-2x=40; A=800.",
+    "distractorExplanations": [],
+    "steps": [
+      "Restricción 2x+y=80.",
+      "A=x(80-2x)=-2x^2+80x.",
+      "Vértice x=80/4=20; y=80-2x=40; A=800."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento cuadrático y optimización",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-071",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Extremo de parábola",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine el valor mínimo o máximo de y=3x^2+(2)x+(-2).",
+    "options": [],
+    "correctAnswer": "valor extremo -2.3333333333333335 en x=-0.3333333333333333",
+    "explanation": "h=-b/(2a)=-(2)/(2*3)=-0.3333333333333333. | f(h)=-2.3333333333333335. Como a>0, es mínimo.",
+    "distractorExplanations": [],
+    "steps": [
+      "h=-b/(2a)=-(2)/(2*3)=-0.3333333333333333.",
+      "f(h)=-2.3333333333333335. Como a>0, es mínimo."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-072",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Rectas paralelas",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "La recta L es paralela a y=3x+(-2) y pasa por (2,4). Determine L.",
+    "options": [],
+    "correctAnswer": "y=3x+-2",
+    "explanation": "Rectas paralelas tienen misma pendiente m=3. | Usar (2,4): 4=3*2+b => b=-2.",
+    "distractorExplanations": [],
+    "steps": [
+      "Rectas paralelas tienen misma pendiente m=3.",
+      "Usar (2,4): 4=3*2+b => b=-2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-073",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Distancia entre puntos",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Los puntos A(-2,2) y B(6,10) son extremos de un segmento. ¿Cuál es la distancia AB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "sqrt(132)"
+      },
+      {
+        "label": "B",
+        "text": "sqrt(0)"
+      },
+      {
+        "label": "C",
+        "text": "sqrt(128)"
+      },
+      {
+        "label": "D",
+        "text": "16"
+      }
+    ],
+    "correctAnswer": "sqrt(128)",
+    "explanation": "Usar d=sqrt((x2-x1)^2+(y2-y1)^2). | d=sqrt(8^2+8^2)=sqrt(128).",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar d=sqrt((x2-x1)^2+(y2-y1)^2).",
+      "d=sqrt(8^2+8^2)=sqrt(128)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-074",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Ecuación de recta",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine la ecuación principal de la recta que pasa por (2,0) y tiene pendiente -3.",
+    "options": [],
+    "correctAnswer": "y = -3x + 6",
+    "explanation": "Usar y-y0=m(x-x0). | y-0=-3(x-2) => y=-3x+6.",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar y-y0=m(x-x0).",
+      "y-0=-3(x-2) => y=-3x+6."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-075",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Vértice de parábola",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "¿Cuál es el vértice de la parábola y=2(x-(0))^2+(1)?",
+    "options": [],
+    "correctAnswer": "(0,1)",
+    "explanation": "La forma y=a(x-h)^2+k tiene vértice (h,k). | Aquí h=0, k=1.",
+    "distractorExplanations": [],
+    "steps": [
+      "La forma y=a(x-h)^2+k tiene vértice (h,k).",
+      "Aquí h=0, k=1."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-076",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Inecuación cuadrática",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva la inecuación (x-(-3))(x-(1)) <= 0.",
+    "options": [],
+    "correctAnswer": "[-3,1]",
+    "explanation": "Las raíces son -3 y 1. | Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-3,1].",
+    "distractorExplanations": [],
+    "steps": [
+      "Las raíces son -3 y 1.",
+      "Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-3,1]."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuaciones y análisis de signos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-077",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Valor absoluto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva |2x+(-5)| < 10.",
+    "options": [],
+    "correctAnswer": "(-2.5,7.5)",
+    "explanation": "-10 < 2x+(-5) < 10. | Restar -5 y dividir por 2: x in (-2.5,7.5).",
+    "distractorExplanations": [],
+    "steps": [
+      "-10 < 2x+(-5) < 10.",
+      "Restar -5 y dividir por 2: x in (-2.5,7.5)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuación con valor absoluto",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-078",
+    "moduleId": "I1",
+    "topic": "Modelamiento",
+    "subtopic": "Optimización cuadrática",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Con 80 metros de malla se cerca un jardín rectangular usando una pared como uno de sus lados. Determine dimensiones que maximizan el área.",
+    "options": [],
+    "correctAnswer": "ancho 20, largo 40, área 800",
+    "explanation": "Restricción 2x+y=80. | A=x(80-2x)=-2x^2+80x. | Vértice x=80/4=20; y=80-2x=40; A=800.",
+    "distractorExplanations": [],
+    "steps": [
+      "Restricción 2x+y=80.",
+      "A=x(80-2x)=-2x^2+80x.",
+      "Vértice x=80/4=20; y=80-2x=40; A=800."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento cuadrático y optimización",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-079",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Extremo de parábola",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine el valor mínimo o máximo de y=1x^2+(-4)x+(-2).",
+    "options": [],
+    "correctAnswer": "valor extremo -6.0 en x=2.0",
+    "explanation": "h=-b/(2a)=-(-4)/(2*1)=2.0. | f(h)=-6.0. Como a>0, es mínimo.",
+    "distractorExplanations": [],
+    "steps": [
+      "h=-b/(2a)=-(-4)/(2*1)=2.0.",
+      "f(h)=-6.0. Como a>0, es mínimo."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-080",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Rectas paralelas",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "La recta L es paralela a y=1x+(4) y pasa por (2,2). Determine L.",
+    "options": [],
+    "correctAnswer": "y=1x+0",
+    "explanation": "Rectas paralelas tienen misma pendiente m=1. | Usar (2,2): 2=1*2+b => b=0.",
+    "distractorExplanations": [],
+    "steps": [
+      "Rectas paralelas tienen misma pendiente m=1.",
+      "Usar (2,2): 2=1*2+b => b=0."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-081",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Distancia entre puntos",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Los puntos A(-3,-1) y B(1,7) son extremos de un segmento. ¿Cuál es la distancia AB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "sqrt(84)"
+      },
+      {
+        "label": "B",
+        "text": "sqrt(48)"
+      },
+      {
+        "label": "C",
+        "text": "sqrt(80)"
+      },
+      {
+        "label": "D",
+        "text": "12"
+      }
+    ],
+    "correctAnswer": "sqrt(80)",
+    "explanation": "Usar d=sqrt((x2-x1)^2+(y2-y1)^2). | d=sqrt(4^2+8^2)=sqrt(80).",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar d=sqrt((x2-x1)^2+(y2-y1)^2).",
+      "d=sqrt(4^2+8^2)=sqrt(80)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-082",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Ecuación de recta",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine la ecuación principal de la recta que pasa por (3,3) y tiene pendiente 2.",
+    "options": [],
+    "correctAnswer": "y = 2x + -3",
+    "explanation": "Usar y-y0=m(x-x0). | y-3=2(x-3) => y=2x+-3.",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar y-y0=m(x-x0).",
+      "y-3=2(x-3) => y=2x+-3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-083",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Vértice de parábola",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "¿Cuál es el vértice de la parábola y=3(x-(-3))^2+(-5)?",
+    "options": [],
+    "correctAnswer": "(-3,-5)",
+    "explanation": "La forma y=a(x-h)^2+k tiene vértice (h,k). | Aquí h=-3, k=-5.",
+    "distractorExplanations": [],
+    "steps": [
+      "La forma y=a(x-h)^2+k tiene vértice (h,k).",
+      "Aquí h=-3, k=-5."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-084",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Inecuación cuadrática",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva la inecuación (x-(-1))(x-(1)) <= 0.",
+    "options": [],
+    "correctAnswer": "[-1,1]",
+    "explanation": "Las raíces son -1 y 1. | Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-1,1].",
+    "distractorExplanations": [],
+    "steps": [
+      "Las raíces son -1 y 1.",
+      "Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-1,1]."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuaciones y análisis de signos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-085",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Valor absoluto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva |2x+(-2)| < 6.",
+    "options": [],
+    "correctAnswer": "(-2.0,4.0)",
+    "explanation": "-6 < 2x+(-2) < 6. | Restar -2 y dividir por 2: x in (-2.0,4.0).",
+    "distractorExplanations": [],
+    "steps": [
+      "-6 < 2x+(-2) < 6.",
+      "Restar -2 y dividir por 2: x in (-2.0,4.0)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuación con valor absoluto",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-086",
+    "moduleId": "I1",
+    "topic": "Modelamiento",
+    "subtopic": "Optimización cuadrática",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Con 100 metros de malla se cerca un jardín rectangular usando una pared como uno de sus lados. Determine dimensiones que maximizan el área.",
+    "options": [],
+    "correctAnswer": "ancho 25, largo 50, área 1250",
+    "explanation": "Restricción 2x+y=100. | A=x(100-2x)=-2x^2+100x. | Vértice x=100/4=25; y=100-2x=50; A=1250.",
+    "distractorExplanations": [],
+    "steps": [
+      "Restricción 2x+y=100.",
+      "A=x(100-2x)=-2x^2+100x.",
+      "Vértice x=100/4=25; y=100-2x=50; A=1250."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento cuadrático y optimización",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-087",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Extremo de parábola",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine el valor mínimo o máximo de y=2x^2+(2)x+(-2).",
+    "options": [],
+    "correctAnswer": "valor extremo -2.5 en x=-0.5",
+    "explanation": "h=-b/(2a)=-(2)/(2*2)=-0.5. | f(h)=-2.5. Como a>0, es mínimo.",
+    "distractorExplanations": [],
+    "steps": [
+      "h=-b/(2a)=-(2)/(2*2)=-0.5.",
+      "f(h)=-2.5. Como a>0, es mínimo."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-088",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Rectas paralelas",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "La recta L es paralela a y=2x+(-4) y pasa por (2,-3). Determine L.",
+    "options": [],
+    "correctAnswer": "y=2x+-7",
+    "explanation": "Rectas paralelas tienen misma pendiente m=2. | Usar (2,-3): -3=2*2+b => b=-7.",
+    "distractorExplanations": [],
+    "steps": [
+      "Rectas paralelas tienen misma pendiente m=2.",
+      "Usar (2,-3): -3=2*2+b => b=-7."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-089",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Distancia entre puntos",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Los puntos A(1,-1) y B(7,2) son extremos de un segmento. ¿Cuál es la distancia AB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "sqrt(45)"
+      },
+      {
+        "label": "B",
+        "text": "sqrt(27)"
+      },
+      {
+        "label": "C",
+        "text": "sqrt(49)"
+      },
+      {
+        "label": "D",
+        "text": "9"
+      }
+    ],
+    "correctAnswer": "sqrt(45)",
+    "explanation": "Usar d=sqrt((x2-x1)^2+(y2-y1)^2). | d=sqrt(6^2+3^2)=sqrt(45).",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar d=sqrt((x2-x1)^2+(y2-y1)^2).",
+      "d=sqrt(6^2+3^2)=sqrt(45)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-090",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Ecuación de recta",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine la ecuación principal de la recta que pasa por (2,2) y tiene pendiente 3.",
+    "options": [],
+    "correctAnswer": "y = 3x + -4",
+    "explanation": "Usar y-y0=m(x-x0). | y-2=3(x-2) => y=3x+-4.",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar y-y0=m(x-x0).",
+      "y-2=3(x-2) => y=3x+-4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-091",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Vértice de parábola",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "¿Cuál es el vértice de la parábola y=2(x-(-2))^2+(-2)?",
+    "options": [],
+    "correctAnswer": "(-2,-2)",
+    "explanation": "La forma y=a(x-h)^2+k tiene vértice (h,k). | Aquí h=-2, k=-2.",
+    "distractorExplanations": [],
+    "steps": [
+      "La forma y=a(x-h)^2+k tiene vértice (h,k).",
+      "Aquí h=-2, k=-2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-092",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Inecuación cuadrática",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva la inecuación (x-(-4))(x-(4)) <= 0.",
+    "options": [],
+    "correctAnswer": "[-4,4]",
+    "explanation": "Las raíces son -4 y 4. | Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-4,4].",
+    "distractorExplanations": [],
+    "steps": [
+      "Las raíces son -4 y 4.",
+      "Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-4,4]."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuaciones y análisis de signos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-093",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Valor absoluto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva |2x+(4)| < 4.",
+    "options": [],
+    "correctAnswer": "(-4.0,0.0)",
+    "explanation": "-4 < 2x+(4) < 4. | Restar 4 y dividir por 2: x in (-4.0,0.0).",
+    "distractorExplanations": [],
+    "steps": [
+      "-4 < 2x+(4) < 4.",
+      "Restar 4 y dividir por 2: x in (-4.0,0.0)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuación con valor absoluto",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-094",
+    "moduleId": "I1",
+    "topic": "Modelamiento",
+    "subtopic": "Optimización cuadrática",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Con 80 metros de malla se cerca un jardín rectangular usando una pared como uno de sus lados. Determine dimensiones que maximizan el área.",
+    "options": [],
+    "correctAnswer": "ancho 20, largo 40, área 800",
+    "explanation": "Restricción 2x+y=80. | A=x(80-2x)=-2x^2+80x. | Vértice x=80/4=20; y=80-2x=40; A=800.",
+    "distractorExplanations": [],
+    "steps": [
+      "Restricción 2x+y=80.",
+      "A=x(80-2x)=-2x^2+80x.",
+      "Vértice x=80/4=20; y=80-2x=40; A=800."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento cuadrático y optimización",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-095",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Extremo de parábola",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine el valor mínimo o máximo de y=1x^2+(-6)x+(4).",
+    "options": [],
+    "correctAnswer": "valor extremo -5.0 en x=3.0",
+    "explanation": "h=-b/(2a)=-(-6)/(2*1)=3.0. | f(h)=-5.0. Como a>0, es mínimo.",
+    "distractorExplanations": [],
+    "steps": [
+      "h=-b/(2a)=-(-6)/(2*1)=3.0.",
+      "f(h)=-5.0. Como a>0, es mínimo."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-096",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Rectas paralelas",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "La recta L es paralela a y=2x+(4) y pasa por (2,3). Determine L.",
+    "options": [],
+    "correctAnswer": "y=2x+-1",
+    "explanation": "Rectas paralelas tienen misma pendiente m=2. | Usar (2,3): 3=2*2+b => b=-1.",
+    "distractorExplanations": [],
+    "steps": [
+      "Rectas paralelas tienen misma pendiente m=2.",
+      "Usar (2,3): 3=2*2+b => b=-1."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-097",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Distancia entre puntos",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Los puntos A(3,-4) y B(7,-1) son extremos de un segmento. ¿Cuál es la distancia AB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "7"
+      },
+      {
+        "label": "B",
+        "text": "sqrt(7)"
+      },
+      {
+        "label": "C",
+        "text": "sqrt(25)"
+      },
+      {
+        "label": "D",
+        "text": "sqrt(29)"
+      }
+    ],
+    "correctAnswer": "sqrt(25)",
+    "explanation": "Usar d=sqrt((x2-x1)^2+(y2-y1)^2). | d=sqrt(4^2+3^2)=sqrt(25).",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar d=sqrt((x2-x1)^2+(y2-y1)^2).",
+      "d=sqrt(4^2+3^2)=sqrt(25)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-098",
+    "moduleId": "I1",
+    "topic": "Geometría analítica",
+    "subtopic": "Ecuación de recta",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine la ecuación principal de la recta que pasa por (0,-3) y tiene pendiente -2.",
+    "options": [],
+    "correctAnswer": "y = -2x + -3",
+    "explanation": "Usar y-y0=m(x-x0). | y--3=-2(x-0) => y=-2x+-3.",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar y-y0=m(x-x0).",
+      "y--3=-2(x-0) => y=-2x+-3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-099",
+    "moduleId": "I1",
+    "topic": "Funciones",
+    "subtopic": "Vértice de parábola",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "¿Cuál es el vértice de la parábola y=3(x-(-2))^2+(4)?",
+    "options": [],
+    "correctAnswer": "(-2,4)",
+    "explanation": "La forma y=a(x-h)^2+k tiene vértice (h,k). | Aquí h=-2, k=4.",
+    "distractorExplanations": [],
+    "steps": [
+      "La forma y=a(x-h)^2+k tiene vértice (h,k).",
+      "Aquí h=-2, k=4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-i1-100",
+    "moduleId": "I1",
+    "topic": "Álgebra",
+    "subtopic": "Inecuación cuadrática",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva la inecuación (x-(-2))(x-(1)) <= 0.",
+    "options": [],
+    "correctAnswer": "[-2,1]",
+    "explanation": "Las raíces son -2 y 1. | Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-2,1].",
+    "distractorExplanations": [],
+    "steps": [
+      "Las raíces son -2 y 1.",
+      "Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-2,1]."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuaciones y análisis de signos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  }
+]

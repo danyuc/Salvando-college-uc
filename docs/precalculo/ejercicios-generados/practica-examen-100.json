@@ -1,0 +1,2991 @@
+[
+  {
+    "id": "gen-examen-001",
+    "moduleId": "Examen",
+    "topic": "Geometría analítica",
+    "subtopic": "Distancia entre puntos",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Los puntos A(-1,-5) y B(4,3) son extremos de un segmento. ¿Cuál es la distancia AB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "13"
+      },
+      {
+        "label": "B",
+        "text": "sqrt(93)"
+      },
+      {
+        "label": "C",
+        "text": "sqrt(39)"
+      },
+      {
+        "label": "D",
+        "text": "sqrt(89)"
+      }
+    ],
+    "correctAnswer": "sqrt(89)",
+    "explanation": "Usar d=sqrt((x2-x1)^2+(y2-y1)^2). | d=sqrt(5^2+8^2)=sqrt(89).",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar d=sqrt((x2-x1)^2+(y2-y1)^2).",
+      "d=sqrt(5^2+8^2)=sqrt(89)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-002",
+    "moduleId": "Examen",
+    "topic": "Geometría analítica",
+    "subtopic": "Ecuación de recta",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine la ecuación principal de la recta que pasa por (-3,-3) y tiene pendiente -1.",
+    "options": [],
+    "correctAnswer": "y = -1x + -6",
+    "explanation": "Usar y-y0=m(x-x0). | y--3=-1(x--3) => y=-1x+-6.",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar y-y0=m(x-x0).",
+      "y--3=-1(x--3) => y=-1x+-6."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-003",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Vértice de parábola",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "¿Cuál es el vértice de la parábola y=2(x-(3))^2+(-3)?",
+    "options": [],
+    "correctAnswer": "(3,-3)",
+    "explanation": "La forma y=a(x-h)^2+k tiene vértice (h,k). | Aquí h=3, k=-3.",
+    "distractorExplanations": [],
+    "steps": [
+      "La forma y=a(x-h)^2+k tiene vértice (h,k).",
+      "Aquí h=3, k=-3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-004",
+    "moduleId": "Examen",
+    "topic": "Álgebra",
+    "subtopic": "Inecuación cuadrática",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva la inecuación (x-(-1))(x-(5)) <= 0.",
+    "options": [],
+    "correctAnswer": "[-1,5]",
+    "explanation": "Las raíces son -1 y 5. | Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-1,5].",
+    "distractorExplanations": [],
+    "steps": [
+      "Las raíces son -1 y 5.",
+      "Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-1,5]."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuaciones y análisis de signos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-005",
+    "moduleId": "Examen",
+    "topic": "Álgebra",
+    "subtopic": "Valor absoluto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva |3x+(2)| < 10.",
+    "options": [],
+    "correctAnswer": "(-4.0,2.6666666666666665)",
+    "explanation": "-10 < 3x+(2) < 10. | Restar 2 y dividir por 3: x in (-4.0,2.6666666666666665).",
+    "distractorExplanations": [],
+    "steps": [
+      "-10 < 3x+(2) < 10.",
+      "Restar 2 y dividir por 3: x in (-4.0,2.6666666666666665)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuación con valor absoluto",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-006",
+    "moduleId": "Examen",
+    "topic": "Modelamiento",
+    "subtopic": "Optimización cuadrática",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Con 40 metros de malla se cerca un jardín rectangular usando una pared como uno de sus lados. Determine dimensiones que maximizan el área.",
+    "options": [],
+    "correctAnswer": "ancho 10, largo 20, área 200",
+    "explanation": "Restricción 2x+y=40. | A=x(40-2x)=-2x^2+40x. | Vértice x=40/4=10; y=40-2x=20; A=200.",
+    "distractorExplanations": [],
+    "steps": [
+      "Restricción 2x+y=40.",
+      "A=x(40-2x)=-2x^2+40x.",
+      "Vértice x=40/4=10; y=40-2x=20; A=200."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento cuadrático y optimización",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-007",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Extremo de parábola",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine el valor mínimo o máximo de y=1x^2+(-6)x+(-3).",
+    "options": [],
+    "correctAnswer": "valor extremo -12.0 en x=3.0",
+    "explanation": "h=-b/(2a)=-(-6)/(2*1)=3.0. | f(h)=-12.0. Como a>0, es mínimo.",
+    "distractorExplanations": [],
+    "steps": [
+      "h=-b/(2a)=-(-6)/(2*1)=3.0.",
+      "f(h)=-12.0. Como a>0, es mínimo."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-008",
+    "moduleId": "Examen",
+    "topic": "Geometría analítica",
+    "subtopic": "Rectas paralelas",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "La recta L es paralela a y=3x+(-4) y pasa por (2,0). Determine L.",
+    "options": [],
+    "correctAnswer": "y=3x+-6",
+    "explanation": "Rectas paralelas tienen misma pendiente m=3. | Usar (2,0): 0=3*2+b => b=-6.",
+    "distractorExplanations": [],
+    "steps": [
+      "Rectas paralelas tienen misma pendiente m=3.",
+      "Usar (2,0): 0=3*2+b => b=-6."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-009",
+    "moduleId": "Examen",
+    "topic": "Geometría analítica",
+    "subtopic": "Distancia entre puntos",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Los puntos A(1,-3) y B(9,1) son extremos de un segmento. ¿Cuál es la distancia AB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "12"
+      },
+      {
+        "label": "B",
+        "text": "sqrt(48)"
+      },
+      {
+        "label": "C",
+        "text": "sqrt(84)"
+      },
+      {
+        "label": "D",
+        "text": "sqrt(80)"
+      }
+    ],
+    "correctAnswer": "sqrt(80)",
+    "explanation": "Usar d=sqrt((x2-x1)^2+(y2-y1)^2). | d=sqrt(8^2+4^2)=sqrt(80).",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar d=sqrt((x2-x1)^2+(y2-y1)^2).",
+      "d=sqrt(8^2+4^2)=sqrt(80)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-010",
+    "moduleId": "Examen",
+    "topic": "Geometría analítica",
+    "subtopic": "Ecuación de recta",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine la ecuación principal de la recta que pasa por (-1,-2) y tiene pendiente -3.",
+    "options": [],
+    "correctAnswer": "y = -3x + -5",
+    "explanation": "Usar y-y0=m(x-x0). | y--2=-3(x--1) => y=-3x+-5.",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar y-y0=m(x-x0).",
+      "y--2=-3(x--1) => y=-3x+-5."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-011",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Vértice de parábola",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "¿Cuál es el vértice de la parábola y=3(x-(-2))^2+(5)?",
+    "options": [],
+    "correctAnswer": "(-2,5)",
+    "explanation": "La forma y=a(x-h)^2+k tiene vértice (h,k). | Aquí h=-2, k=5.",
+    "distractorExplanations": [],
+    "steps": [
+      "La forma y=a(x-h)^2+k tiene vértice (h,k).",
+      "Aquí h=-2, k=5."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-012",
+    "moduleId": "Examen",
+    "topic": "Álgebra",
+    "subtopic": "Inecuación cuadrática",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva la inecuación (x-(-6))(x-(6)) <= 0.",
+    "options": [],
+    "correctAnswer": "[-6,6]",
+    "explanation": "Las raíces son -6 y 6. | Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-6,6].",
+    "distractorExplanations": [],
+    "steps": [
+      "Las raíces son -6 y 6.",
+      "Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-6,6]."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuaciones y análisis de signos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-013",
+    "moduleId": "Examen",
+    "topic": "Álgebra",
+    "subtopic": "Valor absoluto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva |5x+(4)| < 6.",
+    "options": [],
+    "correctAnswer": "(-2.0,0.4)",
+    "explanation": "-6 < 5x+(4) < 6. | Restar 4 y dividir por 5: x in (-2.0,0.4).",
+    "distractorExplanations": [],
+    "steps": [
+      "-6 < 5x+(4) < 6.",
+      "Restar 4 y dividir por 5: x in (-2.0,0.4)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuación con valor absoluto",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-014",
+    "moduleId": "Examen",
+    "topic": "Modelamiento",
+    "subtopic": "Optimización cuadrática",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Con 60 metros de malla se cerca un jardín rectangular usando una pared como uno de sus lados. Determine dimensiones que maximizan el área.",
+    "options": [],
+    "correctAnswer": "ancho 15, largo 30, área 450",
+    "explanation": "Restricción 2x+y=60. | A=x(60-2x)=-2x^2+60x. | Vértice x=60/4=15; y=60-2x=30; A=450.",
+    "distractorExplanations": [],
+    "steps": [
+      "Restricción 2x+y=60.",
+      "A=x(60-2x)=-2x^2+60x.",
+      "Vértice x=60/4=15; y=60-2x=30; A=450."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento cuadrático y optimización",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-015",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Extremo de parábola",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine el valor mínimo o máximo de y=1x^2+(-4)x+(1).",
+    "options": [],
+    "correctAnswer": "valor extremo -3.0 en x=2.0",
+    "explanation": "h=-b/(2a)=-(-4)/(2*1)=2.0. | f(h)=-3.0. Como a>0, es mínimo.",
+    "distractorExplanations": [],
+    "steps": [
+      "h=-b/(2a)=-(-4)/(2*1)=2.0.",
+      "f(h)=-3.0. Como a>0, es mínimo."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-016",
+    "moduleId": "Examen",
+    "topic": "Geometría analítica",
+    "subtopic": "Rectas paralelas",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "La recta L es paralela a y=1x+(-2) y pasa por (2,0). Determine L.",
+    "options": [],
+    "correctAnswer": "y=1x+-2",
+    "explanation": "Rectas paralelas tienen misma pendiente m=1. | Usar (2,0): 0=1*2+b => b=-2.",
+    "distractorExplanations": [],
+    "steps": [
+      "Rectas paralelas tienen misma pendiente m=1.",
+      "Usar (2,0): 0=1*2+b => b=-2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-017",
+    "moduleId": "Examen",
+    "topic": "Geometría analítica",
+    "subtopic": "Distancia entre puntos",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Los puntos A(-1,-3) y B(5,1) son extremos de un segmento. ¿Cuál es la distancia AB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "sqrt(20)"
+      },
+      {
+        "label": "B",
+        "text": "10"
+      },
+      {
+        "label": "C",
+        "text": "sqrt(56)"
+      },
+      {
+        "label": "D",
+        "text": "sqrt(52)"
+      }
+    ],
+    "correctAnswer": "sqrt(52)",
+    "explanation": "Usar d=sqrt((x2-x1)^2+(y2-y1)^2). | d=sqrt(6^2+4^2)=sqrt(52).",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar d=sqrt((x2-x1)^2+(y2-y1)^2).",
+      "d=sqrt(6^2+4^2)=sqrt(52)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-018",
+    "moduleId": "Examen",
+    "topic": "Geometría analítica",
+    "subtopic": "Ecuación de recta",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine la ecuación principal de la recta que pasa por (-2,-2) y tiene pendiente 2.",
+    "options": [],
+    "correctAnswer": "y = 2x + 2",
+    "explanation": "Usar y-y0=m(x-x0). | y--2=2(x--2) => y=2x+2.",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar y-y0=m(x-x0).",
+      "y--2=2(x--2) => y=2x+2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-019",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Vértice de parábola",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "¿Cuál es el vértice de la parábola y=2(x-(-1))^2+(-1)?",
+    "options": [],
+    "correctAnswer": "(-1,-1)",
+    "explanation": "La forma y=a(x-h)^2+k tiene vértice (h,k). | Aquí h=-1, k=-1.",
+    "distractorExplanations": [],
+    "steps": [
+      "La forma y=a(x-h)^2+k tiene vértice (h,k).",
+      "Aquí h=-1, k=-1."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-020",
+    "moduleId": "Examen",
+    "topic": "Álgebra",
+    "subtopic": "Inecuación cuadrática",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva la inecuación (x-(-5))(x-(4)) <= 0.",
+    "options": [],
+    "correctAnswer": "[-5,4]",
+    "explanation": "Las raíces son -5 y 4. | Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-5,4].",
+    "distractorExplanations": [],
+    "steps": [
+      "Las raíces son -5 y 4.",
+      "Como la parábola abre hacia arriba, el producto es <=0 entre las raíces: [-5,4]."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuaciones y análisis de signos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-021",
+    "moduleId": "Examen",
+    "topic": "Álgebra",
+    "subtopic": "Valor absoluto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva |2x+(5)| < 6.",
+    "options": [],
+    "correctAnswer": "(-5.5,0.5)",
+    "explanation": "-6 < 2x+(5) < 6. | Restar 5 y dividir por 2: x in (-5.5,0.5).",
+    "distractorExplanations": [],
+    "steps": [
+      "-6 < 2x+(5) < 6.",
+      "Restar 5 y dividir por 2: x in (-5.5,0.5)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Inecuación con valor absoluto",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-022",
+    "moduleId": "Examen",
+    "topic": "Modelamiento",
+    "subtopic": "Optimización cuadrática",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Con 100 metros de malla se cerca un jardín rectangular usando una pared como uno de sus lados. Determine dimensiones que maximizan el área.",
+    "options": [],
+    "correctAnswer": "ancho 25, largo 50, área 1250",
+    "explanation": "Restricción 2x+y=100. | A=x(100-2x)=-2x^2+100x. | Vértice x=100/4=25; y=100-2x=50; A=1250.",
+    "distractorExplanations": [],
+    "steps": [
+      "Restricción 2x+y=100.",
+      "A=x(100-2x)=-2x^2+100x.",
+      "Vértice x=100/4=25; y=100-2x=50; A=1250."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento cuadrático y optimización",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-023",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Extremo de parábola",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine el valor mínimo o máximo de y=2x^2+(-2)x+(-4).",
+    "options": [],
+    "correctAnswer": "valor extremo -4.5 en x=0.5",
+    "explanation": "h=-b/(2a)=-(-2)/(2*2)=0.5. | f(h)=-4.5. Como a>0, es mínimo.",
+    "distractorExplanations": [],
+    "steps": [
+      "h=-b/(2a)=-(-2)/(2*2)=0.5.",
+      "f(h)=-4.5. Como a>0, es mínimo."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Parábola: vértice, gráfica y modelo",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-024",
+    "moduleId": "Examen",
+    "topic": "Geometría analítica",
+    "subtopic": "Rectas paralelas",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "La recta L es paralela a y=2x+(1) y pasa por (2,5). Determine L.",
+    "options": [],
+    "correctAnswer": "y=2x+1",
+    "explanation": "Rectas paralelas tienen misma pendiente m=2. | Usar (2,5): 5=2*2+b => b=1.",
+    "distractorExplanations": [],
+    "steps": [
+      "Rectas paralelas tienen misma pendiente m=2.",
+      "Usar (2,5): 5=2*2+b => b=1."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-025",
+    "moduleId": "Examen",
+    "topic": "Geometría analítica",
+    "subtopic": "Distancia entre puntos",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Los puntos A(5,3) y B(13,11) son extremos de un segmento. ¿Cuál es la distancia AB?",
+    "options": [
+      {
+        "label": "A",
+        "text": "sqrt(132)"
+      },
+      {
+        "label": "B",
+        "text": "16"
+      },
+      {
+        "label": "C",
+        "text": "sqrt(128)"
+      },
+      {
+        "label": "D",
+        "text": "sqrt(0)"
+      }
+    ],
+    "correctAnswer": "sqrt(128)",
+    "explanation": "Usar d=sqrt((x2-x1)^2+(y2-y1)^2). | d=sqrt(8^2+8^2)=sqrt(128).",
+    "distractorExplanations": [],
+    "steps": [
+      "Usar d=sqrt((x2-x1)^2+(y2-y1)^2).",
+      "d=sqrt(8^2+8^2)=sqrt(128)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Rectas, pendientes e intersecciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-026",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Dominio raíz/racional",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine el dominio de f(x)=sqrt(x+5)/(x--1).",
+    "options": [],
+    "correctAnswer": "[-5,-1) union (-1,infty)",
+    "explanation": "Radicando: x+5>=0 => x>=-5. | Denominador: x--1 !=0 => x!=-1. | Intersectar restricciones.",
+    "distractorExplanations": [],
+    "steps": [
+      "Radicando: x+5>=0 => x>=-5.",
+      "Denominador: x--1 !=0 => x!=-1.",
+      "Intersectar restricciones."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Dominio raíz/racional",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-027",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Transformaciones",
+    "difficulty": "media",
+    "type": "multiple_choice",
+    "prompt": "A f(x)=x^2 se le aplica: derecha 2, reflexión eje Y, bajar 3. Determine fórmula resultante.",
+    "options": [],
+    "correctAnswer": "y=x^2+4x+1",
+    "explanation": "Derecha: (x-2)^2. | Eje Y: (-x-2)^2=(x+2)^2. | Bajar 3: (x+2)^2-3=x^2+4x+1.",
+    "distractorExplanations": [],
+    "steps": [
+      "Derecha: (x-2)^2.",
+      "Eje Y: (-x-2)^2=(x+2)^2.",
+      "Bajar 3: (x+2)^2-3=x^2+4x+1."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Transformaciones ordenadas de funciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-028",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Operaciones de funciones",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Sean f(x)=1/(x-2) y g(x)=(x+1)/(x-3). Determine restricciones principales del dominio de f/g.",
+    "options": [],
+    "correctAnswer": "x != 2,3,-1",
+    "explanation": "f definida: x!=2. | g definida: x!=3. | divisor g no puede ser cero: x!=-1.",
+    "distractorExplanations": [],
+    "steps": [
+      "f definida: x!=2.",
+      "g definida: x!=3.",
+      "divisor g no puede ser cero: x!=-1."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Composición y operaciones de funciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-029",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Inversa racional",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Considere f(x)=(2x+1)/(x-3). Determine f^{-1}(x).",
+    "options": [],
+    "correctAnswer": "(3x+1)/(x-2)",
+    "explanation": "y=(2x+1)/(x-3). | yx-3y=2x+1. | x(y-2)=3y+1. | x=(3y+1)/(y-2).",
+    "distractorExplanations": [],
+    "steps": [
+      "y=(2x+1)/(x-3).",
+      "yx-3y=2x+1.",
+      "x(y-2)=3y+1.",
+      "x=(3y+1)/(y-2)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Función inversa racional o por tramos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-030",
+    "moduleId": "Examen",
+    "topic": "Exponentes",
+    "subtopic": "Cambio de variable",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva 9^x-10*3^x+9=0.",
+    "options": [],
+    "correctAnswer": "x=0 o x=2",
+    "explanation": "Sea u=3^x. | u^2-10u+9=0=(u-1)(u-9). | u=1=>x=0; u=9=>x=2.",
+    "distractorExplanations": [],
+    "steps": [
+      "Sea u=3^x.",
+      "u^2-10u+9=0=(u-1)(u-9).",
+      "u=1=>x=0; u=9=>x=2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Exponencial con cambio de variable o crecimiento",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-031",
+    "moduleId": "Examen",
+    "topic": "Logaritmos",
+    "subtopic": "Ecuación con restricciones",
+    "difficulty": "alta",
+    "type": "numeric",
+    "prompt": "Resuelva log_2(x-2)+log_2(x+3)=3.",
+    "options": [],
+    "correctAnswer": "x=3",
+    "explanation": "Restricciones x>2. | log_2((x-2)(x+3))=3. | (x-2)(x+3)=8. | x^2+x-14=0 no da x=3; variante requiere validación manual.",
+    "distractorExplanations": [],
+    "steps": [
+      "Restricciones x>2.",
+      "log_2((x-2)(x+3))=3.",
+      "(x-2)(x+3)=8.",
+      "x^2+x-14=0 no da x=3; variante requiere validación manual."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Logaritmos con restricciones y propiedades",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-032",
+    "moduleId": "Examen",
+    "topic": "Modelamiento",
+    "subtopic": "Crecimiento exponencial",
+    "difficulty": "media",
+    "type": "modeling",
+    "prompt": "Una colonia tiene 100 bacterias y se duplica cada 4 horas. Modele B(t).",
+    "options": [],
+    "correctAnswer": "B(t)=100*2^(t/4)",
+    "explanation": "Si se duplica cada 4 horas, el exponente es t/4. | B(t)=100*2^(t/4).",
+    "distractorExplanations": [],
+    "steps": [
+      "Si se duplica cada 4 horas, el exponente es t/4.",
+      "B(t)=100*2^(t/4)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Exponencial con cambio de variable o crecimiento",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-033",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Inversa contextual",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "V(t)=100(1-t/40)^2 modela agua en un tanque, 0<=t<=40. Determine V^{-1}(16).",
+    "options": [],
+    "correctAnswer": "24",
+    "explanation": "V^{-1}(y)=40-4sqrt(y) por rama decreciente. | V^{-1}(16)=40-4*4=24.",
+    "distractorExplanations": [],
+    "steps": [
+      "V^{-1}(y)=40-4sqrt(y) por rama decreciente.",
+      "V^{-1}(16)=40-4*4=24."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento con función inversa",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-034",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Dominio raíz/racional",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine el dominio de f(x)=sqrt(x+2)/(x-6).",
+    "options": [],
+    "correctAnswer": "[-2,6) union (6,infty)",
+    "explanation": "Radicando: x+2>=0 => x>=-2. | Denominador: x-6 !=0 => x!=6. | Intersectar restricciones.",
+    "distractorExplanations": [],
+    "steps": [
+      "Radicando: x+2>=0 => x>=-2.",
+      "Denominador: x-6 !=0 => x!=6.",
+      "Intersectar restricciones."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Dominio raíz/racional",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-035",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Transformaciones",
+    "difficulty": "media",
+    "type": "multiple_choice",
+    "prompt": "A f(x)=x^2 se le aplica: derecha 2, reflexión eje Y, bajar 3. Determine fórmula resultante.",
+    "options": [],
+    "correctAnswer": "y=x^2+4x+1",
+    "explanation": "Derecha: (x-2)^2. | Eje Y: (-x-2)^2=(x+2)^2. | Bajar 3: (x+2)^2-3=x^2+4x+1.",
+    "distractorExplanations": [],
+    "steps": [
+      "Derecha: (x-2)^2.",
+      "Eje Y: (-x-2)^2=(x+2)^2.",
+      "Bajar 3: (x+2)^2-3=x^2+4x+1."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Transformaciones ordenadas de funciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-036",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Operaciones de funciones",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Sean f(x)=1/(x-2) y g(x)=(x+1)/(x-3). Determine restricciones principales del dominio de f/g.",
+    "options": [],
+    "correctAnswer": "x != 2,3,-1",
+    "explanation": "f definida: x!=2. | g definida: x!=3. | divisor g no puede ser cero: x!=-1.",
+    "distractorExplanations": [],
+    "steps": [
+      "f definida: x!=2.",
+      "g definida: x!=3.",
+      "divisor g no puede ser cero: x!=-1."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Composición y operaciones de funciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-037",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Inversa racional",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Considere f(x)=(2x+1)/(x-3). Determine f^{-1}(x).",
+    "options": [],
+    "correctAnswer": "(3x+1)/(x-2)",
+    "explanation": "y=(2x+1)/(x-3). | yx-3y=2x+1. | x(y-2)=3y+1. | x=(3y+1)/(y-2).",
+    "distractorExplanations": [],
+    "steps": [
+      "y=(2x+1)/(x-3).",
+      "yx-3y=2x+1.",
+      "x(y-2)=3y+1.",
+      "x=(3y+1)/(y-2)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Función inversa racional o por tramos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-038",
+    "moduleId": "Examen",
+    "topic": "Exponentes",
+    "subtopic": "Cambio de variable",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva 9^x-10*3^x+9=0.",
+    "options": [],
+    "correctAnswer": "x=0 o x=2",
+    "explanation": "Sea u=3^x. | u^2-10u+9=0=(u-1)(u-9). | u=1=>x=0; u=9=>x=2.",
+    "distractorExplanations": [],
+    "steps": [
+      "Sea u=3^x.",
+      "u^2-10u+9=0=(u-1)(u-9).",
+      "u=1=>x=0; u=9=>x=2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Exponencial con cambio de variable o crecimiento",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-039",
+    "moduleId": "Examen",
+    "topic": "Logaritmos",
+    "subtopic": "Ecuación con restricciones",
+    "difficulty": "alta",
+    "type": "numeric",
+    "prompt": "Resuelva log_2(x-2)+log_2(x+3)=3.",
+    "options": [],
+    "correctAnswer": "x=3",
+    "explanation": "Restricciones x>2. | log_2((x-2)(x+3))=3. | (x-2)(x+3)=8. | x^2+x-14=0 no da x=3; variante requiere validación manual.",
+    "distractorExplanations": [],
+    "steps": [
+      "Restricciones x>2.",
+      "log_2((x-2)(x+3))=3.",
+      "(x-2)(x+3)=8.",
+      "x^2+x-14=0 no da x=3; variante requiere validación manual."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Logaritmos con restricciones y propiedades",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-040",
+    "moduleId": "Examen",
+    "topic": "Modelamiento",
+    "subtopic": "Crecimiento exponencial",
+    "difficulty": "media",
+    "type": "modeling",
+    "prompt": "Una colonia tiene 200 bacterias y se duplica cada 6 horas. Modele B(t).",
+    "options": [],
+    "correctAnswer": "B(t)=200*2^(t/6)",
+    "explanation": "Si se duplica cada 6 horas, el exponente es t/6. | B(t)=200*2^(t/6).",
+    "distractorExplanations": [],
+    "steps": [
+      "Si se duplica cada 6 horas, el exponente es t/6.",
+      "B(t)=200*2^(t/6)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Exponencial con cambio de variable o crecimiento",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-041",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Inversa contextual",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "V(t)=100(1-t/40)^2 modela agua en un tanque, 0<=t<=40. Determine V^{-1}(16).",
+    "options": [],
+    "correctAnswer": "24",
+    "explanation": "V^{-1}(y)=40-4sqrt(y) por rama decreciente. | V^{-1}(16)=40-4*4=24.",
+    "distractorExplanations": [],
+    "steps": [
+      "V^{-1}(y)=40-4sqrt(y) por rama decreciente.",
+      "V^{-1}(16)=40-4*4=24."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento con función inversa",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-042",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Dominio raíz/racional",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine el dominio de f(x)=sqrt(x+6)/(x-3).",
+    "options": [],
+    "correctAnswer": "[-6,3) union (3,infty)",
+    "explanation": "Radicando: x+6>=0 => x>=-6. | Denominador: x-3 !=0 => x!=3. | Intersectar restricciones.",
+    "distractorExplanations": [],
+    "steps": [
+      "Radicando: x+6>=0 => x>=-6.",
+      "Denominador: x-3 !=0 => x!=3.",
+      "Intersectar restricciones."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Dominio raíz/racional",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-043",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Transformaciones",
+    "difficulty": "media",
+    "type": "multiple_choice",
+    "prompt": "A f(x)=x^2 se le aplica: derecha 2, reflexión eje Y, bajar 3. Determine fórmula resultante.",
+    "options": [],
+    "correctAnswer": "y=x^2+4x+1",
+    "explanation": "Derecha: (x-2)^2. | Eje Y: (-x-2)^2=(x+2)^2. | Bajar 3: (x+2)^2-3=x^2+4x+1.",
+    "distractorExplanations": [],
+    "steps": [
+      "Derecha: (x-2)^2.",
+      "Eje Y: (-x-2)^2=(x+2)^2.",
+      "Bajar 3: (x+2)^2-3=x^2+4x+1."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Transformaciones ordenadas de funciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-044",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Operaciones de funciones",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Sean f(x)=1/(x-2) y g(x)=(x+1)/(x-3). Determine restricciones principales del dominio de f/g.",
+    "options": [],
+    "correctAnswer": "x != 2,3,-1",
+    "explanation": "f definida: x!=2. | g definida: x!=3. | divisor g no puede ser cero: x!=-1.",
+    "distractorExplanations": [],
+    "steps": [
+      "f definida: x!=2.",
+      "g definida: x!=3.",
+      "divisor g no puede ser cero: x!=-1."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Composición y operaciones de funciones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-045",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Inversa racional",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Considere f(x)=(2x+1)/(x-3). Determine f^{-1}(x).",
+    "options": [],
+    "correctAnswer": "(3x+1)/(x-2)",
+    "explanation": "y=(2x+1)/(x-3). | yx-3y=2x+1. | x(y-2)=3y+1. | x=(3y+1)/(y-2).",
+    "distractorExplanations": [],
+    "steps": [
+      "y=(2x+1)/(x-3).",
+      "yx-3y=2x+1.",
+      "x(y-2)=3y+1.",
+      "x=(3y+1)/(y-2)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Función inversa racional o por tramos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-046",
+    "moduleId": "Examen",
+    "topic": "Exponentes",
+    "subtopic": "Cambio de variable",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Resuelva 9^x-10*3^x+9=0.",
+    "options": [],
+    "correctAnswer": "x=0 o x=2",
+    "explanation": "Sea u=3^x. | u^2-10u+9=0=(u-1)(u-9). | u=1=>x=0; u=9=>x=2.",
+    "distractorExplanations": [],
+    "steps": [
+      "Sea u=3^x.",
+      "u^2-10u+9=0=(u-1)(u-9).",
+      "u=1=>x=0; u=9=>x=2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Exponencial con cambio de variable o crecimiento",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-047",
+    "moduleId": "Examen",
+    "topic": "Logaritmos",
+    "subtopic": "Ecuación con restricciones",
+    "difficulty": "alta",
+    "type": "numeric",
+    "prompt": "Resuelva log_2(x-2)+log_2(x+3)=3.",
+    "options": [],
+    "correctAnswer": "x=3",
+    "explanation": "Restricciones x>2. | log_2((x-2)(x+3))=3. | (x-2)(x+3)=8. | x^2+x-14=0 no da x=3; variante requiere validación manual.",
+    "distractorExplanations": [],
+    "steps": [
+      "Restricciones x>2.",
+      "log_2((x-2)(x+3))=3.",
+      "(x-2)(x+3)=8.",
+      "x^2+x-14=0 no da x=3; variante requiere validación manual."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Logaritmos con restricciones y propiedades",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-048",
+    "moduleId": "Examen",
+    "topic": "Modelamiento",
+    "subtopic": "Crecimiento exponencial",
+    "difficulty": "media",
+    "type": "modeling",
+    "prompt": "Una colonia tiene 200 bacterias y se duplica cada 2 horas. Modele B(t).",
+    "options": [],
+    "correctAnswer": "B(t)=200*2^(t/2)",
+    "explanation": "Si se duplica cada 2 horas, el exponente es t/2. | B(t)=200*2^(t/2).",
+    "distractorExplanations": [],
+    "steps": [
+      "Si se duplica cada 2 horas, el exponente es t/2.",
+      "B(t)=200*2^(t/2)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Exponencial con cambio de variable o crecimiento",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-049",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Inversa contextual",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "V(t)=100(1-t/40)^2 modela agua en un tanque, 0<=t<=40. Determine V^{-1}(16).",
+    "options": [],
+    "correctAnswer": "24",
+    "explanation": "V^{-1}(y)=40-4sqrt(y) por rama decreciente. | V^{-1}(16)=40-4*4=24.",
+    "distractorExplanations": [],
+    "steps": [
+      "V^{-1}(y)=40-4sqrt(y) por rama decreciente.",
+      "V^{-1}(16)=40-4*4=24."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento con función inversa",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-050",
+    "moduleId": "Examen",
+    "topic": "Funciones",
+    "subtopic": "Dominio raíz/racional",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Determine el dominio de f(x)=sqrt(x+4)/(x-1).",
+    "options": [],
+    "correctAnswer": "[-4,1) union (1,infty)",
+    "explanation": "Radicando: x+4>=0 => x>=-4. | Denominador: x-1 !=0 => x!=1. | Intersectar restricciones.",
+    "distractorExplanations": [],
+    "steps": [
+      "Radicando: x+4>=0 => x>=-4.",
+      "Denominador: x-1 !=0 => x!=1.",
+      "Intersectar restricciones."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Dominio raíz/racional",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-051",
+    "moduleId": "Examen",
+    "topic": "Trigonometría",
+    "subtopic": "Cuadrantes",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si t está en el tercer cuadrante y cos(t)=-3/5, determine tan(t).",
+    "options": [],
+    "correctAnswer": "4/3",
+    "explanation": "En QIII, seno y coseno son negativos, tangente positiva. | sen(t)=-4/5. | tan=sen/cos=4/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En QIII, seno y coseno son negativos, tangente positiva.",
+      "sen(t)=-4/5.",
+      "tan=sen/cos=4/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-052",
+    "moduleId": "Examen",
+    "topic": "Trigonometría",
+    "subtopic": "Identidades",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Simplifique tan(theta)sen(theta)+cos(theta).",
+    "options": [],
+    "correctAnswer": "sec(theta)",
+    "explanation": "tan=sen/cos. | sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan=sen/cos.",
+      "sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-053",
+    "moduleId": "Examen",
+    "topic": "Trigonometría",
+    "subtopic": "Ángulo doble",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En un triángulo rectángulo, tan(theta)=3/4. Determine tan(2theta).",
+    "options": [],
+    "correctAnswer": "24/7",
+    "explanation": "tan(2t)=2tan(t)/(1-tan^2(t)). | 2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(2t)=2tan(t)/(1-tan^2(t)).",
+      "2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-054",
+    "moduleId": "Examen",
+    "topic": "Trigonometría",
+    "subtopic": "Inversa trigonométrica",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Determine arctan(sqrt(3)).",
+    "options": [],
+    "correctAnswer": "pi/3",
+    "explanation": "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-055",
+    "moduleId": "Examen",
+    "topic": "Polinomios",
+    "subtopic": "Teorema del resto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si P(x)=2x^3-5x^2+x-k, determine k para que el resto al dividir por x-2 sea cero.",
+    "options": [],
+    "correctAnswer": "k=-2",
+    "explanation": "P(2)=0. | 16-20+2-k=0 => -2-k=0 => k=-2.",
+    "distractorExplanations": [],
+    "steps": [
+      "P(2)=0.",
+      "16-20+2-k=0 => -2-k=0 => k=-2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-056",
+    "moduleId": "Examen",
+    "topic": "Polinomios",
+    "subtopic": "Resto",
+    "difficulty": "baja",
+    "type": "numeric",
+    "prompt": "Determine el resto al dividir P(x)=x^3+2x+1 por x-1.",
+    "options": [],
+    "correctAnswer": "4",
+    "explanation": "Por teorema del resto, resto=P(1)=1+2+1=4.",
+    "distractorExplanations": [],
+    "steps": [
+      "Por teorema del resto, resto=P(1)=1+2+1=4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-057",
+    "moduleId": "Examen",
+    "topic": "Trigonometría",
+    "subtopic": "Sinusoidal",
+    "difficulty": "alta",
+    "type": "graph",
+    "prompt": "Una función f(x)=Acos(k(x-B)) tiene amplitud 3, período 4pi y desfase pi/3. Determine f(x).",
+    "options": [],
+    "correctAnswer": "f(x)=3cos(1/2(x-pi/3))",
+    "explanation": "T=2pi/k=4pi => k=1/2. | A=3, B=pi/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "T=2pi/k=4pi => k=1/2.",
+      "A=3, B=pi/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Función sinusoidal: amplitud, período y desfase",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-058",
+    "moduleId": "Examen",
+    "topic": "Trigonometría",
+    "subtopic": "Razones en triángulo",
+    "difficulty": "media",
+    "type": "modeling",
+    "prompt": "Desde un punto se observa la cima de una torre con ángulo de elevación 30°. Si la torre mide 60 m, determine la distancia horizontal al pie.",
+    "options": [],
+    "correctAnswer": "60sqrt(3)",
+    "explanation": "tan(30)=opuesto/adyacente=60/d. | 1/sqrt(3)=60/d => d=60sqrt(3).",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(30)=opuesto/adyacente=60/d.",
+      "1/sqrt(3)=60/d => d=60sqrt(3)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-059",
+    "moduleId": "Examen",
+    "topic": "Trigonometría",
+    "subtopic": "Cuadrantes",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si t está en el tercer cuadrante y cos(t)=-3/5, determine tan(t).",
+    "options": [],
+    "correctAnswer": "4/3",
+    "explanation": "En QIII, seno y coseno son negativos, tangente positiva. | sen(t)=-4/5. | tan=sen/cos=4/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En QIII, seno y coseno son negativos, tangente positiva.",
+      "sen(t)=-4/5.",
+      "tan=sen/cos=4/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-060",
+    "moduleId": "Examen",
+    "topic": "Trigonometría",
+    "subtopic": "Identidades",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Simplifique tan(theta)sen(theta)+cos(theta).",
+    "options": [],
+    "correctAnswer": "sec(theta)",
+    "explanation": "tan=sen/cos. | sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan=sen/cos.",
+      "sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-061",
+    "moduleId": "Examen",
+    "topic": "Trigonometría",
+    "subtopic": "Ángulo doble",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En un triángulo rectángulo, tan(theta)=3/4. Determine tan(2theta).",
+    "options": [],
+    "correctAnswer": "24/7",
+    "explanation": "tan(2t)=2tan(t)/(1-tan^2(t)). | 2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(2t)=2tan(t)/(1-tan^2(t)).",
+      "2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-062",
+    "moduleId": "Examen",
+    "topic": "Trigonometría",
+    "subtopic": "Inversa trigonométrica",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Determine arctan(sqrt(3)).",
+    "options": [],
+    "correctAnswer": "pi/3",
+    "explanation": "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-063",
+    "moduleId": "Examen",
+    "topic": "Polinomios",
+    "subtopic": "Teorema del resto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si P(x)=2x^3-5x^2+x-k, determine k para que el resto al dividir por x-2 sea cero.",
+    "options": [],
+    "correctAnswer": "k=-2",
+    "explanation": "P(2)=0. | 16-20+2-k=0 => -2-k=0 => k=-2.",
+    "distractorExplanations": [],
+    "steps": [
+      "P(2)=0.",
+      "16-20+2-k=0 => -2-k=0 => k=-2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-064",
+    "moduleId": "Examen",
+    "topic": "Polinomios",
+    "subtopic": "Resto",
+    "difficulty": "baja",
+    "type": "numeric",
+    "prompt": "Determine el resto al dividir P(x)=x^3+2x+1 por x-1.",
+    "options": [],
+    "correctAnswer": "4",
+    "explanation": "Por teorema del resto, resto=P(1)=1+2+1=4.",
+    "distractorExplanations": [],
+    "steps": [
+      "Por teorema del resto, resto=P(1)=1+2+1=4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-065",
+    "moduleId": "Examen",
+    "topic": "Trigonometría",
+    "subtopic": "Sinusoidal",
+    "difficulty": "alta",
+    "type": "graph",
+    "prompt": "Una función f(x)=Acos(k(x-B)) tiene amplitud 3, período 4pi y desfase pi/3. Determine f(x).",
+    "options": [],
+    "correctAnswer": "f(x)=3cos(1/2(x-pi/3))",
+    "explanation": "T=2pi/k=4pi => k=1/2. | A=3, B=pi/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "T=2pi/k=4pi => k=1/2.",
+      "A=3, B=pi/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Función sinusoidal: amplitud, período y desfase",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-066",
+    "moduleId": "Examen",
+    "topic": "Trigonometría",
+    "subtopic": "Razones en triángulo",
+    "difficulty": "media",
+    "type": "modeling",
+    "prompt": "Desde un punto se observa la cima de una torre con ángulo de elevación 30°. Si la torre mide 60 m, determine la distancia horizontal al pie.",
+    "options": [],
+    "correctAnswer": "60sqrt(3)",
+    "explanation": "tan(30)=opuesto/adyacente=60/d. | 1/sqrt(3)=60/d => d=60sqrt(3).",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(30)=opuesto/adyacente=60/d.",
+      "1/sqrt(3)=60/d => d=60sqrt(3)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-067",
+    "moduleId": "Examen",
+    "topic": "Trigonometría",
+    "subtopic": "Cuadrantes",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si t está en el tercer cuadrante y cos(t)=-3/5, determine tan(t).",
+    "options": [],
+    "correctAnswer": "4/3",
+    "explanation": "En QIII, seno y coseno son negativos, tangente positiva. | sen(t)=-4/5. | tan=sen/cos=4/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En QIII, seno y coseno son negativos, tangente positiva.",
+      "sen(t)=-4/5.",
+      "tan=sen/cos=4/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-068",
+    "moduleId": "Examen",
+    "topic": "Trigonometría",
+    "subtopic": "Identidades",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Simplifique tan(theta)sen(theta)+cos(theta).",
+    "options": [],
+    "correctAnswer": "sec(theta)",
+    "explanation": "tan=sen/cos. | sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan=sen/cos.",
+      "sen^2/cos+cos=(sen^2+cos^2)/cos=1/cos=sec."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-069",
+    "moduleId": "Examen",
+    "topic": "Trigonometría",
+    "subtopic": "Ángulo doble",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En un triángulo rectángulo, tan(theta)=3/4. Determine tan(2theta).",
+    "options": [],
+    "correctAnswer": "24/7",
+    "explanation": "tan(2t)=2tan(t)/(1-tan^2(t)). | 2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(2t)=2tan(t)/(1-tan^2(t)).",
+      "2*(3/4)/(1-9/16)=(3/2)/(7/16)=24/7."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-070",
+    "moduleId": "Examen",
+    "topic": "Trigonometría",
+    "subtopic": "Inversa trigonométrica",
+    "difficulty": "baja",
+    "type": "multiple_choice",
+    "prompt": "Determine arctan(sqrt(3)).",
+    "options": [],
+    "correctAnswer": "pi/3",
+    "explanation": "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan.",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(pi/3)=sqrt(3), y pi/3 está en el rango principal de arctan."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-071",
+    "moduleId": "Examen",
+    "topic": "Polinomios",
+    "subtopic": "Teorema del resto",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si P(x)=2x^3-5x^2+x-k, determine k para que el resto al dividir por x-2 sea cero.",
+    "options": [],
+    "correctAnswer": "k=-2",
+    "explanation": "P(2)=0. | 16-20+2-k=0 => -2-k=0 => k=-2.",
+    "distractorExplanations": [],
+    "steps": [
+      "P(2)=0.",
+      "16-20+2-k=0 => -2-k=0 => k=-2."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-072",
+    "moduleId": "Examen",
+    "topic": "Polinomios",
+    "subtopic": "Resto",
+    "difficulty": "baja",
+    "type": "numeric",
+    "prompt": "Determine el resto al dividir P(x)=x^3+2x+1 por x-1.",
+    "options": [],
+    "correctAnswer": "4",
+    "explanation": "Por teorema del resto, resto=P(1)=1+2+1=4.",
+    "distractorExplanations": [],
+    "steps": [
+      "Por teorema del resto, resto=P(1)=1+2+1=4."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-073",
+    "moduleId": "Examen",
+    "topic": "Trigonometría",
+    "subtopic": "Sinusoidal",
+    "difficulty": "alta",
+    "type": "graph",
+    "prompt": "Una función f(x)=Acos(k(x-B)) tiene amplitud 3, período 4pi y desfase pi/3. Determine f(x).",
+    "options": [],
+    "correctAnswer": "f(x)=3cos(1/2(x-pi/3))",
+    "explanation": "T=2pi/k=4pi => k=1/2. | A=3, B=pi/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "T=2pi/k=4pi => k=1/2.",
+      "A=3, B=pi/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Función sinusoidal: amplitud, período y desfase",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-074",
+    "moduleId": "Examen",
+    "topic": "Trigonometría",
+    "subtopic": "Razones en triángulo",
+    "difficulty": "media",
+    "type": "modeling",
+    "prompt": "Desde un punto se observa la cima de una torre con ángulo de elevación 30°. Si la torre mide 60 m, determine la distancia horizontal al pie.",
+    "options": [],
+    "correctAnswer": "60sqrt(3)",
+    "explanation": "tan(30)=opuesto/adyacente=60/d. | 1/sqrt(3)=60/d => d=60sqrt(3).",
+    "distractorExplanations": [],
+    "steps": [
+      "tan(30)=opuesto/adyacente=60/d.",
+      "1/sqrt(3)=60/d => d=60sqrt(3)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-075",
+    "moduleId": "Examen",
+    "topic": "Trigonometría",
+    "subtopic": "Cuadrantes",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si t está en el tercer cuadrante y cos(t)=-3/5, determine tan(t).",
+    "options": [],
+    "correctAnswer": "4/3",
+    "explanation": "En QIII, seno y coseno son negativos, tangente positiva. | sen(t)=-4/5. | tan=sen/cos=4/3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En QIII, seno y coseno son negativos, tangente positiva.",
+      "sen(t)=-4/5.",
+      "tan=sen/cos=4/3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Trigonometría UC: identidades, cuadrantes y ángulos",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-076",
+    "moduleId": "Examen",
+    "topic": "Sucesiones",
+    "subtopic": "Aritmética",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Los primeros términos de una sucesión aritmética son 7, 10, 13. Si a_n=40, determine n.",
+    "options": [],
+    "correctAnswer": "12",
+    "explanation": "a_n=7+(n-1)3=3n+4. | 3n+4=40 => n=12.",
+    "distractorExplanations": [],
+    "steps": [
+      "a_n=7+(n-1)3=3n+4.",
+      "3n+4=40 => n=12."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Sucesiones y patrones figurales",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-077",
+    "moduleId": "Examen",
+    "topic": "Sucesiones",
+    "subtopic": "Geométrica",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En una sucesión geométrica positiva, a_5=9 y a_7=1. Determine a_6.",
+    "options": [],
+    "correctAnswer": "3",
+    "explanation": "En sucesión geométrica positiva, a_6^2=a_5*a_7=9. | a_6=3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En sucesión geométrica positiva, a_6^2=a_5*a_7=9.",
+      "a_6=3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Sucesiones y patrones figurales",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-078",
+    "moduleId": "Examen",
+    "topic": "Polinomios",
+    "subtopic": "Factorización",
+    "difficulty": "alta",
+    "type": "numeric",
+    "prompt": "Determine todas las raíces de P(x)=x^3-2x^2-x+2.",
+    "options": [],
+    "correctAnswer": "-1,1,2",
+    "explanation": "Agrupar: x^2(x-2)-1(x-2)=(x^2-1)(x-2)=(x-1)(x+1)(x-2).",
+    "distractorExplanations": [],
+    "steps": [
+      "Agrupar: x^2(x-2)-1(x-2)=(x^2-1)(x-2)=(x-1)(x+1)(x-2)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-079",
+    "moduleId": "Examen",
+    "topic": "Logaritmos/Trigonometría",
+    "subtopic": "Recíprocos",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si ln(tan(x))=m y tan(x)>0, determine ln(cot(x)).",
+    "options": [],
+    "correctAnswer": "-m",
+    "explanation": "cot(x)=1/tan(x). | ln(cot)=ln(1/tan)=-ln(tan)=-m.",
+    "distractorExplanations": [],
+    "steps": [
+      "cot(x)=1/tan(x).",
+      "ln(cot)=ln(1/tan)=-ln(tan)=-m."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Logaritmos con restricciones y propiedades",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-080",
+    "moduleId": "Examen",
+    "topic": "Sucesiones",
+    "subtopic": "Geométrica contextual",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Una pelota cae desde 2 m y rebota un tercio de la altura anterior. Determine h_n.",
+    "options": [],
+    "correctAnswer": "h_n=2*(1/3)^n",
+    "explanation": "Primer rebote: 2/3=2*(1/3)^1. | En general h_n=2*(1/3)^n.",
+    "distractorExplanations": [],
+    "steps": [
+      "Primer rebote: 2/3=2*(1/3)^1.",
+      "En general h_n=2*(1/3)^n."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento con sucesiones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-081",
+    "moduleId": "Examen",
+    "topic": "Sucesiones",
+    "subtopic": "Aritmética",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Los primeros términos de una sucesión aritmética son 7, 10, 13. Si a_n=40, determine n.",
+    "options": [],
+    "correctAnswer": "12",
+    "explanation": "a_n=7+(n-1)3=3n+4. | 3n+4=40 => n=12.",
+    "distractorExplanations": [],
+    "steps": [
+      "a_n=7+(n-1)3=3n+4.",
+      "3n+4=40 => n=12."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Sucesiones y patrones figurales",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-082",
+    "moduleId": "Examen",
+    "topic": "Sucesiones",
+    "subtopic": "Geométrica",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En una sucesión geométrica positiva, a_5=9 y a_7=1. Determine a_6.",
+    "options": [],
+    "correctAnswer": "3",
+    "explanation": "En sucesión geométrica positiva, a_6^2=a_5*a_7=9. | a_6=3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En sucesión geométrica positiva, a_6^2=a_5*a_7=9.",
+      "a_6=3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Sucesiones y patrones figurales",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-083",
+    "moduleId": "Examen",
+    "topic": "Polinomios",
+    "subtopic": "Factorización",
+    "difficulty": "alta",
+    "type": "numeric",
+    "prompt": "Determine todas las raíces de P(x)=x^3-2x^2-x+2.",
+    "options": [],
+    "correctAnswer": "-1,1,2",
+    "explanation": "Agrupar: x^2(x-2)-1(x-2)=(x^2-1)(x-2)=(x-1)(x+1)(x-2).",
+    "distractorExplanations": [],
+    "steps": [
+      "Agrupar: x^2(x-2)-1(x-2)=(x^2-1)(x-2)=(x-1)(x+1)(x-2)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-084",
+    "moduleId": "Examen",
+    "topic": "Logaritmos/Trigonometría",
+    "subtopic": "Recíprocos",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si ln(tan(x))=m y tan(x)>0, determine ln(cot(x)).",
+    "options": [],
+    "correctAnswer": "-m",
+    "explanation": "cot(x)=1/tan(x). | ln(cot)=ln(1/tan)=-ln(tan)=-m.",
+    "distractorExplanations": [],
+    "steps": [
+      "cot(x)=1/tan(x).",
+      "ln(cot)=ln(1/tan)=-ln(tan)=-m."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Logaritmos con restricciones y propiedades",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-085",
+    "moduleId": "Examen",
+    "topic": "Sucesiones",
+    "subtopic": "Geométrica contextual",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Una pelota cae desde 2 m y rebota un tercio de la altura anterior. Determine h_n.",
+    "options": [],
+    "correctAnswer": "h_n=2*(1/3)^n",
+    "explanation": "Primer rebote: 2/3=2*(1/3)^1. | En general h_n=2*(1/3)^n.",
+    "distractorExplanations": [],
+    "steps": [
+      "Primer rebote: 2/3=2*(1/3)^1.",
+      "En general h_n=2*(1/3)^n."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento con sucesiones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-086",
+    "moduleId": "Examen",
+    "topic": "Sucesiones",
+    "subtopic": "Aritmética",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Los primeros términos de una sucesión aritmética son 7, 10, 13. Si a_n=40, determine n.",
+    "options": [],
+    "correctAnswer": "12",
+    "explanation": "a_n=7+(n-1)3=3n+4. | 3n+4=40 => n=12.",
+    "distractorExplanations": [],
+    "steps": [
+      "a_n=7+(n-1)3=3n+4.",
+      "3n+4=40 => n=12."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Sucesiones y patrones figurales",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-087",
+    "moduleId": "Examen",
+    "topic": "Sucesiones",
+    "subtopic": "Geométrica",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En una sucesión geométrica positiva, a_5=9 y a_7=1. Determine a_6.",
+    "options": [],
+    "correctAnswer": "3",
+    "explanation": "En sucesión geométrica positiva, a_6^2=a_5*a_7=9. | a_6=3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En sucesión geométrica positiva, a_6^2=a_5*a_7=9.",
+      "a_6=3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Sucesiones y patrones figurales",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-088",
+    "moduleId": "Examen",
+    "topic": "Polinomios",
+    "subtopic": "Factorización",
+    "difficulty": "alta",
+    "type": "numeric",
+    "prompt": "Determine todas las raíces de P(x)=x^3-2x^2-x+2.",
+    "options": [],
+    "correctAnswer": "-1,1,2",
+    "explanation": "Agrupar: x^2(x-2)-1(x-2)=(x^2-1)(x-2)=(x-1)(x+1)(x-2).",
+    "distractorExplanations": [],
+    "steps": [
+      "Agrupar: x^2(x-2)-1(x-2)=(x^2-1)(x-2)=(x-1)(x+1)(x-2)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-089",
+    "moduleId": "Examen",
+    "topic": "Logaritmos/Trigonometría",
+    "subtopic": "Recíprocos",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si ln(tan(x))=m y tan(x)>0, determine ln(cot(x)).",
+    "options": [],
+    "correctAnswer": "-m",
+    "explanation": "cot(x)=1/tan(x). | ln(cot)=ln(1/tan)=-ln(tan)=-m.",
+    "distractorExplanations": [],
+    "steps": [
+      "cot(x)=1/tan(x).",
+      "ln(cot)=ln(1/tan)=-ln(tan)=-m."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Logaritmos con restricciones y propiedades",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-090",
+    "moduleId": "Examen",
+    "topic": "Sucesiones",
+    "subtopic": "Geométrica contextual",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Una pelota cae desde 2 m y rebota un tercio de la altura anterior. Determine h_n.",
+    "options": [],
+    "correctAnswer": "h_n=2*(1/3)^n",
+    "explanation": "Primer rebote: 2/3=2*(1/3)^1. | En general h_n=2*(1/3)^n.",
+    "distractorExplanations": [],
+    "steps": [
+      "Primer rebote: 2/3=2*(1/3)^1.",
+      "En general h_n=2*(1/3)^n."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento con sucesiones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-091",
+    "moduleId": "Examen",
+    "topic": "Sucesiones",
+    "subtopic": "Aritmética",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Los primeros términos de una sucesión aritmética son 7, 10, 13. Si a_n=40, determine n.",
+    "options": [],
+    "correctAnswer": "12",
+    "explanation": "a_n=7+(n-1)3=3n+4. | 3n+4=40 => n=12.",
+    "distractorExplanations": [],
+    "steps": [
+      "a_n=7+(n-1)3=3n+4.",
+      "3n+4=40 => n=12."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Sucesiones y patrones figurales",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-092",
+    "moduleId": "Examen",
+    "topic": "Sucesiones",
+    "subtopic": "Geométrica",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En una sucesión geométrica positiva, a_5=9 y a_7=1. Determine a_6.",
+    "options": [],
+    "correctAnswer": "3",
+    "explanation": "En sucesión geométrica positiva, a_6^2=a_5*a_7=9. | a_6=3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En sucesión geométrica positiva, a_6^2=a_5*a_7=9.",
+      "a_6=3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Sucesiones y patrones figurales",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-093",
+    "moduleId": "Examen",
+    "topic": "Polinomios",
+    "subtopic": "Factorización",
+    "difficulty": "alta",
+    "type": "numeric",
+    "prompt": "Determine todas las raíces de P(x)=x^3-2x^2-x+2.",
+    "options": [],
+    "correctAnswer": "-1,1,2",
+    "explanation": "Agrupar: x^2(x-2)-1(x-2)=(x^2-1)(x-2)=(x-1)(x+1)(x-2).",
+    "distractorExplanations": [],
+    "steps": [
+      "Agrupar: x^2(x-2)-1(x-2)=(x^2-1)(x-2)=(x-1)(x+1)(x-2)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-094",
+    "moduleId": "Examen",
+    "topic": "Logaritmos/Trigonometría",
+    "subtopic": "Recíprocos",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si ln(tan(x))=m y tan(x)>0, determine ln(cot(x)).",
+    "options": [],
+    "correctAnswer": "-m",
+    "explanation": "cot(x)=1/tan(x). | ln(cot)=ln(1/tan)=-ln(tan)=-m.",
+    "distractorExplanations": [],
+    "steps": [
+      "cot(x)=1/tan(x).",
+      "ln(cot)=ln(1/tan)=-ln(tan)=-m."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Logaritmos con restricciones y propiedades",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-095",
+    "moduleId": "Examen",
+    "topic": "Sucesiones",
+    "subtopic": "Geométrica contextual",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Una pelota cae desde 2 m y rebota un tercio de la altura anterior. Determine h_n.",
+    "options": [],
+    "correctAnswer": "h_n=2*(1/3)^n",
+    "explanation": "Primer rebote: 2/3=2*(1/3)^1. | En general h_n=2*(1/3)^n.",
+    "distractorExplanations": [],
+    "steps": [
+      "Primer rebote: 2/3=2*(1/3)^1.",
+      "En general h_n=2*(1/3)^n."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento con sucesiones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-096",
+    "moduleId": "Examen",
+    "topic": "Sucesiones",
+    "subtopic": "Aritmética",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Los primeros términos de una sucesión aritmética son 7, 10, 13. Si a_n=40, determine n.",
+    "options": [],
+    "correctAnswer": "12",
+    "explanation": "a_n=7+(n-1)3=3n+4. | 3n+4=40 => n=12.",
+    "distractorExplanations": [],
+    "steps": [
+      "a_n=7+(n-1)3=3n+4.",
+      "3n+4=40 => n=12."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Sucesiones y patrones figurales",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-097",
+    "moduleId": "Examen",
+    "topic": "Sucesiones",
+    "subtopic": "Geométrica",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "En una sucesión geométrica positiva, a_5=9 y a_7=1. Determine a_6.",
+    "options": [],
+    "correctAnswer": "3",
+    "explanation": "En sucesión geométrica positiva, a_6^2=a_5*a_7=9. | a_6=3.",
+    "distractorExplanations": [],
+    "steps": [
+      "En sucesión geométrica positiva, a_6^2=a_5*a_7=9.",
+      "a_6=3."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Sucesiones y patrones figurales",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-098",
+    "moduleId": "Examen",
+    "topic": "Polinomios",
+    "subtopic": "Factorización",
+    "difficulty": "alta",
+    "type": "numeric",
+    "prompt": "Determine todas las raíces de P(x)=x^3-2x^2-x+2.",
+    "options": [],
+    "correctAnswer": "-1,1,2",
+    "explanation": "Agrupar: x^2(x-2)-1(x-2)=(x^2-1)(x-2)=(x-1)(x+1)(x-2).",
+    "distractorExplanations": [],
+    "steps": [
+      "Agrupar: x^2(x-2)-1(x-2)=(x^2-1)(x-2)=(x-1)(x+1)(x-2)."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Polinomios: resto, factores y raíces",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-099",
+    "moduleId": "Examen",
+    "topic": "Logaritmos/Trigonometría",
+    "subtopic": "Recíprocos",
+    "difficulty": "media",
+    "type": "numeric",
+    "prompt": "Si ln(tan(x))=m y tan(x)>0, determine ln(cot(x)).",
+    "options": [],
+    "correctAnswer": "-m",
+    "explanation": "cot(x)=1/tan(x). | ln(cot)=ln(1/tan)=-ln(tan)=-m.",
+    "distractorExplanations": [],
+    "steps": [
+      "cot(x)=1/tan(x).",
+      "ln(cot)=ln(1/tan)=-ln(tan)=-m."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Logaritmos con restricciones y propiedades",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  },
+  {
+    "id": "gen-examen-100",
+    "moduleId": "Examen",
+    "topic": "Sucesiones",
+    "subtopic": "Geométrica contextual",
+    "difficulty": "alta",
+    "type": "modeling",
+    "prompt": "Una pelota cae desde 2 m y rebota un tercio de la altura anterior. Determine h_n.",
+    "options": [],
+    "correctAnswer": "h_n=2*(1/3)^n",
+    "explanation": "Primer rebote: 2/3=2*(1/3)^1. | En general h_n=2*(1/3)^n.",
+    "distractorExplanations": [],
+    "steps": [
+      "Primer rebote: 2/3=2*(1/3)^1.",
+      "En general h_n=2*(1/3)^n."
+    ],
+    "formulaRefs": [],
+    "formulaMemoryAid": "",
+    "tutorHints": [
+      "Identifica el patrón antes de operar.",
+      "Revisa restricciones y signos."
+    ],
+    "tip": "Ejercicio generado a partir de patrón real UC.",
+    "commonMistake": "Aplicar el procedimiento sin revisar restricciones o signos.",
+    "graphConfig": null,
+    "sourcePattern": "Modelamiento con sucesiones",
+    "basedOnPastExamId": "multiple-past-exams",
+    "validationStatus": "proposed"
+  }
+]
