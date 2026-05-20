@@ -42,7 +42,7 @@ const tabs: Array<{ id: Tab; label: string }> = [
   { id: "diagnostico", label: "Diagnóstico" },
   { id: "practica", label: "Práctica" },
   { id: "formulas", label: "Fórmulas y tips" },
-  { id: "graficos", label: "Gráficos interactivos" },
+  { id: "graficos", label: "Gráficos" },
   { id: "pasadas", label: "Pruebas pasadas" },
   { id: "patrones", label: "Patrones UC" },
   { id: "variantes", label: "Variantes UC" },
@@ -202,8 +202,23 @@ export default function PrecalculoFullClient() {
   }
 
   return (
-    <main className="min-h-screen bg-[#07111f] text-white">
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_8%_12%,rgba(34,211,238,.22),transparent_28%),radial-gradient(circle_at_88%_8%,rgba(99,102,241,.2),transparent_30%),linear-gradient(180deg,#06101d,#0b1220_45%,#050816)]" />
+    <main className="min-h-screen overflow-hidden bg-[#07111f] text-white">
+      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(148,163,184,.06)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,.06)_1px,transparent_1px),radial-gradient(circle_at_8%_12%,rgba(34,211,238,.22),transparent_28%),radial-gradient(circle_at_88%_8%,rgba(99,102,241,.2),transparent_30%),linear-gradient(180deg,#06101d,#0b1220_45%,#050816)] bg-[size:36px_36px,36px_36px,100%_100%,100%_100%,100%_100%]" />
+      <div className="pointer-events-none fixed inset-0 overflow-hidden opacity-[0.16]">
+        {["π", "√", "f(x)", "log", "sen", "cos", "tan", "θ"].map((symbol, index) => (
+          <span
+            key={symbol}
+            className="absolute select-none text-5xl font-black text-cyan-100 md:text-8xl"
+            style={{
+              left: `${8 + ((index * 13) % 78)}%`,
+              top: `${8 + ((index * 17) % 76)}%`,
+              transform: `rotate(${index % 2 === 0 ? -10 : 9}deg)`,
+            }}
+          >
+            {symbol}
+          </span>
+        ))}
+      </div>
       <section className="relative mx-auto flex min-h-screen max-w-[1480px] flex-col px-4 py-4 md:px-6">
         <header className="grid gap-4 rounded-3xl border border-white/10 bg-white/[0.06] p-4 shadow-2xl shadow-black/25 backdrop-blur-2xl lg:grid-cols-[1fr_1.05fr] lg:items-end">
           <div>
@@ -229,14 +244,14 @@ export default function PrecalculoFullClient() {
           </div>
         </header>
 
-        <nav className="mt-4 grid gap-2 rounded-3xl border border-white/10 bg-slate-950/60 p-2 shadow-xl shadow-black/20 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-11">
+        <nav className="mt-4 flex gap-2 overflow-x-auto rounded-3xl border border-white/10 bg-slate-950/70 p-2 shadow-xl shadow-black/20">
           {tabs.map((item) => (
             <button
               key={item.id}
               type="button"
               onClick={() => setTab(item.id)}
               className={cx(
-                "rounded-2xl px-3 py-3 text-sm font-black transition",
+                "shrink-0 rounded-2xl px-4 py-3 text-sm font-black transition",
                 tab === item.id
                   ? "bg-cyan-300 text-slate-950 shadow-lg shadow-cyan-400/20"
                   : "text-slate-200 hover:bg-white/10 hover:text-white"
@@ -365,7 +380,7 @@ export default function PrecalculoFullClient() {
         )}
 
         <footer className="relative mt-6 rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-4 py-3 text-center text-xs font-black uppercase tracking-[0.28em] text-cyan-100">
-          MAT1000 Practice UI v2
+          MAT1000 · Práctica inteligente
         </footer>
       </section>
     </main>

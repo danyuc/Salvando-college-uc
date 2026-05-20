@@ -14,8 +14,9 @@ import {
   type PsychologyQuestion,
   type PsychologyQuestionType,
 } from "@/lib/psychology-ui-data"
+import { PSYCHOLOGY_AUTHORS } from "@/lib/psychology"
 
-type Mode = "review" | "practice" | "diagnostic" | "exam" | "incorrect" | "weakness"
+type Mode = "review" | "authors" | "practice" | "diagnostic" | "exam" | "incorrect" | "weakness"
 type OptionId = "A" | "B" | "C" | "D"
 
 type PsychologyProgress = {
@@ -63,12 +64,13 @@ const defaultFilters: Filters = {
 }
 
 const modeLabels: Record<Mode, string> = {
-  review: "Class Review",
-  practice: "Practice Questions",
-  diagnostic: "Diagnostic Mode",
-  exam: "Exam Simulation",
-  incorrect: "Incorrect Review",
-  weakness: "Weakness Map",
+  review: "Clases",
+  authors: "Autores",
+  practice: "Práctica",
+  diagnostic: "Diagnóstico",
+  exam: "Simulación",
+  incorrect: "Revisión de errores",
+  weakness: "Mapa de debilidad",
 }
 
 const difficultyLabels: Record<PsychologyDifficulty, string> = {
@@ -393,11 +395,12 @@ export default function PsychologyPracticeClient() {
 
           <section className="min-w-0">
             {mode === "review" && <ClassReview selectedClass={selectedClass} />}
+            {mode === "authors" && <AuthorsPanel selectedClassId={selectedClassId} />}
             {mode === "practice" && (
               <>
                 <FiltersPanel filters={filters} concepts={allConcepts} onChange={setFilters} />
                 <QuestionPracticePanel
-                  title="Practice Questions"
+                  title="Práctica"
                   question={activeQuestion}
                   index={practiceIndex}
                   total={practiceQuestions.length}
@@ -442,7 +445,7 @@ export default function PsychologyPracticeClient() {
             )}
             {mode === "incorrect" && (
               <QuestionPracticePanel
-                title="Incorrect Review"
+                title="Revisión de errores"
                 question={activeQuestion}
                 index={practiceIndex}
                 total={incorrectQuestions.length}
@@ -469,7 +472,7 @@ export default function PsychologyPracticeClient() {
 function ClassReview({ selectedClass }: { selectedClass: NonNullable<ReturnType<typeof getPsychologyClassSummary>> }) {
   return (
     <article className="rounded-[2rem] border border-white/10 bg-white/[0.07] p-6 shadow-2xl backdrop-blur-xl">
-      <p className="text-xs font-black uppercase tracking-[0.28em] text-cyan-300">Class Review</p>
+      <p className="text-xs font-black uppercase tracking-[0.28em] text-cyan-300">Clases</p>
       <h2 className="mt-2 text-3xl font-black">{selectedClass.title}</h2>
       <p className="mt-4 rounded-3xl bg-slate-950/60 p-5 text-base font-semibold leading-8 text-slate-100">
         {selectedClass.centralTheme}
@@ -483,6 +486,30 @@ function ClassReview({ selectedClass }: { selectedClass: NonNullable<ReturnType<
       <p className="mt-5 rounded-3xl border border-amber-300/20 bg-amber-300/10 p-5 text-sm font-semibold leading-7 text-amber-50">
         {selectedClass.examPrediction}
       </p>
+    </article>
+  )
+}
+
+function AuthorsPanel({ selectedClassId }: { selectedClassId: string }) {
+  const authors = PSYCHOLOGY_AUTHORS.filter((author) => author.classIds.includes(selectedClassId))
+  return (
+    <article className="rounded-[2rem] border border-white/10 bg-white/[0.07] p-6 shadow-2xl backdrop-blur-xl">
+      <p className="text-xs font-black uppercase tracking-[0.28em] text-cyan-300">Autores</p>
+      <h2 className="mt-2 text-3xl font-black">Autores vinculados a la clase</h2>
+      <div className="mt-5 grid gap-4 xl:grid-cols-2">
+        {(authors.length ? authors : PSYCHOLOGY_AUTHORS.slice(0, 4)).map((author) => (
+          <section key={author.id} className="rounded-3xl border border-white/10 bg-slate-950/55 p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h3 className="text-xl font-black">{author.name}</h3>
+              <span className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-3 py-1 text-xs font-black uppercase text-cyan-100">
+                {author.importance}
+              </span>
+            </div>
+            <p className="mt-3 text-sm font-semibold leading-7 text-slate-200">{author.explanation}</p>
+            <InfoList title="Fuentes" items={author.sourceRefs.map((source) => source.label)} />
+          </section>
+        ))}
+      </div>
     </article>
   )
 }
@@ -743,7 +770,7 @@ function DiagnosticPanel({
   const weaknesses = unique(summarizeWeaknesses(questions, answers))
   return (
     <article className="rounded-[2rem] border border-white/10 bg-white/[0.07] p-6 shadow-2xl backdrop-blur-xl">
-      <QuestionHeader title="Diagnostic Mode" question={question} index={index} total={questions.length} />
+      <QuestionHeader title="Diagnóstico" question={question} index={index} total={questions.length} />
       <h2 className="mt-5 text-2xl font-black leading-9 md:text-3xl">{question.prompt}</h2>
       {canAutoCorrect(question) ? (
         <div className="mt-5 grid gap-3 md:grid-cols-2">
@@ -818,7 +845,7 @@ function ExamPanel({
     <article className="rounded-[2rem] border border-white/10 bg-white/[0.07] p-6 shadow-2xl backdrop-blur-xl">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.28em] text-cyan-300">Exam Simulation</p>
+          <p className="text-xs font-black uppercase tracking-[0.28em] text-cyan-300">Simulación</p>
           <h2 className="mt-2 text-3xl font-black">Simulacro variable · 20 preguntas</h2>
         </div>
         <button type="button" onClick={onNewExam} className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-5 py-3 text-sm font-black text-cyan-50">Generar otro</button>
@@ -860,7 +887,7 @@ function ExamPanel({
       </div>
       {!submitted ? (
         <button type="button" onClick={onSubmit} className="mt-5 rounded-full bg-white px-5 py-3 text-sm font-black text-slate-950">
-          Correct exam
+          Corregir simulación
         </button>
       ) : (
         <ResultPanel
@@ -971,7 +998,7 @@ function WeaknessSummary({ progress, compact = false }: { progress: PsychologyPr
 function WeaknessMap({ progress }: { progress: PsychologyProgress }) {
   return (
     <article className="rounded-[2rem] border border-white/10 bg-white/[0.07] p-6 shadow-2xl backdrop-blur-xl">
-      <p className="text-xs font-black uppercase tracking-[0.28em] text-cyan-300">Weakness Map</p>
+      <p className="text-xs font-black uppercase tracking-[0.28em] text-cyan-300">Mapa de debilidad</p>
       <h2 className="mt-2 text-3xl font-black">Mapa de debilidades y ruta de estudio</h2>
       <div className="mt-5 grid gap-4 xl:grid-cols-2">
         <WeaknessSummary progress={progress} />

@@ -147,8 +147,8 @@ export default function AppShell({ children }: { children: ReactNode }) {
                     className={[
                       "group relative flex min-h-12 items-center gap-3 overflow-hidden rounded-2xl px-3 py-3 transition-all duration-200",
                       active
-                        ? "border border-cyan-300/35 bg-gradient-to-br from-sky-500/95 to-cyan-500/75 text-white shadow-lg shadow-cyan-400/15"
-                        : "border border-white/0 text-slate-200 hover:border-white/10 hover:bg-white/10 hover:text-white",
+                        ? "border border-white/70 bg-white text-slate-950 shadow-lg shadow-cyan-400/20"
+                        : "border border-white/0 text-slate-200/95 hover:border-white/10 hover:bg-white/10 hover:text-white",
                     ].join(" ")}
                   >
                     <span className="relative z-10 grid h-8 w-8 shrink-0 place-items-center">

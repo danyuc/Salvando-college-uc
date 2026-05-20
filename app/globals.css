@@ -456,19 +456,12 @@ body {
 }
 
 [data-app-sidebar] a:not([aria-current="page"]),
-[data-app-sidebar] a:not([aria-current="page"]) *,
-[data-app-sidebar] button,
-[data-app-sidebar] button *,
-[data-app-sidebar] p,
-[data-app-sidebar] h1,
-[data-app-sidebar] h2 {
+[data-app-sidebar] a:not([aria-current="page"]) * {
   color: rgb(226 232 240) !important;
 }
 
 [data-app-sidebar] a:not([aria-current="page"]):hover,
-[data-app-sidebar] a:not([aria-current="page"]):hover *,
-[data-app-sidebar] button:hover,
-[data-app-sidebar] button:hover * {
+[data-app-sidebar] a:not([aria-current="page"]):hover * {
   color: rgb(255 255 255) !important;
 }
 

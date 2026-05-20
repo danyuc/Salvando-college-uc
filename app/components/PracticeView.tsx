@@ -1,12 +1,10 @@
 ﻿'use client'
 
-import { useEffect, useMemo, useState } from "react"
+import { type CSSProperties, useEffect, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 
 import MathLessonEngine from "./MathLessonEngine"
 import FormulaDrawer from "./FormulaDrawer"
-import DomainAnimator from "./math-animators/DomainAnimator"
-import CompositionAnimator from "./math-animators/CompositionAnimator"
 import AlgebraMotionPro from "./AlgebraMotionPro"
 import PrecalculoSteps from "./PrecalculoSteps"
 import PrecalculoVisual from "./PrecalculoVisual"
@@ -29,17 +27,79 @@ import { getLocalUser } from "@/lib/local-user"
 
 type Mode = "practica" | "diagnostico" | "simulacion" | "intensivo"
 type QuestionKind = "seleccion_multiple" | "desarrollo" | "modelamiento" | "mixtas"
+type PracticeStep = {
+  orden?: number
+  titulo?: string
+  explicacion?: string
+  expresion?: string
+  title?: string
+  explanation?: string
+  equation?: string
+  action?: string
+}
+type PracticeQuestion = {
+  id?: string
+  tipo?: string
+  subtema?: string
+  tema?: string
+  pregunta?: string
+  opciones?: readonly string[] | null
+  respuesta_correcta?: string | number
+  correcta?: string | number
+  correctAnswer?: string | number
+  answer?: string | number
+  explicacion?: string
+  explanation?: string
+  pasos?: readonly PracticeStep[]
+  visualizacion?: { parametros?: { puntos?: readonly unknown[] } }
+  error_comun?: string
+}
+type PracticeAnswer = {
+  subtema: string
+  correct: boolean
+  written?: string
+}
+type LessonStep = {
+  title?: string
+  explanation?: string
+  equation?: string
+  action?: string
+  expresion?: string
+  explicacion?: string
+  titulo?: string
+  left?: string
+  right?: string
+}
 
 const evaluations = ["I1", "I2", "I3", "EXAMEN"]
+const genericPracticeSubjects: SubjectCode[] = ["CLG0000", "IHI0204", "SOL500", "PSI1101"]
 
 function normalizeSubject(value: string | null): SubjectCode {
   if (value === "PSI1101" || value === "SOL500" || value === "CLG0000" || value === "IHI0204") return value
-  return "SOL500"
+  return "CLG0000"
 }
 
 function normalizeEvaluation(value: string | null) {
   if (value === "I1" || value === "I2" || value === "I3" || value === "EXAMEN") return value
   return "I1"
+}
+
+function normalizeMode(value: string | null): Mode {
+  if (value === "practica" || value === "diagnostico" || value === "simulacion" || value === "intensivo") return value
+  return "practica"
+}
+
+function getInitialPracticeState() {
+  if (typeof window === "undefined") {
+    return { subject: "CLG0000" as SubjectCode, evaluation: "I1", mode: "practica" as Mode }
+  }
+
+  const params = new URLSearchParams(window.location.search)
+  return {
+    subject: normalizeSubject(params.get("subject")),
+    evaluation: normalizeEvaluation(params.get("evaluation")),
+    mode: normalizeMode(params.get("mode")),
+  }
 }
 
 function formatTime(seconds: number) {
@@ -49,7 +109,7 @@ function formatTime(seconds: number) {
 }
 
 
-function normalizeMathAnswer(value: any) {
+function normalizeMathAnswer(value: unknown) {
   return String(value ?? "")
     .toLowerCase()
     .replaceAll("√", "sqrt")
@@ -59,7 +119,7 @@ function normalizeMathAnswer(value: any) {
     .replace(/[.$]/g, "")
 }
 
-function getCorrectOptionText(question: any) {
+function getCorrectOptionText(question: PracticeQuestion) {
   const raw =
     question?.respuesta_correcta ??
     question?.correcta ??
@@ -86,14 +146,9 @@ function getCorrectOptionText(question: any) {
   return raw
 }
 
-function isCorrectOption(question: any, option: string) {
+function isCorrectOption(question: PracticeQuestion, option: string) {
   const correctText = getCorrectOptionText(question)
   return normalizeMathAnswer(option) === normalizeMathAnswer(correctText)
-}
-
-function getDiagnosticDone(subject: SubjectCode, evaluation: string) {
-  if (typeof window === "undefined") return false
-  return Boolean(localStorage.getItem(`diagnostic-${subject}-${evaluation}`))
 }
 
 function saveWeakness(evaluation: string, subtema: string) {
@@ -105,21 +160,11 @@ function saveWeakness(evaluation: string, subtema: string) {
   localStorage.setItem(key, JSON.stringify(next))
 }
 
-function buildGenericQuestions(subject: SubjectCode) {
-  const theme = SUBJECT_THEMES[subject]
-  return [
-    {
-      tipo: "desarrollo",
-      subtema: "Conceptos base",
-      pregunta: `Explica el concepto central más importante de ${theme.name} con un ejemplo.`,
-      respuesta_correcta: "Respuesta abierta",
-      explicacion: "La idea es verificar comprensión conceptual, no memorizar una frase.",
-      opciones: null,
-    },
-  ]
+function buildGenericQuestions() {
+  return []
 }
 
-function enrichQuestions(base: any[], kind: QuestionKind, mode: Mode) {
+function enrichQuestions(base: PracticeQuestion[], kind: QuestionKind, mode: Mode) {
   const extras = [
     {
       id: "dev-lineal-1",
@@ -162,29 +207,30 @@ function enrichQuestions(base: any[], kind: QuestionKind, mode: Mode) {
 export default function PracticeView() {
   const router = useRouter()
   const { name: userName } = useUser()
+  const initialPracticeState = useMemo(() => getInitialPracticeState(), [])
 
-  const [subject, setSubject] = useState<SubjectCode>("SOL500")
-  const [evaluation, setEvaluation] = useState("I1")
+  const [subject, setSubject] = useState<SubjectCode>(initialPracticeState.subject)
+  const [evaluation, setEvaluation] = useState(initialPracticeState.evaluation)
   const [moduleLabel, setModuleLabel] = useState("Todos")
   const [subtema, setSubtema] = useState("Todos")
-  const [mode, setMode] = useState<Mode>("practica")
+  const [mode, setMode] = useState<Mode>(initialPracticeState.mode)
   const [kind, setKind] = useState<QuestionKind>("mixtas")
   const [amount, setAmount] = useState(20)
   const [minutes, setMinutes] = useState(120)
 
-  const [questions, setQuestions] = useState<any[]>([])
+  const [questions, setQuestions] = useState<PracticeQuestion[]>([])
   const [index, setIndex] = useState(0)
   const [selected, setSelected] = useState("")
   const [feeling, setFeeling] = useState<"facil" | "medio" | "dificil" | null>(null)
   const [written, setWritten] = useState("")
   const [showSteps, setShowSteps] = useState(false)
-  const [answers, setAnswers] = useState<any[]>([])
+  const [answers, setAnswers] = useState<PracticeAnswer[]>([])
   const [finished, setFinished] = useState(false)
   const [remaining, setRemaining] = useState(120 * 60)
   const [timerStarted, setTimerStarted] = useState(false)
   const [diagnosticDone, setDiagnosticDone] = useState(false)
   const [visualStep, setVisualStep] = useState(0)
-  const [questionStartedAt, setQuestionStartedAt] = useState(Date.now())
+  const [questionStartedAt, setQuestionStartedAt] = useState(() => Date.now())
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -192,6 +238,11 @@ export default function PracticeView() {
 
     if (requestedSubject === "MAT1000") {
       window.location.replace("/precalculo-full")
+      return
+    }
+
+    if (requestedSubject === "PSI1101") {
+      window.location.replace("/practica/psicologia")
       return
     }
     const context = getClientAccessContext(getLocalUser())
@@ -204,12 +255,6 @@ export default function PracticeView() {
       return
     }
 
-    setSubject(normalizeSubject(params.get("subject")))
-    setEvaluation(normalizeEvaluation(params.get("evaluation")))
-    const urlMode = params.get("mode")
-    if (urlMode === "practica" || urlMode === "diagnostico" || urlMode === "simulacion" || urlMode === "intensivo") {
-      setMode(urlMode)
-    }
   }, [router])
 
   useEffect(() => {
@@ -244,6 +289,12 @@ export default function PracticeView() {
 
   const current = questions[index]
   const currentLesson = current ? lessonForQuestion(current) : null
+  const lessonSteps = ((currentLesson?.steps ?? []) as readonly LessonStep[]).map((step) => ({
+    title: step.title ?? step.titulo ?? step.left ?? "Paso",
+    explanation: step.explanation ?? step.explicacion ?? step.right ?? "",
+    equation: step.equation ?? step.expresion ?? step.left,
+    action: step.action ?? step.titulo,
+  }))
   const correctCount = answers.filter(a => a.correct).length
   const accuracy = answers.length ? Math.round((correctCount / answers.length) * 100) : 0
   const weak = Array.from(new Set(answers.filter(a => !a.correct).map(a => a.subtema)))
@@ -253,6 +304,14 @@ export default function PracticeView() {
 
   // diagnosticDone ahora se sincroniza con Supabase
   const diagnosticRequired = !diagnosticDone
+  const hasRealQuestions = isMath
+  const canStart = !diagnosticRequired && hasRealQuestions
+  const selectedSubjectName = theme?.name ?? "esta asignatura"
+  const startDisabledReason = diagnosticRequired
+    ? "Completa el diagnóstico para activar la práctica guiada."
+    : !hasRealQuestions
+      ? "Faltan preguntas reales para iniciar esta práctica."
+      : ""
   const totalSeconds = mode === "simulacion" ? 120 * 60 : minutes * 60
   const avgSeconds = questions.length ? Math.floor(totalSeconds / questions.length) : 0
   const timePercent = totalSeconds > 0 ? Math.max(0, Math.min(100, (remaining / totalSeconds) * 100)) : 100
@@ -272,9 +331,9 @@ export default function PracticeView() {
   }
 
   function start() {
-    if (diagnosticRequired) return
+    if (!canStart) return
 
-    let finalQuestions: any[] = []
+    let finalQuestions: PracticeQuestion[] = []
 
     if (isMath) {
       const base = generateMat1000ForceQuestions({
@@ -288,7 +347,7 @@ export default function PracticeView() {
       finalQuestions = enrichQuestions(base, kind, mode)
         .slice(0, mode === "simulacion" ? 13 : amount)
     } else {
-      finalQuestions = buildGenericQuestions(subject)
+      finalQuestions = buildGenericQuestions()
     }
 
     setQuestions(finalQuestions)
@@ -302,6 +361,16 @@ export default function PracticeView() {
     setFinished(false)
     setRemaining(mode === "simulacion" ? 120 * 60 : minutes * 60)
     setTimerStarted(true)
+  }
+
+  function changeSubject(value: SubjectCode) {
+    if (value === "PSI1101") {
+      router.push("/practica/psicologia")
+      return
+    }
+
+    setSubject(value)
+    reset()
   }
 
   function answer(option: string) {
@@ -375,7 +444,7 @@ export default function PracticeView() {
     : null
 
   return (
-    <main className="practice-page" style={{ "--c": theme.color, "--a": theme.accent, "--g": theme.gradient } as any}>
+    <main className="practice-page" style={{ "--c": theme.color, "--a": theme.accent, "--g": theme.gradient } as CSSProperties & Record<"--c" | "--a" | "--g", string>}>
       <section className="shell">
         <section className="hero-card">
           <div className="math-bg" aria-hidden="true">
@@ -400,27 +469,41 @@ export default function PracticeView() {
         </section>
 
         <section className="mode-card">
-          <h3>{diagnosticRequired ? "Diagnóstico obligatorio" : "Sistema inteligente activo"}</h3>
+          <h3>Diagnóstico inicial requerido</h3>
           <p>
             {diagnosticRequired
-              ? `Antes de practicar ${theme.name} ${evaluation}, completa el diagnóstico. Esto permite orientar la sesión sin práctica a ciegas.`
-              : `Modo ${mode} · foco ${subtema} · explicación adaptativa.`}
+              ? `Antes de practicar ${selectedSubjectName}, completa el diagnóstico. Para personalizar tu práctica, completa primero un diagnóstico breve.`
+              : `Diagnóstico completado para ${selectedSubjectName}.`}
           </p>
 
           {diagnosticRequired && (
             <a className="diagnostic-cta" href={`/diagnostico?subject=${subject}&evaluation=${evaluation}`}>
-              Hacer diagnóstico ahora
+              Iniciar diagnóstico
             </a>
           )}
+
+          {startDisabledReason && <p className="disabled-reason">{startDisabledReason}</p>}
+        </section>
+
+        <section className="precalculo-cta-card">
+          <div>
+            <span className="badge">MAT1000</span>
+            <h3>Pre Cálculo MAT1000</h3>
+            <p>Pre Cálculo tiene una sección avanzada separada.</p>
+          </div>
+          <a href="/precalculo-full">Ir a Pre Cálculo MAT1000</a>
         </section>
 
         <section className="filters-card">
           <label>
             Asignatura
-            <select value={subject} onChange={(e) => { setSubject(e.target.value as SubjectCode); reset() }}>
-              {(Object.entries(SUBJECT_THEMES) as [SubjectCode, any][]).filter(([code]) => code !== "MAT1000").map(([code, t]) => (
+            <select value={subject} onChange={(e) => changeSubject(e.target.value as SubjectCode)}>
+              {genericPracticeSubjects.map((code) => {
+                const t = SUBJECT_THEMES[code]
+                return (
                 <option key={code} value={code}>{t.icon} {t.name}</option>
-              ))}
+                )
+              })}
             </select>
           </label>
 
@@ -478,10 +561,18 @@ export default function PracticeView() {
           </label>
 
           <div className="actions">
-            <button disabled={diagnosticRequired} onClick={start}>Comenzar sesión</button>
+            <button disabled={!canStart} onClick={start} title={startDisabledReason || undefined}>Comenzar sesión</button>
             <button className="secondary" onClick={reset}>Reiniciar</button>
+            {startDisabledReason && <small>{startDisabledReason}</small>}
           </div>
         </section>
+
+        {!finished && !current && (
+          <section className="empty-practice-card">
+            <h2>Todavía no hay preguntas reales cargadas para esta asignatura.</h2>
+            <p>La práctica guiada queda bloqueada hasta que exista un banco verificable para {selectedSubjectName}.</p>
+          </section>
+        )}
 
         <section className="stats">
           <div><span>Preguntas</span><strong>{questions.length}</strong></div>
@@ -534,28 +625,7 @@ export default function PracticeView() {
                   const correct = isCorrectOption(current, op)
                   const chosen = op === selected
 
-                  function handleFeeling(value: "facil" | "medio" | "dificil") {
-    if (!current || !selected) return
-
-    setFeeling(value)
-
-    const confidence =
-      value === "facil" ? "alta" :
-      value === "dificil" ? "baja" :
-      "media"
-
-    const seconds = Math.max(1, Math.round((Date.now() - questionStartedAt) / 1000))
-    const correct = selected === "respuesta_abierta" || isCorrectOption?.(current, selected) || selected === current.respuesta_correcta
-
-    registerPracticeResult({
-      subtema: current.subtema || "general",
-      correct,
-      seconds,
-      confidence,
-    })
-  }
-
-  return (
+                  return (
                     <button
                       key={op}
                       onClick={() => answer(op)}
@@ -630,18 +700,18 @@ export default function PracticeView() {
                     {showSteps && currentLesson && (
                   <>
 
-                    {currentLesson?.steps?.length > 0 && (
+                    {lessonSteps.length > 0 && (
                       <AlgebraMotionPro
-                        steps={currentLesson.steps.map((st: any) => ({
-                          equation: st.equation || st.expresion || st.title,
-                          explanation: st.explanation || st.explicacion || "",
-                          operation: st.action || st.titulo || "",
+                        steps={lessonSteps.map((st) => ({
+                          equation: st.equation || st.title,
+                          explanation: st.explanation,
+                          operation: st.action || "",
                         }))}
                       />
                     )}
 
                       <>
-                        <MathLessonEngine title={currentLesson.title} steps={currentLesson.steps as any} />
+                        <MathLessonEngine title={currentLesson.title} steps={lessonSteps} />
                   </>
                         {Array.isArray(current.pasos) && (
                           <div style={{ marginTop: 16 }}>
@@ -783,6 +853,13 @@ export default function PracticeView() {
           border-color: color-mix(in srgb,var(--c) 60%,transparent);
         }
 
+        .mode-card h3,
+        .precalculo-cta-card h3 {
+          margin: 0 0 8px;
+          font-size: 22px;
+          font-weight: 950;
+        }
+
         .diagnostic-cta {
           display: inline-flex;
           margin-top: 10px;
@@ -792,6 +869,63 @@ export default function PracticeView() {
           color: white;
           text-decoration: none;
           font-weight: 950;
+        }
+
+        .disabled-reason,
+        .actions small {
+          color: #fde68a;
+          font-size: 13px;
+          font-weight: 900;
+          line-height: 1.45;
+        }
+
+        .disabled-reason {
+          margin: 12px 0 0;
+        }
+
+        .precalculo-cta-card,
+        .empty-practice-card {
+          border: 1px solid rgba(56,189,248,.24);
+          background: linear-gradient(135deg,rgba(8,47,73,.72),rgba(30,41,59,.78));
+          border-radius: 28px;
+          box-shadow: 0 24px 70px rgba(0,0,0,.24);
+          padding: 20px;
+        }
+
+        .precalculo-cta-card {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+        }
+
+        .precalculo-cta-card p,
+        .empty-practice-card p {
+          color: #cbd5e1;
+          margin: 0;
+          font-weight: 700;
+          line-height: 1.65;
+        }
+
+        .precalculo-cta-card a {
+          display: inline-flex;
+          min-height: 48px;
+          align-items: center;
+          justify-content: center;
+          border-radius: 16px;
+          background: #67e8f9;
+          color: #082f49;
+          padding: 0 16px;
+          font-size: 14px;
+          font-weight: 950;
+          text-decoration: none;
+          white-space: nowrap;
+        }
+
+        .empty-practice-card h2 {
+          margin: 0 0 8px;
+          font-size: 22px;
+          line-height: 1.25;
         }
 
         .filters-card {
@@ -836,8 +970,13 @@ export default function PracticeView() {
 
         .actions {
           display: flex;
+          flex-wrap: wrap;
           gap: 10px;
           align-items: end;
+        }
+
+        .actions small {
+          flex-basis: 100%;
         }
 
         button {
@@ -1088,6 +1227,11 @@ export default function PracticeView() {
           .hero-card {
             flex-direction: column;
             align-items: flex-start;
+          }
+
+          .precalculo-cta-card {
+            align-items: flex-start;
+            flex-direction: column;
           }
         }
       `}
