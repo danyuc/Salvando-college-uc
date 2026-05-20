@@ -457,12 +457,21 @@ body {
 
 [data-app-sidebar] a:not([aria-current="page"]),
 [data-app-sidebar] a:not([aria-current="page"]) * {
-  color: rgb(226 232 240) !important;
+  color: rgba(255, 255, 255, .75) !important;
+}
+
+[data-app-sidebar] a:not([aria-current="page"]) svg {
+  color: rgba(226, 232, 240, .92) !important;
+  stroke: currentColor !important;
 }
 
 [data-app-sidebar] a:not([aria-current="page"]):hover,
 [data-app-sidebar] a:not([aria-current="page"]):hover * {
   color: rgb(255 255 255) !important;
+}
+
+[data-app-sidebar] a:not([aria-current="page"]):hover {
+  background: rgba(255, 255, 255, .10) !important;
 }
 
 [data-app-sidebar] [aria-current="page"],

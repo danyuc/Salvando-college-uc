@@ -202,9 +202,9 @@ export default function PrecalculoFullClient() {
   }
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#07111f] text-white">
-      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(148,163,184,.06)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,.06)_1px,transparent_1px),radial-gradient(circle_at_8%_12%,rgba(34,211,238,.22),transparent_28%),radial-gradient(circle_at_88%_8%,rgba(99,102,241,.2),transparent_30%),linear-gradient(180deg,#06101d,#0b1220_45%,#050816)] bg-[size:36px_36px,36px_36px,100%_100%,100%_100%,100%_100%]" />
-      <div className="pointer-events-none fixed inset-0 overflow-hidden opacity-[0.16]">
+    <main className="min-h-screen overflow-hidden bg-[#050816] text-white">
+      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(148,163,184,.07)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,.07)_1px,transparent_1px),radial-gradient(circle_at_top_left,rgba(59,130,246,.22),transparent_35%),radial-gradient(circle_at_88%_8%,rgba(124,58,237,.18),transparent_30%),linear-gradient(135deg,#050816,#0f172a,#111827)] bg-[size:34px_34px,34px_34px,100%_100%,100%_100%,100%_100%]" />
+      <div className="pointer-events-none fixed inset-0 overflow-hidden opacity-[0.1]">
         {["π", "√", "f(x)", "log", "sen", "cos", "tan", "θ"].map((symbol, index) => (
           <span
             key={symbol}
@@ -220,31 +220,62 @@ export default function PrecalculoFullClient() {
         ))}
       </div>
       <section className="relative mx-auto flex min-h-screen max-w-[1480px] flex-col px-4 py-4 md:px-6">
-        <header className="grid gap-4 rounded-3xl border border-white/10 bg-white/[0.06] p-4 shadow-2xl shadow-black/25 backdrop-blur-2xl lg:grid-cols-[1fr_1.05fr] lg:items-end">
-          <div>
+        <header className="relative overflow-hidden rounded-[28px] border border-cyan-300/20 bg-slate-950/65 p-5 shadow-2xl shadow-blue-950/40 backdrop-blur-2xl lg:grid lg:grid-cols-[1fr_1.05fr] lg:items-end lg:gap-5">
+          <div className="pointer-events-none absolute inset-0 opacity-[0.14]">
+            {["π", "√", "f(x)", "log", "sen", "cos", "tan", "θ"].map((symbol, index) => (
+              <span
+                key={`${symbol}-hero`}
+                className="absolute select-none text-4xl font-black text-cyan-100 md:text-7xl"
+                style={{
+                  left: `${5 + ((index * 14) % 82)}%`,
+                  top: `${8 + ((index * 19) % 68)}%`,
+                  transform: `rotate(${index % 2 === 0 ? -9 : 11}deg)`,
+                }}
+              >
+                {symbol}
+              </span>
+            ))}
+          </div>
+          <div className="relative">
             <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-full border border-blue-300/35 bg-blue-400/15 px-3 py-1 text-xs font-black uppercase tracking-[0.22em] text-blue-100 shadow-lg shadow-blue-900/20">
+                MAT1000 UI v3
+              </span>
               <span className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-3 py-1 text-xs font-black uppercase tracking-[0.22em] text-cyan-200">
                 MAT1000 UC
               </span>
               <span className="rounded-full border border-white/10 bg-slate-950/50 px-3 py-1 text-xs font-bold text-slate-300">
-                Práctica visual separada de /practica
+                Modo guiado
               </span>
             </div>
-            <h1 className="mt-3 text-3xl font-black tracking-tight md:text-5xl">Pre Cálculo MAT1000</h1>
-            <p className="mt-2 max-w-3xl text-sm font-semibold leading-6 text-slate-300 md:text-base">
-              Entrenamiento UC compacto: diagnóstico de 13 preguntas, práctica con visualizaciones y pasos usando los datos reales de cada ejercicio.
+            <h1 className="mt-3 text-3xl font-black tracking-tight text-white md:text-5xl">Pre Cálculo MAT1000</h1>
+            <p className="mt-3 max-w-3xl text-sm font-semibold leading-6 text-slate-200 md:text-base">
+              Sección separada para Pre Cálculo: ruta por I1, I2, I3 y Examen, práctica inteligente, pruebas pasadas, patrones UC, gráficos, diagnóstico y tutor de dudas.
             </p>
           </div>
 
-          <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
-            <MetricCard label="Diagnóstico" value={`${answeredDiagnostic.length}/13`} detail={`${diagnosticCorrect.length} correctas`} />
-            <MetricCard label="Práctica" value={`${practiceAccuracy}%`} detail={`${practiceAnsweredIds.length} intentos`} />
-            <MetricCard label="Débil" value={weakTopics[0]} detail={weakTopics.slice(1, 3).join(" · ") || "Sin datos aún"} />
-            <MetricCard label="Siguiente" value={recommendation} detail="Abrir práctica guiada" />
+          <div className="relative mt-5 grid gap-2 sm:grid-cols-2 lg:mt-0 xl:grid-cols-4">
+            {PRECALCULO_EXAMS.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => changeExam(item.id)}
+                className={cx(
+                  "min-h-24 rounded-2xl border p-3 text-left shadow-xl transition hover:-translate-y-0.5",
+                  activeExam === item.id
+                    ? "border-blue-300/50 bg-gradient-to-br from-blue-600 to-violet-600 text-white shadow-blue-900/30"
+                    : "border-white/10 bg-white/[0.06] text-slate-100 backdrop-blur-xl hover:border-cyan-300/30 hover:bg-white/[0.1]"
+                )}
+              >
+                <p className="text-[10px] font-black uppercase tracking-[0.22em] text-cyan-100/90">{item.id.toUpperCase()}</p>
+                <p className="mt-2 line-clamp-2 text-lg font-black leading-tight">{cleanText(item.title)}</p>
+                <p className="mt-1 line-clamp-2 text-xs font-bold text-slate-200/90">{cleanText(item.subtitle)}</p>
+              </button>
+            ))}
           </div>
         </header>
 
-        <nav className="mt-4 flex gap-2 overflow-x-auto rounded-3xl border border-white/10 bg-slate-950/70 p-2 shadow-xl shadow-black/20">
+        <nav className="mt-4 flex gap-2 overflow-x-auto rounded-3xl border border-white/10 bg-slate-950/80 p-2 shadow-xl shadow-black/20 backdrop-blur-xl">
           {tabs.map((item) => (
             <button
               key={item.id}
@@ -253,7 +284,7 @@ export default function PrecalculoFullClient() {
               className={cx(
                 "shrink-0 rounded-2xl px-4 py-3 text-sm font-black transition",
                 tab === item.id
-                  ? "bg-cyan-300 text-slate-950 shadow-lg shadow-cyan-400/20"
+                  ? "bg-gradient-to-br from-blue-500 to-violet-500 text-white shadow-lg shadow-blue-900/30"
                   : "text-slate-200 hover:bg-white/10 hover:text-white"
               )}
             >
@@ -265,7 +296,7 @@ export default function PrecalculoFullClient() {
         {tab === "ruta" && (
           <section className="mt-4 grid flex-1 gap-4 xl:grid-cols-[340px_1fr]">
             <ExamRail activeExam={activeExam} activeTopic={activeTopic} onExam={changeExam} onTopic={setActiveTopic} />
-            <Panel title={`Ruta ${exam.title}`} eyebrow="Mapa de evaluación">
+            <Panel title={`Ruta ${cleanText(exam.title)}`} eyebrow="Mapa de evaluación">
               <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                 {exam.topics.map((topic, index) => (
                   <button
@@ -275,13 +306,13 @@ export default function PrecalculoFullClient() {
                     className={cx(
                       "min-h-36 rounded-3xl border p-4 text-left transition hover:-translate-y-1",
                       selectedTopic.id === topic.id
-                        ? "border-cyan-300 bg-cyan-300 text-slate-950"
+                        ? "border-blue-300/50 bg-gradient-to-br from-blue-600 to-violet-600 text-white shadow-xl shadow-blue-900/30"
                         : "border-white/10 bg-white/[0.05] text-slate-100"
                     )}
                   >
                     <p className="text-xs font-black uppercase tracking-[0.2em] opacity-70">Tema {index + 1}</p>
-                    <p className="mt-2 text-xl font-black">{topic.title}</p>
-                    <p className="mt-2 text-sm font-semibold opacity-80">{topic.why}</p>
+                    <p className="mt-2 text-xl font-black">{cleanText(topic.title)}</p>
+                    <p className="mt-2 text-sm font-semibold opacity-80">{cleanText(topic.why)}</p>
                   </button>
                 ))}
               </div>
@@ -368,7 +399,7 @@ export default function PrecalculoFullClient() {
               <div className="mt-3 flex flex-wrap gap-2">
                 {TUTOR_SUGGESTIONS.map((item) => (
                   <button key={item} type="button" onClick={() => setTutorMessage(item)} className="rounded-full bg-white/10 px-4 py-2 text-xs font-black text-slate-100">
-                    {item}
+                    {cleanText(item)}
                   </button>
                 ))}
               </div>
@@ -662,11 +693,13 @@ function ExamRail({
             onClick={() => onExam(item.id)}
             className={cx(
               "rounded-2xl border px-4 py-3 text-left transition",
-              activeExam === item.id ? "border-cyan-300 bg-cyan-300 text-slate-950" : "border-white/10 bg-white/5 text-slate-200"
+              activeExam === item.id
+                ? "border-blue-300/50 bg-gradient-to-br from-blue-600 to-violet-600 text-white shadow-xl shadow-blue-900/30"
+                : "border-white/10 bg-white/5 text-slate-200 hover:border-cyan-300/30 hover:bg-white/10"
             )}
           >
-            <p className="font-black">{item.title}</p>
-            <p className="text-xs font-bold opacity-75">{item.subtitle}</p>
+            <p className="font-black">{cleanText(item.title)}</p>
+            <p className="text-xs font-bold text-slate-200/85">{cleanText(item.subtitle)}</p>
           </button>
         ))}
       </div>
@@ -679,10 +712,12 @@ function ExamRail({
             onClick={() => onTopic(topic.id)}
             className={cx(
               "rounded-2xl px-3 py-2 text-left text-sm font-bold",
-              activeTopic === topic.id ? "bg-white text-slate-950" : "bg-white/5 text-slate-300"
+              activeTopic === topic.id
+                ? "bg-gradient-to-br from-blue-600 to-violet-600 text-white shadow-lg shadow-blue-900/25"
+                : "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white"
             )}
           >
-            {topic.title}
+            {cleanText(topic.title)}
           </button>
         ))}
       </div>
@@ -712,11 +747,11 @@ function PracticeV2({
     <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_480px]">
       <article className="min-h-[520px] rounded-3xl border border-white/10 bg-white/[0.07] p-5 shadow-2xl shadow-black/25 backdrop-blur-xl">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge>{question.module}</Badge>
-          <Badge>{question.topicLabel}</Badge>
-          <Badge>{question.difficulty}</Badge>
+          <Badge>{cleanText(question.module)}</Badge>
+          <Badge>{cleanText(question.topicLabel)}</Badge>
+          <Badge>{cleanText(question.difficulty)}</Badge>
         </div>
-        <h2 className="mt-5 text-2xl font-black leading-tight md:text-4xl">{question.prompt}</h2>
+        <h2 className="mt-5 text-2xl font-black leading-tight md:text-4xl">{cleanText(question.prompt)}</h2>
         <div className="mt-6 grid gap-3">
           {question.choices.map((choice, index) => (
             <button
@@ -735,7 +770,7 @@ function PracticeV2({
               <span className="mr-3 inline-grid h-8 w-8 place-items-center rounded-full bg-white/10 text-sm font-black text-cyan-100">
                 {String.fromCharCode(65 + index)}
               </span>
-              <span className="text-base font-black leading-7 text-white">{choice}</span>
+              <span className="text-base font-black leading-7 text-white">{cleanText(choice)}</span>
             </button>
           ))}
         </div>
@@ -792,7 +827,7 @@ function BottomFeedback({ question, answered, isCorrect }: { question: Precalcul
       <div className="grid gap-3">
         <MiniInfo title="Fórmula usada" items={question.formulas} />
         <MiniInfo title="Error típico" items={[question.proMax.commonMistake]} />
-        <MiniInfo title="UC tip" items={[question.proMax.testTip]} />
+        <MiniInfo title="Estrategia de prueba" items={[question.proMax.testTip]} />
       </div>
     </div>
   )
@@ -834,7 +869,7 @@ function DiagnosticV2({
             <div className="h-full rounded-full bg-cyan-300" style={{ width: `${((Object.keys(answers).length) / 13) * 100}%` }} />
           </div>
         </div>
-        <p className="mt-6 text-2xl font-black leading-9">{question.prompt}</p>
+        <p className="mt-6 text-2xl font-black leading-9">{cleanText(question.prompt)}</p>
         <div className="mt-5 grid gap-3 md:grid-cols-2">
           {question.choices.map((choice, choiceIndex) => (
             <button
@@ -846,7 +881,7 @@ function DiagnosticV2({
                 selected === choiceIndex ? "border-cyan-300 bg-cyan-300/15" : "border-white/10 bg-slate-950/55 hover:bg-white/10"
               )}
             >
-              {String.fromCharCode(65 + choiceIndex)}. {choice}
+              {String.fromCharCode(65 + choiceIndex)}. {cleanText(choice)}
             </button>
           ))}
         </div>
@@ -991,10 +1026,10 @@ function TrigVisualizer({ graph }: { graph: Extract<GraphConfig, { type: "trig" 
 function FormulaTile({ question }: { question: PrecalculoLearningQuestion }) {
   return (
     <article className="rounded-3xl border border-white/10 bg-white/[0.06] p-5">
-      <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-300">{question.module} · {question.topicLabel}</p>
-      <h3 className="mt-2 text-xl font-black">{question.prompt}</h3>
+      <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-300">{cleanText(question.module)} · {cleanText(question.topicLabel)}</p>
+      <h3 className="mt-2 text-xl font-black">{cleanText(question.prompt)}</h3>
       <MiniInfo title="Fórmulas" items={question.formulas} />
-      <MiniInfo title="Tip UC" items={[question.proMax.testTip]} />
+      <MiniInfo title="Estrategia de prueba" items={[question.proMax.testTip]} />
     </article>
   )
 }
