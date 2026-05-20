@@ -13,7 +13,7 @@ import {
   type PsychologyDifficulty,
   type PsychologyQuestion,
   type PsychologyQuestionType,
-} from "@/lib/psychology-practice-data"
+} from "@/lib/psychology-ui-data"
 
 type Mode = "review" | "practice" | "diagnostic" | "exam" | "incorrect" | "weakness"
 type OptionId = "A" | "B" | "C" | "D"
@@ -50,7 +50,7 @@ const defaultProgress: PsychologyProgress = {
   examSimulationHistory: [],
   classProgress: {},
   weaknessMap: {},
-  lastSelectedClassId: "psico-clase-4",
+  lastSelectedClassId: "clase-4-memoria",
   lastSelectedMode: "review",
 }
 

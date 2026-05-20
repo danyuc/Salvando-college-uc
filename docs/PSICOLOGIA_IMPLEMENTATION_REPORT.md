@@ -2,83 +2,131 @@
 
 ## Resumen
 
-Se implementó un sistema de práctica universitaria para Psicología / Procesos Psicológicos Básicos bajo la ruta `/practica/psicologia`.
+Se integró una arquitectura de práctica para Psicología bajo `/practica/psicologia`, usando únicamente material ya presente en el repositorio:
 
-El módulo usa únicamente los materiales ya proporcionados:
-- Clase 4: Memoria, Gray Cap. 9 y cuaderno.
-- Clase 5: Aprendizaje, Feldman Cap. 5 y cuaderno.
-- Clase 6: Razonamiento e Inteligencia, Gray Cap. 10 y cuaderno.
-- Clase 7: Lenguaje, Feldman Módulo 22 y cuaderno.
+- `docs/psicologia/clases/clase-4-memoria.md`
+- `docs/psicologia/clases/clase-5-aprendizaje.md`
+- `docs/psicologia/clases/clase-6-razonamiento-inteligencia.md`
+- `docs/psicologia/clases/clase-7-lenguaje.md`
+- `lib/psychology/questions.seed.ts`
+- `lib/psychology/classes.ts`
+- `lib/psychology/authors.ts`
+- `lib/psychology-practice-data.ts`
 
-No se mezcló Psicología con CRSH, IPRE2, lab ambiental ni MAT1000.
+No se agregó contenido académico externo. La meta de 200 preguntas no se completa porque no hay fuente suficiente para crear 50 preguntas sólidas por clase sin inventar contenido.
 
-## Conteo final
+## Archivos creados
 
-Total de preguntas: 100.
+- `lib/psychology/concepts.ts`
+- `lib/psychology/subtopics.ts`
+- `lib/psychology/questions.ts`
+- `lib/psychology/simulations.ts`
+- `lib/psychology/diagnostics.ts`
+- `lib/psychology/index.ts`
+- `lib/psychology-ui-data.ts`
+
+## Archivos modificados
+
+- `lib/psychology/schema.ts`
+- `app/components/psychology/PsychologyPracticeClient.tsx`
+- `app/practica/psicologia/page.tsx`
+
+## Conteo final de preguntas
+
+Total: 110.
 
 Por clase:
-- Clase 4 - Memoria: 25.
-- Clase 5 - Aprendizaje: 30.
-- Clase 6 - Razonamiento e Inteligencia: 20.
-- Clase 7 - Lenguaje: 25.
+
+- Clase 4 - Memoria: 28.
+- Clase 5 - Aprendizaje: 32.
+- Clase 6 - Razonamiento e Inteligencia: 22.
+- Clase 7 - Lenguaje: 28.
+
+Por autor:
+
+- Gray: 38.
+- Baddeley: 7.
+- Bartlett: 1.
+- Dupuy: 0.
+- Pavlov: 24.
+- Watson: 3.
+- Skinner: 27.
+- Thorndike: 1.
+- Duncker: 1.
+- Galton: 1.
+- Binet: 1.
+- Wechsler: 1.
+- Spearman: 1.
+- Cattell: 3.
+- Feldman: 1.
+- Chomsky: 3.
+- Sapir-Whorf: 3.
 
 Por tipo:
-- multiple_choice: 46.
+
+- multiple_choice: 54.
+- short_development: 12.
 - application_case: 37.
-- short_development: 10.
 - integrative_question: 7.
 
 Por dificultad:
-- low: 20.
-- medium: 54.
-- high: 26.
 
-## Modos implementados
+- baja: 20.
+- media: 59.
+- alta: 31.
 
-- Class Review.
-- Practice Questions.
-- Diagnostic Mode.
-- Exam Simulation.
-- Incorrect Review.
-- Weakness Map.
+Por habilidad cognitiva:
 
-## LocalStorage
+- recordar: 11.
+- comprender: 33.
+- aplicar: 30.
+- analizar: 18.
+- comparar: 10.
+- interpretar: 8.
 
-Clave usada:
+## Simulaciones creadas
 
-```text
-psychology-practice-progress-v1
-```
+- `diagnostic-general`
+- `prueba-tipo-1`
+- `prueba-tipo-2`
+- `prueba-mixta`
 
-Guarda:
-- answered question IDs.
-- correct IDs.
-- incorrect IDs.
-- improved IDs.
-- diagnostic history.
-- exam simulation history.
-- class progress.
-- weakness map.
-- last selected class.
-- last selected mode.
+## Reglas diagnósticas creadas
 
-## QA checklist
-
-- 100 preguntas totales.
-- IDs únicos.
-- Prompts únicos.
-- Diagnóstico sin repetición de IDs.
-- Simulacro de 20 preguntas sin repetición de IDs.
-- Simulacro incluye todas las clases.
-- Simulacro incluye al menos 30% application_case.
-- Simulacro incluye al menos 20% integrative_question.
-- Todas las preguntas de alternativas/caso tienen 4 opciones.
-- Todas las preguntas de alternativas/caso tienen distractorExplanations.
-- Todas las preguntas de desarrollo/integrativas tienen expectedAnswer y gradingCriteria.
-- Todas las preguntas tienen source, tags, relatedConcepts, weaknessDetected y studyRecommendation.
-- `npx eslint` ejecutado sobre archivos de Psicología modificados.
-- `npm run build` debe pasar antes de cerrar entrega.
+- `modelo-modal`
+- `baddeley`
+- `memoria-constructiva`
+- `falsas-memorias`
+- `amnesias`
+- `ei-ri-ec-rc`
+- `refuerzo-castigo`
+- `programas-reforzamiento`
+- `induccion-deduccion`
+- `sesgos-razonamiento`
+- `insight-vela`
+- `fluida-cristalizada`
+- `fonologia-sintaxis-semantica`
+- `adquisicion-lenguaje`
+- `sapir-whorf`
 
 ## Fuentes faltantes
 
-No se agregaron contenidos externos. Si se desea ampliar con clases nuevas, lecturas nuevas o preguntas de prueba real no incluidas en el material entregado, falta fuente.
+No se alcanza la cantidad por falta de fuente en las cuatro clases:
+
+- Clase 4 requiere 22 preguntas adicionales para llegar a 50.
+- Clase 5 requiere 18 preguntas adicionales para llegar a 50.
+- Clase 6 requiere 28 preguntas adicionales para llegar a 50.
+- Clase 7 requiere 22 preguntas adicionales para llegar a 50.
+
+Autores que no alcanzan la cobertura objetivo: Baddeley, Watson, Thorndike, Galton, Binet, Wechsler, Spearman, Cattell, Gray, Feldman, Chomsky y Sapir-Whorf. Requiere más fuente o mayor granularidad de apuntes antes de crear preguntas adicionales.
+
+## QA checklist
+
+- IDs únicos: revisado por deduplicación en `lib/psychology/questions.ts`.
+- Prompts únicos: revisado por deduplicación normalizada.
+- Todas las preguntas tienen `sourceRefs`.
+- Las preguntas de alternativas/caso tienen 4 opciones desde el banco legado o seed.
+- Desarrollo/aplicación/integración incluyen `expectedAnswer` y `gradingCriteria` cuando corresponde.
+- LocalStorage: `psychology-practice-progress-v1`.
+- Build result: `npm run build` OK.
+- Lint result: targeted ESLint OK; `app/globals.css` fue ignorado por la configuración de ESLint.

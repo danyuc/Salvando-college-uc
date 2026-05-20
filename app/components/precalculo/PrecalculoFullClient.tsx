@@ -13,8 +13,29 @@ import {
   type GraphConfig,
   type PrecalculoLearningQuestion,
 } from "@/lib/precalculo-practice-data"
+import {
+  globalMAT1000Analysis,
+  pastExamExercises,
+  simulationSources,
+  ucPatterns,
+  ucVariants,
+  type PastExamExercise,
+  type UCPattern,
+  type UCVariant,
+} from "@/lib/precalculo"
 
-type Tab = "ruta" | "diagnostico" | "practica" | "formulas" | "graficos" | "tutor"
+type Tab =
+  | "ruta"
+  | "diagnostico"
+  | "practica"
+  | "formulas"
+  | "graficos"
+  | "pasadas"
+  | "patrones"
+  | "variantes"
+  | "simulacros"
+  | "analisis"
+  | "tutor"
 
 const tabs: Array<{ id: Tab; label: string }> = [
   { id: "ruta", label: "Ruta" },
@@ -22,11 +43,39 @@ const tabs: Array<{ id: Tab; label: string }> = [
   { id: "practica", label: "Práctica" },
   { id: "formulas", label: "Fórmulas y tips" },
   { id: "graficos", label: "Gráficos interactivos" },
+  { id: "pasadas", label: "Pruebas pasadas" },
+  { id: "patrones", label: "Patrones UC" },
+  { id: "variantes", label: "Variantes UC" },
+  { id: "simulacros", label: "Simulacros" },
+  { id: "analisis", label: "Análisis" },
   { id: "tutor", label: "Tutor" },
 ]
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ")
+}
+
+function cleanText(value: string) {
+  return value
+    .replaceAll("Ã¡", "á")
+    .replaceAll("Ã©", "é")
+    .replaceAll("Ã­", "í")
+    .replaceAll("Ã³", "ó")
+    .replaceAll("Ãº", "ú")
+    .replaceAll("Ã±", "ñ")
+    .replaceAll("Ã", "Á")
+    .replaceAll("Ã‰", "É")
+    .replaceAll("Ã", "Í")
+    .replaceAll("Ã“", "Ó")
+    .replaceAll("Ãš", "Ú")
+    .replaceAll("Â¿", "¿")
+    .replaceAll("Â¡", "¡")
+    .replaceAll("Â·", "·")
+    .replaceAll("Â´", "'")
+    .replaceAll("â‡’", "=>")
+    .replaceAll("â€¢", "•")
+    .replaceAll("Ï€", "π")
+    .replaceAll("âˆž", "∞")
 }
 
 function buildTutorAnswer(message: string) {
@@ -56,6 +105,10 @@ export default function PrecalculoFullClient() {
   const [practiceIndex, setPracticeIndex] = useState(0)
   const [practiceAnswers, setPracticeAnswers] = useState<Record<string, number>>({})
   const [draftAnswer, setDraftAnswer] = useState<number | null>(null)
+  const [bankEvaluation, setBankEvaluation] = useState("Todos")
+  const [bankTopic, setBankTopic] = useState("Todos")
+  const [bankPattern, setBankPattern] = useState("Todos")
+  const [bankSource, setBankSource] = useState("todos")
   const [tutorMessage, setTutorMessage] = useState("no entiendo por qué la tangente queda positiva")
 
   const exam = useMemo(
@@ -98,6 +151,29 @@ export default function PrecalculoFullClient() {
   const practiceAnswered = currentPracticeAnswer !== undefined
   const weakTopics = diagnosticWeaknesses.length ? diagnosticWeaknesses : ["Trigonometría visual", "Modelamiento"]
   const recommendation = diagnosticWeaknesses[0] ?? practiceQuestion.topicLabel
+  const topicOptions = useMemo(
+    () => ["Todos", ...Array.from(new Set(pastExamExercises.map((exercise) => exercise.theme))).sort()],
+    []
+  )
+  const patternOptions = useMemo(
+    () => ["Todos", ...Array.from(new Set(pastExamExercises.map((exercise) => exercise.pattern))).sort()],
+    []
+  )
+  const filteredPastExercises = useMemo(
+    () =>
+      pastExamExercises.filter((exercise) => {
+        const evaluationMatch = bankEvaluation === "Todos" || exercise.eval === bankEvaluation
+        const topicMatch = bankTopic === "Todos" || exercise.theme === bankTopic
+        const patternMatch = bankPattern === "Todos" || exercise.pattern === bankPattern
+        const sourceMatch =
+          bankSource === "todos" ||
+          (bankSource === "graficos" && exercise.hasGraph) ||
+          (bankSource === "sin-graficos" && !exercise.hasGraph) ||
+          (bankSource === "requiere-solucion" && exercise.solutionStatus.includes("requiere"))
+        return evaluationMatch && topicMatch && patternMatch && sourceMatch
+      }),
+    [bankEvaluation, bankPattern, bankSource, bankTopic]
+  )
 
   function changeExam(id: PrecalculoExamId) {
     const nextExam = PRECALCULO_EXAMS.find((item) => item.id === id) ?? PRECALCULO_EXAMS[0]
@@ -153,7 +229,7 @@ export default function PrecalculoFullClient() {
           </div>
         </header>
 
-        <nav className="mt-4 grid gap-2 rounded-3xl border border-white/10 bg-slate-950/60 p-2 shadow-xl shadow-black/20 md:grid-cols-6">
+        <nav className="mt-4 grid gap-2 rounded-3xl border border-white/10 bg-slate-950/60 p-2 shadow-xl shadow-black/20 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-11">
           {tabs.map((item) => (
             <button
               key={item.id}
@@ -241,12 +317,34 @@ export default function PrecalculoFullClient() {
           <section className="mt-4 grid gap-4 xl:grid-cols-2">
             <VisualPanel graph={{ type: "trig", amplitude: 3, k: 2, b: 0, c: 0 }} title="Seno/coseno: amplitud y período" />
             <VisualPanel graph={{ type: "line", points: [{ x: 0, y: 4 }, { x: 2, y: 0 }], slope: -2, intercept: 4 }} title="Plano cartesiano y recta" />
+            <GraphMetadataPanel exercises={pastExamExercises.filter((exercise) => exercise.hasGraph).slice(0, 6)} />
           </section>
         )}
 
+        {tab === "pasadas" && (
+          <PastExamBank
+            exercises={filteredPastExercises}
+            topicOptions={topicOptions}
+            patternOptions={patternOptions}
+            evaluation={bankEvaluation}
+            topic={bankTopic}
+            pattern={bankPattern}
+            source={bankSource}
+            onEvaluation={setBankEvaluation}
+            onTopic={setBankTopic}
+            onPattern={setBankPattern}
+            onSource={setBankSource}
+          />
+        )}
+
+        {tab === "patrones" && <PatternBank patterns={ucPatterns} />}
+        {tab === "variantes" && <VariantBank variants={ucVariants} />}
+        {tab === "simulacros" && <SimulationBank />}
+        {tab === "analisis" && <AnalysisPanel />}
+
         {tab === "tutor" && (
           <section className="mt-4">
-            <Panel title="Tutor MAT1000" eyebrow="Modo Pro Max UC">
+            <Panel title="Tutor MAT1000" eyebrow="Tutor local">
               <textarea
                 value={tutorMessage}
                 onChange={(event) => setTutorMessage(event.target.value)}
@@ -281,6 +379,238 @@ function MetricCard({ label, value, detail }: { label: string; value: string; de
       <p className="mt-2 line-clamp-2 text-lg font-black leading-tight text-white">{value}</p>
       <p className="mt-1 line-clamp-1 text-xs font-bold text-slate-400">{detail}</p>
     </div>
+  )
+}
+
+function PastExamBank({
+  exercises,
+  topicOptions,
+  patternOptions,
+  evaluation,
+  topic,
+  pattern,
+  source,
+  onEvaluation,
+  onTopic,
+  onPattern,
+  onSource,
+}: {
+  exercises: PastExamExercise[]
+  topicOptions: string[]
+  patternOptions: string[]
+  evaluation: string
+  topic: string
+  pattern: string
+  source: string
+  onEvaluation: (value: string) => void
+  onTopic: (value: string) => void
+  onPattern: (value: string) => void
+  onSource: (value: string) => void
+}) {
+  return (
+    <section className="mt-4 grid gap-4">
+      <Panel title="Pruebas pasadas UC" eyebrow={`${exercises.length} ejercicios filtrados`}>
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <SelectControl label="Evaluación" value={evaluation} onChange={onEvaluation} options={["Todos", "I1", "I2", "I3", "Examen"]} />
+          <SelectControl label="Tema" value={topic} onChange={onTopic} options={topicOptions} />
+          <SelectControl label="Patrón UC" value={pattern} onChange={onPattern} options={patternOptions} />
+          <SelectControl
+            label="Filtro"
+            value={source}
+            onChange={onSource}
+            options={["todos", "graficos", "sin-graficos", "requiere-solucion"]}
+          />
+        </div>
+      </Panel>
+      <div className="grid gap-3 xl:grid-cols-2">
+        {exercises.slice(0, 18).map((exercise) => (
+          <ExerciseCard key={exercise.id} exercise={exercise} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function SelectControl({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string
+  value: string
+  options: string[]
+  onChange: (value: string) => void
+}) {
+  return (
+    <label className="grid gap-2 text-xs font-black uppercase tracking-[0.18em] text-cyan-200">
+      {label}
+      <select value={value} onChange={(event) => onChange(event.target.value)} className="h-12 rounded-2xl">
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {cleanText(option)}
+          </option>
+        ))}
+      </select>
+    </label>
+  )
+}
+
+function ExerciseCard({ exercise }: { exercise: PastExamExercise }) {
+  const solutionLabel = exercise.solutionStatus.includes("oficial")
+    ? "Solución oficial"
+    : exercise.solutionStatus.includes("propuesta")
+      ? "Solución propuesta · requiere validación"
+      : "Requiere solución"
+
+  return (
+    <article className="rounded-3xl border border-white/10 bg-white/[0.06] p-5 shadow-2xl shadow-black/20">
+      <div className="flex flex-wrap gap-2">
+        <Badge>Prueba pasada UC</Badge>
+        <Badge>{exercise.eval} {exercise.year} {exercise.forma}</Badge>
+        <Badge>{exercise.hasGraph ? "Con gráfico" : "Sin gráfico"}</Badge>
+        <Badge>{solutionLabel}</Badge>
+      </div>
+      <h3 className="mt-4 text-lg font-black leading-7">{exercise.id}</h3>
+      <p className="mt-2 line-clamp-5 whitespace-pre-line text-sm font-semibold leading-6 text-slate-200">{cleanText(exercise.prompt)}</p>
+      <div className="mt-4 grid gap-2 md:grid-cols-2">
+        <MiniInfo title="Tema" items={[cleanText(exercise.theme), cleanText(exercise.subtopic)]} />
+        <MiniInfo title="Patrón UC" items={[cleanText(exercise.pattern)]} />
+        <MiniInfo title="Datos" items={[`Tipo: ${exercise.questionType}`, `Dificultad: ${exercise.difficulty}`, `Fuente: ${exercise.sourceFile} pág. ${exercise.page}`]} />
+        <MiniInfo title="Estado" items={[solutionLabel, "Si falta solución, no se muestra respuesta inventada."]} />
+      </div>
+    </article>
+  )
+}
+
+function PatternBank({ patterns }: { patterns: UCPattern[] }) {
+  return (
+    <section className="mt-4 grid gap-3 xl:grid-cols-2">
+      {patterns.map((pattern) => (
+        <article key={pattern.id} className="rounded-3xl border border-white/10 bg-white/[0.06] p-5">
+          <div className="flex flex-wrap gap-2">
+            <Badge>{pattern.level}</Badge>
+            <Badge>{pattern.frequency} apariciones</Badge>
+            <Badge>{reappearanceLabel(pattern.frequency)}</Badge>
+          </div>
+          <h3 className="mt-3 text-2xl font-black">{cleanText(pattern.name)}</h3>
+          <p className="mt-3 text-sm font-semibold leading-7 text-slate-300">{cleanText(pattern.structure)}</p>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <MiniInfo title="Qué no cambia" items={[cleanText(pattern.invariantLogic)]} />
+            <MiniInfo title="Método" items={[cleanText(pattern.method)]} />
+            <MiniInfo title="Errores comunes" items={pattern.commonErrors.map(cleanText)} />
+            <MiniInfo title="Ejercicios asociados" items={pattern.examples.slice(0, 6)} />
+          </div>
+        </article>
+      ))}
+    </section>
+  )
+}
+
+function reappearanceLabel(frequency: number) {
+  if (frequency >= 30) return "Probabilidad: muy alta"
+  if (frequency >= 15) return "Probabilidad: alta"
+  if (frequency >= 6) return "Probabilidad: media"
+  return "Probabilidad: baja"
+}
+
+function VariantBank({ variants }: { variants: UCVariant[] }) {
+  return (
+    <section className="mt-4 grid gap-3 xl:grid-cols-3">
+      {variants.map((variant) => (
+        <article key={variant.id} className="rounded-3xl border border-white/10 bg-white/[0.06] p-5">
+          <Badge>Variante UC</Badge>
+          <h3 className="mt-3 text-xl font-black">{cleanText(variant.sourcePattern)}</h3>
+          <p className="mt-3 text-sm font-semibold leading-7 text-slate-300">{cleanText(variant.prompt)}</p>
+          <MiniInfo title="Estado" items={[variant.validationStatus === "requires validation" ? "Requiere validación" : "Solución propuesta"]} />
+          <MiniInfo title="Respuesta" items={[cleanText(variant.answer)]} />
+        </article>
+      ))}
+    </section>
+  )
+}
+
+function SimulationBank() {
+  const simulations = [
+    ["Simulacro I1", "I1", "13", "Patrones de I1, alternativas y desarrollo", simulationSources.I1],
+    ["Simulacro I2", "I2", "13", "Funciones, logaritmos, exponenciales y modelamiento", simulationSources.I2],
+    ["Simulacro I3", "I3", "13", "Trigonometría, polinomios y análisis gráfico", simulationSources.I3],
+    ["Simulacro Examen", "Examen", "20", "Mixto con foco en recurrencia UC", simulationSources.Examen],
+    ["Simulacro mixto", "Mixto", "20", "Distribución balanceada por tema", "Banco interno"],
+    ["Simulacro de ejercicios con gráficos", "Mixto", "12", "Solo ejercicios marcados con gráfico", "Banco interno"],
+    ["Simulacro de desarrollo", "Mixto", "8", "Preguntas de desarrollo con pauta cuando exista", "Banco interno"],
+    ["Simulacro de alternativas", "Mixto", "20", "Alternativas con revisión al final", "Banco interno"],
+  ]
+
+  return (
+    <section className="mt-4 grid gap-3 xl:grid-cols-4">
+      {simulations.map(([title, evaluation, count, strategy, source]) => (
+        <article key={title} className="rounded-3xl border border-white/10 bg-white/[0.06] p-5">
+          <Badge>{evaluation}</Badge>
+          <h3 className="mt-3 text-xl font-black">{title}</h3>
+          <MiniInfo title="Configuración" items={[`${count} preguntas`, "Tiempo sugerido: 45-90 min", strategy]} />
+          <MiniInfo title="Fuente" items={[source]} />
+          <button type="button" className="mt-4 rounded-full bg-cyan-300 px-5 py-3 text-sm font-black text-slate-950">
+            Iniciar simulacro
+          </button>
+        </article>
+      ))}
+    </section>
+  )
+}
+
+function AnalysisPanel() {
+  return (
+    <section className="mt-4 grid gap-4 xl:grid-cols-2">
+      <RankingCard title="Ranking de temas más frecuentes" items={globalMAT1000Analysis.topicRanking.map((item) => `${cleanText(item.theme)}: ${item.count}`)} />
+      <RankingCard title="Patrones UC más repetidos" items={globalMAT1000Analysis.patternRanking.map((item) => `${cleanText(item.pattern)}: ${item.count}`)} />
+      <RankingCard title="Tipos de preguntas comunes" items={summarizeBy(pastExamExercises, (exercise) => exercise.questionType)} />
+      <RankingCard title="Desarrollo vs alternativas" items={summarizeBy(pastExamExercises, (exercise) => exercise.questionType.includes("desarrollo") ? "desarrollo" : "alternativas/mixta")} />
+      <RankingCard title="Gráficos más usados" items={summarizeBy(pastExamExercises.filter((exercise) => exercise.hasGraph), (exercise) => cleanText(exercise.pattern)).slice(0, 8)} />
+      <RankingCard title="Patrones que conviene entrenar" items={globalMAT1000Analysis.patternRanking.slice(0, 8).map((item) => cleanText(item.pattern))} />
+    </section>
+  )
+}
+
+function summarizeBy<T>(items: T[], getter: (item: T) => string) {
+  const counts = items.reduce<Record<string, number>>((acc, item) => {
+    const key = getter(item)
+    acc[key] = (acc[key] ?? 0) + 1
+    return acc
+  }, {})
+  return Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([label, count]) => `${label}: ${count}`)
+}
+
+function RankingCard({ title, items }: { title: string; items: string[] }) {
+  return (
+    <Panel title={title} eyebrow="Análisis MAT1000">
+      <ol className="grid gap-2">
+        {(items.length ? items : ["TODO: requiere datos adicionales"]).slice(0, 10).map((item, index) => (
+          <li key={`${item}-${index}`} className="rounded-2xl bg-slate-950/60 p-3 text-sm font-bold text-slate-200">
+            <span className="mr-2 text-cyan-200">{index + 1}.</span>{item}
+          </li>
+        ))}
+      </ol>
+    </Panel>
+  )
+}
+
+function GraphMetadataPanel({ exercises }: { exercises: PastExamExercise[] }) {
+  return (
+    <Panel title="Metadatos graphConfig" eyebrow="Preparación SVG/canvas">
+      <p className="text-sm font-semibold leading-7 text-slate-300">
+        TODO: implementar renderizado SVG/canvas para graphConfig. Mientras tanto se muestran ejercicios con gráfico detectado.
+      </p>
+      <div className="mt-4 grid gap-2">
+        {exercises.map((exercise) => (
+          <div key={exercise.id} className="rounded-2xl border border-white/10 bg-slate-950/60 p-3 text-sm font-bold text-slate-200">
+            {exercise.id} · {cleanText(exercise.pattern)} · {exercise.sourceFile} pág. {exercise.page}
+          </div>
+        ))}
+      </div>
+    </Panel>
   )
 }
 
@@ -660,7 +990,7 @@ function MiniInfo({ title, items }: { title: string; items: string[] }) {
       <p className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-300">{title}</p>
       <ul className="mt-2 grid gap-1 text-sm font-semibold leading-6 text-slate-200">
         {(items.length ? items : ["Sin datos aún"]).map((item) => (
-          <li key={item}>{item}</li>
+          <li key={item}>{cleanText(item)}</li>
         ))}
       </ul>
     </div>

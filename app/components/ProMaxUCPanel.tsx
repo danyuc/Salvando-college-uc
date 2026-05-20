@@ -159,7 +159,7 @@ export default function ProMaxUCPanel({ question, answered, correct }: Props) {
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.28em] text-sky-300">
-            Modo Pro Max UC
+            Práctica inteligente UC
           </p>
 
           <h3 className="mt-2 text-2xl font-black">{current.title}</h3>

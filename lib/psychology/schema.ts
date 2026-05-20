@@ -4,7 +4,7 @@ export type PsychologyQuestionType =
   | "application_case"
   | "integrative_question";
 
-export type PsychologyDifficulty = "baja" | "media" | "alta";
+export type PsychologyDifficulty = "baja" | "media" | "alta" | "low" | "medium" | "high";
 
 export type PsychologySkill =
   | "recordar"
@@ -13,7 +13,13 @@ export type PsychologySkill =
   | "analizar"
   | "comparar"
   | "interpretar"
-  | "integrar";
+  | "integrar"
+  | "remember"
+  | "understand"
+  | "apply"
+  | "analyze"
+  | "compare"
+  | "interpret";
 
 export type PsychologySourceKind =
   | "ppt"
@@ -65,13 +71,16 @@ export type PsychologyAuthor = {
 
 export type PsychologyConcept = {
   id: string;
+  title?: string;
   name: string;
   classIds: string[];
   authorIds: string[];
   definition: string;
+  description?: string;
   explanation: string;
   commonMistakes: string[];
   sourceRefs: PsychologySourceRef[];
+  status?: "source-supported" | "requires-confirmation";
 };
 
 export type PsychologySubtopic = {
@@ -83,6 +92,8 @@ export type PsychologySubtopic = {
   authorIds: string[];
   possibleExamQuestions: string[];
   sourceRefs: PsychologySourceRef[];
+  description?: string;
+  status?: "source-supported" | "requires-confirmation";
 };
 
 export type PsychologyQuestion = {
@@ -122,13 +133,31 @@ export type PsychologySimulation = {
   typeDistribution: Partial<Record<PsychologyQuestionType, number>>;
   suggestedMinutes: number;
   rules: string[];
+  selectionStrategy?: string;
+  sourcePolicy?: string;
 };
 
 export type PsychologyDiagnosticRule = {
   id: string;
   label: string;
+  relatedClassIds?: string[];
+  relatedAuthorIds?: string[];
+  relatedConceptIds?: string[];
+  relatedSubtopicIds?: string[];
   conceptIds: string[];
   authorIds?: string[];
-  weaknessPattern: string;
-  recommendation: string;
+  weaknessPattern?: string;
+  weaknessDetected?: string;
+  evidenceQuestionTags?: string[];
+  recommendation?: string;
+  recommendedReview?: string;
+  recommendedPracticeFilters?: Partial<{
+    classId: string;
+    authorIds: string[];
+    conceptIds: string[];
+    subtopicIds: string[];
+    tags: string[];
+    difficulty: PsychologyDifficulty;
+  }>;
+  status?: "source-supported" | "requires-confirmation";
 };
