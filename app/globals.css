@@ -455,34 +455,21 @@ body {
   opacity: 1 !important;
 }
 
-[data-app-sidebar] a,
+[data-app-sidebar] a:not([aria-current="page"]),
+[data-app-sidebar] a:not([aria-current="page"]) *,
 [data-app-sidebar] button,
-[data-app-sidebar] a *,
 [data-app-sidebar] button *,
-[data-app-sidebar] svg,
-[data-app-sidebar] span,
 [data-app-sidebar] p,
 [data-app-sidebar] h1,
 [data-app-sidebar] h2 {
-  color: rgb(248 250 252) !important;
+  color: rgb(226 232 240) !important;
 }
 
-[data-app-sidebar] a:hover,
+[data-app-sidebar] a:not([aria-current="page"]):hover,
+[data-app-sidebar] a:not([aria-current="page"]):hover *,
 [data-app-sidebar] button:hover,
-[data-app-sidebar] a:hover *,
-[data-app-sidebar] button:hover *,
-[data-app-sidebar] a:hover svg,
-[data-app-sidebar] button:hover svg {
+[data-app-sidebar] button:hover * {
   color: rgb(255 255 255) !important;
-}
-
-[data-app-sidebar] a[class*="bg-white"],
-[data-app-sidebar] a[class*="bg-white"] *,
-[data-app-sidebar] a[class*="bg-cyan"],
-[data-app-sidebar] a[class*="bg-cyan"] *,
-[data-app-sidebar] a[class*="bg-sky"],
-[data-app-sidebar] a[class*="bg-sky"] * {
-  color: rgb(15 23 42) !important;
 }
 
 [data-app-sidebar] [aria-current="page"],
