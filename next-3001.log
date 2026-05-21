@@ -1,0 +1,13 @@
+
+> salvando-college-uc@0.1.0 dev
+> next dev -p 3001
+
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://192.168.1.71:3001
+- Environments: .env.local, .env
+✓ Ready in 639ms
+Creating turbopack project { dir: 'C:\\Users\\Dany\\Desktop\\Salvando-college', testMode: true }
+
+ GET /login 200 in 401ms (next.js: 97ms, proxy.ts: 7ms, application-code: 298ms)
+ GET /login 200 in 58ms (next.js: 4ms, proxy.ts: 5ms, application-code: 49ms)
